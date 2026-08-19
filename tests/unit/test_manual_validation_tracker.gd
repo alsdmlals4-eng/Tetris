@@ -81,3 +81,42 @@ func test_report_contains_machine_readable_verdict_and_environment() -> void:
     assert_eq(report.commit, "abc123")
     assert_eq(report.completed_steps, 10)
     assert_true(report.elapsed_seconds >= 45.0)
+
+func test_complete_validation_can_persist_and_reload_json_evidence() -> void:
+    var tracker = _tracker()
+    if tracker == null:
+        return
+
+    _complete_steps(tracker)
+    tracker.update_elapsed(45.0)
+    var path := "user://manual_validation_test.json"
+    if FileAccess.file_exists(path):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+    assert_true(tracker.write_report(path, "4.7.1.stable", "9.7.1", "abc123"))
+    assert_true(FileAccess.file_exists(path))
+
+    var file := FileAccess.open(path, FileAccess.READ)
+    assert_not_null(file)
+    if file != null:
+        var parsed = JSON.parse_string(file.get_as_text())
+        assert_typeof(parsed, TYPE_DICTIONARY)
+        if typeof(parsed) == TYPE_DICTIONARY:
+            assert_eq(parsed.get("verdict"), "PASS")
+            assert_eq(parsed.get("commit"), "abc123")
+            assert_eq(int(parsed.get("completed_steps", 0)), 10)
+    DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+func test_incomplete_validation_refuses_to_write_pass_evidence() -> void:
+    var tracker = _tracker()
+    if tracker == null:
+        return
+
+    tracker.record_line_run(0.0)
+    tracker.update_elapsed(45.0)
+    var path := "user://manual_validation_incomplete.json"
+    if FileAccess.file_exists(path):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+
+    assert_false(tracker.write_report(path, "4.7.1.stable", "9.7.1", "abc123"))
+    assert_false(FileAccess.file_exists(path))
