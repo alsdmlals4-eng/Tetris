@@ -23,42 +23,56 @@ func record_line_run(time: float) -> void:
     _step_times["line_run"] = time
 
 func record_line_energy(time: float, amount: int) -> void:
-    if amount <= 0:
+    if not line_run or amount <= 0:
         return
     line_energy = true
     _step_times["line_energy"] = time
 
 func record_line_lock(time: float, _line_advance_count: int) -> void:
+    if not line_energy:
+        return
     line_lock = true
     _step_times["line_lock"] = time
 
 func record_chain_switch_locked(time: float, _line_advance_count: int) -> void:
+    if not line_lock:
+        return
     chain_switch_locked = true
     _step_times["chain_switch_locked"] = time
 
 func record_chain_run(time: float) -> void:
+    if not chain_switch_locked:
+        return
     chain_run = true
     _step_times["chain_run"] = time
 
 func record_chain_complete(time: float, chain_count: int) -> void:
-    if chain_count <= 0:
+    if not chain_run or chain_count <= 0:
         return
     chain_complete = true
     _step_times["chain_complete"] = time
 
 func record_skill_success(time: float) -> void:
+    if not chain_complete:
+        return
     skill_success = true
     _step_times["skill_success"] = time
 
 func record_skill_rejected(time: float) -> void:
+    if not skill_success:
+        return
     skill_rejected = true
     _step_times["skill_rejected"] = time
 
 func record_enemy_during_lock(time: float) -> void:
+    if not skill_rejected:
+        return
     enemy_during_lock = true
     _step_times["enemy_during_lock"] = time
 
 func record_line_return_preserved(time: float, before_advance_count: int, after_advance_count: int) -> void:
+    if not enemy_during_lock:
+        return
     line_return_preserved = before_advance_count == after_advance_count
     if line_return_preserved:
         _step_times["line_return_preserved"] = time
