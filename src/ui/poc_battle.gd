@@ -132,8 +132,14 @@ func _refresh_ui() -> void:
         _state_name(active_state),
         session.combat.combat_time,
     ]
-    line_button.text = "LINE — Energy %d" % session.combat.energy
-    chain_button.text = "CHAIN — Stock %d" % session.combat.chain_stock
+    line_button.text = "LINE [%s] — Energy %d" % [
+        _state_name(session.modes.line_state),
+        session.combat.energy,
+    ]
+    chain_button.text = "CHAIN [%s] — Stock %d" % [
+        _state_name(session.modes.chain_state),
+        session.combat.chain_stock,
+    ]
     line_button.disabled = session.modes.active_mode == &"line"
     chain_button.disabled = session.modes.active_mode == &"chain"
     run_lock_button.text = "LOCK" if active_state == BoardStateScript.RUNNING else "RUN"
@@ -159,9 +165,14 @@ func _refresh_ui() -> void:
         debug_5.text = "5 Chain"
 
     var can_t1: bool = session.combat.can_spend_skill(1, 15)
-    attack_button.disabled = not can_t1
-    defense_button.disabled = not can_t1
-    heal_button.disabled = not can_t1
+    var skill_window_open: bool = (
+        active_state == BoardStateScript.RUNNING
+        or active_state == BoardStateScript.LOCKED
+    )
+    var can_use_t1: bool = can_t1 and skill_window_open
+    attack_button.disabled = not can_use_t1
+    defense_button.disabled = not can_use_t1
+    heal_button.disabled = not can_use_t1
 
     if session.telemetry.events.is_empty():
         event_status.text = "Event: none"
