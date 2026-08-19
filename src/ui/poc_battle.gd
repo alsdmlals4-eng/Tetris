@@ -14,8 +14,13 @@ var rejected_t5_skill = SkillDefinitionScript.new(&"validation_attack_t5", &"att
 
 var manual_validation = ManualValidationTrackerScript.new()
 var manual_validation_enabled: bool = OS.get_environment("POC_MANUAL_VALIDATION") == "1"
+var manual_validation_report_path: String = OS.get_environment("POC_VALIDATION_REPORT_PATH")
+var manual_validation_gut_version: String = OS.get_environment("POC_VALIDATION_GUT_VERSION")
+var manual_validation_commit: String = OS.get_environment("POC_VALIDATION_COMMIT")
 var _manual_line_snapshot: int = -1
 var _manual_last_telemetry_count: int = 0
+var _manual_report_written := false
+var _manual_report_failed := false
 
 @onready var player_status: Label = $Layout/HUD/PlayerStatus
 @onready var enemy_status: Label = $Layout/HUD/EnemyStatus
@@ -60,6 +65,7 @@ func _process(delta: float) -> void:
     if manual_validation_enabled:
         manual_validation.update_elapsed(session.combat.combat_time)
         _observe_manual_enemy_actions()
+        _try_write_manual_validation_report()
     _refresh_ui()
 
 func _on_line_mode_pressed() -> void:
@@ -171,6 +177,22 @@ func _observe_manual_enemy_actions() -> void:
             manual_validation.record_enemy_during_lock(float(event.get("time", session.combat.combat_time)))
     _manual_last_telemetry_count = events.size()
 
+func _try_write_manual_validation_report() -> void:
+    if _manual_report_written or not manual_validation.is_complete():
+        return
+    if manual_validation_report_path.is_empty() or manual_validation_gut_version.is_empty() or manual_validation_commit.is_empty():
+        _manual_report_failed = true
+        return
+    var version_info: Dictionary = Engine.get_version_info()
+    var godot_version := String(version_info.get("string", ""))
+    _manual_report_written = manual_validation.write_report(
+        manual_validation_report_path,
+        godot_version,
+        manual_validation_gut_version,
+        manual_validation_commit
+    )
+    _manual_report_failed = not _manual_report_written
+
 func _refresh_ui() -> void:
     if not is_node_ready():
         return
@@ -256,10 +278,16 @@ func _refresh_ui() -> void:
 
 func _refresh_manual_validation_status() -> void:
     var verdict := "PASS" if manual_validation.is_complete() else "NOT_COMPLETE"
-    manual_validation_status.text = "Manual validation: %d/10 | %.1f/45s | %s | NEXT: %s" % [
+    var evidence_state := ""
+    if _manual_report_written:
+        evidence_state = " | EVIDENCE SAVED"
+    elif manual_validation.is_complete() and _manual_report_failed:
+        evidence_state = " | EVIDENCE NOT SAVED"
+    manual_validation_status.text = "Manual validation: %d/10 | %.1f/45s | %s%s | NEXT: %s" % [
         manual_validation.completed_step_count(),
         manual_validation.elapsed_seconds,
         verdict,
+        evidence_state,
         _manual_next_instruction(),
     ]
 
@@ -286,7 +314,9 @@ func _manual_next_instruction() -> String:
         return "Switch back to Line"
     if manual_validation.elapsed_seconds < 45.0:
         return "Keep the encounter open until 45s"
-    return "Close window; evidence is complete"
+    if _manual_report_written:
+        return "Close window; evidence is complete"
+    return "Evidence file was not saved"
 
 func _state_name(state: int) -> String:
     match state:
