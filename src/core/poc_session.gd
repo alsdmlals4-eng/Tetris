@@ -42,14 +42,20 @@ func tick(delta: float) -> void:
     _record_terminal_states()
 
 func switch_mode(target_mode: StringName) -> bool:
+    var previous_active: StringName = modes.active_mode
     var accepted: bool = modes.request_switch(target_mode)
     _sync_source_states()
     if accepted:
-        telemetry.record(&"mode_switch", combat.combat_time, {
-            "target": target_mode,
-            "active": modes.active_mode,
-            "queued": modes.queued_mode,
-        })
+        if modes.active_mode != previous_active:
+            telemetry.record(&"mode_switch", combat.combat_time, {
+                "target": target_mode,
+                "active": modes.active_mode,
+            })
+        else:
+            telemetry.record(&"mode_switch_queued", combat.combat_time, {
+                "target": target_mode,
+                "active": modes.active_mode,
+            })
     return accepted
 
 func run_active() -> bool:
@@ -72,8 +78,14 @@ func begin_active_resolution() -> bool:
     return accepted
 
 func finish_active_resolution() -> bool:
+    var previous_active: StringName = modes.active_mode
     var accepted: bool = modes.finish_resolution()
     _sync_source_states()
+    if accepted and modes.active_mode != previous_active:
+        telemetry.record(&"mode_switch", combat.combat_time, {
+            "target": modes.active_mode,
+            "active": modes.active_mode,
+        })
     return accepted
 
 func submit_line_clear(lines: int) -> bool:
@@ -98,11 +110,15 @@ func submit_completed_chain(chain_count: int, pieces_cleared: int) -> bool:
     return true
 
 func use_skill(skill) -> bool:
-    var accepted: bool = SkillExecutorScript.execute(skill, combat)
+    var active_state: int = modes.state_for(modes.active_mode)
+    var accepted := false
+    if active_state == BoardStateScript.RUNNING or active_state == BoardStateScript.LOCKED:
+        accepted = SkillExecutorScript.execute(skill, combat)
     var payload := {
         "id": skill.id if skill != null else &"",
         "role": skill.role if skill != null else &"",
         "tier": skill.tier if skill != null else 0,
+        "mode_state": active_state,
     }
     telemetry.record(&"skill_use" if accepted else &"skill_rejected", combat.combat_time, payload)
     _record_terminal_states()
