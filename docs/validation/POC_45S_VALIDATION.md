@@ -5,76 +5,107 @@
 - Scope: Core dual-board combat POC only
 - Canon: `docs/design/CORE_GAMEPLAY_GDD.md`, `docs/design/POC_RULESET_V0_1.md`
 - Plan: `docs/superpowers/plans/2026-08-19-core-dual-board-poc.md`
-- Canonical REMOTE_CI target: Godot `4.7.1-stable` + GUT `9.7.1`
-- REMOTE_CI checkout action: `actions/checkout@v7`
+- Canonical validation pins: Godot `4.7.1-stable` + GUT `9.7.1`
+- CI checkout action: `actions/checkout@v7`
+- Windows user entry point: repository-root `RUN_LOCAL_VALIDATION.cmd` (double-click; no manual PowerShell command is required)
 - User Windows-local Godot/GUT execution: **NOT_RUN / UNVERIFIED**
-- Chat execution container: Git available; Godot not installed; therefore not accepted as local Godot evidence.
-- Automated evidence run: GitHub Actions `core-poc-ci` run `32260246944`, job `96091519903`, implementation head `6ed11db57cd3620ad7a119f9debb6643c98b8224`.
-- Automated suite: **41/41 tests PASS, 288 assertions, Godot import/parse PASS**.
-- Plan completion gate: **OPEN** — exact user-local Godot/GUT execution evidence and one human-operated continuous 45-second encounter are still required by the approved implementation plan.
+- Human-operated continuous 45-second encounter: **NOT_RUN**
+- Chat execution container: no authorized interactive connection to the user's Windows desktop; therefore it is not accepted as user-local or human-play evidence.
+- Latest pre-handoff automated evidence: GitHub Actions `core-poc-ci` run `32266365328`, implementation head `8a8d3374a58a7a8f03d0a1332fd4449b234d03e4`.
+- Linux Godot job: `96111857702` — import/parse PASS, full GUT PASS.
+- Windows validator smoke job: `96111857573` — isolated Windows clone/import/GUT path PASS and validated the same implementation head.
+- Automated suite observed on both Linux and Windows: **50/50 tests PASS, 355 assertions**.
+- Plan completion gate: **OPEN** — exact user-local execution plus one human-operated continuous 45-second encounter are still required.
 
 ## Evidence status
 
 | Check | Status | Evidence |
 |---|---|---|
-| Godot/GUT REMOTE_CI preflight | PASS | Godot 4.7.1 + GUT 9.7.1 pins verified on the standard GitHub-hosted runner. |
-| Godot import/parse | PASS | `godot --headless --path . --editor --quit` passed in automated evidence run. |
-| GUT unit suite | PASS | 26/26 unit tests passed. |
-| GUT integration suite | PASS | 15/15 integration tests passed. |
+| Godot/GUT Linux REMOTE_CI preflight | PASS | Godot 4.7.1 + GUT 9.7.1 pins verified in job `96111857702`. |
+| Linux Godot import/parse | PASS | Headless import/parse completed without a parse/load failure. |
+| Linux full GUT suite | PASS | 50/50 tests, 355 assertions, strict GUT log guard PASS. |
+| Windows local-validator smoke | PASS | Windows Server 2025 job `96111857573` invoked root `RUN_LOCAL_VALIDATION.cmd --ci`, created a fresh isolated clone, installed pinned Godot/GUT, passed import and the complete GUT suite. |
+| Windows smoke commit identity | PASS | Validator fresh clone reported commit `8a8d3374a58a7a8f03d0a1332fd4449b234d03e4`, equal to the workflow head. |
 | inactive mode freeze | PASS | Integration tests and automated 45s scenario preserve inactive source state. |
 | LOCK freeze | PASS | Active puzzle source advance count remains unchanged while LOCKED. |
 | Combat Clock during LOCK | PASS | Combat time advances and enemy action fires while puzzle source is LOCKED. |
 | mode destination requires explicit RUN | PASS | Scene/domain tests confirm switched destination remains LOCKED until explicit RUN. |
 | Line event -> Energy | PASS | Double produces exactly +22 when isolated from emergency Energy timing. |
 | completed Chain -> non-additive Stock | PASS | Repeated low Chains do not add; Stock caps at 5. |
-| Skill -> Energy + Stock consumption | PASS | T1/T3 tests confirm configured Energy cost + exact Tier Stock consumption. |
-| insufficient-resource Skill -> no mutation | PASS | Rejected T5 preserves Energy, Stock, and enemy HP. |
+| Skill -> Energy + Stock consumption | PASS | Tests confirm configured Energy cost + exact Tier Stock consumption. |
+| insufficient-resource Skill -> no mutation | PASS | Rejected high-tier Skill preserves Energy, Stock, and target HP. |
 | Skill blocked during RESOLVING | PASS | Integration test confirms no resource/effect mutation; UI disables Skill buttons. |
 | queued mode switch truthfulness | PASS | Request during RESOLVING logs queue first; actual switch logs only after resolution finishes. |
-| enemy schedule visible and fires on time | PASS | HUD exposes next `attack 40`; deterministic actions resolve at 12/24/36s. |
-| enemy telemetry scheduled timestamps | PASS | Coarse 45s tick still records enemy actions at 12/24/36, not 45/45/45. |
+| enemy schedule visible and fires on time | PASS | HUD exposes next action; deterministic actions resolve at 12/24/36s. |
+| enemy telemetry scheduled timestamps | PASS | Coarse tick still records enemy actions at scheduled timestamps rather than the end-of-tick time. |
+| enemy telemetry state context | PASS | Enemy events record active mode and board state, allowing LOCK-during-enemy-action evidence to be audited. |
 | mode-state UI honesty | PASS | LINE/CHAIN buttons expose LOCKED/RUNNING/SUSPENDED state explicitly. |
-| telemetry contains performed transitions | PASS | Line, Chain, Skill use/reject, mode queue/switch, and enemy action events verified. |
-| automated continuous 45-second encounter | PASS | `test_automated_forty_five_second_contract` reaches 45.0s in one session and verifies the required state/resource sequence. |
-| exact user-local Godot/GUT execution | NOT_RUN | No authorized connection to the user's Windows Godot runtime exists in this session. **Completion blocker.** |
-| human-operated continuous 45-second encounter | NOT_RUN | No interactive user-local runtime/input evidence was produced. **Completion blocker.** |
+| manual-validation tracker false-PASS guard | PASS | Incomplete or out-of-order validation cannot write PASS evidence; all 10 ordered steps and >=45 seconds are required. |
+| manual-validation UI contract | PASS | Validation controls are hidden normally and expose ordered `NEXT` guidance only in validation mode. |
+| automated continuous 45-second encounter | PASS | Deterministic integration test reaches 45.0s in one session and verifies required state/resource transitions. |
+| exact user-local Godot/GUT execution | NOT_RUN | Windows CI proves the validator path works on Windows, but it is not the user's own PC. **Completion blocker.** |
+| human-operated continuous 45-second encounter | NOT_RUN | CI smoke intentionally skips interactive play. **Completion blocker.** |
 
-## Automated 45-second encounter steps
+## Windows user-local validation handoff
 
-The automated integration test completes this sequence in one `PocSession`:
+No manual terminal or PowerShell command is required.
 
-1. Start Line in `LOCKED`.
-2. Explicitly `RUN` Line and submit a Double, producing 22 Energy.
-3. `LOCK` Line and verify its source freezes while Combat Clock continues.
-4. Switch Line -> Chain and confirm Chain lands `LOCKED`.
-5. Explicitly `RUN` Chain and submit a completed 3-Chain, producing Stock 3.
-6. Use a successful T1 Attack, consuming 15 Energy + 1 Stock.
-7. Attempt unavailable T5 Attack and confirm no resource/HP mutation.
-8. Keep Chain `LOCKED` through the 12-second enemy attack and confirm puzzle source remains frozen.
-9. Switch back to Line and confirm its saved progress did not advance while inactive.
-10. Continue the same session to 45.0 seconds; 12/24/36-second enemy actions all resolve and telemetry remains intact.
+1. On the user's Windows PC, obtain the repository/branch containing PR #3 (`impl/core-dual-board-poc`).
+2. In the repository root, double-click `RUN_LOCAL_VALIDATION.cmd`.
+3. The validator creates an isolated sandbox under `%LOCALAPPDATA%\TetrisCorePocValidation` and does not modify the user's existing Godot installation, projects, or settings.
+4. It fresh-clones the validation branch, downloads pinned Godot 4.7.1 and GUT 9.7.1 into the sandbox, then runs Windows import/parse and the complete GUT suite.
+5. If preflight passes, the POC window opens automatically in manual-validation mode.
+6. Follow the on-screen `NEXT:` instruction in order. Do not close the POC until it shows `PASS | EVIDENCE SAVED`.
+7. The contract requires all 10 ordered actions plus at least 45 continuous seconds.
+8. On success, evidence remains under `%LOCALAPPDATA%\TetrisCorePocValidation`:
+   - `local_preflight.json`
+   - `manual_validation_report.json`
+   - `local_validation_evidence.json`
+9. Return `local_validation_evidence.json` (ideally all three files) for final verification. Do not mark these user-local gates PASS from CI evidence alone.
 
-This is deterministic implementation evidence, **not** evidence of human input ergonomics, final puzzle feel, or Line-vs-Chain difficulty balance.
+Rollback is deletion of `%LOCALAPPDATA%\TetrisCorePocValidation`; the validator is intentionally isolated from the user's normal Godot environment.
+
+## Manual 45-second ordered contract
+
+The manual validation tracker requires these observations in order:
+
+1. Start/explicitly RUN Line.
+2. Produce a Line Energy event.
+3. LOCK Line while Combat Clock remains live.
+4. Switch Line -> Chain and observe Chain arriving LOCKED.
+5. Explicitly RUN Chain.
+6. Complete a Chain event.
+7. Use one successful Skill.
+8. Attempt one intentionally rejected/insufficient Skill and preserve resources.
+9. Allow an enemy action while the puzzle is LOCKED.
+10. Return to Line and confirm its saved puzzle-source progress did not advance while inactive.
+
+The report is not writable as PASS until the 10 ordered steps are complete and elapsed time is at least 45 seconds.
+
+## Automated 45-second encounter
+
+The automated integration test remains deterministic implementation evidence, not human-play evidence. It verifies the same core state/resource sequence, including Line Energy, Chain Stock, successful/rejected Skill behavior, LOCK/inactive freeze, enemy timing, mode return, and 45-second continuity.
 
 ## Five implementation adversarial review loops
 
-The implementation was re-attacked after tests were green. Verified fixes were added with RED -> GREEN regression tests.
+The Core POC was re-attacked after tests were green. Verified fixes were added with regression tests.
 
 1. **Economy:** removed emergency Energy fractional-time banking across Line gain / Skill spend transitions.
 2. **State truth:** blocked Skill use during `RESOLVING`; distinguished queued mode-switch telemetry from an actual switch.
-3. **Timing evidence:** enemy telemetry now records scheduled 12/24/36-second timestamps even when simulation ticks are coarse.
-4. **UI honesty:** mode buttons expose LOCKED/RUNNING/SUSPENDED and Skill controls disable during `RESOLVING`.
-5. **Governance/CI:** synchronized latest `main`, removed CI-history-only noise from the net implementation diff, and refreshed `actions/checkout` to current v7 while retaining zero-incremental-cost standard runner policy.
+3. **Timing evidence:** enemy telemetry records scheduled 12/24/36-second timestamps even when simulation ticks are coarse, and now captures active mode/board state for auditable LOCK evidence.
+4. **UI honesty:** mode buttons expose LOCKED/RUNNING/SUSPENDED; Skill controls disable during RESOLVING; manual validation uses ordered on-screen guidance rather than hidden assumptions.
+5. **Governance/validation:** Linux strict GUT guard, isolated Windows validator smoke, pinned Windows console/GUI Godot paths, exact commit evidence, and a single root double-click entry point prevent duplicate/ambiguous validation routes.
 
-After loop 5 there is no known remaining automated MUST_FIX finding in the approved Core POC scope. The remaining blockers are empirical/local and are not replaced by REMOTE_CI.
+No automated result substitutes for the two remaining empirical gates: the user's actual Windows execution and the user's actual 45-second interaction.
 
 ## Completion verdicts
 
-The statuses below are from observed evidence only.
+Observed evidence at this ledger update:
 
-- Godot import/parse: PASS (REMOTE_CI)
-- GUT unit suite: PASS (26/26)
-- GUT integration suite: PASS (15/15)
+- Linux Godot import/parse: PASS
+- Linux full GUT suite: PASS (50/50, 355 assertions)
+- Windows isolated validator smoke: PASS (50/50, 355 assertions)
+- Windows smoke validated exact workflow head: PASS
 - inactive mode freeze: PASS
 - LOCK freeze: PASS
 - Combat Clock during LOCK: PASS
@@ -85,10 +116,10 @@ The statuses below are from observed evidence only.
 - insufficient-resource Skill -> no mutation: PASS
 - Skill blocked during RESOLVING: PASS
 - queued switch telemetry correctness: PASS
-- enemy schedule visible and fires on time: PASS
-- enemy scheduled telemetry time: PASS
+- enemy schedule visible/fires on time: PASS
+- enemy telemetry scheduled time + mode/state context: PASS
 - mode state shown in UI: PASS
-- telemetry contains performed transitions: PASS
+- manual-validation false-PASS guard: PASS
 - automated continuous 45-second scenario: PASS
 - exact user-local Godot/GUT execution: NOT_RUN
 - human-operated continuous 45-second encounter: NOT_RUN
@@ -96,7 +127,7 @@ The statuses below are from observed evidence only.
 
 ## Explicitly NOT_RUN production scope
 
-These are intentionally outside the Core POC and must not be reported as finished:
+These remain outside the Core POC and must not be reported as finished:
 
 - production Line falling-piece controls and rotation/kicks
 - production Chain pair controls and gravity feel
