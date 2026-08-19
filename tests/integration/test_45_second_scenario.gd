@@ -11,9 +11,9 @@ func test_automated_forty_five_second_contract() -> void:
     assert_eq(session.modes.line_state, BoardStateScript.LOCKED)
 
     assert_true(session.run_active())
-    session.tick(2.0)
     assert_true(session.submit_line_clear(2))
     assert_eq(session.combat.energy, 22)
+    session.tick(2.0)
     var saved_line_advance: int = session.line_source.advance_count
     assert_eq(saved_line_advance, 1)
 
