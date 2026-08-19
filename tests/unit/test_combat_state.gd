@@ -36,6 +36,23 @@ func test_emergency_energy_recovery_stops_at_fifteen() -> void:
     state.tick(30.0)
     assert_eq(state.energy, 15)
 
+func test_energy_above_emergency_floor_cannot_bank_partial_recovery_time() -> void:
+    var state = _new_state()
+    if state == null:
+        return
+    state.energy = 14
+    state.tick(0.9)
+    assert_eq(state.energy, 14)
+    state.gain_energy(10)
+    assert_eq(state.energy, 24)
+    state.chain_stock = 1
+    assert_true(state.spend_skill(1, 15))
+    assert_eq(state.energy, 9)
+    state.tick(0.1)
+    assert_eq(state.energy, 9)
+    state.tick(0.9)
+    assert_eq(state.energy, 10)
+
 func test_shield_absorbs_damage_before_hp() -> void:
     var state = _new_state()
     if state == null:
