@@ -7,25 +7,28 @@
 - Plan: `docs/superpowers/plans/2026-08-19-core-dual-board-poc.md`
 - Canonical validation pins: Godot `4.7.1-stable` + GUT `9.7.1`
 - CI checkout action: `actions/checkout@v7`
+- Canonical strict GUT collection guard: merged to `main` via PR #8, merge SHA `451f0b4485f86df0be64bc66207f74abffc37d84`.
 - Windows user entry point: repository-root `RUN_LOCAL_VALIDATION.cmd` (double-click; no manual PowerShell command is required)
 - User Windows-local Godot/GUT execution: **NOT_RUN / UNVERIFIED**
 - Human-operated continuous 45-second encounter: **NOT_RUN**
 - Chat execution container: no authorized interactive connection to the user's Windows desktop; therefore it is not accepted as user-local or human-play evidence.
-- Latest pre-handoff automated evidence: GitHub Actions `core-poc-ci` run `32266365328`, implementation head `8a8d3374a58a7a8f03d0a1332fd4449b234d03e4`.
-- Linux Godot job: `96111857702` — import/parse PASS, full GUT PASS.
-- Windows validator smoke job: `96111857573` — isolated Windows clone/import/GUT path PASS and validated the same implementation head.
-- Automated suite observed on both Linux and Windows: **50/50 tests PASS, 355 assertions**.
+- Final pre-user Linux evidence: GitHub Actions `core-poc-ci` run `32267097306`, job `96114137368`, implementation head `f412cc1b582376188239ae00fc956f203139ae73` — import/parse PASS, strict guard PASS, full GUT **50/50 PASS, 355 assertions**.
+- Windows validator smoke evidence: GitHub Actions run `32266365328`, job `96111857573`, validator-code head `8a8d3374a58a7a8f03d0a1332fd4449b234d03e4` — fresh isolated Windows clone, Godot/GUT pins, import/parse, full GUT and strict guard PASS.
+- Windows smoke observed Godot `4.7.1.stable.official.a13da4feb`, GUT `9.7.1`, **50/50 tests PASS, 355 assertions**, `[LOCAL_IMPORT] PASS`, `[LOCAL_GUT] PASS`, `[WINDOWS_LOCAL_VALIDATOR_SMOKE] PASS`.
+- Post-smoke diff `8a8d337...` -> `f412cc1...` changes only the temporary Windows CI job cleanup plus README/validation documentation; validator, gameplay and test code are unchanged.
+- `main...impl/core-dual-board-poc`: implementation branch is ahead and **behind 0** after strict-guard main sync.
 - Plan completion gate: **OPEN** — exact user-local execution plus one human-operated continuous 45-second encounter are still required.
 
 ## Evidence status
 
 | Check | Status | Evidence |
 |---|---|---|
-| Godot/GUT Linux REMOTE_CI preflight | PASS | Godot 4.7.1 + GUT 9.7.1 pins verified in job `96111857702`. |
-| Linux Godot import/parse | PASS | Headless import/parse completed without a parse/load failure. |
-| Linux full GUT suite | PASS | 50/50 tests, 355 assertions, strict GUT log guard PASS. |
+| Godot/GUT Linux REMOTE_CI preflight | PASS | Final job `96114137368` verified Godot 4.7.1 + GUT 9.7.1 on head `f412cc1...`. |
+| Linux Godot import/parse | PASS | Final headless import/parse completed without a parse/load failure. |
+| Linux full GUT suite | PASS | Final head: 50/50 tests, 355 assertions, strict GUT log guard PASS. |
+| strict GUT false-GREEN prevention | PASS | Guard self-test passes; a temporary parse-broken fixture previously proved that GUT could report the remaining suite green while the guard correctly failed CI. Fixture was removed immediately. Guard is now canonical on `main`. |
 | Windows local-validator smoke | PASS | Windows Server 2025 job `96111857573` invoked root `RUN_LOCAL_VALIDATION.cmd --ci`, created a fresh isolated clone, installed pinned Godot/GUT, passed import and the complete GUT suite. |
-| Windows smoke commit identity | PASS | Validator fresh clone reported commit `8a8d3374a58a7a8f03d0a1332fd4449b234d03e4`, equal to the workflow head. |
+| Windows smoke commit identity | PASS | Validator fresh clone reported commit `8a8d3374a58a7a8f03d0a1332fd4449b234d03e4`, equal to the workflow head used for the smoke. Later changes do not touch validator/game/test code. |
 | inactive mode freeze | PASS | Integration tests and automated 45s scenario preserve inactive source state. |
 | LOCK freeze | PASS | Active puzzle source advance count remains unchanged while LOCKED. |
 | Combat Clock during LOCK | PASS | Combat time advances and enemy action fires while puzzle source is LOCKED. |
@@ -42,6 +45,7 @@
 | mode-state UI honesty | PASS | LINE/CHAIN buttons expose LOCKED/RUNNING/SUSPENDED state explicitly. |
 | manual-validation tracker false-PASS guard | PASS | Incomplete or out-of-order validation cannot write PASS evidence; all 10 ordered steps and >=45 seconds are required. |
 | manual-validation UI contract | PASS | Validation controls are hidden normally and expose ordered `NEXT` guidance only in validation mode. |
+| manual evidence persistence contract | PASS | Completed validation writes JSON evidence; incomplete validation refuses to create a PASS evidence file. |
 | automated continuous 45-second encounter | PASS | Deterministic integration test reaches 45.0s in one session and verifies required state/resource transitions. |
 | exact user-local Godot/GUT execution | NOT_RUN | Windows CI proves the validator path works on Windows, but it is not the user's own PC. **Completion blocker.** |
 | human-operated continuous 45-second encounter | NOT_RUN | CI smoke intentionally skips interactive play. **Completion blocker.** |
@@ -94,7 +98,7 @@ The Core POC was re-attacked after tests were green. Verified fixes were added w
 2. **State truth:** blocked Skill use during `RESOLVING`; distinguished queued mode-switch telemetry from an actual switch.
 3. **Timing evidence:** enemy telemetry records scheduled 12/24/36-second timestamps even when simulation ticks are coarse, and now captures active mode/board state for auditable LOCK evidence.
 4. **UI honesty:** mode buttons expose LOCKED/RUNNING/SUSPENDED; Skill controls disable during RESOLVING; manual validation uses ordered on-screen guidance rather than hidden assumptions.
-5. **Governance/validation:** Linux strict GUT guard, isolated Windows validator smoke, pinned Windows console/GUI Godot paths, exact commit evidence, and a single root double-click entry point prevent duplicate/ambiguous validation routes.
+5. **Governance/validation:** strict GUT false-GREEN protection was promoted to `main`; the isolated Windows validator was smoke-tested with pinned console/GUI Godot paths; exact commit evidence and a single root double-click entry point prevent duplicate/ambiguous validation routes.
 
 No automated result substitutes for the two remaining empirical gates: the user's actual Windows execution and the user's actual 45-second interaction.
 
@@ -104,8 +108,9 @@ Observed evidence at this ledger update:
 
 - Linux Godot import/parse: PASS
 - Linux full GUT suite: PASS (50/50, 355 assertions)
+- strict GUT false-GREEN prevention: PASS / canonical on `main`
 - Windows isolated validator smoke: PASS (50/50, 355 assertions)
-- Windows smoke validated exact workflow head: PASS
+- Windows validator pinned Godot/GUT and exact validator-code commit: PASS
 - inactive mode freeze: PASS
 - LOCK freeze: PASS
 - Combat Clock during LOCK: PASS
@@ -120,6 +125,7 @@ Observed evidence at this ledger update:
 - enemy telemetry scheduled time + mode/state context: PASS
 - mode state shown in UI: PASS
 - manual-validation false-PASS guard: PASS
+- manual evidence JSON persistence: PASS
 - automated continuous 45-second scenario: PASS
 - exact user-local Godot/GUT execution: NOT_RUN
 - human-operated continuous 45-second encounter: NOT_RUN
