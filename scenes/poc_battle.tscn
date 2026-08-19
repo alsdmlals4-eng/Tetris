@@ -141,6 +141,23 @@ custom_minimum_size = Vector2(150, 44)
 layout_mode = 2
 text = "Heal T1 — 25"
 
+[node name="ManualValidationStatus" type="Label" parent="Layout"]
+visible = false
+layout_mode = 2
+text = "Manual validation: 0/10 | 0.0/45s | NOT_COMPLETE"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ManualValidationControls" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 1
+
+[node name="RejectedSkillButton" type="Button" parent="Layout/ManualValidationControls"]
+visible = false
+custom_minimum_size = Vector2(300, 42)
+layout_mode = 2
+text = "VALIDATION — Attempt unavailable T5"
+
 [node name="EventStatus" type="Label" parent="Layout"]
 layout_mode = 2
 text = "Event: none"
