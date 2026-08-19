@@ -44,3 +44,11 @@ func test_scene_starts_line_locked_and_switch_requires_explicit_run() -> void:
     scene._on_run_lock_pressed()
     scene.session.tick(1.0)
     assert_eq(scene.session.chain_source.advance_count, 1)
+
+func test_next_enemy_action_is_visible_in_hud() -> void:
+    var scene = _instantiate_scene()
+    if scene == null:
+        return
+    await get_tree().process_frame
+    var next_label: Label = scene.get_node("Layout/HUD/NextAction")
+    assert_true(next_label.text.contains("attack 40"))
