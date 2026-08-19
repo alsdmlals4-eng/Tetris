@@ -53,9 +53,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          godot --version
+          godot --version | grep -q "^${GODOT_VERSION}\.stable"
           test -f addons/gut/gut_cmdln.gd
-          grep -q "config_version" addons/gut/plugin.cfg
+          grep -q "version=\"${GUT_VERSION}\"" addons/gut/plugin.cfg
 
       - name: Import and parse project
         shell: bash
