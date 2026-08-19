@@ -12,6 +12,7 @@ $GodotTag = '4.7.1-stable'
 $GutVersion = '9.7.1'
 $GodotArchiveName = "Godot_v$GodotVersion-stable_win64.exe.zip"
 $GodotExeName = "Godot_v$GodotVersion-stable_win64.exe"
+$GodotConsoleExeName = "Godot_v$GodotVersion-stable_win64_console.exe"
 $GodotUrl = "https://github.com/godotengine/godot/releases/download/$GodotTag/$GodotArchiveName"
 $GutUrl = "https://github.com/bitwes/Gut/archive/refs/tags/v$GutVersion.zip"
 
@@ -93,8 +94,12 @@ if (-not (Test-Path -LiteralPath $GodotDir)) {
     Expand-Archive -LiteralPath $GodotZip -DestinationPath $GodotDir -Force
 }
 $GodotExe = Join-Path $GodotDir $GodotExeName
+$GodotConsoleExe = Join-Path $GodotDir $GodotConsoleExeName
 if (-not (Test-Path -LiteralPath $GodotExe)) {
-    throw "Pinned Godot executable not found after extraction: $GodotExe"
+    throw "Pinned Godot GUI executable not found after extraction: $GodotExe"
+}
+if (-not (Test-Path -LiteralPath $GodotConsoleExe)) {
+    throw "Pinned Godot console executable not found after extraction: $GodotConsoleExe"
 }
 
 Download-IfMissing $GutUrl $GutZip
@@ -115,7 +120,7 @@ if (Test-Path -LiteralPath $ProjectGut) {
 }
 Copy-Item -LiteralPath $GutSource -Destination $ProjectGut -Recurse -Force
 
-$GodotVersionOutput = (& $GodotExe --version 2>&1 | Out-String).Trim()
+$GodotVersionOutput = (& $GodotConsoleExe --version 2>&1 | Out-String).Trim()
 if ($LASTEXITCODE -ne 0 -or -not $GodotVersionOutput.StartsWith("$GodotVersion.stable")) {
     throw "Godot version mismatch. Observed: $GodotVersionOutput"
 }
@@ -128,7 +133,7 @@ Write-Host "Godot observed  : $GodotVersionOutput"
 Write-Host "GUT observed    : $GutVersion"
 
 Write-Step '3/6 Godot import / parse'
-& $GodotExe --headless --path $ProjectDir --editor --quit *> $ImportLog
+& $GodotConsoleExe --headless --path $ProjectDir --editor --quit *> $ImportLog
 $ImportExit = $LASTEXITCODE
 Get-Content -LiteralPath $ImportLog
 if ($ImportExit -ne 0) {
@@ -137,7 +142,7 @@ if ($ImportExit -ne 0) {
 Write-Host '[LOCAL_IMPORT] PASS'
 
 Write-Step '4/6 Full GUT suite + strict collection guard'
-& $GodotExe --headless --path $ProjectDir -s 'addons/gut/gut_cmdln.gd' '-gdir=res://tests' '-ginclude_subdirs' '-gexit' *> $GutLog
+& $GodotConsoleExe --headless --path $ProjectDir -s 'addons/gut/gut_cmdln.gd' '-gdir=res://tests' '-ginclude_subdirs' '-gexit' *> $GutLog
 $GutExit = $LASTEXITCODE
 Get-Content -LiteralPath $GutLog
 $BadPatterns = @(
