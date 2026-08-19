@@ -3,6 +3,7 @@ name: core-poc-ci
 on:
   push:
     branches:
+      - main
       - impl/core-dual-board-poc
   pull_request:
   workflow_dispatch:
@@ -63,7 +64,7 @@ jobs:
           if [[ -f project.godot ]]; then
             godot --headless --path . --editor --quit
           else
-            echo "project.godot not created yet; Task 1 toolchain preflight only."
+            echo "project.godot not created yet; toolchain preflight only."
           fi
 
       - name: Run GUT suite
@@ -73,5 +74,5 @@ jobs:
           if [[ -f project.godot ]] && find tests -type f -name 'test_*.gd' -print -quit 2>/dev/null | grep -q .; then
             godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
           else
-            echo "No runnable GUT tests yet; Task 1 toolchain preflight only."
+            echo "No runnable GUT tests yet; toolchain preflight only."
           fi
