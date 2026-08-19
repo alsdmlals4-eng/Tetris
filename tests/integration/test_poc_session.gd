@@ -86,3 +86,17 @@ func test_line_and_chain_events_are_logged_with_combat_time() -> void:
     assert_true(session.submit_line_clear(1))
     assert_eq(session.telemetry.events[-1].name, &"line_clear")
     assert_almost_eq(session.telemetry.events[-1].time, 2.0, 0.001)
+
+func test_enemy_telemetry_uses_scheduled_times_even_with_coarse_tick() -> void:
+    var session = _session()
+    if session == null:
+        return
+    session.tick(45.0)
+    var enemy_events: Array = []
+    for event in session.telemetry.events:
+        if event.name == &"enemy_action":
+            enemy_events.append(event)
+    assert_eq(enemy_events.size(), 3)
+    assert_almost_eq(enemy_events[0].time, 12.0, 0.001)
+    assert_almost_eq(enemy_events[1].time, 24.0, 0.001)
+    assert_almost_eq(enemy_events[2].time, 36.0, 0.001)
