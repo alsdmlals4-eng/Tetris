@@ -4,11 +4,18 @@ extends Control
 const PocSessionScript := preload("res://src/core/poc_session.gd")
 const SkillDefinitionScript := preload("res://src/skills/skill_definition.gd")
 const BoardStateScript := preload("res://src/core/board_state.gd")
+const ManualValidationTrackerScript := preload("res://src/validation/manual_validation_tracker.gd")
 
 var session = PocSessionScript.new()
 var attack_skill = SkillDefinitionScript.new(&"attack_t1", &"attack", 1, 15, 25)
 var defense_skill = SkillDefinitionScript.new(&"defense_t1", &"defense", 1, 15, 30)
 var heal_skill = SkillDefinitionScript.new(&"heal_t1", &"heal", 1, 15, 25)
+var rejected_t5_skill = SkillDefinitionScript.new(&"validation_attack_t5", &"attack", 5, 85, 150)
+
+var manual_validation = ManualValidationTrackerScript.new()
+var manual_validation_enabled: bool = OS.get_environment("POC_MANUAL_VALIDATION") == "1"
+var _manual_line_snapshot: int = -1
+var _manual_last_telemetry_count: int = 0
 
 @onready var player_status: Label = $Layout/HUD/PlayerStatus
 @onready var enemy_status: Label = $Layout/HUD/EnemyStatus
@@ -26,6 +33,8 @@ var heal_skill = SkillDefinitionScript.new(&"heal_t1", &"heal", 1, 15, 25)
 @onready var attack_button: Button = $Layout/SkillControls/AttackButton
 @onready var defense_button: Button = $Layout/SkillControls/DefenseButton
 @onready var heal_button: Button = $Layout/SkillControls/HealButton
+@onready var manual_validation_status: Label = $Layout/ManualValidationStatus
+@onready var rejected_skill_button: Button = $Layout/ManualValidationControls/RejectedSkillButton
 @onready var event_status: Label = $Layout/EventStatus
 
 func _ready() -> void:
@@ -40,28 +49,63 @@ func _ready() -> void:
     attack_button.pressed.connect(_on_attack_pressed)
     defense_button.pressed.connect(_on_defense_pressed)
     heal_button.pressed.connect(_on_heal_pressed)
+    rejected_skill_button.pressed.connect(_on_validation_rejected_skill_pressed)
+    manual_validation_status.visible = manual_validation_enabled
+    rejected_skill_button.visible = manual_validation_enabled
+    _manual_last_telemetry_count = session.telemetry.events.size()
     _refresh_ui()
 
 func _process(delta: float) -> void:
     session.tick(delta)
+    if manual_validation_enabled:
+        manual_validation.update_elapsed(session.combat.combat_time)
+        _observe_manual_enemy_actions()
     _refresh_ui()
 
 func _on_line_mode_pressed() -> void:
-    if session.modes.active_mode != &"line":
-        session.switch_mode(&"line")
+    var previous_mode: StringName = session.modes.active_mode
+    var accepted := false
+    if previous_mode != &"line":
+        accepted = session.switch_mode(&"line")
+    if manual_validation_enabled and accepted and previous_mode == &"chain" and manual_validation.enemy_during_lock:
+        manual_validation.record_line_return_preserved(
+            session.combat.combat_time,
+            _manual_line_snapshot,
+            session.line_source.advance_count
+        )
     _refresh_ui()
 
 func _on_chain_mode_pressed() -> void:
-    if session.modes.active_mode != &"chain":
-        session.switch_mode(&"chain")
+    var previous_mode: StringName = session.modes.active_mode
+    var accepted := false
+    if previous_mode != &"chain":
+        accepted = session.switch_mode(&"chain")
+    if manual_validation_enabled and accepted and previous_mode == &"line" and session.modes.chain_state == BoardStateScript.LOCKED:
+        manual_validation.record_chain_switch_locked(
+            session.combat.combat_time,
+            session.line_source.advance_count
+        )
     _refresh_ui()
 
 func _on_run_lock_pressed() -> void:
-    var active_state: int = session.modes.state_for(session.modes.active_mode)
+    var active_mode: StringName = session.modes.active_mode
+    var active_state: int = session.modes.state_for(active_mode)
+    var accepted := false
     if active_state == BoardStateScript.RUNNING:
-        session.lock_active()
+        accepted = session.lock_active()
+        if manual_validation_enabled and accepted and active_mode == &"line" and not manual_validation.line_lock:
+            _manual_line_snapshot = session.line_source.advance_count
+            manual_validation.record_line_lock(
+                session.combat.combat_time,
+                _manual_line_snapshot
+            )
     elif active_state == BoardStateScript.LOCKED:
-        session.run_active()
+        accepted = session.run_active()
+        if manual_validation_enabled and accepted:
+            if active_mode == &"line" and not manual_validation.line_run:
+                manual_validation.record_line_run(session.combat.combat_time)
+            elif active_mode == &"chain":
+                manual_validation.record_chain_run(session.combat.combat_time)
     _refresh_ui()
 
 func _on_debug_1_pressed() -> void:
@@ -80,24 +124,52 @@ func _on_debug_5_pressed() -> void:
     _submit_debug_event(5)
 
 func _on_attack_pressed() -> void:
-    session.use_skill(attack_skill)
-    _refresh_ui()
+    _use_skill(attack_skill)
 
 func _on_defense_pressed() -> void:
-    session.use_skill(defense_skill)
-    _refresh_ui()
+    _use_skill(defense_skill)
 
 func _on_heal_pressed() -> void:
-    session.use_skill(heal_skill)
+    _use_skill(heal_skill)
+
+func _on_validation_rejected_skill_pressed() -> void:
+    var accepted: bool = session.use_skill(rejected_t5_skill)
+    if manual_validation_enabled and not accepted:
+        manual_validation.record_skill_rejected(session.combat.combat_time)
+    _refresh_ui()
+
+func _use_skill(skill) -> void:
+    var accepted: bool = session.use_skill(skill)
+    if manual_validation_enabled and accepted:
+        manual_validation.record_skill_success(session.combat.combat_time)
     _refresh_ui()
 
 func _submit_debug_event(value: int) -> void:
     if session.modes.active_mode == &"line":
         if value <= 4:
-            session.submit_line_clear(value)
+            var energy_before: int = session.combat.energy
+            var accepted: bool = session.submit_line_clear(value)
+            if manual_validation_enabled and accepted:
+                manual_validation.record_line_energy(
+                    session.combat.combat_time,
+                    session.combat.energy - energy_before
+                )
     else:
-        session.submit_completed_chain(value, value * 4)
+        var accepted: bool = session.submit_completed_chain(value, value * 4)
+        if manual_validation_enabled and accepted:
+            manual_validation.record_chain_complete(session.combat.combat_time, value)
     _refresh_ui()
+
+func _observe_manual_enemy_actions() -> void:
+    var events: Array = session.telemetry.events
+    for index in range(_manual_last_telemetry_count, events.size()):
+        var event: Dictionary = events[index]
+        if event.get("name", &"") != &"enemy_action":
+            continue
+        var active_state: int = session.modes.state_for(session.modes.active_mode)
+        if active_state == BoardStateScript.LOCKED:
+            manual_validation.record_enemy_during_lock(float(event.get("time", session.combat.combat_time)))
+    _manual_last_telemetry_count = events.size()
 
 func _refresh_ui() -> void:
     if not is_node_ready():
@@ -165,20 +237,56 @@ func _refresh_ui() -> void:
         debug_5.text = "5 Chain"
 
     var can_t1: bool = session.combat.can_spend_skill(1, 15)
-    var skill_window_open: bool = (
-        active_state == BoardStateScript.RUNNING
-        or active_state == BoardStateScript.LOCKED
-    )
-    var can_use_t1: bool = can_t1 and skill_window_open
-    attack_button.disabled = not can_use_t1
-    defense_button.disabled = not can_use_t1
-    heal_button.disabled = not can_use_t1
+    var skill_state_allowed: bool = active_state == BoardStateScript.RUNNING or active_state == BoardStateScript.LOCKED
+    var skill_enabled: bool = can_t1 and skill_state_allowed
+    attack_button.disabled = not skill_enabled
+    defense_button.disabled = not skill_enabled
+    heal_button.disabled = not skill_enabled
+
+    manual_validation_status.visible = manual_validation_enabled
+    rejected_skill_button.visible = manual_validation_enabled
+    if manual_validation_enabled:
+        _refresh_manual_validation_status()
 
     if session.telemetry.events.is_empty():
         event_status.text = "Event: none"
     else:
         var latest: Dictionary = session.telemetry.events[-1]
         event_status.text = "Event: %s @ %.1fs" % [String(latest.name), float(latest.time)]
+
+func _refresh_manual_validation_status() -> void:
+    var verdict := "PASS" if manual_validation.is_complete() else "NOT_COMPLETE"
+    manual_validation_status.text = "Manual validation: %d/10 | %.1f/45s | %s | NEXT: %s" % [
+        manual_validation.completed_step_count(),
+        manual_validation.elapsed_seconds,
+        verdict,
+        _manual_next_instruction(),
+    ]
+
+func _manual_next_instruction() -> String:
+    if not manual_validation.line_run:
+        return "RUN Line"
+    if not manual_validation.line_energy:
+        return "Create a Line clear"
+    if not manual_validation.line_lock:
+        return "LOCK Line"
+    if not manual_validation.chain_switch_locked:
+        return "Switch to Chain"
+    if not manual_validation.chain_run:
+        return "RUN Chain"
+    if not manual_validation.chain_complete:
+        return "Complete a Chain"
+    if not manual_validation.skill_success:
+        return "Use an available T1 Skill"
+    if not manual_validation.skill_rejected:
+        return "Attempt unavailable T5"
+    if not manual_validation.enemy_during_lock:
+        return "LOCK and wait for enemy action"
+    if not manual_validation.line_return_preserved:
+        return "Switch back to Line"
+    if manual_validation.elapsed_seconds < 45.0:
+        return "Keep the encounter open until 45s"
+    return "Close window; evidence is complete"
 
 func _state_name(state: int) -> String:
     match state:
