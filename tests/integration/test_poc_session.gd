@@ -100,3 +100,15 @@ func test_enemy_telemetry_uses_scheduled_times_even_with_coarse_tick() -> void:
     assert_almost_eq(enemy_events[0].time, 12.0, 0.001)
     assert_almost_eq(enemy_events[1].time, 24.0, 0.001)
     assert_almost_eq(enemy_events[2].time, 36.0, 0.001)
+
+func test_enemy_telemetry_records_active_mode_and_board_state() -> void:
+    var session = _session()
+    if session == null:
+        return
+    assert_true(session.switch_mode(&"chain"))
+    assert_eq(session.modes.chain_state, BoardState.LOCKED)
+    session.tick(12.0)
+    var enemy_event: Dictionary = session.telemetry.events[-1]
+    assert_eq(enemy_event.name, &"enemy_action")
+    assert_eq(enemy_event.payload.active_mode, &"chain")
+    assert_eq(enemy_event.payload.mode_state, BoardState.LOCKED)
