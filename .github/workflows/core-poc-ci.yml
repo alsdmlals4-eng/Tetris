@@ -57,6 +57,12 @@ jobs:
           test -f addons/gut/gut_cmdln.gd
           grep -q "version=\"${GUT_VERSION}\"" addons/gut/plugin.cfg
 
+      - name: Test strict GUT log guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash tools/ci/test_assert_gut_log_clean.sh
+
       - name: Import and parse project
         shell: bash
         run: |
@@ -72,7 +78,15 @@ jobs:
         run: |
           set -euo pipefail
           if [[ -f project.godot ]] && find tests -type f -name 'test_*.gd' -print -quit 2>/dev/null | grep -q .; then
-            godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit
+            gut_log="$RUNNER_TEMP/gut.log"
+            set +e
+            godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit 2>&1 | tee "$gut_log"
+            gut_status=${PIPESTATUS[0]}
+            set -e
+            bash tools/ci/assert_gut_log_clean.sh "$gut_log"
+            if [[ "$gut_status" -ne 0 ]]; then
+              exit "$gut_status"
+            fi
           else
             echo "No runnable GUT tests yet; toolchain preflight only."
           fi
