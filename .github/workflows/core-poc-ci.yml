@@ -24,7 +24,7 @@ jobs:
       GUT_VERSION: 9.7.1
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pinned Godot
         shell: bash
