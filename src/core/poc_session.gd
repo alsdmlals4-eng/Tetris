@@ -42,7 +42,7 @@ func tick(delta: float) -> void:
     _record_terminal_states()
 
 func switch_mode(target_mode: StringName) -> bool:
-    var accepted := modes.request_switch(target_mode)
+    var accepted: bool = modes.request_switch(target_mode)
     _sync_source_states()
     if accepted:
         telemetry.record(&"mode_switch", combat.combat_time, {
@@ -53,26 +53,26 @@ func switch_mode(target_mode: StringName) -> bool:
     return accepted
 
 func run_active() -> bool:
-    var accepted := modes.set_running()
+    var accepted: bool = modes.set_running()
     _sync_source_states()
     if accepted:
         telemetry.record(&"run", combat.combat_time, {"mode": modes.active_mode})
     return accepted
 
 func lock_active() -> bool:
-    var accepted := modes.set_locked()
+    var accepted: bool = modes.set_locked()
     _sync_source_states()
     if accepted:
         telemetry.record(&"lock", combat.combat_time, {"mode": modes.active_mode})
     return accepted
 
 func begin_active_resolution() -> bool:
-    var accepted := modes.begin_resolution()
+    var accepted: bool = modes.begin_resolution()
     _sync_source_states()
     return accepted
 
 func finish_active_resolution() -> bool:
-    var accepted := modes.finish_resolution()
+    var accepted: bool = modes.finish_resolution()
     _sync_source_states()
     return accepted
 
@@ -98,7 +98,7 @@ func submit_completed_chain(chain_count: int, pieces_cleared: int) -> bool:
     return true
 
 func use_skill(skill) -> bool:
-    var accepted := SkillExecutorScript.execute(skill, combat)
+    var accepted: bool = SkillExecutorScript.execute(skill, combat)
     var payload := {
         "id": skill.id if skill != null else &"",
         "role": skill.role if skill != null else &"",
