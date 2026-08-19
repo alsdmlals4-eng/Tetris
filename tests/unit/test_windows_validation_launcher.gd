@@ -16,7 +16,8 @@ func test_windows_validation_launcher_is_double_clickable_and_records_local_evid
 
     assert_true(content.contains("POC_MANUAL_VALIDATION=1"))
     assert_true(content.contains("POC_VALIDATION_REPORT_PATH"))
-    assert_true(content.contains("POC_VALIDATION_GUT_VERSION=9.7.1"))
+    assert_true(content.contains("set \"GUT_VERSION=9.7.1\""))
+    assert_true(content.contains("POC_VALIDATION_GUT_VERSION=%GUT_VERSION%"))
     assert_true(content.contains("POC_VALIDATION_COMMIT"))
     assert_true(content.contains("Tetris_Core_POC_Preflight.txt"))
     assert_true(content.contains("Tetris_Core_POC_Validation.json"))
