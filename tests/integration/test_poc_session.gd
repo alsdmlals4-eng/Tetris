@@ -47,6 +47,36 @@ func test_rejected_skill_preserves_resources_and_is_logged() -> void:
     assert_eq(session.combat.chain_stock, 1)
     assert_eq(session.telemetry.events[-1].name, &"skill_rejected")
 
+func test_skill_is_rejected_during_resolution_without_mutation() -> void:
+    var session = _session()
+    var definition = _skill_definition()
+    if session == null or definition == null:
+        return
+    session.combat.energy = 15
+    session.combat.chain_stock = 1
+    assert_true(session.run_active())
+    assert_true(session.begin_active_resolution())
+    var attack = definition.new(&"attack_t1", &"attack", 1, 15, 25)
+    assert_false(session.use_skill(attack))
+    assert_eq(session.combat.energy, 15)
+    assert_eq(session.combat.chain_stock, 1)
+    assert_eq(session.combat.enemy_hp, 300)
+    assert_eq(session.telemetry.events[-1].name, &"skill_rejected")
+
+func test_queued_switch_logs_queue_then_actual_switch_after_resolution() -> void:
+    var session = _session()
+    if session == null:
+        return
+    assert_true(session.run_active())
+    assert_true(session.begin_active_resolution())
+    assert_true(session.switch_mode(&"chain"))
+    assert_eq(session.modes.active_mode, &"line")
+    assert_eq(session.telemetry.events[-1].name, &"mode_switch_queued")
+    assert_true(session.finish_active_resolution())
+    assert_eq(session.modes.active_mode, &"chain")
+    assert_eq(session.telemetry.events[-1].name, &"mode_switch")
+    assert_eq(session.telemetry.events[-1].payload.target, &"chain")
+
 func test_line_and_chain_events_are_logged_with_combat_time() -> void:
     var session = _session()
     if session == null:
