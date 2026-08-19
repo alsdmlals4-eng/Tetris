@@ -38,7 +38,10 @@ func tick(delta: float) -> void:
     chain_source.advance(delta)
     var enemy_events: Array = enemy_pattern.process_due(combat)
     for event in enemy_events:
-        telemetry.record(&"enemy_action", float(event.get("time", combat.combat_time)), event)
+        var telemetry_event: Dictionary = event.duplicate(true)
+        telemetry_event["active_mode"] = modes.active_mode
+        telemetry_event["mode_state"] = modes.state_for(modes.active_mode)
+        telemetry.record(&"enemy_action", float(event.get("time", combat.combat_time)), telemetry_event)
     _record_terminal_states()
 
 func switch_mode(target_mode: StringName) -> bool:
