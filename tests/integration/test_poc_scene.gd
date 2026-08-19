@@ -1,6 +1,6 @@
 extends GutTest
 
-func _instantiate_scene():
+func _instantiate_scene(manual_validation := false):
     var packed := load("res://scenes/poc_battle.tscn")
     assert_not_null(packed)
     if packed == null:
@@ -8,6 +8,8 @@ func _instantiate_scene():
     var scene = packed.instantiate()
     assert_not_null(scene)
     if scene != null:
+        if manual_validation:
+            scene.manual_validation_enabled = true
         add_child_autofree(scene)
     return scene
 
@@ -27,6 +29,8 @@ func test_poc_scene_instantiates_with_required_controls() -> void:
     assert_not_null(scene.get_node("Layout/SkillControls/AttackButton"))
     assert_not_null(scene.get_node("Layout/SkillControls/DefenseButton"))
     assert_not_null(scene.get_node("Layout/SkillControls/HealButton"))
+    assert_not_null(scene.get_node("Layout/ManualValidationStatus"))
+    assert_not_null(scene.get_node("Layout/ManualValidationControls/RejectedSkillButton"))
 
 func test_scene_starts_line_locked_and_switch_requires_explicit_run() -> void:
     var scene = _instantiate_scene()
@@ -80,3 +84,57 @@ func test_skill_buttons_are_disabled_during_resolution() -> void:
     assert_true(scene.attack_button.disabled)
     assert_true(scene.defense_button.disabled)
     assert_true(scene.heal_button.disabled)
+
+func test_manual_validation_controls_are_hidden_in_normal_poc() -> void:
+    var scene = _instantiate_scene()
+    if scene == null:
+        return
+    await get_tree().process_frame
+    assert_false(scene.manual_validation_status.visible)
+    assert_false(scene.rejected_skill_button.visible)
+
+func test_manual_validation_ui_tracks_human_button_contract_to_pass() -> void:
+    var scene = _instantiate_scene(true)
+    if scene == null:
+        return
+    await get_tree().process_frame
+
+    assert_true(scene.manual_validation_status.visible)
+    assert_true(scene.rejected_skill_button.visible)
+    assert_true(scene.manual_validation_status.text.contains("0/10"))
+
+    scene._on_run_lock_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 1)
+
+    scene._on_debug_2_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 2)
+
+    scene._on_run_lock_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 3)
+
+    scene._on_chain_mode_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 4)
+
+    scene._on_run_lock_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 5)
+
+    scene._on_debug_3_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 6)
+
+    scene._on_attack_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 7)
+
+    scene._on_validation_rejected_skill_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 8)
+
+    scene._on_run_lock_pressed()
+    scene._process(12.0)
+    assert_eq(scene.manual_validation.completed_step_count(), 9)
+
+    scene._on_line_mode_pressed()
+    assert_eq(scene.manual_validation.completed_step_count(), 10)
+    assert_false(scene.manual_validation.is_complete())
+
+    scene._process(33.0)
+    assert_true(scene.manual_validation.is_complete())
+    assert_true(scene.manual_validation_status.text.contains("PASS"))
