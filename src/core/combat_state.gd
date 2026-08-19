@@ -32,8 +32,11 @@ func tick(delta: float) -> void:
         _energy_recovery_accumulator = 0.0
 
 func gain_energy(amount: int) -> void:
-    if amount > 0:
-        energy += amount
+    if amount <= 0:
+        return
+    energy += amount
+    if energy >= EMERGENCY_ENERGY_FLOOR:
+        _energy_recovery_accumulator = 0.0
 
 func add_score(amount: int) -> void:
     if amount > 0:
@@ -53,6 +56,8 @@ func can_spend_skill(tier: int, energy_cost: int) -> bool:
 func spend_skill(tier: int, energy_cost: int) -> bool:
     if not can_spend_skill(tier, energy_cost):
         return false
+    if energy >= EMERGENCY_ENERGY_FLOOR:
+        _energy_recovery_accumulator = 0.0
     energy -= energy_cost
     chain_stock -= tier
     return true
