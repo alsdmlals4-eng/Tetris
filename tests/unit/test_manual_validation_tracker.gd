@@ -56,7 +56,7 @@ func test_report_contains_machine_readable_verdict_and_environment() -> void:
     tracker.record_line_return_preserved(14.0, 2, 2)
     tracker.update_elapsed(45.0)
 
-    var report := tracker.build_report("4.7.1.stable", "9.7.1", "abc123")
+    var report: Dictionary = tracker.build_report("4.7.1.stable", "9.7.1", "abc123")
     assert_eq(report.verdict, "PASS")
     assert_eq(report.godot_version, "4.7.1.stable")
     assert_eq(report.gut_version, "9.7.1")
