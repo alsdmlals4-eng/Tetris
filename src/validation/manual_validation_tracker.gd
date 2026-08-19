@@ -120,3 +120,13 @@ func build_report(godot_version: String, gut_version: String, commit: String) ->
         },
         "step_times": _step_times.duplicate(true),
     }
+
+func write_report(path: String, godot_version: String, gut_version: String, commit: String) -> bool:
+    if not is_complete() or path.is_empty():
+        return false
+    var file := FileAccess.open(path, FileAccess.WRITE)
+    if file == null:
+        return false
+    file.store_string(JSON.stringify(build_report(godot_version, gut_version, commit), "\t"))
+    file.close()
+    return true
