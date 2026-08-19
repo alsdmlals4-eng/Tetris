@@ -90,3 +90,17 @@ jobs:
           else
             echo "No runnable GUT tests yet; toolchain preflight only."
           fi
+
+  windows-local-validator-smoke:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    env:
+      POC_VALIDATION_BRANCH: impl/core-dual-board-poc
+      POC_VALIDATION_ROOT: ${{ runner.temp }}\TetrisCorePocValidation
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run isolated Windows validator in CI mode
+        shell: cmd
+        run: call RUN_LOCAL_VALIDATION.cmd --ci
