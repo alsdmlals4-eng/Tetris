@@ -93,11 +93,18 @@ func test_manual_validation_controls_are_hidden_in_normal_poc() -> void:
     assert_false(scene.manual_validation_status.visible)
     assert_false(scene.rejected_skill_button.visible)
 
-func test_manual_validation_ui_tracks_human_button_contract_to_pass() -> void:
+func test_manual_validation_ui_tracks_human_button_contract_to_pass_and_saves_report() -> void:
     var scene = _instantiate_scene(true)
     if scene == null:
         return
     await get_tree().process_frame
+
+    var report_path := "user://manual_validation_scene_test.json"
+    if FileAccess.file_exists(report_path):
+        DirAccess.remove_absolute(ProjectSettings.globalize_path(report_path))
+    scene.manual_validation_report_path = report_path
+    scene.manual_validation_gut_version = "9.7.1"
+    scene.manual_validation_commit = "abc123"
 
     assert_true(scene.manual_validation_status.visible)
     assert_true(scene.rejected_skill_button.visible)
@@ -134,7 +141,20 @@ func test_manual_validation_ui_tracks_human_button_contract_to_pass() -> void:
     scene._on_line_mode_pressed()
     assert_eq(scene.manual_validation.completed_step_count(), 10)
     assert_false(scene.manual_validation.is_complete())
+    assert_false(FileAccess.file_exists(report_path))
 
     scene._process(33.0)
     assert_true(scene.manual_validation.is_complete())
     assert_true(scene.manual_validation_status.text.contains("PASS"))
+    assert_true(FileAccess.file_exists(report_path))
+
+    var file := FileAccess.open(report_path, FileAccess.READ)
+    assert_not_null(file)
+    if file != null:
+        var parsed = JSON.parse_string(file.get_as_text())
+        assert_typeof(parsed, TYPE_DICTIONARY)
+        if typeof(parsed) == TYPE_DICTIONARY:
+            assert_eq(parsed.get("verdict"), "PASS")
+            assert_eq(parsed.get("gut_version"), "9.7.1")
+            assert_eq(parsed.get("commit"), "abc123")
+    DirAccess.remove_absolute(ProjectSettings.globalize_path(report_path))
