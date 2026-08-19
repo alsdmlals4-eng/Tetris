@@ -1,0 +1,78 @@
+name: core-poc-ci
+
+on:
+  push:
+    branches:
+      - main
+      - impl/core-dual-board-poc
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: core-poc-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  godot-validation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GODOT_VERSION: 4.7.1
+      GUT_VERSION: 9.7.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pinned Godot
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip" \
+            -o "$RUNNER_TEMP/godot.zip"
+          unzip -q "$RUNNER_TEMP/godot.zip" -d "$RUNNER_TEMP/godot"
+          mv "$RUNNER_TEMP/godot/Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$RUNNER_TEMP/godot/godot"
+          chmod +x "$RUNNER_TEMP/godot/godot"
+          echo "$RUNNER_TEMP/godot" >> "$GITHUB_PATH"
+
+      - name: Install pinned GUT
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 3 \
+            "https://github.com/bitwes/Gut/archive/refs/tags/v${GUT_VERSION}.zip" \
+            -o "$RUNNER_TEMP/gut.zip"
+          unzip -q "$RUNNER_TEMP/gut.zip" -d "$RUNNER_TEMP"
+          mkdir -p addons
+          cp -R "$RUNNER_TEMP/Gut-${GUT_VERSION}/addons/gut" addons/gut
+
+      - name: Verify toolchain pins
+        shell: bash
+        run: |
+          set -euo pipefail
+          godot --version
+          test -f addons/gut/gut_cmdln.gd
+          grep -q "config_version" addons/gut/plugin.cfg
+
+      - name: Import and parse project
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f project.godot ]]; then
+            godot --headless --path . --editor --quit
+          else
+            echo "project.godot not created yet; toolchain preflight only."
+          fi
+
+      - name: Run GUT suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f project.godot ]] && find tests -type f -name 'test_*.gd' -print -quit 2>/dev/null | grep -q .; then
+            godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -gexit
+          else
+            echo "No runnable GUT tests yet; toolchain preflight only."
+          fi
