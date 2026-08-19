@@ -1,0 +1,153 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ui/poc_battle.gd" id="1_ui"]
+
+[node name="PocBattle" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ui")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Layout"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Dual-Board Combat Core POC"
+horizontal_alignment = 1
+
+[node name="Notice" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Debug event-source POC — production Line/Chain puzzle feel is not represented here."
+horizontal_alignment = 1
+
+[node name="HUD" type="GridContainer" parent="Layout"]
+layout_mode = 2
+columns = 2
+
+[node name="PlayerStatus" type="Label" parent="Layout/HUD"]
+layout_mode = 2
+text = "Player"
+
+[node name="EnemyStatus" type="Label" parent="Layout/HUD"]
+layout_mode = 2
+text = "Enemy"
+
+[node name="NextAction" type="Label" parent="Layout/HUD"]
+layout_mode = 2
+text = "Next"
+
+[node name="ResourceStatus" type="Label" parent="Layout/HUD"]
+layout_mode = 2
+text = "Resources"
+
+[node name="ModeStatus" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Active: LINE   State: LOCKED"
+horizontal_alignment = 1
+
+[node name="ModeControls" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="LineButton" type="Button" parent="Layout/ModeControls"]
+custom_minimum_size = Vector2(190, 44)
+layout_mode = 2
+text = "LINE — Energy 0"
+
+[node name="ChainButton" type="Button" parent="Layout/ModeControls"]
+custom_minimum_size = Vector2(190, 44)
+layout_mode = 2
+text = "CHAIN — Stock 0"
+
+[node name="RunLockButton" type="Button" parent="Layout/ModeControls"]
+custom_minimum_size = Vector2(120, 44)
+layout_mode = 2
+text = "RUN"
+
+[node name="ActiveModeHint" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Active puzzle event controls"
+horizontal_alignment = 1
+
+[node name="DebugControls" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 8
+
+[node name="Debug1" type="Button" parent="Layout/DebugControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Single"
+
+[node name="Debug2" type="Button" parent="Layout/DebugControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Double"
+
+[node name="Debug3" type="Button" parent="Layout/DebugControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "Triple"
+
+[node name="Debug4" type="Button" parent="Layout/DebugControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+text = "4-Line"
+
+[node name="Debug5" type="Button" parent="Layout/DebugControls"]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+visible = false
+text = "5 Chain"
+
+[node name="SkillHint" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Tier 1 Skills — require Energy 15 + Chain Stock 1"
+horizontal_alignment = 1
+
+[node name="SkillControls" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="AttackButton" type="Button" parent="Layout/SkillControls"]
+custom_minimum_size = Vector2(150, 44)
+layout_mode = 2
+text = "Attack T1 — 25"
+
+[node name="DefenseButton" type="Button" parent="Layout/SkillControls"]
+custom_minimum_size = Vector2(150, 44)
+layout_mode = 2
+text = "Defense T1 — 30"
+
+[node name="HealButton" type="Button" parent="Layout/SkillControls"]
+custom_minimum_size = Vector2(150, 44)
+layout_mode = 2
+text = "Heal T1 — 25"
+
+[node name="EventStatus" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Event: none"
+horizontal_alignment = 1
+
+[node name="Help" type="Label" parent="Layout"]
+layout_mode = 2
+text = "Switching modes freezes the inactive source. RUN/LOCK affects puzzle progression only; enemy Combat Clock keeps moving."
+horizontal_alignment = 1
+autowrap_mode = 2

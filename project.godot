@@ -4,6 +4,7 @@ config_version=5
 
 [application]
 config/name="Dual Board Combat POC"
+run/main_scene="res://scenes/poc_battle.tscn"
 
 [display]
 window/size/viewport_width=960
