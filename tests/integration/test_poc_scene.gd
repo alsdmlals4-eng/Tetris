@@ -52,3 +52,31 @@ func test_next_enemy_action_is_visible_in_hud() -> void:
     await get_tree().process_frame
     var next_label: Label = scene.get_node("Layout/HUD/NextAction")
     assert_true(next_label.text.contains("attack 40"))
+
+func test_mode_buttons_show_locked_running_and_suspended_states() -> void:
+    var scene = _instantiate_scene()
+    if scene == null:
+        return
+    await get_tree().process_frame
+    assert_true(scene.line_button.text.contains("LOCKED"))
+    assert_true(scene.chain_button.text.contains("SUSPENDED"))
+    scene._on_run_lock_pressed()
+    assert_true(scene.line_button.text.contains("RUNNING"))
+    assert_true(scene.chain_button.text.contains("SUSPENDED"))
+    scene._on_chain_mode_pressed()
+    assert_true(scene.line_button.text.contains("SUSPENDED"))
+    assert_true(scene.chain_button.text.contains("LOCKED"))
+
+func test_skill_buttons_are_disabled_during_resolution() -> void:
+    var scene = _instantiate_scene()
+    if scene == null:
+        return
+    await get_tree().process_frame
+    scene.session.combat.energy = 15
+    scene.session.combat.chain_stock = 1
+    scene.session.run_active()
+    assert_true(scene.session.begin_active_resolution())
+    scene._refresh_ui()
+    assert_true(scene.attack_button.disabled)
+    assert_true(scene.defense_button.disabled)
+    assert_true(scene.heal_button.disabled)
