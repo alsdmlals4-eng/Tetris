@@ -106,7 +106,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("TETRIS-TIME-025", time_canon)
         self.assertIn("shared", time_canon.lower())
         self.assertIn("Tempo Bonus", time_canon)
-        self.assertIn("bonus reference", time_canon.lower())
+        self.assertIn("tempo reference", time_canon.lower())
         self.assertIn("NOT_PRESENT", time_canon)
 
 
