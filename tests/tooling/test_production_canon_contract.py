@@ -81,7 +81,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertTrue(turn_time["early_finish"])
         self.assertEqual(turn_time["early_finish_reward"], "TEMPO_BONUS")
         self.assertFalse(turn_time["settle_consumes_budget"])
-        self.assertFalse(turn_time["modifier_changes_bonus_reference"])
+        self.assertFalse(turn_time["modifier_changes_tempo_reference"])
         self.assertFalse(turn_time["unused_time_banks_to_future_turn"])
 
     def test_human_entrypoints_point_to_current_production_canons(self) -> None:
