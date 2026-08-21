@@ -6,8 +6,10 @@ Read current production gameplay in this order:
 
 1. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — current production turn/phase authority.
 2. Latest USER_APPROVED project Decisions in GitHub Issue #10 and synced Notion owner pages.
-3. Production implementation plan created for the approved canon.
+3. `docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md` — current production implementation plan. **Do not execute it until the explicit BUILD gate in that plan is satisfied.**
 4. Actual code/data/scenes/tests/runtime evidence.
+
+Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
 Historical Core POC authorities:
 
