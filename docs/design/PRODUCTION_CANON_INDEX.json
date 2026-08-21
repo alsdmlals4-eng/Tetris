@@ -67,7 +67,7 @@
     "snapshot_at_turn_start": true,
     "modifier_model": "FLAT_SECONDS_WITH_STACK_GROUPS_FIRST",
     "modifier_sources": ["DIFFICULTY", "ITEM", "EQUIPMENT", "SUPPORT", "STATUS", "ENCOUNTER"],
-    "modifier_changes_bonus_reference": false,
+    "modifier_changes_tempo_reference": false,
     "tempo_reference_model": "UNMODIFIED_PERFORMANCE_REFERENCE",
     "tempo_requires_line_qualification": true,
     "tempo_requires_chain_qualification": true,
