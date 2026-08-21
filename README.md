@@ -8,9 +8,9 @@
 
 ```text
 적 행동예고
-→ Line/Tetris Phase: 제한시간 동안 Energy 획득
-→ Swap-Match Chain Phase: 제한시간 동안 Chain Stock / Tier 준비
-→ Action Phase: Attack / Defense / Support × Tier 1–6 중 행동 선택·발동
+→ Line/Tetris: Energy 준비
+→ Swap-Match Chain: Chain Stock / Tier 준비
+→ Action: Attack / Defense / Support × Tier 1–6 중 행동 선택·발동
 → 적 행동 발동
 → 다음 적 행동예고
 → 반복
@@ -20,16 +20,24 @@
 
 - Line은 Energy 준비를 담당합니다.
 - Chain은 production **Swap-Match** 퍼즐이며 Chain Stock / Skill Tier 준비를 담당합니다.
-- Line / Chain / Action은 각각 독립된 data-driven 제한시간을 가집니다.
-- 첫 Vertical Slice의 시작 튜닝 후보는 `30s / 30s / 30s` maximum이며 최종값은 아닙니다.
-- 플레이어는 합법적인 시점에 `NEXT / READY`로 각 Phase를 일찍 끝낼 수 있고, 남은 시간은 이월되지 않습니다.
-- Chain 시간 종료 시 새 Swap은 금지되지만 이미 시작된 cascade는 stable까지 마무리한 뒤 보상을 확정하고 Action Phase로 이동합니다.
+- `TETRIS-TIME-025`부터 Line / Chain / Action은 **하나의 shared player-turn time budget**을 공동 소비합니다.
+- Enemy Telegraph, Line/Chain settle, 강제 애니메이션/전환, Enemy Resolve, System Pause는 이 플레이어 입력 시간을 소비하지 않습니다.
+- 플레이어는 합법적인 안정 상태에서 `READY`로 Line/Chain을 조기 종료할 수 있고, 남은 시간은 다음 player stage로 그대로 이어집니다.
+- Action을 확정하면 공유 타이머가 즉시 정지하고, 의미 있는 Line+Chain 성과를 낸 뒤 빠르게 완료한 턴은 남은 성과 기준에 따라 **Tempo Bonus**를 받을 수 있습니다.
+- Tempo 평가는 실제 사용 가능 시간과 별도의 unmodified performance reference를 사용하므로 Haste/아이템/쉬운 난이도로 시간을 늘린 것만으로 보상이 부풀지 않습니다.
+- 난이도·아이템/장비·Support Haste·상태이상 Slow·명시적 encounter effect는 하나의 data-driven turn-budget modifier pipeline으로 처리합니다.
+- 첫 migration 비교 seed는 이전 `30s / 30s / 30s` 총합과 동일한 90초 ceiling을 사용할 수 있지만 최종값은 아니며, 더 짧은 총시간/난이도별 값은 runtime·human evidence로 비교합니다.
+- 공유 시간이 0이 되면 현재 퍼즐의 이미 커밋된 settle만 끝내고 남은 player-input stage는 사용할 수 없으며 `PASS` fallback으로 적 행동까지 진행해 deadlock을 막습니다.
+- Chain 입력 종료 시 새 Swap은 금지되지만 이미 시작된 cascade는 stable까지 마무리한 뒤 보상을 확정합니다.
 - 플레이어 행동이 먼저 발동한 뒤, 턴 시작에 예고된 적 행동이 발동합니다.
-- 행동 선택 시간이 끝날 때까지 선택하지 않으면 `PASS` 처리 후 적 행동으로 넘어가며 게임이 멈추지 않습니다.
-- 기존의 항상 흐르는 적 Combat Clock과 자유 Line↔Chain 전환 / Tactical RUN·LOCK은 현재 production turn 구조에서는 사용하지 않습니다.
+- 기존의 항상 흐르는 적 Combat Clock과 자유 Line↔Chain 전환 / Tactical RUN·LOCK / 독립 30/30/30 phase reset은 현재 production turn 구조에서 사용하지 않습니다.
 - Score는 전투 자원이 아니라 performance evidence입니다.
 
-현재 Production 정본은 `docs/design/PRODUCTION_TURN_COMBAT_CANON.md`입니다.
+현재 Production 정본:
+
+1. `docs/design/PRODUCTION_TURN_TIME_CANON.md` — timing / modifier / timeout / Tempo authority.
+2. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — ordered combat turn and remaining non-timing production rules.
+3. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
 
 `docs/design/CORE_GAMEPLAY_GDD.md`, `POC_RULESET_V0_1.md`, 기존 45초 POC 및 PR #3 구현은 삭제 대상이 아니라 **Core Combat Foundation / Engineering Harness**로 보존합니다. 기존 자동 검증 PASS는 Foundation의 역사 계약을 증명하며 최신 Production turn 구현 완료를 뜻하지 않습니다.
 
@@ -39,6 +47,7 @@
 - Production Line Engine: **미구현**
 - Production Swap-Match Chain Engine: **미구현**
 - Production Turn Controller: **미구현**
+- Production Shared Turn Budget / Time Modifier / Tempo: **미구현**
 - Production Tier 1–6 Skill/HUD: **미구현**
 - 사용자 Windows Production runtime / human playtest: **NOT_RUN**
 
