@@ -3,8 +3,11 @@
 config_version=5
 
 [application]
-config/name="Dual Board Combat POC"
+config/name="Tetris"
 run/main_scene="res://scenes/poc_battle.tscn"
+
+[editor_plugins]
+enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
 
 [display]
 window/size/viewport_width=960
