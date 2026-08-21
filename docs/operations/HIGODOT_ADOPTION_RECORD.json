@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "artifact_role": "HIGODOT_ADOPTION_RECORD",
+  "provider": "hi-godot/godot-ai",
+  "exact_release_or_commit": "v3.1.4",
+  "upstream_tag_commit": "96cc8b8c3d25ce487e24801d01d5214fea150349",
+  "upstream_addon_tree_sha": "69010571e11123dfc4e09483f80cb9e6ca93511a",
+  "vendor_content_sha256": "59fd1325f7a361a98c382b9ba3ef47f9a7c635167b2a14479521b4102c3d7329",
+  "source": "https://github.com/hi-godot/godot-ai/releases/tag/v3.1.4",
+  "license": "MIT",
+  "godot_version": "4.7.1-stable",
+  "godot_distribution": {
+    "source": "https://github.com/godotengine/godot-builds/releases/tag/4.7.1-stable",
+    "windows_archive_sha256": "c7a289051eaefb460b0106b60e9cd5bee0ef55fd102dcb2bed1eb356cf3d90a1",
+    "windows_executable_sha256": "323f9c4cc5db674e98815cdd8e69da007d5efc779abedc8c0e42883b7fdea12a"
+  },
+  "project_binding": {
+    "project_key": "TETRIS",
+    "slot": 8,
+    "repository": "https://github.com/alsdmlals4-eng/Tetris",
+    "project_local_path": "C:\\Users\\user\\Documents\\GitHub\\Ninza\\Tetris",
+    "godot_project_path": "C:/Users/user/Documents/GitHub/Ninza/Tetris",
+    "godot_project_file": "C:/Users/user/Documents/GitHub/Ninza/Tetris/project.godot",
+    "dedicated_godot_executable": "C:\\Users\\user\\Tools\\Godot-Tetris-4.7.1\\Godot_v4.7.1-stable_win64.exe",
+    "http_port": 8008,
+    "ws_port": 9508,
+    "mcp_url": "http://127.0.0.1:8008/mcp",
+    "codex_home": "C:\\Users\\user\\.codex-tetris"
+  },
+  "host_clients": {
+    "codex": "CONFIGURED_BY_PROJECT_LAUNCHER_NOT_RUN",
+    "chatgpt_cloud": "CANNOT_DIAL_LOCALHOST",
+    "gpt_vscode": "NOT_CONFIGURED",
+    "deepseek": "FORBIDDEN"
+  },
+  "network_mode": "LOOPBACK_ONLY",
+  "allow_hosts": [],
+  "enabled_domains": [],
+  "unverified_domains": [
+    "editor",
+    "scene",
+    "filesystem",
+    "runtime"
+  ],
+  "telemetry": "DISABLED_BY_PROJECT_LAUNCHER",
+  "static_contract_status": "PASS",
+  "last_verified_at": "2026-08-21T00:22:26Z",
+  "verification_evidence": [
+    "Exact upstream v3.1.4 tag commit and addon tree matched two existing project deployments.",
+    "Repository tooling contract verifies vendor digest, official Godot distribution hashes, slot 8 paths, loopback ports, launcher safety, live status identity gating, and CI consumption (5/5 tests passed).",
+    "Portable PowerShell 7.6.5 parsed the launcher and its StaticSelfTest reproduced the exact vendored-addon digest; Windows PowerShell 5.1 validation is configured in CI but is not promoted before the exact-head workflow result.",
+    "Isolated Godot 4.7.1 Linux headless import and parse passed; Godot AI reported its expected headless-only server disablement.",
+    "Existing GUT regression suite passed 50/50 tests with 355 assertions, including the strict log guard."
+  ],
+  "rollback_release_or_commit": "PRE_ADOPTION_NONE",
+  "rollback_procedure": "Disable the editor plugin, remove addons/godot_ai and its project.godot entry, then delete the dedicated Godot-Tetris-4.7.1 and .codex-tetris directories after confirming no Tetris process is running.",
+  "connection_status": "NOT_RUN",
+  "runtime_status": "NOT_RUN",
+  "regression_status": "PASS",
+  "production_readiness": false
+}

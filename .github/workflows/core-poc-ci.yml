@@ -26,6 +26,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
+      - name: Verify Tetris HiGodot slot 8 binding
+        shell: bash
+        run: python -m unittest discover -s tests/tooling -p 'test_*.py' -v
+
+      - name: Verify launcher syntax and vendor digest with PowerShell
+        shell: pwsh
+        run: ./tools/windows/start_tetris_local_executor.ps1 -StaticSelfTest
+
       - name: Install pinned Godot
         shell: bash
         run: |
@@ -90,3 +98,14 @@ jobs:
           else
             echo "No runnable GUT tests yet; toolchain preflight only."
           fi
+
+  windows-powershell-contract:
+    runs-on: windows-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Verify launcher in Windows PowerShell 5.1
+        shell: powershell
+        run: .\tools\windows\start_tetris_local_executor.ps1 -StaticSelfTest
