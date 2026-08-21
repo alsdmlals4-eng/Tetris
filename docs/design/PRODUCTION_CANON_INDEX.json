@@ -4,10 +4,11 @@
   "status": "CURRENT_PRODUCTION_CANON",
   "current_core_decision": "TETRIS-CORE-024",
   "primary_canon": "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
+  "implementation_plan": "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md",
   "authority_order": [
     "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
     "latest USER_APPROVED decisions in GitHub Issue #10 and synced Notion owner pages",
-    "production implementation plan for the approved canon",
+    "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md",
     "actual code/data/scenes/tests/runtime evidence"
   ],
   "retained_decisions": [
@@ -67,6 +68,7 @@
   },
   "implementation_reality": {
     "production_turn_canon": "DOCUMENTED_USER_APPROVED",
+    "production_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
     "core_foundation": "IMPLEMENTED_AUTOMATED_TESTED_HISTORICAL_CONTRACT",
     "production_turn_controller": "NOT_PRESENT",
     "production_line_engine": "NOT_PRESENT",
