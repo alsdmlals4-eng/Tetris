@@ -55,7 +55,7 @@
 
 PR #3에서 흡수된 기존 Core Foundation을 사용자 Windows PC에서 검증할 때는 저장소 루트의 `RUN_LOCAL_VALIDATION.cmd`를 **더블클릭**합니다. 이 검증은 기존 Engineering Harness 계약에 대한 증거이며 Production turn gameplay 검증으로 승격하지 않습니다.
 
-검증기는 `%LOCALAPPDATA%\\TetrisCorePocValidation` 아래 격리된 sandbox를 만들고 다음 순서로 진행합니다.
+검증기는 `%LOCALAPPDATA%\TetrisCorePocValidation` 아래 격리된 sandbox를 만들고 다음 순서로 진행합니다.
 
 1. 검증 브랜치를 fresh clone
 2. Godot `4.7.1-stable` / GUT `9.7.1` 준비
@@ -70,6 +70,6 @@ PR #3에서 흡수된 기존 Core Foundation을 사용자 Windows PC에서 검�
 - `manual_validation_report.json`
 - `local_validation_evidence.json`
 
-실패하거나 다시 시작하려면 `%LOCALAPPDATA%\\TetrisCorePocValidation` 폴더를 삭제하면 됩니다. 기존 Godot 설치/프로젝트/설정은 검증 대상이 아니며 변경하지 않습니다.
+실패하거나 다시 시작하려면 `%LOCALAPPDATA%\TetrisCorePocValidation` 폴더를 삭제하면 됩니다. 기존 Godot 설치/프로젝트/설정은 검증 대상이 아니며 변경하지 않습니다.
 
 역사 Foundation 판정 기준은 `docs/validation/POC_45S_VALIDATION.md`를 따릅니다.
