@@ -4,10 +4,12 @@
 
 Read current production gameplay in this order:
 
-1. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — current production turn/phase authority.
-2. Latest USER_APPROVED project Decisions in GitHub Issue #10 and synced Notion owner pages.
-3. `docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md` — current production implementation plan. **Do not execute it until the explicit BUILD gate in that plan is satisfied.**
-4. Actual code/data/scenes/tests/runtime evidence.
+1. `docs/design/PRODUCTION_TURN_TIME_CANON.md` — current player-turn timing / modifier / timeout / Tempo authority (`TETRIS-TIME-025`).
+2. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — current ordered combat turn and non-timing production authority (`TETRIS-CORE-024`).
+3. Latest USER_APPROVED project Decisions in GitHub Issue #10 and synced Notion owner pages.
+4. `docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md` — timing implementation handoff. **Do not execute until the explicit BUILD gate in that plan is satisfied.**
+5. `docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md` — broader production implementation plan except timing clauses superseded by `TETRIS-TIME-025`. **Do not execute until its BUILD gate is satisfied.**
+6. Actual code/data/scenes/tests/runtime evidence.
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
@@ -20,7 +22,7 @@ Historical Core POC authorities:
 
 These historical files and the merged PR #3 code/tests are **Core Combat Foundation / Engineering Harness evidence**. They do not override newer production Decisions.
 
-Core terminology: HP, Energy, Line, Chain, Chain Stock, Skill, Skill Tier, Score, Turn, Phase, Enemy Telegraph.
+Core terminology: HP, Energy, Line, Chain, Chain Stock, Skill, Skill Tier, Score, Turn, Phase, Enemy Telegraph, Shared Turn Budget, Tempo Bonus.
 Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 
 ## Runtime and testing
@@ -40,11 +42,17 @@ Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 - Chain is production **Swap-Match**, not Puyo-style falling-pair gameplay.
 - Chain Phase is the Chain Stock / Tier-preparation phase.
 - Current production Skill layout is Attack / Defense / Support × Tier 1–6.
-- Player-facing puzzle/action phases use independent data-driven timers. Current first-slice candidate maximum is 30 seconds per Line / Chain / Action phase.
-- A legal early-finish action may end a phase before its maximum; unused time is not banked.
-- When Chain input time ends, no new swap may begin, but an already-triggered cascade settles to a deterministic stable board before Action Phase.
+- Line / Chain / Action share **one data-driven player-turn time budget**; there is no independent timer reset at phase boundaries.
+- Enemy Telegraph, forced Line/Chain settle, forced animation/transition, Enemy Resolve, and System Pause do not consume player budget.
+- A legal `READY` action may end Line/Chain early and carries the remaining shared budget into the next player stage.
+- Action confirmation freezes the remaining budget and ends player timing.
+- Unused time does not bank into future turns. Qualified fast completion may earn `Tempo Bonus` for the current selected action plus non-currency Tempo score.
+- Time modifiers from difficulty/items/equipment/Support/status/encounter effects change **Effective Budget** through one snapshot pipeline. They do not change the separate **Tempo Reference** used for speed reward.
+- Haste/Slow normally apply at the next eligible turn snapshot rather than changing a visible current-turn clock mid-phase.
+- If shared time expires during Line or Chain, finish only deterministic settle work, skip remaining player-input stages, resolve `PASS`, and continue; Action timeout also resolves `PASS`.
+- Tempo requires meaningful Line + Chain qualification, a legal non-PASS action, no timeout, and first-slice no Board Break.
+- When Chain input closes, no new swap may begin, but an already-triggered cascade settles to a deterministic stable board before later resolution.
 - Player Action resolves before the telegraphed enemy Action.
-- If Action timer expires without a legal selection, resolve `PASS` and continue; do not deadlock.
 - Normal production combat no longer uses a continuously advancing enemy Combat Clock or tactical RUN/LOCK as its core turn structure.
 - Score is performance evidence and never becomes a Skill currency.
 - Line/Chain board state and unspent resources persist across turns unless Board Break, spending, or an explicit enemy/system effect changes them.
@@ -53,15 +61,15 @@ Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 ## Core Foundation / Engineering Harness boundary
 
 - Existing debug Line/Chain event sources, `RUNNING/LOCKED/SUSPENDED` tests, 45-second validation flow, and Core POC scene are preserved as historical Engineering Harness behavior.
-- Do not present debug event sources as proof of production Line/Chain puzzle feel, production phased-turn behavior, or balance.
+- Do not present debug event sources as proof of production Line/Chain puzzle feel, production phased-turn behavior, shared-budget/Tempo behavior, or balance.
 - Do not rewrite old PASS evidence to match new production rules.
-- Production Line/Chain/turn systems require new tests and runtime evidence.
+- Production Line/Chain/turn/time systems require new tests and runtime evidence.
 
 ## Production scope boundary
 
 - First player milestone remains a production-quality representative Vertical Slice, not a debug/system-only POC.
-- Production Line and Chain engines own puzzle rules/state only; combat resources, turn sequencing, enemy action state and Skill execution remain outside puzzle/UI code.
-- Production UI must express `LINE / CHAIN / ACTION / ENEMY` phase ownership directly rather than reusing Foundation state labels as the main player-facing model.
+- Production Line and Chain engines own puzzle rules/state only; combat resources, turn sequencing, shared time budget, enemy action state, Tempo evaluation, and Skill execution remain outside puzzle/UI code.
+- Production UI must express `LINE / CHAIN / ACTION / ENEMY` phase ownership directly, plus one continuous shared player-turn clock, rather than reusing Foundation state labels as the main player-facing model.
 - Exact balance values remain data-driven and evidence-tuned unless a newer approved Decision locks them.
 
 ## Cost and change safety
