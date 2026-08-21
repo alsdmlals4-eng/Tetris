@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "status": "CURRENT_PRODUCTION_CANON",
+  "current_core_decision": "TETRIS-CORE-024",
+  "primary_canon": "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
+  "authority_order": [
+    "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
+    "latest USER_APPROVED decisions in GitHub Issue #10 and synced Notion owner pages",
+    "production implementation plan for the approved canon",
+    "actual code/data/scenes/tests/runtime evidence"
+  ],
+  "retained_decisions": [
+    "TETRIS-CORE-001",
+    "TETRIS-CORE-021",
+    "TETRIS-SKILL-022",
+    "TETRIS-UX-023",
+    "TETRIS-VISUAL-020",
+    "TETRIS-ENCOUNTER-006",
+    "TETRIS-WORLD-004",
+    "TETRIS-AUDIO-014"
+  ],
+  "superseded_contracts": [
+    "continuous_enemy_combat_clock",
+    "free_manual_board_switching",
+    "tactical_run_lock",
+    "background_chain_resolution_while_line_active",
+    "puyo_style_production_chain",
+    "tier_1_to_5_production_cap",
+    "countdown_seconds_stagger"
+  ],
+  "historical_foundation_documents": [
+    "docs/design/CORE_GAMEPLAY_GDD.md",
+    "docs/design/POC_RULESET_V0_1.md",
+    "docs/superpowers/plans/2026-08-19-core-dual-board-poc.md",
+    "docs/validation/POC_45S_VALIDATION.md"
+  ],
+  "production_turn": [
+    "ENEMY_TELEGRAPH",
+    "LINE_PHASE",
+    "LINE_SETTLE",
+    "CHAIN_PHASE",
+    "CHAIN_SETTLE",
+    "ACTION_PHASE",
+    "PLAYER_ACTION_RESOLVE",
+    "ENEMY_ACTION_RESOLVE"
+  ],
+  "phase_time_seed_seconds": {
+    "line_max": 30,
+    "chain_max": 30,
+    "action_max": 30,
+    "early_finish": true,
+    "unused_time_banks": false,
+    "final_balance_locked": false
+  },
+  "production_chain": {
+    "grammar": "SWAP_MATCH",
+    "new_swap_after_timer_expiry": false,
+    "already_triggered_cascade_settles_before_action": true,
+    "autonomous_swap": false
+  },
+  "production_skill": {
+    "lanes": ["ATTACK", "DEFENSE", "SUPPORT"],
+    "tier_min": 1,
+    "tier_max": 6,
+    "action_timeout_fallback": "PASS"
+  },
+  "implementation_reality": {
+    "production_turn_canon": "DOCUMENTED_USER_APPROVED",
+    "core_foundation": "IMPLEMENTED_AUTOMATED_TESTED_HISTORICAL_CONTRACT",
+    "production_turn_controller": "NOT_PRESENT",
+    "production_line_engine": "NOT_PRESENT",
+    "production_swap_match_chain_engine": "NOT_PRESENT",
+    "production_tier_1_to_6_runtime": "NOT_PRESENT",
+    "production_human_playtest": "NOT_RUN"
+  }
+}
