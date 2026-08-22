@@ -13,6 +13,15 @@ Read current production gameplay in this order:
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
+## DOMAIN_SPLIT_CANON
+
+- `NOTION_HUMAN_FACING_CANON`: synced project owner pages, 사람이 읽고 비교·수정하는 전체 그림, Flow/Storyboard, visual/asset/reference surface와 사람용 표를 책임진다.
+- `REPOSITORY_STRUCTURED_CANON`: `PRODUCTION_CANON_INDEX.json`, production canon 문서, data/code/scenes/resources/config/tests를 책임진다.
+- `REPOSITORY_RUNTIME_TRUTH`: 실제 Godot build/runtime/test/log/screenshot-video evidence를 책임진다.
+- Google Sheets가 과거 자료로 남아 있더라도 unique 미이관 자료를 위한 `MIGRATION_ONLY_UNTIL_REMOVAL` compatibility source일 뿐 신규 기본 작업공간이나 runtime 증거가 아니다.
+
+Notion의 승인·정적 시각 자료와 repository runtime PASS를 혼동하지 않는다. 사람용 기획 변경이 structured/runtime 의미를 바꾸면 repository owner와 동기화한 뒤 구현·완료를 주장한다.
+
 Historical Core POC authorities:
 
 - `docs/design/CORE_GAMEPLAY_GDD.md`
@@ -77,6 +86,6 @@ Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 - No additional paid dependency, API, runner, SaaS, marketplace credit, GPU/larger runner, or separately metered service without explicit user approval.
 - Standard GitHub-hosted runner use is allowed only while it remains a zero-incremental-cost path for this public repository.
 - Do not overwrite unrelated user changes.
-- Open/draft/ready PRs are read-only unless the user explicitly names a PR number and allowed mutation. PR #9 remains protected by default.
+- Current `open/draft/ready` PRs are read-only unless the latest user instruction and current Base continuation rules explicitly authorize the exact PR/action. Do not hard-code a historical PR number as permanently protected; query live GitHub PR state at work start.
 - Keep implementation work isolated from `main` until its PR is verified and approved.
 - Before completion, compare the work branch against `main` and report verified, unverified, and remaining-risk states separately.
