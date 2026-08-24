@@ -23,7 +23,14 @@ static func from_dictionary(data: Dictionary) -> GatebreakerActionCatalog:
         var key := String(action.get("key", ""))
         if catalog._templates.has(key):
             continue
-        catalog._templates[key] = action.duplicate(true)
+
+        var normalized := action.duplicate(true)
+        var normalized_phases: Array[int] = []
+        for phase_value in action.get("phase_ids", []):
+            normalized_phases.append(int(phase_value))
+        normalized["phase_ids"] = normalized_phases
+
+        catalog._templates[key] = normalized
         catalog._ordered_keys.append(key)
     return catalog
 
