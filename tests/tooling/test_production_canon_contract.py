@@ -154,12 +154,15 @@ class ProductionCanonContractTests(unittest.TestCase):
     def test_human_entrypoints_point_to_current_production_canons(self) -> None:
         combat_expected = "docs/design/PRODUCTION_TURN_COMBAT_CANON.md"
         time_expected = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
+        skill_expected = "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md"
         agents = AGENTS_PATH.read_text(encoding="utf-8")
         readme = README_PATH.read_text(encoding="utf-8")
         self.assertIn(combat_expected, agents)
         self.assertIn(combat_expected, readme)
         self.assertIn(time_expected, agents)
         self.assertIn(time_expected, readme)
+        self.assertIn(skill_expected, agents)
+        self.assertIn(skill_expected, readme)
 
     def test_current_canons_separate_foundation_from_production_evidence(self) -> None:
         canon = CANON_PATH.read_text(encoding="utf-8")
