@@ -26,5 +26,6 @@
     "TETRIS-BALANCE-027"
   ],
   "directional_sessions": ["A", "B", "C"],
+  "minimum_directional_sessions_for_pass": 3,
   "gate": ["PASS", "REVISE", "BLOCK"]
 }
