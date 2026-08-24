@@ -150,13 +150,13 @@ func test_spawn_block_after_commit_resets_line_board_and_emits_board_break_witho
     assert_not_null(result)
     assert_true(result.success)
     assert_eq(session.piece_cycle.active_piece.piece_id, next_id, "commit must spawn preview front")
-    assert_false(session.piece_cycle.board.can_place(session.piece_cycle.active_piece.get_cells(), session.piece_cycle.active_piece.origin), "spawned next piece must still be blocked before Board Break reset")
     assert_not_null(session.last_board_break_result)
     if session.last_board_break_result == null:
         return
     assert_true(session.last_board_break_result.triggered)
     assert_eq(session.last_board_break_result.reason, "SPAWN_BLOCKED")
     assert_true(session.piece_cycle.board.is_empty())
+    assert_true(session.piece_cycle.board.can_place(session.piece_cycle.active_piece.get_cells(), session.piece_cycle.active_piece.origin), "Board Break reset must restore a legal spawn")
     assert_eq(session.piece_cycle.active_piece.piece_id, next_id)
     assert_eq(session.turn_controller.phase, TurnPhase.LINE, "Board Break with time remaining resumes same Line phase")
     var events: Array = session.drain_events()
