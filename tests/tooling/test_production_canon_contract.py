@@ -129,6 +129,17 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertFalse(turn_time["modifier_changes_tempo_reference"])
         self.assertFalse(turn_time["unused_time_banks_to_future_turn"])
 
+    def test_combat_canon_defers_timing_to_time_025(self) -> None:
+        canon = CANON_PATH.read_text(encoding="utf-8")
+        self.assertIn("TETRIS-TIME-025", canon)
+        self.assertIn("Shared Player Turn Budget", canon)
+        self.assertNotIn("each phase has its own timer", canon)
+        self.assertNotIn("Unused phase time is not banked into another phase", canon)
+        self.assertNotIn(
+            "phase time never transfers between Line, Chain, Action",
+            canon,
+        )
+
     def test_tactical_skill_canon_declares_situational_tiers(self) -> None:
         self.assertTrue(SKILL_CANON_PATH.is_file(), "tactical skill canon must exist")
         data = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
