@@ -129,9 +129,14 @@ func test_spawn_block_after_commit_resets_line_board_and_emits_board_break_witho
     if session == null:
         return
     session.start_line()
-    var active_before: String = session.piece_cycle.active_piece.piece_id
     var preview_before: Array = session.piece_cycle.peek_next(28)
     var next_id: String = preview_before[0]
+
+    # Move the current active piece clear of the hidden spawn zone before
+    # constructing the next-piece spawn block. Otherwise the fixture itself
+    # can overlap the current piece and prevent the commit under test.
+    session.piece_cycle.active_piece.hard_drop(session.piece_cycle.board)
+
     var next_spawn: Vector2i = session.piece_cycle.catalog.get_spawn_origin(next_id, session.piece_cycle.board.width, session.piece_cycle.board.hidden_rows)
     for cell in session.piece_cycle.catalog.get_cells(next_id, 0):
         session.piece_cycle.board.set_cell(next_spawn + Vector2i(cell), "X")
@@ -139,7 +144,7 @@ func test_spawn_block_after_commit_resets_line_board_and_emits_board_break_witho
     var result = session.hard_drop_and_commit()
 
     assert_not_null(result)
-    assert_true(result.success, "diagnostic precondition: current=%s must commit before next=%s spawn-block is evaluated" % [active_before, next_id])
+    assert_true(result.success)
     assert_not_null(session.last_board_break_result)
     assert_true(session.last_board_break_result.triggered)
     assert_eq(session.last_board_break_result.reason, "SPAWN_BLOCKED")
