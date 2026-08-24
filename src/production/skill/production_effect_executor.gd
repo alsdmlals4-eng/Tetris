@@ -6,6 +6,10 @@ func execute(effect: Dictionary, context: Dictionary) -> Dictionary:
     match op:
         "DAMAGE_SINGLE":
             return _damage_single(effect, context)
+        "DAMAGE_AOE":
+            return _damage_aoe(effect, context)
+        "TARGET_PATTERN":
+            return _target_pattern(effect, context)
         "HEAL_SELF":
             return _heal_self(effect, context)
         "APPLY_SELF_BUFF":
@@ -38,6 +42,43 @@ func _damage_single(effect: Dictionary, context: Dictionary) -> Dictionary:
         "op": "DAMAGE_SINGLE",
         "amount": applied,
         "reason": "APPLIED" if applied > 0 else "NO_EFFECT",
+    }
+
+func _damage_aoe(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var magnitude := int(effect.get("magnitude", 0))
+    if magnitude <= 0:
+        return _failed("DAMAGE_AOE", "INVALID_MAGNITUDE")
+    var targets: Array = TargetPattern.resolve("ALL_ENEMIES", context)
+    if targets.is_empty():
+        return _failed("DAMAGE_AOE", "MISSING_ENEMY_TARGET")
+
+    var total_damage := 0
+    for target in targets:
+        if target == null or not target.has_method("apply_damage"):
+            return _failed("DAMAGE_AOE", "INVALID_ENEMY_TARGET")
+        total_damage += int(target.apply_damage(magnitude))
+
+    return {
+        "applied": total_damage > 0,
+        "op": "DAMAGE_AOE",
+        "target_count": targets.size(),
+        "total_damage": total_damage,
+        "reason": "APPLIED" if total_damage > 0 else "NO_EFFECT",
+    }
+
+func _target_pattern(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var pattern := String(effect.get("pattern", ""))
+    if pattern == "":
+        return _failed("TARGET_PATTERN", "MISSING_TARGET_PATTERN")
+    var targets: Array = TargetPattern.resolve(pattern, context)
+    if targets.is_empty():
+        return _failed("TARGET_PATTERN", "TARGET_PATTERN_EMPTY")
+    return {
+        "applied": true,
+        "op": "TARGET_PATTERN",
+        "pattern": pattern,
+        "target_count": targets.size(),
+        "reason": "APPLIED",
     }
 
 func _heal_self(effect: Dictionary, context: Dictionary) -> Dictionary:
