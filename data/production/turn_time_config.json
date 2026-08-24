@@ -7,6 +7,17 @@
     "max_budget_seconds": 120.0,
     "tempo_reference_seconds": 90.0
   },
+  "difficulty_profiles": {
+    "EASY": {
+      "base_budget_seconds": 105.0
+    },
+    "NORMAL": {
+      "base_budget_seconds": 90.0
+    },
+    "HARD": {
+      "base_budget_seconds": 75.0
+    }
+  },
   "tempo_reward": {
     "potency_per_saved_ratio": 0.20,
     "potency_bonus_cap_ratio": 0.15
