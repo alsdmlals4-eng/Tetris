@@ -82,6 +82,14 @@ class ProductionCanonContractTests(unittest.TestCase):
             "single_interchangeable_combat_resource",
             data["superseded_contracts"],
         )
+        self.assertIn(
+            "future_control_waits_for_hidden_unknown_intent",
+            data["superseded_contracts"],
+        )
+        self.assertIn(
+            "def_and_support_same_turn_resource_ward_overlap",
+            data["superseded_contracts"],
+        )
 
     def test_machine_readable_index_pins_current_plans(self) -> None:
         self.assertTrue(PLAN_PATH.is_file(), "production implementation plan must exist")
@@ -153,12 +161,32 @@ class ProductionCanonContractTests(unittest.TestCase):
             "SINGLE_TARGET_FALLBACK_ONLY",
         )
 
+        forecast = skill["forecast_control"]
+        self.assertTrue(forecast["future_control_requires_visible_forecast"])
+        self.assertTrue(forecast["future_control_binds_exact_action_id"])
+        self.assertEqual(forecast["bound_action_invalidates_status"], "EXPIRE_NO_RETARGET")
+        self.assertEqual(
+            forecast["atk_t5_target"],
+            "VISIBLE_NEXT_FORECAST_DIRECT_HIT",
+        )
+        self.assertEqual(
+            forecast["def_t5_target"],
+            "CURRENT_TELEGRAPH_RESOURCE_LOSS",
+        )
+        self.assertEqual(
+            forecast["sup_t5_target"],
+            "VISIBLE_NEXT_FORECAST_RESOURCE_LOSS_OR_REPAIR",
+        )
+        self.assertFalse(forecast["future_control_applies_to_current_telegraph"])
+
         canon = SKILL_CANON_PATH.read_text(encoding="utf-8")
         self.assertIn("TETRIS-SKILL-026", canon)
         self.assertIn("Quick Cut", canon)
         self.assertIn("Rift Breach", canon)
         self.assertIn("Last Bastion", canon)
         self.assertIn("Battle Trance", canon)
+        self.assertIn("Current vs future response ownership", canon)
+        self.assertIn("visible lower-priority Next Forecast", canon)
         self.assertIn("CLEAN_REVIEW_EXIT", canon)
         self.assertIn("BUILD remains blocked", canon)
 
@@ -188,11 +216,22 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertFalse(economy["technique_specific_first_slice_currency"])
         self.assertFalse(economy["technique_specific_first_slice_cooldown"])
         self.assertFalse(economy["tempo_direct_resource_reward"])
+        self.assertEqual(
+            economy["current_resource_loss_response"],
+            ["DEF_T5_RIFT_WARD", "PRESPEND_THREATENED_RESOURCE"],
+        )
+        self.assertEqual(
+            economy["future_rift_utility_forecast_response"],
+            ["SUP_T5_RIFT_SEAL", "PRESERVE_FOR_OTHER_RESPONSE"],
+        )
         self.assertTrue(economy["human_balance_evidence_required"])
 
         canon = BALANCE_CANON_PATH.read_text(encoding="utf-8")
         self.assertIn("TETRIS-BALANCE-027", canon)
         self.assertIn("DUAL-RESOURCE", canon.upper())
+        self.assertIn("Current vs future control rule", canon)
+        self.assertIn("DEF T5 Rift Ward", canon)
+        self.assertIn("SUP T5 Rift Seal", canon)
         self.assertIn("Tier 6", canon)
         self.assertIn("CLEAN_REVIEW_EXIT", canon)
         self.assertIn("BUILD remains deferred", canon)
