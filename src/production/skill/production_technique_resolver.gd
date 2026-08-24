@@ -16,6 +16,13 @@ const RUNTIME_READY_OPS := [
     "CONDITIONAL_MULTIPLIER",
 ]
 
+const TEMPO_MAGNITUDE_OPS := [
+    "DAMAGE_SINGLE",
+    "DAMAGE_AOE",
+    "HEAL_SELF",
+    "MITIGATE_CURRENT_DIRECT",
+]
+
 var effect_executor: ProductionEffectExecutor
 
 func _init(p_effect_executor: ProductionEffectExecutor) -> void:
@@ -69,6 +76,7 @@ func resolve(definition: Dictionary, context: Dictionary) -> Dictionary:
         "conditional_multiplier_applied": bool(preparation.get("conditional_multiplier_applied", false)),
         "conditional_multiplier": float(preparation.get("conditional_multiplier", 1.0)),
         "prepared_damage_magnitude": int(preparation.get("prepared_damage_magnitude", 0)),
+        "tempo_potency_bonus_ratio": float(preparation.get("tempo_potency_bonus_ratio", 0.0)),
     }
 
 func _prepare_effects(definition: Dictionary, context: Dictionary) -> Dictionary:
@@ -101,6 +109,19 @@ func _prepare_effects(definition: Dictionary, context: Dictionary) -> Dictionary
             effect["magnitude"] = roundi(float(base_magnitude) * conditional_multiplier)
         prepared_damage_magnitude = int(effect.get("magnitude", 0))
 
+    var tempo_potency_bonus_ratio := maxf(float(context.get("tempo_potency_bonus_ratio", 0.0)), 0.0)
+    if tempo_potency_bonus_ratio > 0.0:
+        for effect in prepared:
+            var op := String(effect.get("op", ""))
+            if not TEMPO_MAGNITUDE_OPS.has(op):
+                continue
+            var magnitude := int(effect.get("magnitude", 0))
+            if magnitude <= 0:
+                continue
+            effect["magnitude"] = roundi(float(magnitude) * (1.0 + tempo_potency_bonus_ratio))
+            if op == "DAMAGE_SINGLE":
+                prepared_damage_magnitude = int(effect["magnitude"])
+
     return {
         "ready": true,
         "reason": "READY",
@@ -109,6 +130,7 @@ func _prepare_effects(definition: Dictionary, context: Dictionary) -> Dictionary
         "conditional_multiplier_applied": conditional_applied,
         "conditional_multiplier": conditional_multiplier,
         "prepared_damage_magnitude": prepared_damage_magnitude,
+        "tempo_potency_bonus_ratio": tempo_potency_bonus_ratio,
     }
 
 func _conditional_matches(effect: Dictionary, enemy, breach_preexisting: bool) -> bool:
