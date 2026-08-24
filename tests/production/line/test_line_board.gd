@@ -49,12 +49,12 @@ func test_full_row_clear_compacts_rows_downward() -> void:
     var board = _make_board()
     if board == null:
         return
-    var bottom_y := board.total_height - 1
+    var bottom_y: int = board.total_height - 1
     for x in range(board.width):
         board.set_cell(Vector2i(x, bottom_y), "X")
     board.set_cell(Vector2i(2, bottom_y - 1), "M")
 
-    var cleared := board.clear_full_rows()
+    var cleared: int = board.clear_full_rows()
 
     assert_eq(cleared, 1)
     assert_eq(board.get_cell(Vector2i(2, bottom_y)), "M")
@@ -64,7 +64,7 @@ func test_multiple_full_rows_clear_in_one_atomic_compaction() -> void:
     var board = _make_board()
     if board == null:
         return
-    var bottom_y := board.total_height - 1
+    var bottom_y: int = board.total_height - 1
     for x in range(board.width):
         board.set_cell(Vector2i(x, bottom_y), "A")
         board.set_cell(Vector2i(x, bottom_y - 1), "B")
