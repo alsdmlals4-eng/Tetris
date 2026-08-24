@@ -4,22 +4,28 @@
   "status": "CURRENT_PRODUCTION_CANON",
   "current_core_decision": "TETRIS-CORE-024",
   "current_time_decision": "TETRIS-TIME-025",
+  "current_skill_decision": "TETRIS-SKILL-026",
   "primary_canon": "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
   "timing_canon": "docs/design/PRODUCTION_TURN_TIME_CANON.md",
+  "skill_canon": "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
   "implementation_plan": "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md",
   "timing_implementation_plan": "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md",
+  "skill_implementation_plan": "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md",
   "authority_order": [
     "docs/design/PRODUCTION_TURN_TIME_CANON.md for player-turn timing, time modifiers, timeout, and Tempo reward",
     "docs/design/PRODUCTION_TURN_COMBAT_CANON.md for ordered combat turn and non-timing production rules",
+    "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for Vanguard Tier 1-6 Technique identities, effect primitives, dominance guard, and skill validation",
     "latest USER_APPROVED decisions in GitHub Issue #10 and synced Notion owner pages",
     "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md for the timing implementation handoff",
     "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md except timing clauses superseded by TETRIS-TIME-025",
+    "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md for the skill implementation handoff",
     "actual code/data/scenes/tests/runtime evidence"
   ],
   "retained_decisions": [
     "TETRIS-CORE-001",
     "TETRIS-CORE-021",
     "TETRIS-SKILL-022",
+    "TETRIS-SKILL-026",
     "TETRIS-UX-023",
     "TETRIS-VISUAL-020",
     "TETRIS-ENCOUNTER-006",
@@ -35,7 +41,9 @@
     "tier_1_to_5_production_cap",
     "countdown_seconds_stagger",
     "independent_line_chain_action_timers",
-    "discard_unused_time_at_each_phase_boundary"
+    "discard_unused_time_at_each_phase_boundary",
+    "linear_same_skill_tier_dominance",
+    "player_facing_tier_identity_forbidden"
   ],
   "historical_foundation_documents": [
     "docs/design/CORE_GAMEPLAY_GDD.md",
@@ -86,13 +94,44 @@
     "lanes": ["ATTACK", "DEFENSE", "SUPPORT"],
     "tier_min": 1,
     "tier_max": 6,
+    "tier_model": "TACTICAL_COMMITMENT_BAND",
+    "stock_cost_equals_tier": true,
+    "lower_tier_viability_required": true,
+    "highest_available_tier_is_default": false,
+    "implementation_model": "DATA_DRIVEN_EFFECT_PRIMITIVES",
+    "effect_primitives": [
+      "DAMAGE_SINGLE",
+      "DAMAGE_AOE",
+      "MITIGATE_CURRENT_DIRECT",
+      "COUNTER_FROM_PREVENTED_DAMAGE",
+      "HEAL_SELF",
+      "APPLY_SELF_BUFF",
+      "APPLY_ENEMY_DEBUFF",
+      "PROTECT_RESOURCE_LOSS",
+      "MODIFY_NEXT_TURN_BUDGET",
+      "CONDITIONAL_MULTIPLIER",
+      "LETHAL_SAFETY",
+      "TARGET_PATTERN"
+    ],
+    "tempo_non_scalable_fields": [
+      "HASTE_SECONDS",
+      "STATUS_DURATION",
+      "STOCK_COST",
+      "ENERGY_COST",
+      "WARD_COUNT",
+      "TARGET_COUNT",
+      "LETHAL_HP_FLOOR"
+    ],
+    "aoe_first_slice_validation": "SINGLE_TARGET_FALLBACK_ONLY",
     "action_timeout_fallback": "PASS"
   },
   "implementation_reality": {
     "production_turn_canon": "DOCUMENTED_USER_APPROVED",
     "production_time_canon": "DOCUMENTED_USER_APPROVED_BUILD_DEFERRED",
+    "production_skill_canon": "DOCUMENTED_USER_APPROVED_BUILD_DEFERRED",
     "production_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
     "timing_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
+    "skill_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
     "core_foundation": "IMPLEMENTED_AUTOMATED_TESTED_HISTORICAL_CONTRACT",
     "production_turn_controller": "NOT_PRESENT",
     "production_shared_turn_budget": "NOT_PRESENT",
@@ -100,6 +139,7 @@
     "production_tempo_bonus": "NOT_PRESENT",
     "production_line_engine": "NOT_PRESENT",
     "production_swap_match_chain_engine": "NOT_PRESENT",
+    "production_skill_effect_primitives": "NOT_PRESENT",
     "production_tier_1_to_6_runtime": "NOT_PRESENT",
     "production_human_playtest": "NOT_RUN"
   }

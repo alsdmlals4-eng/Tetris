@@ -20,6 +20,9 @@
 
 - Line은 Energy 준비를 담당합니다.
 - Chain은 production **Swap-Match** 퍼즐이며 Chain Stock / Skill Tier 준비를 담당합니다.
+- `TETRIS-SKILL-026`부터 Tier는 단순한 `상위 Tier = 더 좋은 같은 기술`이 아니라 **얼마나 많은 Stock을 현재 판단에 커밋할지 나타내는 tactical band**입니다.
+- 낮은 Tier는 자원 효율·마무리·가벼운 대응, 중간 Tier는 setup/counter/debuff/ward, 높은 Tier는 조건부 signature·lethal safety·장기 setup을 담당합니다. 가능한 최고 Tier가 항상 정답이면 설계 실패로 판정합니다.
+- Attack/Defense/Support 각 Tier는 player-facing Technique identity가 달라질 수 있지만 공통 effect primitive와 데이터 조합으로 구현하여 18개의 별도 subsystem/script를 만들지 않습니다.
 - `TETRIS-TIME-025`부터 Line / Chain / Action은 **하나의 shared player-turn time budget**을 공동 소비합니다.
 - Enemy Telegraph, Line/Chain settle, 강제 애니메이션/전환, Enemy Resolve, System Pause는 이 플레이어 입력 시간을 소비하지 않습니다.
 - 플레이어는 합법적인 안정 상태에서 `READY`로 Line/Chain을 조기 종료할 수 있고, 남은 시간은 다음 player stage로 그대로 이어집니다.
@@ -37,7 +40,8 @@
 
 1. `docs/design/PRODUCTION_TURN_TIME_CANON.md` — timing / modifier / timeout / Tempo authority.
 2. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — ordered combat turn and remaining non-timing production rules.
-3. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
+3. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — Vanguard tactical Tier / Technique / dominance guard authority.
+4. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
 
 `docs/design/CORE_GAMEPLAY_GDD.md`, `POC_RULESET_V0_1.md`, 기존 45초 POC 및 PR #3 구현은 삭제 대상이 아니라 **Core Combat Foundation / Engineering Harness**로 보존합니다. 기존 자동 검증 PASS는 Foundation의 역사 계약을 증명하며 최신 Production turn 구현 완료를 뜻하지 않습니다.
 
@@ -48,6 +52,7 @@
 - Production Swap-Match Chain Engine: **미구현**
 - Production Turn Controller: **미구현**
 - Production Shared Turn Budget / Time Modifier / Tempo: **미구현**
+- Production SKILL-026 Tactical Tier Matrix / Effect Primitive runtime: **미구현**
 - Production Tier 1–6 Skill/HUD: **미구현**
 - 사용자 Windows Production runtime / human playtest: **NOT_RUN**
 
