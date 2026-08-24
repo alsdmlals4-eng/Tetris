@@ -110,6 +110,20 @@ func bootstrap() -> Dictionary:
         "next": next,
     }
 
+func preview_next_after_resolve(boss_hp_ratio: float) -> Dictionary:
+    var snapshot := _snapshot_state()
+    var candidate := schedule_next_after_resolve(boss_hp_ratio)
+    _restore_state(snapshot)
+    return candidate
+
+func commit_next_after_resolve(boss_hp_ratio: float, expected_action_id: String) -> Dictionary:
+    if expected_action_id == "":
+        return {}
+    var preview := preview_next_after_resolve(boss_hp_ratio)
+    if preview.is_empty() or String(preview.get("id", "")) != expected_action_id:
+        return {}
+    return schedule_next_after_resolve(boss_hp_ratio)
+
 func schedule_next_after_resolve(boss_hp_ratio: float) -> Dictionary:
     if not _started or _catalog == null:
         return {}
@@ -158,6 +172,24 @@ func _should_schedule_repair(boss_hp_ratio: float) -> bool:
     if _phase_action_index < _repair_requires_base:
         return false
     return boss_hp_ratio <= _repair_trigger
+
+func _snapshot_state() -> Dictionary:
+    return {
+        "started": _started,
+        "sequence_id": _sequence_id,
+        "phase_action_index": _phase_action_index,
+        "repair_uses": _repair_uses,
+        "current_phase": current_phase,
+        "repair_used": repair_used,
+    }
+
+func _restore_state(snapshot: Dictionary) -> void:
+    _started = bool(snapshot.get("started", false))
+    _sequence_id = int(snapshot.get("sequence_id", 1))
+    _phase_action_index = int(snapshot.get("phase_action_index", 0))
+    _repair_uses = int(snapshot.get("repair_uses", 0))
+    current_phase = int(snapshot.get("current_phase", 1))
+    repair_used = bool(snapshot.get("repair_used", false))
 
 static func _string_array(value) -> Array[String]:
     var result: Array[String] = []
