@@ -135,17 +135,24 @@ func test_runtime_unimplemented_primitive_is_rejected_before_partial_effect_exec
     var resolver = _resolver()
     if resolver == null:
         return
-    var catalog = _catalog()
     var enemy := ProductionCombatState.new(100)
+    var definition := {
+        "id": "synthetic_unsupported",
+        "lane": "ATTACK",
+        "effects": [
+            {"op": "DAMAGE_SINGLE", "magnitude": 12},
+            {"op": "INVENTED_RUNTIME_MAGIC", "magnitude": 999},
+        ],
+    }
 
     var result: Dictionary = resolver.resolve(
-        catalog.get_by_id("atk_t6_execution_edge"),
+        definition,
         {"enemy": enemy, "status_state": ProductionStatusState.new()}
     )
 
     assert_false(result["resolved"])
     assert_eq(result["reason"], "EFFECT_OP_NOT_RUNTIME_READY")
-    assert_eq(enemy.hp, 100, "conditional multiplier preflight must fail before the preceding base damage executes")
+    assert_eq(enemy.hp, 100, "unsupported primitive preflight must fail before preceding damage executes")
 
 func test_runtime_readiness_is_public_non_mutating_and_matches_resolve_preflight() -> void:
     var resolver = _resolver()
