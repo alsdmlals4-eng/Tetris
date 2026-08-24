@@ -16,8 +16,8 @@
   "authority_order": [
     "docs/design/PRODUCTION_TURN_TIME_CANON.md for player-turn timing, time modifiers, timeout, and Tempo reward",
     "docs/design/PRODUCTION_TURN_COMBAT_CANON.md for ordered combat turn and non-timing production rules",
-    "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for Vanguard Tier 1-6 Technique identities, effect primitives, dominance guard, and skill validation",
-    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for Energy/Stock opportunity cost, Tier exposure, curated economy scenarios, and evidence-ready tuning boundaries",
+    "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for Vanguard Tier 1-6 Technique identities, effect primitives, dominance guard, current-vs-forecast control ownership, and skill validation",
+    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for Energy/Stock opportunity cost, Tier exposure, curated economy scenarios, forecast-control economy choices, and evidence-ready tuning boundaries",
     "latest USER_APPROVED decisions in GitHub Issue #10 and synced Notion owner pages",
     "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md for the timing implementation handoff",
     "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md except timing clauses superseded by TETRIS-TIME-025",
@@ -49,7 +49,9 @@
     "linear_same_skill_tier_dominance",
     "player_facing_tier_identity_forbidden",
     "single_interchangeable_combat_resource",
-    "technique_specific_first_slice_currency_or_cooldown"
+    "technique_specific_first_slice_currency_or_cooldown",
+    "future_control_waits_for_hidden_unknown_intent",
+    "def_and_support_same_turn_resource_ward_overlap"
   ],
   "historical_foundation_documents": [
     "docs/design/CORE_GAMEPLAY_GDD.md",
@@ -119,6 +121,15 @@
       "LETHAL_SAFETY",
       "TARGET_PATTERN"
     ],
+    "forecast_control": {
+      "future_control_requires_visible_forecast": true,
+      "future_control_binds_exact_action_id": true,
+      "bound_action_invalidates_status": "EXPIRE_NO_RETARGET",
+      "atk_t5_target": "VISIBLE_NEXT_FORECAST_DIRECT_HIT",
+      "def_t5_target": "CURRENT_TELEGRAPH_RESOURCE_LOSS",
+      "sup_t5_target": "VISIBLE_NEXT_FORECAST_RESOURCE_LOSS_OR_REPAIR",
+      "future_control_applies_to_current_telegraph": false
+    },
     "tempo_non_scalable_fields": [
       "HASTE_SECONDS",
       "STATUS_DURATION",
@@ -147,6 +158,8 @@
     "technique_specific_first_slice_currency": false,
     "technique_specific_first_slice_cooldown": false,
     "tempo_direct_resource_reward": false,
+    "current_resource_loss_response": ["DEF_T5_RIFT_WARD", "PRESPEND_THREATENED_RESOURCE"],
+    "future_rift_utility_forecast_response": ["SUP_T5_RIFT_SEAL", "PRESERVE_FOR_OTHER_RESPONSE"],
     "automated_balance_scope": "IMPOSSIBLE_STATE_AND_OBVIOUS_DOMINANCE_ONLY",
     "human_balance_evidence_required": true
   },
@@ -168,6 +181,7 @@
     "production_skill_effect_primitives": "NOT_PRESENT",
     "production_tier_1_to_6_runtime": "NOT_PRESENT",
     "production_resource_economy_runtime": "NOT_PRESENT",
+    "production_forecast_control_runtime": "NOT_PRESENT",
     "production_human_playtest": "NOT_RUN"
   }
 }
