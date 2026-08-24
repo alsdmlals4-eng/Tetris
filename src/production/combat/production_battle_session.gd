@@ -73,19 +73,52 @@ func record_turn_performance_event(event: Dictionary) -> bool:
         return false
     return turn_performance_state.record_event(event)
 
-func select_technique(technique_id: String) -> Dictionary:
+func technique_readiness(technique_id: String) -> Dictionary:
     if battle_over:
-        return _selection_failed("BATTLE_OVER")
+        return {
+            "ready": false,
+            "reason": "BATTLE_OVER",
+        }
     if turn_controller.phase != TurnPhase.ACTION:
-        return _selection_failed("WRONG_PHASE")
+        return {
+            "ready": false,
+            "reason": "WRONG_PHASE",
+        }
 
     var definition := skill_catalog.get_by_id(technique_id)
     if definition.is_empty():
-        return _selection_failed("UNKNOWN_TECHNIQUE")
+        return {
+            "ready": false,
+            "reason": "UNKNOWN_TECHNIQUE",
+        }
 
     var runtime_ready := technique_resolver.readiness(definition, _technique_context())
     if not bool(runtime_ready.get("ready", false)):
-        return _selection_failed(String(runtime_ready.get("reason", "RUNTIME_NOT_READY")))
+        return {
+            "ready": false,
+            "reason": String(runtime_ready.get("reason", "RUNTIME_NOT_READY")),
+        }
+
+    var resource_ready := skill_session.readiness(technique_id)
+    if not bool(resource_ready.get("ready", false)):
+        return {
+            "ready": false,
+            "reason": String(resource_ready.get("state", "NOT_READY")),
+            "stock_required": int(resource_ready.get("stock_required", 0)),
+            "energy_required": int(resource_ready.get("energy_required", 0)),
+        }
+
+    return {
+        "ready": true,
+        "reason": "READY",
+        "stock_required": int(resource_ready.get("stock_required", 0)),
+        "energy_required": int(resource_ready.get("energy_required", 0)),
+    }
+
+func select_technique(technique_id: String) -> Dictionary:
+    var readiness := technique_readiness(technique_id)
+    if not bool(readiness.get("ready", false)):
+        return _selection_failed(String(readiness.get("reason", "NOT_READY")))
 
     var selected: Dictionary = skill_session.select_technique(technique_id)
     if not bool(selected.get("accepted", false)):
