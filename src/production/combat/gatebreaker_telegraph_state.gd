@@ -19,21 +19,33 @@ func next_action() -> Dictionary:
 func is_ready() -> bool:
     return not _current.is_empty() and not _next.is_empty()
 
-func advance_after_resolve(resolved_action_id: String, authored_next: Dictionary) -> Dictionary:
+func advance_readiness(resolved_action_id: String, authored_next: Dictionary) -> Dictionary:
     if _current.is_empty() or resolved_action_id == "" or resolved_action_id != String(_current.get("id", "")):
         return {
-            "advanced": false,
+            "ready": false,
             "reason": "RESOLVED_ACTION_ID_MISMATCH",
         }
     if not _is_valid_authored_action(authored_next):
         return {
-            "advanced": false,
+            "ready": false,
             "reason": "INVALID_NEXT_AUTHORED_ACTION",
         }
     if _next.is_empty():
         return {
-            "advanced": false,
+            "ready": false,
             "reason": "MISSING_LOCKED_NEXT_ACTION",
+        }
+    return {
+        "ready": true,
+        "reason": "READY",
+    }
+
+func advance_after_resolve(resolved_action_id: String, authored_next: Dictionary) -> Dictionary:
+    var readiness := advance_readiness(resolved_action_id, authored_next)
+    if not bool(readiness.get("ready", false)):
+        return {
+            "advanced": false,
+            "reason": String(readiness.get("reason", "ADVANCE_NOT_READY")),
         }
 
     var prior_next := _next.duplicate(true)
