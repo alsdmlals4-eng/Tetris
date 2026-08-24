@@ -15,7 +15,8 @@
     "TIER_VIABILITY",
     "FORECAST_CONTROL",
     "VISUAL_READABILITY",
-    "RESULT_FEEDBACK"
+    "RESULT_FEEDBACK",
+    "EXPERIENCE_SIGNAL"
   ],
   "visual_authority": "TETRIS-VISUAL-020",
   "gameplay_authorities": [
