@@ -112,3 +112,100 @@ func test_unknown_effect_op_fails_closed_without_mutation() -> void:
     assert_eq(result["reason"], "UNSUPPORTED_EFFECT_OP")
     assert_eq(player.hp, 100)
     assert_eq(enemy.hp, 80)
+
+func test_visible_next_forecast_debuff_requires_and_binds_exact_action_id() -> void:
+    var executor = _make_executor()
+    if executor == null:
+        return
+    var status := ProductionStatusState.new()
+    var effect := {
+        "op": "APPLY_ENEMY_DEBUFF",
+        "status": "WEAKEN",
+        "stacks": 1,
+        "bind_to": "VISIBLE_NEXT_FORECAST_ACTION_ID",
+    }
+
+    var missing: Dictionary = executor.execute(effect, {"status_state": status})
+    assert_false(missing["applied"])
+    assert_eq(missing["reason"], "STATUS_REJECTED")
+    assert_false(status.has_status("WEAKEN", "enemy"))
+
+    var applied: Dictionary = executor.execute(effect, {
+        "status_state": status,
+        "next_forecast_action_id": "forecast_action_42",
+    })
+    assert_true(applied["applied"])
+    assert_true(status.matches_bound_action("WEAKEN", "enemy", "forecast_action_42"))
+    assert_false(status.matches_bound_action("WEAKEN", "enemy", "forecast_action_43"))
+
+func test_haste_writes_next_turn_modifier_without_jumping_current_budget() -> void:
+    var executor = _make_executor()
+    if executor == null:
+        return
+    var time_state := TimeEffectState.new()
+    var current_budget := TurnBudget.new()
+    current_budget.snapshot(90.0, 0.0, 30.0, 120.0)
+    current_budget.consume(12.0)
+
+    var result: Dictionary = executor.execute(
+        {
+            "op": "MODIFY_NEXT_TURN_BUDGET",
+            "seconds": 5.0,
+            "tempo_scalable": false,
+            "source_id": "sup_t3_haste",
+            "stack_group": "haste_default",
+            "stackable": false,
+            "expires_after_turns": 1,
+        },
+        {
+            "time_effect_state": time_state,
+            "current_turn_budget": current_budget,
+        }
+    )
+
+    assert_true(result["applied"])
+    assert_eq(result["seconds"], 5.0)
+    assert_false(result["tempo_scalable"])
+    assert_eq(current_budget.effective_budget_seconds, 90.0, "Haste created after snapshot must not change current effective budget")
+    assert_eq(current_budget.remaining_seconds, 78.0, "Haste must not jump the visible current timer")
+    assert_eq(time_state.get_total_flat_seconds_for_next_turn(), 5.0)
+
+    executor.execute(
+        {
+            "op": "MODIFY_NEXT_TURN_BUDGET",
+            "seconds": 5.0,
+            "tempo_scalable": false,
+            "source_id": "sup_t3_haste",
+            "stack_group": "haste_default",
+            "stackable": false,
+            "expires_after_turns": 1,
+        },
+        {"time_effect_state": time_state}
+    )
+    assert_eq(time_state.get_total_flat_seconds_for_next_turn(), 5.0, "same non-stackable Haste group refreshes instead of adding")
+
+func test_haste_fails_closed_without_time_effect_state_or_with_tempo_scaling() -> void:
+    var executor = _make_executor()
+    if executor == null:
+        return
+    var missing: Dictionary = executor.execute(
+        {"op": "MODIFY_NEXT_TURN_BUDGET", "seconds": 5.0, "tempo_scalable": false},
+        {}
+    )
+    assert_false(missing["applied"])
+    assert_eq(missing["reason"], "MISSING_TIME_EFFECT_STATE")
+
+    var forbidden: Dictionary = executor.execute(
+        {
+            "op": "MODIFY_NEXT_TURN_BUDGET",
+            "seconds": 5.0,
+            "tempo_scalable": true,
+            "source_id": "sup_t3_haste",
+            "stack_group": "haste_default",
+            "stackable": false,
+            "expires_after_turns": 1,
+        },
+        {"time_effect_state": TimeEffectState.new()}
+    )
+    assert_false(forbidden["applied"])
+    assert_eq(forbidden["reason"], "TEMPO_SCALING_NOT_ALLOWED")
