@@ -19,6 +19,52 @@ var _timeout_pending: bool = false
 func _init(p_turn_budget: TurnBudget) -> void:
     turn_budget = p_turn_budget
 
+func start_player_turn(config, profile_id: String, effects: TimeEffectState = null) -> Dictionary:
+    if phase != TurnPhase.ENEMY_TELEGRAPH:
+        return {
+            "started": false,
+            "reason": "WRONG_PHASE",
+        }
+    if config == null:
+        return {
+            "started": false,
+            "reason": "MISSING_TIME_CONFIG",
+        }
+    if not config.has_profile(profile_id):
+        return {
+            "started": false,
+            "reason": "UNKNOWN_DIFFICULTY_PROFILE",
+        }
+
+    var flat_modifier_seconds := 0.0
+    if effects != null:
+        flat_modifier_seconds = effects.get_total_flat_seconds_for_next_turn()
+
+    var fresh_budget = config.create_budget(profile_id, effects)
+    if fresh_budget == null:
+        return {
+            "started": false,
+            "reason": "BUDGET_SNAPSHOT_FAILED",
+        }
+
+    turn_budget = fresh_budget
+    _timeout_pending = false
+    chain_input_skipped_for_timeout = false
+    pending_player_action = null
+    if effects != null:
+        effects.advance_turn_boundary()
+    phase = TurnPhase.LINE
+
+    return {
+        "started": true,
+        "reason": "STARTED",
+        "profile_id": profile_id,
+        "base_budget_seconds": config.base_budget_for(profile_id),
+        "flat_modifier_seconds": flat_modifier_seconds,
+        "effective_budget_seconds": turn_budget.effective_budget_seconds,
+        "tempo_reference_seconds": config.tempo_reference_seconds,
+    }
+
 func enter_line() -> void:
     if phase != TurnPhase.ENEMY_TELEGRAPH:
         return
