@@ -3,6 +3,8 @@ extends RefCounted
 
 const RUNTIME_READY_OPS := [
     "DAMAGE_SINGLE",
+    "DAMAGE_AOE",
+    "TARGET_PATTERN",
     "HEAL_SELF",
     "APPLY_SELF_BUFF",
     "APPLY_ENEMY_DEBUFF",
@@ -106,6 +108,19 @@ func _preflight_effect_context(effect: Dictionary, context: Dictionary) -> Dicti
         "DAMAGE_SINGLE":
             var enemy = context.get("enemy")
             if enemy == null or not enemy.has_method("apply_damage") or int(effect.get("magnitude", 0)) <= 0:
+                return _not_ready("EFFECT_CONTEXT_NOT_READY")
+        "DAMAGE_AOE":
+            if int(effect.get("magnitude", 0)) <= 0:
+                return _not_ready("EFFECT_CONTEXT_NOT_READY")
+            var targets: Array = TargetPattern.resolve("ALL_ENEMIES", context)
+            if targets.is_empty():
+                return _not_ready("EFFECT_CONTEXT_NOT_READY")
+            for target in targets:
+                if target == null or not target.has_method("apply_damage"):
+                    return _not_ready("EFFECT_CONTEXT_NOT_READY")
+        "TARGET_PATTERN":
+            var pattern := String(effect.get("pattern", ""))
+            if pattern == "" or TargetPattern.resolve(pattern, context).is_empty():
                 return _not_ready("EFFECT_CONTEXT_NOT_READY")
         "HEAL_SELF":
             var player = context.get("player")
