@@ -33,6 +33,7 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertTrue(data["human_evidence_required"])
         self.assertIn("VISUAL_READABILITY", data["dimensions"])
         self.assertIn("TIER_VIABILITY", data["dimensions"])
+        self.assertIn("EXPERIENCE_SIGNAL", data["dimensions"])
 
     def test_human_evidence_contract_preserves_evidence_ceiling(self) -> None:
         self.assertTrue(EVIDENCE_PATH.is_file(), "human evidence contract must exist")
@@ -46,6 +47,7 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertIn("Line Energy", text)
         self.assertIn("Chain Stock", text)
         self.assertIn("lower Tier", text)
+        self.assertIn("MEMORABLE_MOMENT", text)
         self.assertIn("NOT_RUN", text)
         self.assertIn("PASS / REVISE / BLOCK", text)
         self.assertIn("2026-08-21-phased-turn-production-vertical-slice.md", text)
