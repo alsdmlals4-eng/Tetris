@@ -105,6 +105,37 @@ func matched_cells(minimum_run: int = 3) -> Array:
                 unique_cells.append(position)
     return unique_cells
 
+func clear_cells(positions: Array) -> int:
+    var cleared: int = 0
+    var visited: Array = []
+    for raw_position in positions:
+        var position := Vector2i(raw_position)
+        if visited.has(position):
+            continue
+        visited.append(position)
+        if not _inside(position) or get_cell(position) == "":
+            continue
+        set_cell(position, "")
+        cleared += 1
+    return cleared
+
+func apply_gravity() -> int:
+    var moved: int = 0
+    for x in range(width):
+        var write_y: int = height - 1
+        for read_y in range(height - 1, -1, -1):
+            var value: String = get_cell(Vector2i(x, read_y))
+            if value == "":
+                continue
+            if write_y != read_y:
+                set_cell(Vector2i(x, write_y), value)
+                set_cell(Vector2i(x, read_y), "")
+                moved += 1
+            write_y -= 1
+        for y in range(write_y, -1, -1):
+            set_cell(Vector2i(x, y), "")
+    return moved
+
 func try_swap_for_match(first: Vector2i, second: Vector2i) -> Dictionary:
     if not _is_adjacent(first, second):
         return {
