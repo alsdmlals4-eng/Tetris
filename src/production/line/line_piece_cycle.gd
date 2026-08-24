@@ -46,6 +46,20 @@ func _spawn_piece(piece_id: String) -> void:
 func _spawn_from_stream() -> void:
     _spawn_piece(_take_next_id())
 
+func is_active_spawn_blocked() -> bool:
+    if active_piece == null:
+        return false
+    return not board.can_place(active_piece.get_cells(), active_piece.origin)
+
+func reset_after_board_break(reason: String) -> LineBoardBreakResult:
+    if active_piece == null:
+        return LineBoardBreakResult.rejected(reason)
+
+    var piece_id := active_piece.piece_id
+    board.clear_all()
+    _spawn_piece(piece_id)
+    return LineBoardBreakResult.new(true, reason, piece_id, true)
+
 func complete_lock_and_spawn_next() -> void:
     hold_used_for_active = false
     _spawn_from_stream()
