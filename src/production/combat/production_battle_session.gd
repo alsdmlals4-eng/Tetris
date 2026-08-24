@@ -297,8 +297,8 @@ func _evaluate_tempo() -> Dictionary:
         turn_performance_state.action_non_pass,
         turn_performance_state.timeout_occurred,
         turn_performance_state.board_break_occurred,
-        current_turn_time_config.tempo_potency_per_saved_ratio,
-        current_turn_time_config.tempo_potency_cap_ratio
+        current_turn_time_config.potency_per_saved_ratio,
+        current_turn_time_config.potency_bonus_cap_ratio
     )
     return {
         "eligible": result.eligible,
