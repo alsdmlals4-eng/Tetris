@@ -57,6 +57,13 @@ func resolve_existing_matches() -> Dictionary:
                 "waves": waves,
             }
 
+    return {
+        "success": false,
+        "reason": "UNREACHABLE",
+        "chain_depth": depth,
+        "waves": waves,
+    }
+
 func _refill_empty_cells() -> bool:
     var before_refill: Array = board.snapshot()
     for y in range(board.height):
