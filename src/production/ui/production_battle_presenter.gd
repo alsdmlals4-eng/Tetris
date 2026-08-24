@@ -1,7 +1,7 @@
 class_name ProductionBattlePresenter
 extends RefCounted
 
-func snapshot(session) -> Dictionary:
+func snapshot(session, line_session = null, chain_session = null) -> Dictionary:
     if session == null:
         return {}
     if session.turn_controller == null or session.player_state == null or session.telegraph_state == null or session.skill_catalog == null:
@@ -27,13 +27,22 @@ func snapshot(session) -> Dictionary:
         "player_max_hp": player.max_hp,
         "energy": player.energy,
         "stock": player.stock,
-        "ready_available": false,
+        "ready_available": _ready_available(turn.phase, line_session, chain_session),
         "tempo_eligible": bool(tempo.get("eligible", false)),
         "tempo_saved_ratio": float(tempo.get("saved_ratio", 0.0)),
         "tempo_potency_bonus_ratio": float(tempo.get("potency_bonus_ratio", 0.0)),
         "tempo_ineligible_reason": String(tempo.get("ineligible_reason", "")),
         "technique_readiness": readiness,
     }
+
+func _ready_available(phase: int, line_session, chain_session) -> bool:
+    match phase:
+        TurnPhase.LINE:
+            return line_session != null and line_session.has_method("can_accept_input") and bool(line_session.can_accept_input())
+        TurnPhase.CHAIN:
+            return chain_session != null and chain_session.has_method("can_accept_input") and bool(chain_session.can_accept_input())
+        _:
+            return false
 
 func _provisional_tempo(session) -> Dictionary:
     var turn: TurnController = session.turn_controller
