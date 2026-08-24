@@ -12,6 +12,14 @@ func execute(effect: Dictionary, context: Dictionary) -> Dictionary:
             return _apply_status(effect, context, "player")
         "APPLY_ENEMY_DEBUFF":
             return _apply_status(effect, context, "enemy")
+        "MITIGATE_CURRENT_DIRECT":
+            return _mitigate_current_direct(effect, context)
+        "COUNTER_FROM_PREVENTED_DAMAGE":
+            return _counter_from_prevented_damage(effect, context)
+        "PROTECT_RESOURCE_LOSS":
+            return _protect_resource_loss(effect, context)
+        "LETHAL_SAFETY":
+            return _lethal_safety(effect, context)
         "MODIFY_NEXT_TURN_BUDGET":
             return _modify_next_turn_budget(effect, context)
         _:
@@ -84,6 +92,90 @@ func _apply_status(effect: Dictionary, context: Dictionary, target: String) -> D
         "op": String(effect.get("op", "")),
         "status": status,
         "target": target,
+        "reason": "APPLIED",
+    }
+
+func _mitigate_current_direct(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var response_state = context.get("response_state")
+    if response_state == null or not response_state.has_method("configure_direct_mitigation"):
+        return _failed("MITIGATE_CURRENT_DIRECT", "MISSING_RESPONSE_STATE")
+    var action_id := String(context.get("current_telegraph_action_id", ""))
+    if action_id == "":
+        return _failed("MITIGATE_CURRENT_DIRECT", "MISSING_CURRENT_TELEGRAPH")
+    var magnitude := int(effect.get("magnitude", 0))
+    if magnitude <= 0:
+        return _failed("MITIGATE_CURRENT_DIRECT", "INVALID_MITIGATION_MAGNITUDE")
+    if not bool(response_state.configure_direct_mitigation(action_id, magnitude)):
+        return _failed("MITIGATE_CURRENT_DIRECT", "RESPONSE_BINDING_REJECTED")
+    return {
+        "applied": true,
+        "op": "MITIGATE_CURRENT_DIRECT",
+        "action_id": action_id,
+        "magnitude": magnitude,
+        "reason": "APPLIED",
+    }
+
+func _counter_from_prevented_damage(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var response_state = context.get("response_state")
+    if response_state == null or not response_state.has_method("configure_counter"):
+        return _failed("COUNTER_FROM_PREVENTED_DAMAGE", "MISSING_RESPONSE_STATE")
+    var action_id := String(context.get("current_telegraph_action_id", ""))
+    if action_id == "":
+        return _failed("COUNTER_FROM_PREVENTED_DAMAGE", "MISSING_CURRENT_TELEGRAPH")
+    var ratio := float(effect.get("ratio", 0.0))
+    if ratio <= 0.0 or ratio > 1.0:
+        return _failed("COUNTER_FROM_PREVENTED_DAMAGE", "INVALID_COUNTER_RATIO")
+    if not bool(response_state.configure_counter(action_id, ratio)):
+        return _failed("COUNTER_FROM_PREVENTED_DAMAGE", "RESPONSE_BINDING_REJECTED")
+    return {
+        "applied": true,
+        "op": "COUNTER_FROM_PREVENTED_DAMAGE",
+        "action_id": action_id,
+        "ratio": ratio,
+        "reason": "APPLIED",
+    }
+
+func _protect_resource_loss(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var response_state = context.get("response_state")
+    if response_state == null or not response_state.has_method("configure_resource_ward"):
+        return _failed("PROTECT_RESOURCE_LOSS", "MISSING_RESPONSE_STATE")
+    var action_id := String(context.get("current_telegraph_action_id", ""))
+    if action_id == "":
+        return _failed("PROTECT_RESOURCE_LOSS", "MISSING_CURRENT_TELEGRAPH")
+    if String(effect.get("bind_to", "")) != "CURRENT_TELEGRAPH_ACTION_ID":
+        return _failed("PROTECT_RESOURCE_LOSS", "INVALID_RESOURCE_WARD_BINDING")
+    var ratio := float(effect.get("ratio", 0.0))
+    if ratio <= 0.0 or ratio > 1.0:
+        return _failed("PROTECT_RESOURCE_LOSS", "INVALID_RESOURCE_WARD_RATIO")
+    if not bool(response_state.configure_resource_ward(action_id, ratio)):
+        return _failed("PROTECT_RESOURCE_LOSS", "RESPONSE_BINDING_REJECTED")
+    return {
+        "applied": true,
+        "op": "PROTECT_RESOURCE_LOSS",
+        "action_id": action_id,
+        "ratio": ratio,
+        "reason": "APPLIED",
+    }
+
+func _lethal_safety(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var response_state = context.get("response_state")
+    if response_state == null or not response_state.has_method("configure_lethal_safety"):
+        return _failed("LETHAL_SAFETY", "MISSING_RESPONSE_STATE")
+    var action_id := String(context.get("current_telegraph_action_id", ""))
+    if action_id == "":
+        return _failed("LETHAL_SAFETY", "MISSING_CURRENT_TELEGRAPH")
+    var hp_floor := int(effect.get("hp_floor", 0))
+    var charges := int(effect.get("charges", 0))
+    if hp_floor < 1 or charges < 1:
+        return _failed("LETHAL_SAFETY", "INVALID_LETHAL_SAFETY_CONFIG")
+    if not bool(response_state.configure_lethal_safety(action_id, hp_floor, charges)):
+        return _failed("LETHAL_SAFETY", "RESPONSE_BINDING_REJECTED")
+    return {
+        "applied": true,
+        "op": "LETHAL_SAFETY",
+        "action_id": action_id,
+        "hp_floor": hp_floor,
+        "charges": charges,
         "reason": "APPLIED",
     }
 
