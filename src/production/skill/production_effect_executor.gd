@@ -12,6 +12,8 @@ func execute(effect: Dictionary, context: Dictionary) -> Dictionary:
             return _apply_status(effect, context, "player")
         "APPLY_ENEMY_DEBUFF":
             return _apply_status(effect, context, "enemy")
+        "MODIFY_NEXT_TURN_BUDGET":
+            return _modify_next_turn_budget(effect, context)
         _:
             return _failed(op, "UNSUPPORTED_EFFECT_OP")
 
@@ -62,7 +64,14 @@ func _apply_status(effect: Dictionary, context: Dictionary, target: String) -> D
     if bind_to == "":
         accepted = bool(status_state.apply_status(status, target, stacks))
     else:
-        var action_id_key := "next_forecast_action_id" if bind_to == "VISIBLE_NEXT_FORECAST_ACTION_ID" else "current_telegraph_action_id"
+        var action_id_key := ""
+        match bind_to:
+            "VISIBLE_NEXT_FORECAST_ACTION_ID":
+                action_id_key = "next_forecast_action_id"
+            "CURRENT_TELEGRAPH_ACTION_ID":
+                action_id_key = "current_telegraph_action_id"
+            _:
+                return _failed(String(effect.get("op", "")), "STATUS_REJECTED")
         var action_id := String(context.get(action_id_key, ""))
         if status_state.has_method("apply_bound_status"):
             accepted = bool(status_state.apply_bound_status(status, target, action_id, bind_to))
@@ -75,6 +84,38 @@ func _apply_status(effect: Dictionary, context: Dictionary, target: String) -> D
         "op": String(effect.get("op", "")),
         "status": status,
         "target": target,
+        "reason": "APPLIED",
+    }
+
+func _modify_next_turn_budget(effect: Dictionary, context: Dictionary) -> Dictionary:
+    var time_effect_state = context.get("time_effect_state")
+    if time_effect_state == null or not time_effect_state.has_method("apply_effect"):
+        return _failed("MODIFY_NEXT_TURN_BUDGET", "MISSING_TIME_EFFECT_STATE")
+    if bool(effect.get("tempo_scalable", true)):
+        return _failed("MODIFY_NEXT_TURN_BUDGET", "TEMPO_SCALING_NOT_ALLOWED")
+
+    var seconds := float(effect.get("seconds", 0.0))
+    var source_id := String(effect.get("source_id", ""))
+    var stack_group := String(effect.get("stack_group", ""))
+    var stackable := bool(effect.get("stackable", false))
+    var expires_after_turns := int(effect.get("expires_after_turns", 1))
+    if is_zero_approx(seconds) or source_id == "" or stack_group == "" or expires_after_turns == 0:
+        return _failed("MODIFY_NEXT_TURN_BUDGET", "INVALID_TIME_EFFECT_CONFIG")
+
+    time_effect_state.apply_effect(
+        source_id,
+        stack_group,
+        seconds,
+        stackable,
+        expires_after_turns
+    )
+    return {
+        "applied": true,
+        "op": "MODIFY_NEXT_TURN_BUDGET",
+        "seconds": seconds,
+        "tempo_scalable": false,
+        "source_id": source_id,
+        "stack_group": stack_group,
         "reason": "APPLIED",
     }
 
