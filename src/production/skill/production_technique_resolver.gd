@@ -18,6 +18,9 @@ var effect_executor: ProductionEffectExecutor
 func _init(p_effect_executor: ProductionEffectExecutor) -> void:
     effect_executor = p_effect_executor
 
+func readiness(definition: Dictionary, context: Dictionary) -> Dictionary:
+    return _preflight(definition, context)
+
 func resolve(definition: Dictionary, context: Dictionary) -> Dictionary:
     var preflight := _preflight(definition, context)
     if not bool(preflight.get("ready", false)):
