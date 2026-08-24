@@ -49,6 +49,19 @@ func complete_lock_and_spawn_next() -> void:
     hold_used_for_active = false
     _spawn_from_stream()
 
+func commit_active_piece(reward_config: LineRewardConfig) -> LineClearResult:
+    if active_piece == null or reward_config == null:
+        return LineClearResult.failed("")
+
+    var piece_id := active_piece.piece_id
+    if not board.lock_cells(active_piece.get_cells(), active_piece.origin, piece_id):
+        return LineClearResult.failed(piece_id)
+
+    var lines_cleared := board.clear_full_rows()
+    var result := reward_config.make_result(piece_id, lines_cleared)
+    complete_lock_and_spawn_next()
+    return result
+
 func try_hold() -> bool:
     if active_piece == null or hold_used_for_active:
         return false
