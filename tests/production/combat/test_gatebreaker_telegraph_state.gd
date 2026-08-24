@@ -107,3 +107,22 @@ func test_forecast_context_is_exact_and_contains_only_current_next_scope_inputs(
     assert_true(context["current_telegraph_tags"].has("RIFT_UTILITY"))
     assert_true(context["next_forecast_tags"].has("DIRECT_HIT"))
     assert_false(context.has("hidden_future_action_id"))
+
+func test_advance_readiness_validates_exact_current_and_new_next_without_mutating_lock() -> void:
+    var catalog = _catalog()
+    var current: Dictionary = catalog.instantiate_action("light_smash", 11)
+    var next: Dictionary = catalog.instantiate_action("gatebreaker_slam", 12)
+    var authored_after_next: Dictionary = catalog.instantiate_action("rift_siphon", 13)
+    var state = _make_state(current, next)
+    if state == null:
+        return
+
+    var ready: Dictionary = state.advance_readiness(current["id"], authored_after_next)
+    var invalid: Dictionary = state.advance_readiness(current["id"], {"kind": "DIRECT_HP_RATIO", "hp_ratio": 0.5})
+
+    assert_true(ready["ready"])
+    assert_eq(ready["reason"], "READY")
+    assert_false(invalid["ready"])
+    assert_eq(invalid["reason"], "INVALID_NEXT_AUTHORED_ACTION")
+    assert_eq(state.current_action()["id"], current["id"])
+    assert_eq(state.next_action()["id"], next["id"])
