@@ -76,6 +76,20 @@ func select_player_action(action_id: String) -> bool:
     phase = TurnPhase.PLAYER_RESOLVE
     return true
 
+func complete_player_resolve() -> bool:
+    if phase != TurnPhase.PLAYER_RESOLVE:
+        return false
+    phase = TurnPhase.ENEMY_RESOLVE
+    return true
+
+func complete_enemy_resolve() -> bool:
+    if phase != TurnPhase.ENEMY_RESOLVE:
+        return false
+    phase = TurnPhase.ENEMY_TELEGRAPH
+    pending_player_action = null
+    chain_input_skipped_for_timeout = false
+    return true
+
 func _resolve_timeout_pass() -> void:
     _timeout_pending = false
     pending_player_action = PendingAction.new("PASS")
