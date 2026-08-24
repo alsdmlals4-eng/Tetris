@@ -17,7 +17,7 @@ func _initial_rows() -> Array:
     ]
 
 func _make_session(seed_value: int):
-    var board := load(BOARD_PATH).new(3, 3)
+    var board: ChainBoard = load(BOARD_PATH).new(3, 3)
     var rows: Array = _initial_rows()
     for y in range(rows.size()):
         for x in range(rows[y].size()):
