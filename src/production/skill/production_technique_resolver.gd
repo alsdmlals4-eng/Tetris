@@ -13,6 +13,7 @@ const RUNTIME_READY_OPS := [
     "PROTECT_RESOURCE_LOSS",
     "LETHAL_SAFETY",
     "MODIFY_NEXT_TURN_BUDGET",
+    "CONDITIONAL_MULTIPLIER",
 ]
 
 var effect_executor: ProductionEffectExecutor
@@ -33,9 +34,20 @@ func resolve(definition: Dictionary, context: Dictionary) -> Dictionary:
             "effect_results": [],
         }
 
+    var preparation := _prepare_effects(definition, context)
+    if not bool(preparation.get("ready", false)):
+        return {
+            "resolved": false,
+            "reason": String(preparation.get("reason", "EFFECT_PREPARATION_FAILED")),
+            "technique_id": String(definition.get("id", "")),
+            "effect_results": [],
+        }
+
     var results: Array[Dictionary] = []
-    for effect_value in definition.get("effects", []):
+    for effect_value in preparation.get("effects", []):
         var effect: Dictionary = effect_value
+        if String(effect.get("op", "")) == "CONDITIONAL_MULTIPLIER":
+            continue
         var result: Dictionary = effect_executor.execute(effect, context)
         if not bool(result.get("applied", false)):
             return {
@@ -47,12 +59,77 @@ func resolve(definition: Dictionary, context: Dictionary) -> Dictionary:
             }
         results.append(result)
 
+    _consume_preexisting_attack_status(definition, context, preparation)
+
     return {
         "resolved": true,
         "reason": "RESOLVED",
         "technique_id": String(definition.get("id", "")),
         "effect_results": results,
+        "conditional_multiplier_applied": bool(preparation.get("conditional_multiplier_applied", false)),
+        "conditional_multiplier": float(preparation.get("conditional_multiplier", 1.0)),
+        "prepared_damage_magnitude": int(preparation.get("prepared_damage_magnitude", 0)),
     }
+
+func _prepare_effects(definition: Dictionary, context: Dictionary) -> Dictionary:
+    var prepared: Array[Dictionary] = []
+    for effect_value in definition.get("effects", []):
+        prepared.append((effect_value as Dictionary).duplicate(true))
+
+    var enemy = context.get("enemy")
+    var status_state = context.get("status_state")
+    var breach_preexisting := false
+    if status_state != null and status_state.has_method("has_status"):
+        breach_preexisting = bool(status_state.has_status("BREACH", "enemy"))
+
+    var conditional_applied := false
+    var conditional_multiplier := 1.0
+    for effect in prepared:
+        if String(effect.get("op", "")) != "CONDITIONAL_MULTIPLIER":
+            continue
+        if not _conditional_matches(effect, enemy, breach_preexisting):
+            continue
+        conditional_applied = true
+        conditional_multiplier = float(effect.get("multiplier", 1.0))
+
+    var prepared_damage_magnitude := 0
+    for effect in prepared:
+        if String(effect.get("op", "")) != "DAMAGE_SINGLE":
+            continue
+        var base_magnitude := int(effect.get("magnitude", 0))
+        if conditional_applied:
+            effect["magnitude"] = roundi(float(base_magnitude) * conditional_multiplier)
+        prepared_damage_magnitude = int(effect.get("magnitude", 0))
+
+    return {
+        "ready": true,
+        "reason": "READY",
+        "effects": prepared,
+        "breach_preexisting": breach_preexisting,
+        "conditional_multiplier_applied": conditional_applied,
+        "conditional_multiplier": conditional_multiplier,
+        "prepared_damage_magnitude": prepared_damage_magnitude,
+    }
+
+func _conditional_matches(effect: Dictionary, enemy, breach_preexisting: bool) -> bool:
+    if String(effect.get("condition", "")) != "BREACH_OR_ENEMY_HP_BELOW_RATIO":
+        return false
+    if breach_preexisting:
+        return true
+    if enemy == null:
+        return false
+    var max_hp := int(enemy.max_hp)
+    if max_hp <= 0:
+        return false
+    var hp_ratio := float(effect.get("hp_ratio", 0.0))
+    return float(enemy.hp) / float(max_hp) <= hp_ratio
+
+func _consume_preexisting_attack_status(definition: Dictionary, context: Dictionary, preparation: Dictionary) -> void:
+    if String(definition.get("lane", "")) != "ATTACK" or not bool(preparation.get("breach_preexisting", false)):
+        return
+    var status_state = context.get("status_state")
+    if status_state != null and status_state.has_method("consume_unbound_for_trigger"):
+        status_state.consume_unbound_for_trigger("BREACH", "enemy", "QUALIFYING_PLAYER_ATTACK")
 
 func _preflight(definition: Dictionary, context: Dictionary) -> Dictionary:
     if definition.is_empty() or String(definition.get("id", "")) == "":
@@ -163,6 +240,14 @@ func _preflight_effect_context(effect: Dictionary, context: Dictionary) -> Dicti
             if is_zero_approx(float(effect.get("seconds", 0.0))):
                 return _not_ready("EFFECT_CONTEXT_NOT_READY")
             if String(effect.get("source_id", "")) == "" or String(effect.get("stack_group", "")) == "" or int(effect.get("expires_after_turns", 1)) == 0:
+                return _not_ready("EFFECT_CONTEXT_NOT_READY")
+        "CONDITIONAL_MULTIPLIER":
+            var enemy = context.get("enemy")
+            var multiplier := float(effect.get("multiplier", 0.0))
+            var hp_ratio := float(effect.get("hp_ratio", -1.0))
+            if enemy == null or String(effect.get("field", "")) != "damage" or multiplier <= 0.0:
+                return _not_ready("EFFECT_CONTEXT_NOT_READY")
+            if String(effect.get("condition", "")) != "BREACH_OR_ENEMY_HP_BELOW_RATIO" or hp_ratio < 0.0 or hp_ratio > 1.0:
                 return _not_ready("EFFECT_CONTEXT_NOT_READY")
     return {"ready": true, "reason": "READY"}
 
