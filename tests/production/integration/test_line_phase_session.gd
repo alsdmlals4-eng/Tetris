@@ -138,14 +138,22 @@ func test_spawn_block_after_commit_resets_line_board_and_emits_board_break_witho
     session.piece_cycle.active_piece.hard_drop(session.piece_cycle.board)
 
     var next_spawn: Vector2i = session.piece_cycle.catalog.get_spawn_origin(next_id, session.piece_cycle.board.width, session.piece_cycle.board.hidden_rows)
-    for cell in session.piece_cycle.catalog.get_cells(next_id, 0):
+    var next_cells: Array = session.piece_cycle.catalog.get_cells(next_id, 0)
+    for cell in next_cells:
         session.piece_cycle.board.set_cell(next_spawn + Vector2i(cell), "X")
+
+    assert_false(session.piece_cycle.board.can_place(next_cells, next_spawn), "fixture must block the exact next spawn")
+    assert_eq(session.piece_cycle.peek_next(1)[0], next_id, "fixture must not advance the upcoming stream")
 
     var result = session.hard_drop_and_commit()
 
     assert_not_null(result)
     assert_true(result.success)
+    assert_eq(session.piece_cycle.active_piece.piece_id, next_id, "commit must spawn preview front")
+    assert_false(session.piece_cycle.board.can_place(session.piece_cycle.active_piece.get_cells(), session.piece_cycle.active_piece.origin), "spawned next piece must still be blocked before Board Break reset")
     assert_not_null(session.last_board_break_result)
+    if session.last_board_break_result == null:
+        return
     assert_true(session.last_board_break_result.triggered)
     assert_eq(session.last_board_break_result.reason, "SPAWN_BLOCKED")
     assert_true(session.piece_cycle.board.is_empty())
