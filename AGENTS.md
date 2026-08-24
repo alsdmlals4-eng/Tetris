@@ -7,11 +7,12 @@ Read current production gameplay in this order:
 1. `docs/design/PRODUCTION_TURN_TIME_CANON.md` — current player-turn timing / modifier / timeout / Tempo authority (`TETRIS-TIME-025`).
 2. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — current ordered combat turn and non-timing production authority (`TETRIS-CORE-024`).
 3. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — current Vanguard `ATK / DEF / SUP × Tier 1–6` Technique identity / tactical commitment / dominance guard authority (`TETRIS-SKILL-026`).
-4. Latest USER_APPROVED project Decisions in GitHub Issue #10 and synced Notion owner pages.
-5. `docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md` — timing implementation handoff. **Do not execute until the explicit BUILD gate in that plan is satisfied.**
-6. `docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md` — broader production implementation plan except timing clauses superseded by `TETRIS-TIME-025`. **Do not execute until its BUILD gate is satisfied.**
-7. `docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md` — SKILL-026 implementation handoff. **Do not execute until its BUILD gate is satisfied.**
-8. Actual code/data/scenes/tests/runtime evidence.
+4. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — current Line Energy / Chain Stock opportunity cost, Tier exposure, anti-hoarding/spam, curated economy scenario and evidence boundary (`TETRIS-BALANCE-027`).
+5. Latest USER_APPROVED project Decisions in GitHub Issue #10 and synced Notion owner pages.
+6. `docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md` — timing implementation handoff. **Do not execute until the explicit BUILD gate in that plan is satisfied.**
+7. `docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md` — broader production implementation plan except timing clauses superseded by `TETRIS-TIME-025`. **Do not execute until its BUILD gate is satisfied.**
+8. `docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md` — SKILL-026 implementation handoff; economy tuning must also satisfy `TETRIS-BALANCE-027`. **Do not execute until its BUILD gate is satisfied.**
+9. Actual code/data/scenes/tests/runtime evidence.
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
@@ -55,6 +56,10 @@ Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 - Current production Skill layout is Attack / Defense / Support × Tier 1–6.
 - `TETRIS-SKILL-026`: Tier는 절대적인 강함 순서가 아니라 **Chain Stock commitment / tactical band**다. 낮은 Tier의 효율·가벼운 대응과 중·고Tier의 setup/control/signature가 공존해야 하며 `가능하면 최고 Tier`가 기본 최적해가 되면 실패다.
 - Tier별 player-facing Technique identity는 달라도 되지만 runtime은 공통 data-driven effect primitive를 조합하며 18 bespoke subsystem/script를 만들지 않는다.
+- `TETRIS-BALANCE-027`: **Line Energy와 Chain Stock은 서로 대체 불가한 이중 기회비용 자원**이다. Energy는 Technique의 유연한 throughput/utility 가격, Stock은 Tier 접근권/커밋 비용이며 Tier N은 Stock N을 소비한다.
+- Production Chain Stock cap은 6을 기준으로 한다. cap 근처 hoarding은 추가 Stock gain 낭비 위험을 가지며 T6는 routine 버튼이 아니라 signature commitment 후보여야 한다.
+- 첫 tutorial Turn은 숨은 무료 지급 대신 실제 production Line/Chain board의 authored seed로 의미 있는 Energy/Stock 성과를 만들고 T1을 자연스럽게 노출한다. 첫 2–3 Turn에서 T6 도달을 tutorial 목표로 만들지 않는다.
+- Energy exact gain/cost/effect values와 Tier pick 분포는 `TUNE_REQUIRED`; automated simulation은 impossible state/명백한 dominance만 판정하며 최종 밸런스·재미·이해도는 Human evidence가 필요하다.
 - Line / Chain / Action share **one data-driven player-turn time budget**; there is no independent timer reset at phase boundaries.
 - Enemy Telegraph, forced Line/Chain settle, forced animation/transition, Enemy Resolve, and System Pause do not consume player budget.
 - A legal `READY` action may end Line/Chain early and carries the remaining shared budget into the next player stage.
@@ -64,6 +69,7 @@ Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 - Haste/Slow normally apply at the next eligible turn snapshot rather than changing a visible current-turn clock mid-phase.
 - If shared time expires during Line or Chain, finish only deterministic settle work, skip remaining player-input stages, resolve `PASS`, and continue; Action timeout also resolves `PASS`.
 - Tempo requires meaningful Line + Chain qualification, a legal non-PASS action, no timeout, and first-slice no Board Break.
+- Tempo does not directly grant Energy or Chain Stock in the first production baseline.
 - When Chain input closes, no new swap may begin, but an already-triggered cascade settles to a deterministic stable board before later resolution.
 - Player Action resolves before the telegraphed enemy Action.
 - Normal production combat no longer uses a continuously advancing enemy Combat Clock or tactical RUN/LOCK as its core turn structure.
@@ -74,17 +80,18 @@ Do not introduce `Mana`, `Magic`, or `Spell` as core-system terminology.
 ## Core Foundation / Engineering Harness boundary
 
 - Existing debug Line/Chain event sources, `RUNNING/LOCKED/SUSPENDED` tests, 45-second validation flow, and Core POC scene are preserved as historical Engineering Harness behavior.
-- Do not present debug event sources as proof of production Line/Chain puzzle feel, production phased-turn behavior, shared-budget/Tempo behavior, tactical Tier viability, or balance.
+- Do not present debug event sources as proof of production Line/Chain puzzle feel, production phased-turn behavior, shared-budget/Tempo behavior, tactical Tier viability, dual-resource balance, or human decision quality.
 - Do not rewrite old PASS evidence to match new production rules.
-- Production Line/Chain/turn/time/skill systems require new tests and runtime evidence.
+- Production Line/Chain/turn/time/skill/economy systems require new tests and runtime evidence.
 
 ## Production scope boundary
 
 - First player milestone remains a production-quality representative Vertical Slice, not a debug/system-only POC.
-- Production Line and Chain engines own puzzle rules/state only; combat resources, turn sequencing, shared time budget, enemy action state, Tempo evaluation, and Skill execution remain outside puzzle/UI code.
+- Production Line and Chain engines own puzzle rules/state only; combat resources, turn sequencing, shared time budget, enemy action state, Tempo evaluation, Skill execution and resource economy remain outside puzzle/UI code.
 - Production UI must express `LINE / CHAIN / ACTION / ENEMY` phase ownership directly, plus one continuous shared player-turn clock, rather than reusing Foundation state labels as the main player-facing model.
 - Exact balance values remain data-driven and evidence-tuned unless a newer approved Decision locks them.
 - AoE/target-pattern support may exist in the skill schema, but first Slice remains one Vanguard + one Gatebreaker; do not add a mob roster merely to prove AoE.
+- Do not add Technique-specific currencies/cooldowns, extra classes, bosses or biomes before representative-Slice evidence justifies the breadth.
 
 ## Cost and change safety
 

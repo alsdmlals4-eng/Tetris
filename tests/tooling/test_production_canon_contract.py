@@ -8,6 +8,7 @@ INDEX_PATH = ROOT / "docs" / "design" / "PRODUCTION_CANON_INDEX.json"
 CANON_PATH = ROOT / "docs" / "design" / "PRODUCTION_TURN_COMBAT_CANON.md"
 TIME_CANON_PATH = ROOT / "docs" / "design" / "PRODUCTION_TURN_TIME_CANON.md"
 SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md"
+BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
 PLAN_PATH = (
     ROOT
     / "docs"
@@ -52,12 +53,18 @@ class ProductionCanonContractTests(unittest.TestCase):
             data["skill_canon"],
             "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
         )
+        self.assertEqual(
+            data["balance_canon"],
+            "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
+        )
         self.assertEqual(data["current_core_decision"], "TETRIS-CORE-024")
         self.assertEqual(data["current_time_decision"], "TETRIS-TIME-025")
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-026")
+        self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-027")
         self.assertIn("TETRIS-CORE-021", data["retained_decisions"])
         self.assertIn("TETRIS-SKILL-022", data["retained_decisions"])
         self.assertIn("TETRIS-SKILL-026", data["retained_decisions"])
+        self.assertIn("TETRIS-BALANCE-027", data["retained_decisions"])
         self.assertIn("TETRIS-UX-023", data["retained_decisions"])
         self.assertIn("TETRIS-VISUAL-020", data["retained_decisions"])
         self.assertIn("continuous_enemy_combat_clock", data["superseded_contracts"])
@@ -69,6 +76,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertIn(
             "linear_same_skill_tier_dominance",
+            data["superseded_contracts"],
+        )
+        self.assertIn(
+            "single_interchangeable_combat_resource",
             data["superseded_contracts"],
         )
 
@@ -151,10 +162,46 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("CLEAN_REVIEW_EXIT", canon)
         self.assertIn("BUILD remains blocked", canon)
 
+    def test_balance_canon_keeps_dual_resources_and_progressive_tier_exposure(self) -> None:
+        self.assertTrue(BALANCE_CANON_PATH.is_file(), "balance canon must exist")
+        data = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-027")
+        self.assertEqual(
+            data["balance_canon"],
+            "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
+        )
+        economy = data["resource_economy"]
+        self.assertEqual(economy["model"], "DUAL_RESOURCE_OPPORTUNITY_COST")
+        self.assertEqual(economy["energy_owner"], "LINE")
+        self.assertEqual(economy["stock_owner"], "CHAIN")
+        self.assertFalse(economy["resources_interchangeable"])
+        self.assertEqual(economy["chain_stock_cap"], 6)
+        self.assertTrue(economy["stock_cost_equals_tier"])
+        self.assertEqual(economy["energy_cost_status"], "TUNING_SEED_NOT_FINAL")
+        self.assertEqual(
+            economy["tier_exposure_model"],
+            "CONTEXTUAL_PROGRESSIVE_EXPOSURE",
+        )
+        self.assertFalse(economy["tutorial_grants_resources_directly"])
+        self.assertTrue(economy["tutorial_uses_authored_production_board_seed"])
+        self.assertFalse(economy["tier6_routine_per_turn_expectation"])
+        self.assertFalse(economy["technique_specific_first_slice_currency"])
+        self.assertFalse(economy["technique_specific_first_slice_cooldown"])
+        self.assertFalse(economy["tempo_direct_resource_reward"])
+        self.assertTrue(economy["human_balance_evidence_required"])
+
+        canon = BALANCE_CANON_PATH.read_text(encoding="utf-8")
+        self.assertIn("TETRIS-BALANCE-027", canon)
+        self.assertIn("DUAL-RESOURCE", canon.upper())
+        self.assertIn("Tier 6", canon)
+        self.assertIn("CLEAN_REVIEW_EXIT", canon)
+        self.assertIn("BUILD remains deferred", canon)
+
     def test_human_entrypoints_point_to_current_production_canons(self) -> None:
         combat_expected = "docs/design/PRODUCTION_TURN_COMBAT_CANON.md"
         time_expected = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
         skill_expected = "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md"
+        balance_expected = "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
         agents = AGENTS_PATH.read_text(encoding="utf-8")
         readme = README_PATH.read_text(encoding="utf-8")
         self.assertIn(combat_expected, agents)
@@ -163,11 +210,14 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn(time_expected, readme)
         self.assertIn(skill_expected, agents)
         self.assertIn(skill_expected, readme)
+        self.assertIn(balance_expected, agents)
+        self.assertIn(balance_expected, readme)
 
     def test_current_canons_separate_foundation_from_production_evidence(self) -> None:
         canon = CANON_PATH.read_text(encoding="utf-8")
         time_canon = TIME_CANON_PATH.read_text(encoding="utf-8")
         skill_canon = SKILL_CANON_PATH.read_text(encoding="utf-8")
+        balance_canon = BALANCE_CANON_PATH.read_text(encoding="utf-8")
         self.assertIn("Core Combat Foundation / Engineering Harness", canon)
         self.assertIn("TETRIS-CORE-024", canon)
         self.assertIn("Attack / Defense / Support", canon)
@@ -182,6 +232,9 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("TETRIS-SKILL-026", skill_canon)
         self.assertIn("Tier is a commitment/cost band", skill_canon)
         self.assertIn("Current claims forbidden", skill_canon)
+        self.assertIn("TETRIS-BALANCE-027", balance_canon)
+        self.assertIn("TUNE_REQUIRED", balance_canon)
+        self.assertIn("Current claims forbidden", balance_canon)
 
 
 if __name__ == "__main__":
