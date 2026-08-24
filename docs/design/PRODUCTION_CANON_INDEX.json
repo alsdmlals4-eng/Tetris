@@ -5,9 +5,11 @@
   "current_core_decision": "TETRIS-CORE-024",
   "current_time_decision": "TETRIS-TIME-025",
   "current_skill_decision": "TETRIS-SKILL-026",
+  "current_balance_decision": "TETRIS-BALANCE-027",
   "primary_canon": "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
   "timing_canon": "docs/design/PRODUCTION_TURN_TIME_CANON.md",
   "skill_canon": "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
+  "balance_canon": "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
   "implementation_plan": "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md",
   "timing_implementation_plan": "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md",
   "skill_implementation_plan": "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md",
@@ -15,10 +17,11 @@
     "docs/design/PRODUCTION_TURN_TIME_CANON.md for player-turn timing, time modifiers, timeout, and Tempo reward",
     "docs/design/PRODUCTION_TURN_COMBAT_CANON.md for ordered combat turn and non-timing production rules",
     "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for Vanguard Tier 1-6 Technique identities, effect primitives, dominance guard, and skill validation",
+    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for Energy/Stock opportunity cost, Tier exposure, curated economy scenarios, and evidence-ready tuning boundaries",
     "latest USER_APPROVED decisions in GitHub Issue #10 and synced Notion owner pages",
     "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md for the timing implementation handoff",
     "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md except timing clauses superseded by TETRIS-TIME-025",
-    "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md for the skill implementation handoff",
+    "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md for the skill/economy implementation handoff",
     "actual code/data/scenes/tests/runtime evidence"
   ],
   "retained_decisions": [
@@ -26,6 +29,7 @@
     "TETRIS-CORE-021",
     "TETRIS-SKILL-022",
     "TETRIS-SKILL-026",
+    "TETRIS-BALANCE-027",
     "TETRIS-UX-023",
     "TETRIS-VISUAL-020",
     "TETRIS-ENCOUNTER-006",
@@ -43,7 +47,9 @@
     "independent_line_chain_action_timers",
     "discard_unused_time_at_each_phase_boundary",
     "linear_same_skill_tier_dominance",
-    "player_facing_tier_identity_forbidden"
+    "player_facing_tier_identity_forbidden",
+    "single_interchangeable_combat_resource",
+    "technique_specific_first_slice_currency_or_cooldown"
   ],
   "historical_foundation_documents": [
     "docs/design/CORE_GAMEPLAY_GDD.md",
@@ -125,10 +131,30 @@
     "aoe_first_slice_validation": "SINGLE_TARGET_FALLBACK_ONLY",
     "action_timeout_fallback": "PASS"
   },
+  "resource_economy": {
+    "model": "DUAL_RESOURCE_OPPORTUNITY_COST",
+    "energy_owner": "LINE",
+    "stock_owner": "CHAIN",
+    "resources_interchangeable": false,
+    "chain_stock_cap": 6,
+    "stock_cost_equals_tier": true,
+    "energy_cost_status": "TUNING_SEED_NOT_FINAL",
+    "energy_relative_cost_seed": [1.0, 1.25, 1.55, 1.9, 2.2, 2.55],
+    "tier_exposure_model": "CONTEXTUAL_PROGRESSIVE_EXPOSURE",
+    "tutorial_grants_resources_directly": false,
+    "tutorial_uses_authored_production_board_seed": true,
+    "tier6_routine_per_turn_expectation": false,
+    "technique_specific_first_slice_currency": false,
+    "technique_specific_first_slice_cooldown": false,
+    "tempo_direct_resource_reward": false,
+    "automated_balance_scope": "IMPOSSIBLE_STATE_AND_OBVIOUS_DOMINANCE_ONLY",
+    "human_balance_evidence_required": true
+  },
   "implementation_reality": {
     "production_turn_canon": "DOCUMENTED_USER_APPROVED",
     "production_time_canon": "DOCUMENTED_USER_APPROVED_BUILD_DEFERRED",
     "production_skill_canon": "DOCUMENTED_USER_APPROVED_BUILD_DEFERRED",
+    "production_balance_structure": "DOCUMENTED_PLANNING_CONTINUATION_BUILD_DEFERRED",
     "production_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
     "timing_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
     "skill_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
@@ -141,6 +167,7 @@
     "production_swap_match_chain_engine": "NOT_PRESENT",
     "production_skill_effect_primitives": "NOT_PRESENT",
     "production_tier_1_to_6_runtime": "NOT_PRESENT",
+    "production_resource_economy_runtime": "NOT_PRESENT",
     "production_human_playtest": "NOT_RUN"
   }
 }
