@@ -16,8 +16,8 @@ func _turn_in_action() -> TurnController:
     return turn
 
 func test_counter_lethal_during_enemy_resolve_ends_battle_before_next_telegraph() -> void:
-    var skill_catalog := ProductionSkillCatalog.from_dictionary(JSON.parse_string(FileAccess.get_file_as_string(SKILL_DATA_PATH)))
-    var enemy_catalog := GatebreakerActionCatalog.from_dictionary(JSON.parse_string(FileAccess.get_file_as_string(ENEMY_DATA_PATH)))
+    var skill_catalog = ProductionSkillCatalog.from_dictionary(JSON.parse_string(FileAccess.get_file_as_string(SKILL_DATA_PATH)))
+    var enemy_catalog = GatebreakerActionCatalog.from_dictionary(JSON.parse_string(FileAccess.get_file_as_string(ENEMY_DATA_PATH)))
     var current: Dictionary = enemy_catalog.instantiate_action("gatebreaker_slam", 1)
     var next: Dictionary = enemy_catalog.instantiate_action("light_smash", 2)
     var authored_after_next: Dictionary = enemy_catalog.instantiate_action("rift_siphon", 3)
