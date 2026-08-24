@@ -106,7 +106,7 @@ func test_legal_selection_spends_exact_dual_resource_cost_and_exits_action_phase
     assert_eq(turn.phase, TurnPhase.PLAYER_RESOLVE)
     assert_not_null(turn.pending_player_action)
     assert_eq(turn.pending_player_action.id, "atk_t3_rift_breach")
-    assert_true(turn.turn_budget.is_frozen(), "Action selection ends player decision time")
+    assert_true(turn.turn_budget.frozen, "Action selection ends player decision time")
 
 func test_failed_selection_is_atomic_when_one_resource_is_missing() -> void:
     var fixture = _make_session()
