@@ -35,6 +35,12 @@ func set_cell(position: Vector2i, value: String) -> bool:
     _cells[_cell_index(position)] = value
     return true
 
+func is_empty() -> bool:
+    for value in _cells:
+        if value != "":
+            return false
+    return true
+
 func can_place(cells: Array, origin: Vector2i) -> bool:
     for local_cell in cells:
         var position: Vector2i = origin + Vector2i(local_cell)
