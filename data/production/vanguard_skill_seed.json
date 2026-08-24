@@ -204,7 +204,17 @@
       "stock_cost": 3,
       "energy_cost": 16,
       "target_mode": "SELF",
-      "effects": [{"op": "MODIFY_NEXT_TURN_BUDGET", "seconds": 5.0, "tempo_scalable": false}]
+      "effects": [
+        {
+          "op": "MODIFY_NEXT_TURN_BUDGET",
+          "seconds": 5.0,
+          "tempo_scalable": false,
+          "source_id": "sup_t3_haste",
+          "stack_group": "haste_default",
+          "stackable": false,
+          "expires_after_turns": 1
+        }
+      ]
     },
     {
       "id": "sup_t4_mark_weakness",
