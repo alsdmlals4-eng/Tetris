@@ -6,5 +6,9 @@
     "min_budget_seconds": 30.0,
     "max_budget_seconds": 120.0,
     "tempo_reference_seconds": 90.0
+  },
+  "tempo_reward": {
+    "potency_per_saved_ratio": 0.20,
+    "potency_bonus_cap_ratio": 0.15
   }
 }
