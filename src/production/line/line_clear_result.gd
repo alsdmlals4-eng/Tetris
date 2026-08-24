@@ -7,6 +7,10 @@ var lines_cleared: int
 var clear_kind: String
 var energy_delta: int
 var score_delta: int
+var spin_kind: String = "NONE"
+var combo_index: int = -1
+var back_to_back: bool = false
+var perfect_clear: bool = false
 
 func _init(
     p_success: bool,
@@ -49,4 +53,8 @@ func to_event() -> Dictionary:
         "clear_kind": clear_kind,
         "energy_delta": energy_delta,
         "score_delta": score_delta,
+        "spin_kind": spin_kind,
+        "combo_index": combo_index,
+        "back_to_back": back_to_back,
+        "perfect_clear": perfect_clear,
     }
