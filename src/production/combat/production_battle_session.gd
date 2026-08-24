@@ -12,6 +12,7 @@ var time_effect_state: TimeEffectState
 var technique_resolver: ProductionTechniqueResolver
 var enemy_action_resolver: ProductionEnemyActionResolver
 var skill_session: ProductionSkillSession
+var encounter_director: GatebreakerEncounterDirector = null
 
 var battle_over: bool = false
 var outcome: String = "ONGOING"
@@ -39,6 +40,14 @@ func _init(
     technique_resolver = p_technique_resolver
     enemy_action_resolver = p_enemy_action_resolver
     skill_session = ProductionSkillSession.new(turn_controller, player_state, skill_catalog)
+
+func attach_encounter_director(director: GatebreakerEncounterDirector) -> bool:
+    if director == null:
+        return false
+    if not director.has_method("preview_next_after_resolve") or not director.has_method("commit_next_after_resolve"):
+        return false
+    encounter_director = director
+    return true
 
 func select_technique(technique_id: String) -> Dictionary:
     if battle_over:
@@ -101,6 +110,63 @@ func resolve_player_action() -> Dictionary:
     resolved["enemy_action_cancelled"] = false
     resolved["battle_over"] = false
     return resolved
+
+func resolve_directed_enemy_action() -> Dictionary:
+    if battle_over:
+        return _resolve_failed("BATTLE_OVER")
+    if encounter_director == null:
+        return _resolve_failed("MISSING_ENCOUNTER_DIRECTOR")
+    if turn_controller.phase != TurnPhase.ENEMY_RESOLVE:
+        return _resolve_failed("WRONG_PHASE")
+
+    var current_action := telegraph_state.current_action()
+    if current_action.is_empty():
+        return _resolve_failed("MISSING_CURRENT_TELEGRAPH")
+
+    var preview := enemy_action_resolver.preview(current_action, {
+        "player": player_state,
+        "enemy": enemy_state,
+        "response_state": response_state,
+    })
+    if not bool(preview.get("ready", false)):
+        return _resolve_failed(String(preview.get("reason", "ENEMY_ACTION_PREVIEW_FAILED")))
+
+    var projected_enemy_hp := int(preview.get("projected_enemy_hp", -1))
+    if projected_enemy_hp < 0 or enemy_state.max_hp <= 0:
+        return _resolve_failed("INVALID_PROJECTED_ENEMY_HP")
+    var projected_hp_ratio := clampf(float(projected_enemy_hp) / float(enemy_state.max_hp), 0.0, 1.0)
+
+    var authored_next := encounter_director.preview_next_after_resolve(projected_hp_ratio)
+    if authored_next.is_empty():
+        return _resolve_failed("DIRECTOR_NEXT_PREVIEW_FAILED")
+
+    var current_action_id := String(current_action.get("id", ""))
+    var advance_ready := telegraph_state.advance_readiness(current_action_id, authored_next)
+    if not bool(advance_ready.get("ready", false)):
+        return _resolve_failed(String(advance_ready.get("reason", "TELEGRAPH_ADVANCE_NOT_READY")))
+
+    var result := resolve_enemy_action(authored_next)
+    if not bool(result.get("resolved", false)):
+        return result
+
+    result["projected_post_resolve_enemy_hp"] = projected_enemy_hp
+    result["projected_post_resolve_enemy_hp_ratio"] = projected_hp_ratio
+    result["director_candidate_action_id"] = String(authored_next.get("id", ""))
+
+    if battle_over:
+        result["director_committed"] = false
+        return result
+
+    var committed := encounter_director.commit_next_after_resolve(
+        projected_hp_ratio,
+        String(authored_next.get("id", ""))
+    )
+    if committed.is_empty() or String(committed.get("id", "")) != String(authored_next.get("id", "")):
+        return _resolve_failed("DIRECTOR_COMMIT_MISMATCH")
+
+    result["director_committed"] = true
+    result["director_action_id"] = String(committed.get("id", ""))
+    return result
 
 func resolve_enemy_action(authored_next: Dictionary) -> Dictionary:
     if battle_over:
