@@ -9,6 +9,7 @@ var bag: SevenBag
 var active_piece: ActiveTetromino = null
 var held_piece_id: String = ""
 var hold_used_for_active: bool = false
+var streak_state := LineStreakState.new()
 
 var _upcoming: Array[String] = []
 
@@ -54,11 +55,15 @@ func commit_active_piece(reward_config: LineRewardConfig) -> LineClearResult:
         return LineClearResult.failed("")
 
     var piece_id := active_piece.piece_id
+    var spin_kind := LineSpinRecognizer.classify(board, active_piece)
     if not board.lock_cells(active_piece.get_cells(), active_piece.origin, piece_id):
         return LineClearResult.failed(piece_id)
 
     var lines_cleared := board.clear_full_rows()
     var result := reward_config.make_result(piece_id, lines_cleared)
+    result.spin_kind = spin_kind
+    result.perfect_clear = lines_cleared > 0 and board.is_empty()
+    streak_state.decorate(result)
     complete_lock_and_spawn_next()
     return result
 
