@@ -49,6 +49,14 @@ func attach_encounter_director(director: GatebreakerEncounterDirector) -> bool:
     encounter_director = director
     return true
 
+func start_next_player_turn(config, profile_id: String) -> Dictionary:
+    if battle_over:
+        return {
+            "started": false,
+            "reason": "BATTLE_OVER",
+        }
+    return turn_controller.start_player_turn(config, profile_id, time_effect_state)
+
 func select_technique(technique_id: String) -> Dictionary:
     if battle_over:
         return _selection_failed("BATTLE_OVER")
