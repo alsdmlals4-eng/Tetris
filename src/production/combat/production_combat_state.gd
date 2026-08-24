@@ -27,6 +27,13 @@ func gain_stock(amount: int) -> Dictionary:
         "lost_at_cap": amount - applied,
     }
 
+func lose_stock(amount: int) -> int:
+    if amount <= 0:
+        return 0
+    var applied := mini(amount, stock)
+    stock -= applied
+    return applied
+
 func apply_energy_delta(delta: int) -> int:
     var before: int = energy
     energy = maxi(0, energy + delta)
