@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "status": "NOT_RUN",
+  "contract": "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md",
+  "target_session_minutes": [6, 10],
+  "method": "OBSERVE_THEN_PROBE",
+  "human_evidence_required": true,
+  "claim_ceiling": "FUN_HYPOTHESIS_UNTIL_HUMAN_EVIDENCE",
+  "dimensions": [
+    "ONBOARDING_COMPREHENSION",
+    "TELEGRAPH_RESPONSE",
+    "SHARED_BUDGET_COMPREHENSION",
+    "DUAL_RESOURCE_CHOICE",
+    "TIER_VIABILITY",
+    "FORECAST_CONTROL",
+    "VISUAL_READABILITY",
+    "RESULT_FEEDBACK",
+    "EXPERIENCE_SIGNAL"
+  ],
+  "visual_authority": "TETRIS-VISUAL-020",
+  "gameplay_authorities": [
+    "TETRIS-TIME-025",
+    "TETRIS-CORE-024",
+    "TETRIS-SKILL-026",
+    "TETRIS-BALANCE-027"
+  ],
+  "directional_sessions": ["A", "B", "C"],
+  "minimum_directional_sessions_for_pass": 3,
+  "gate": ["PASS", "REVISE", "BLOCK"]
+}
