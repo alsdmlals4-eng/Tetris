@@ -1,0 +1,247 @@
+{
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "source_contract": "TETRIS-SKILL-026 / TETRIS-BALANCE-027",
+  "energy_seed_note": "Explicit comparison values only. Runtime and human evidence must tune final costs and magnitudes.",
+  "techniques": [
+    {
+      "id": "atk_t1_quick_cut",
+      "lane": "ATTACK",
+      "tier": 1,
+      "name_en": "Quick Cut",
+      "name_ko": "신속 베기",
+      "tactical_tag": "효율",
+      "stock_cost": 1,
+      "energy_cost": 10,
+      "target_mode": "SINGLE_ENEMY",
+      "effects": [{"op": "DAMAGE_SINGLE", "magnitude": 12}]
+    },
+    {
+      "id": "atk_t2_sweeping_cut",
+      "lane": "ATTACK",
+      "tier": 2,
+      "name_en": "Sweeping Cut",
+      "name_ko": "휩쓸기",
+      "tactical_tag": "범위",
+      "stock_cost": 2,
+      "energy_cost": 13,
+      "target_mode": "ALL_ENEMIES_WITH_SINGLE_TARGET_FALLBACK",
+      "effects": [
+        {"op": "DAMAGE_AOE", "magnitude": 16},
+        {"op": "TARGET_PATTERN", "pattern": "ALL_ENEMIES", "single_target_fallback": true}
+      ]
+    },
+    {
+      "id": "atk_t3_rift_breach",
+      "lane": "ATTACK",
+      "tier": 3,
+      "name_en": "Rift Breach",
+      "name_ko": "균열 파쇄",
+      "tactical_tag": "설치",
+      "stock_cost": 3,
+      "energy_cost": 16,
+      "target_mode": "SINGLE_ENEMY",
+      "effects": [
+        {"op": "DAMAGE_SINGLE", "magnitude": 18},
+        {"op": "APPLY_ENEMY_DEBUFF", "status": "BREACH", "stacks": 1}
+      ]
+    },
+    {
+      "id": "atk_t4_crushing_strike",
+      "lane": "ATTACK",
+      "tier": 4,
+      "name_en": "Crushing Strike",
+      "name_ko": "중압 강타",
+      "tactical_tag": "폭발",
+      "stock_cost": 4,
+      "energy_cost": 19,
+      "target_mode": "SINGLE_ENEMY",
+      "effects": [{"op": "DAMAGE_SINGLE", "magnitude": 30}]
+    },
+    {
+      "id": "atk_t5_suppressive_break",
+      "lane": "ATTACK",
+      "tier": 5,
+      "name_en": "Suppressive Break",
+      "name_ko": "제압 파쇄",
+      "tactical_tag": "다음행동",
+      "stock_cost": 5,
+      "energy_cost": 22,
+      "target_mode": "SINGLE_ENEMY",
+      "control_scope": "VISIBLE_NEXT_FORECAST_DIRECT",
+      "effects": [
+        {"op": "DAMAGE_SINGLE", "magnitude": 24},
+        {"op": "APPLY_ENEMY_DEBUFF", "status": "WEAKEN", "stacks": 1, "bind_to": "VISIBLE_NEXT_FORECAST_ACTION_ID"}
+      ]
+    },
+    {
+      "id": "atk_t6_execution_edge",
+      "lane": "ATTACK",
+      "tier": 6,
+      "name_en": "Execution Edge",
+      "name_ko": "처형 일격",
+      "tactical_tag": "피니셔",
+      "stock_cost": 6,
+      "energy_cost": 26,
+      "target_mode": "SINGLE_ENEMY",
+      "effects": [
+        {"op": "DAMAGE_SINGLE", "magnitude": 28},
+        {"op": "CONDITIONAL_MULTIPLIER", "field": "damage", "multiplier": 1.8, "condition": "BREACH_OR_ENEMY_HP_BELOW_RATIO", "hp_ratio": 0.25}
+      ]
+    },
+    {
+      "id": "def_t1_guard",
+      "lane": "DEFENSE",
+      "tier": 1,
+      "name_en": "Guard",
+      "name_ko": "방어 태세",
+      "tactical_tag": "효율",
+      "stock_cost": 1,
+      "energy_cost": 10,
+      "target_mode": "SELF",
+      "effects": [{"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 10}]
+    },
+    {
+      "id": "def_t2_fortify",
+      "lane": "DEFENSE",
+      "tier": 2,
+      "name_en": "Fortify",
+      "name_ko": "견고한 자세",
+      "tactical_tag": "다음행동",
+      "stock_cost": 2,
+      "energy_cost": 13,
+      "target_mode": "SELF",
+      "effects": [
+        {"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 14},
+        {"op": "APPLY_SELF_BUFF", "status": "FORTIFY", "stacks": 1}
+      ]
+    },
+    {
+      "id": "def_t3_counter_stance",
+      "lane": "DEFENSE",
+      "tier": 3,
+      "name_en": "Counter Stance",
+      "name_ko": "역습 준비",
+      "tactical_tag": "반격",
+      "stock_cost": 3,
+      "energy_cost": 16,
+      "target_mode": "SELF",
+      "effects": [
+        {"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 16},
+        {"op": "COUNTER_FROM_PREVENTED_DAMAGE", "ratio": 0.5}
+      ]
+    },
+    {
+      "id": "def_t4_bulwark",
+      "lane": "DEFENSE",
+      "tier": 4,
+      "name_en": "Bulwark",
+      "name_ko": "철벽 수호",
+      "tactical_tag": "생존",
+      "stock_cost": 4,
+      "energy_cost": 19,
+      "target_mode": "SELF",
+      "effects": [{"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 28}]
+    },
+    {
+      "id": "def_t5_rift_ward",
+      "lane": "DEFENSE",
+      "tier": 5,
+      "name_en": "Rift Ward",
+      "name_ko": "균열 방벽",
+      "tactical_tag": "자원보호",
+      "stock_cost": 5,
+      "energy_cost": 22,
+      "target_mode": "SELF",
+      "control_scope": "CURRENT_TELEGRAPH_RESOURCE_LOSS",
+      "effects": [{"op": "PROTECT_RESOURCE_LOSS", "ratio": 0.6, "bind_to": "CURRENT_TELEGRAPH_ACTION_ID"}]
+    },
+    {
+      "id": "def_t6_last_bastion",
+      "lane": "DEFENSE",
+      "tier": 6,
+      "name_en": "Last Bastion",
+      "name_ko": "불굴의 성채",
+      "tactical_tag": "피니셔",
+      "stock_cost": 6,
+      "energy_cost": 26,
+      "target_mode": "SELF",
+      "effects": [
+        {"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 20},
+        {"op": "LETHAL_SAFETY", "hp_floor": 1, "charges": 1}
+      ]
+    },
+    {
+      "id": "sup_t1_second_wind",
+      "lane": "SUPPORT",
+      "tier": 1,
+      "name_en": "Second Wind",
+      "name_ko": "재기",
+      "tactical_tag": "회복",
+      "stock_cost": 1,
+      "energy_cost": 10,
+      "target_mode": "SELF",
+      "effects": [{"op": "HEAL_SELF", "magnitude": 14}]
+    },
+    {
+      "id": "sup_t2_rally",
+      "lane": "SUPPORT",
+      "tier": 2,
+      "name_en": "Rally",
+      "name_ko": "재정비",
+      "tactical_tag": "설치",
+      "stock_cost": 2,
+      "energy_cost": 13,
+      "target_mode": "SELF",
+      "effects": [{"op": "APPLY_SELF_BUFF", "status": "RALLY", "stacks": 1}]
+    },
+    {
+      "id": "sup_t3_haste",
+      "lane": "SUPPORT",
+      "tier": 3,
+      "name_en": "Haste",
+      "name_ko": "전투 가속",
+      "tactical_tag": "시간",
+      "stock_cost": 3,
+      "energy_cost": 16,
+      "target_mode": "SELF",
+      "effects": [{"op": "MODIFY_NEXT_TURN_BUDGET", "seconds": 5.0, "tempo_scalable": false}]
+    },
+    {
+      "id": "sup_t4_mark_weakness",
+      "lane": "SUPPORT",
+      "tier": 4,
+      "name_en": "Mark Weakness",
+      "name_ko": "약점 지시",
+      "tactical_tag": "설치",
+      "stock_cost": 4,
+      "energy_cost": 19,
+      "target_mode": "SINGLE_ENEMY",
+      "effects": [{"op": "APPLY_ENEMY_DEBUFF", "status": "WEAKNESS", "stacks": 1}]
+    },
+    {
+      "id": "sup_t5_rift_seal",
+      "lane": "SUPPORT",
+      "tier": 5,
+      "name_en": "Rift Seal",
+      "name_ko": "균열 봉쇄",
+      "tactical_tag": "다음행동",
+      "stock_cost": 5,
+      "energy_cost": 22,
+      "target_mode": "SINGLE_ENEMY",
+      "control_scope": "VISIBLE_NEXT_FORECAST_RIFT_UTILITY",
+      "effects": [{"op": "APPLY_ENEMY_DEBUFF", "status": "RIFT_SEAL", "stacks": 1, "bind_to": "VISIBLE_NEXT_FORECAST_ACTION_ID"}]
+    },
+    {
+      "id": "sup_t6_battle_trance",
+      "lane": "SUPPORT",
+      "tier": 6,
+      "name_en": "Battle Trance",
+      "name_ko": "전투 몰입",
+      "tactical_tag": "설치",
+      "stock_cost": 6,
+      "energy_cost": 26,
+      "target_mode": "SELF",
+      "effects": [{"op": "APPLY_SELF_BUFF", "status": "BATTLE_TRANCE", "stacks": 1}]
+    }
+  ]
+}
