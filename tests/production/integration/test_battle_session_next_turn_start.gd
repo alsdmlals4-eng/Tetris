@@ -104,7 +104,7 @@ func test_session_does_not_start_another_turn_after_terminal_battle() -> void:
     session.battle_over = true
     session.outcome = "PLAYER_VICTORY"
     turn.phase = TurnPhase.ENEMY_TELEGRAPH
-    var old_budget := turn.turn_budget
+    var old_budget: TurnBudget = turn.turn_budget
     f["effects"].apply_effect("haste", "haste_default", 5.0, false, 1)
 
     var result: Dictionary = session.start_next_player_turn(_time_config(), "NORMAL")
@@ -117,7 +117,7 @@ func test_session_does_not_start_another_turn_after_terminal_battle() -> void:
 func test_wrong_phase_is_rejected_without_consuming_pending_time_effects() -> void:
     var f := _fixture()
     f["effects"].apply_effect("haste", "haste_default", 5.0, false, 1)
-    var old_budget := f["turn"].turn_budget
+    var old_budget: TurnBudget = f["turn"].turn_budget
 
     var result: Dictionary = f["session"].start_next_player_turn(_time_config(), "NORMAL")
 
