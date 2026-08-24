@@ -82,7 +82,8 @@ Recommended probes:
 5. “지금 위협과 다음 Forecast를 어떻게 구분했나요?”
 6. “방금 선택이 결과를 어떻게 바꿨다고 생각하나요?”
 7. “가장 늦게 찾았거나 헷갈린 정보는 무엇이었나요?”
-8. “다시 한다면 무엇을 다르게 하겠나요?”
+8. “지금 플레이에서 가장 기억에 남는 순간은 무엇이었나요? 왜 그랬나요?”
+9. “다시 한다면 무엇을 다르게 하겠나요?”
 
 Avoid leading questions such as “Shared Timer가 이해됐나요?” or “낮은 Tier가 더 효율적인 상황인 걸 알았나요?”.
 
@@ -210,6 +211,20 @@ Evidence questions:
 - Can they separate Player Action Resolve from Enemy Resolve?
 - After a bad outcome, can they state at least one actionable reason to change the next attempt?
 
+### I. EXPERIENCE_SIGNAL / MEMORABLE_MOMENT
+
+Usability is necessary but not sufficient. The Slice should produce at least one observable sequence of **pressure → deliberate choice → readable payoff** that the player can recall without being told what the intended highlight was.
+
+Evidence questions:
+
+- Is there a moment where the player visibly slows down, commits, reacts, or changes plan because the threat/time/resource tradeoff matters?
+- After the session, what moment does the player recall first and why?
+- Does a successful defensive/offensive/support decision create clear relief, payoff, or anticipation rather than only numerical cleanup?
+- Does failure create an understandable “next time I would…” thought rather than opaque frustration?
+- Is the memorable moment caused by the game's decision structure, not only by decorative art or spectacle?
+
+This is a **directional experience signal**, not proof of universal fun, retention, or market success. A/B/C may disagree; preserve the disagreement rather than averaging it into a false certainty.
+
 ## 6. Minimum evidence receipt
 
 Each session receipt records, when available:
@@ -224,15 +239,17 @@ Each session receipt records, when available:
 - completion / abandonment;
 - every moderator intervention and timestamp;
 - first major confusion and its consequence;
+- first self-initiated plan change caused by Telegraph/time/resource pressure;
 - READY / timeout behavior;
 - meaningful Line Energy and Chain Stock state at key decisions;
 - selected lane / Tier / Technique where relevant;
 - current Telegraph and visible Next Forecast involved in the decision;
 - result and player explanation;
+- recalled memorable moment and reason;
 - screen/video recording reference if consent and tooling allow it;
 - timestamped observation notes.
 
-Telemetry is useful once the representative runtime exists, but telemetry is not required to define this planning contract and cannot replace observation/interview evidence for comprehension.
+Telemetry is useful once the representative runtime exists, but telemetry is not required to define this planning contract and cannot replace observation/interview evidence for comprehension or experience meaning.
 
 ## 7. Severity and gate
 
@@ -261,9 +278,10 @@ Use directional `PASS` only when:
 - the player can complete the core representative flow without core-mechanic coaching;
 - critical concepts are demonstrated by both behavior and post-play explanation, not questionnaire agreement alone;
 - no same high-severity misunderstanding repeats unresolved across the directional sessions;
+- at least one pressure → deliberate choice → readable payoff candidate is observed and captured as experience evidence;
 - any remaining issue is explicitly bounded and does not invalidate the core design hypothesis.
 
-The gate is **PASS / REVISE / BLOCK**. `PASS` is directional evidence for the tested Slice/build; it is not statistical market proof, final commercial validation, or proof that all players will find the game fun.
+The gate is **PASS / REVISE / BLOCK**. `PASS` is directional evidence for the tested Slice/build; it is not statistical market proof, final commercial validation, proof of retention, or proof that all players will find the game fun.
 
 ## 8. Evidence ceiling / Implementation Reality Gate
 
@@ -277,9 +295,9 @@ Evidence classes must not be promoted:
 - concept art/mockups → can prove visual target intent, not runtime visual readability;
 - Draft PR branch evidence → proves only that branch at its exact verified head;
 - merged runtime + device receipt → proves callable/observed runtime behavior on that target;
-- Human session receipt → may support the specific comprehension/readability/choice claims actually observed.
+- Human session receipt → may support the specific comprehension/readability/choice/experience claims actually observed.
 
-Until Human receipts exist, fun, tension, readability, Tier-choice comprehension and final balance remain **FUN_HYPOTHESIS** / `TUNE_REQUIRED` as appropriate.
+Until Human receipts exist, fun, tension, readability, Tier-choice comprehension, memorable payoff and final balance remain **FUN_HYPOTHESIS** / `TUNE_REQUIRED` as appropriate.
 
 ## 9. What happens after the first Human gate
 
@@ -287,6 +305,7 @@ If `PASS`:
 
 - retain the core model;
 - tune exact seconds, Energy cost/gain, effect magnitude, encounter pressure and visual emphasis from observed evidence;
+- preserve which pressure/choice/payoff moments actually became memorable before adding more spectacle;
 - do not use the pass as justification to add classes, bosses, biomes, currencies or new subsystems before the representative Slice is stable.
 
 If `REVISE`:
