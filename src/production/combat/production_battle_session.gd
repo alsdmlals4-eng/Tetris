@@ -191,6 +191,17 @@ func resolve_enemy_action(authored_next: Dictionary) -> Dictionary:
     if not bool(enemy_result.get("resolved", false)):
         return _resolve_failed(String(enemy_result.get("reason", "ENEMY_ACTION_RESOLVE_FAILED")))
 
+    if enemy_state.is_defeated() and not player_state.is_defeated():
+        battle_over = true
+        outcome = "PLAYER_VICTORY"
+        return {
+            "resolved": true,
+            "reason": "RESOLVED",
+            "battle_over": true,
+            "outcome": outcome,
+            "enemy_action_result": enemy_result,
+        }
+
     if player_state.is_defeated():
         battle_over = true
         outcome = "PLAYER_DEFEAT"
