@@ -16,6 +16,13 @@ const ALLOWED_BINDINGS := [
     "CURRENT_TELEGRAPH_ACTION_ID",
 ]
 
+const UNBOUND_CONSUMPTION_TRIGGERS := {
+    "BREACH": "QUALIFYING_PLAYER_ATTACK",
+    "FORTIFY": "QUALIFYING_DIRECT_HIT",
+    "RALLY": "LEGAL_PLAYER_ACTION",
+    "BATTLE_TRANCE": "ELIGIBLE_LINE_CHAIN_PREPARATION",
+}
+
 var _entries: Dictionary = {}
 
 func allowed_statuses() -> Array:
@@ -70,4 +77,20 @@ func consume_for_action(status: String, target: String, action_id: String) -> bo
     if not matches_bound_action(status, target, action_id):
         return false
     _entries.erase(_key(status, target))
+    return true
+
+func consume_unbound_for_trigger(status: String, target: String, trigger: String) -> bool:
+    if not _valid(status, target) or trigger == "":
+        return false
+    if not UNBOUND_CONSUMPTION_TRIGGERS.has(status):
+        return false
+    if String(UNBOUND_CONSUMPTION_TRIGGERS[status]) != trigger:
+        return false
+
+    var key := _key(status, target)
+    var entry: Dictionary = _entries.get(key, {})
+    if entry.is_empty() or String(entry.get("binding", "")) != "":
+        return false
+
+    _entries.erase(key)
     return true
