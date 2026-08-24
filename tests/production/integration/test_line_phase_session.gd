@@ -131,7 +131,7 @@ func test_spawn_block_after_commit_resets_line_board_and_emits_board_break_witho
     session.start_line()
     var preview_before: Array = session.piece_cycle.peek_next(28)
     var next_id: String = preview_before[0]
-    var next_spawn := session.piece_cycle.catalog.get_spawn_origin(next_id, session.piece_cycle.board.width, session.piece_cycle.board.hidden_rows)
+    var next_spawn: Vector2i = session.piece_cycle.catalog.get_spawn_origin(next_id, session.piece_cycle.board.width, session.piece_cycle.board.hidden_rows)
     for cell in session.piece_cycle.catalog.get_cells(next_id, 0):
         session.piece_cycle.board.set_cell(next_spawn + Vector2i(cell), "X")
 
