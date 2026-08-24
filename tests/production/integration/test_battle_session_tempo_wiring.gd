@@ -89,7 +89,7 @@ func test_missing_chain_qualification_keeps_legal_action_at_base_potency() -> vo
     assert_true(selected["accepted"])
     assert_false(selected["tempo_eligible"])
     assert_eq(selected["tempo_potency_bonus_ratio"], 0.0)
-    assert_eq(selected["tempo_ineligible_reason"], "CHAIN_NOT_QUALIFIED")
+    assert_eq(selected["tempo_ineligible_reason"], "CHAIN_REQUIRED")
     assert_true(f["session"].resolve_player_action()["resolved"])
     assert_eq(f["enemy"].hp, 88)
 
@@ -105,6 +105,6 @@ func test_board_break_disqualifies_tempo_without_making_action_illegal() -> void
     assert_true(selected["accepted"])
     assert_false(selected["tempo_eligible"])
     assert_eq(selected["tempo_potency_bonus_ratio"], 0.0)
-    assert_eq(selected["tempo_ineligible_reason"], "BOARD_BREAK_OCCURRED")
+    assert_eq(selected["tempo_ineligible_reason"], "BOARD_BREAK")
     assert_true(f["session"].resolve_player_action()["resolved"])
     assert_eq(f["enemy"].hp, 88)
