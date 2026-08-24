@@ -13,6 +13,7 @@ var phase: int = TurnPhase.ENEMY_TELEGRAPH
 var turn_budget: TurnBudget
 var chain_input_skipped_for_timeout: bool = false
 var pending_player_action: PendingAction = null
+var timed_out_this_turn: bool = false
 
 var _timeout_pending: bool = false
 
@@ -49,6 +50,7 @@ func start_player_turn(config, profile_id: String, effects: TimeEffectState = nu
 
     turn_budget = fresh_budget
     _timeout_pending = false
+    timed_out_this_turn = false
     chain_input_skipped_for_timeout = false
     pending_player_action = null
     if effects != null:
@@ -78,6 +80,7 @@ func tick_player_time(delta: float) -> void:
     if not turn_budget.is_expired():
         return
 
+    timed_out_this_turn = true
     match phase:
         TurnPhase.LINE:
             _timeout_pending = true
