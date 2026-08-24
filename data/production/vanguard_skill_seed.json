@@ -216,7 +216,7 @@
       "stock_cost": 4,
       "energy_cost": 19,
       "target_mode": "SINGLE_ENEMY",
-      "effects": [{"op": "APPLY_ENEMY_DEBUFF", "status": "WEAKNESS", "stacks": 1}]
+      "effects": [{"op": "APPLY_ENEMY_DEBUFF", "status_contract": "TUNE_REQUIRED"}]
     },
     {
       "id": "sup_t5_rift_seal",
