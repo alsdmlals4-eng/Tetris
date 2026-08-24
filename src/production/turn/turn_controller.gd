@@ -68,6 +68,14 @@ func complete_chain_settle() -> void:
         return
     phase = TurnPhase.ACTION
 
+func select_player_action(action_id: String) -> bool:
+    if phase != TurnPhase.ACTION or action_id == "":
+        return false
+    pending_player_action = PendingAction.new(action_id)
+    turn_budget.freeze()
+    phase = TurnPhase.PLAYER_RESOLVE
+    return true
+
 func _resolve_timeout_pass() -> void:
     _timeout_pending = false
     pending_player_action = PendingAction.new("PASS")
