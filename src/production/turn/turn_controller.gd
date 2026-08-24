@@ -30,7 +30,7 @@ func start_player_turn(config, profile_id: String, effects: TimeEffectState = nu
             "started": false,
             "reason": "MISSING_TIME_CONFIG",
         }
-    if not config.has_profile(profile_id):
+    if not config.has_difficulty_profile(profile_id):
         return {
             "started": false,
             "reason": "UNKNOWN_DIFFICULTY_PROFILE",
@@ -59,7 +59,7 @@ func start_player_turn(config, profile_id: String, effects: TimeEffectState = nu
         "started": true,
         "reason": "STARTED",
         "profile_id": profile_id,
-        "base_budget_seconds": config.base_budget_for(profile_id),
+        "base_budget_seconds": config.get_base_budget_seconds(profile_id),
         "flat_modifier_seconds": flat_modifier_seconds,
         "effective_budget_seconds": turn_budget.effective_budget_seconds,
         "tempo_reference_seconds": config.tempo_reference_seconds,
