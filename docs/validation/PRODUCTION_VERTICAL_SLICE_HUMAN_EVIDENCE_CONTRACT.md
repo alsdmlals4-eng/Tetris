@@ -89,7 +89,12 @@ Avoid leading questions such as “Shared Timer가 이해됐나요?” or “낮
 
 ## 4. Directional A / B / C sessions
 
-The initial Human gate uses **three independent first-exposure directional sessions: A, B, C** when feasible. This is a qualitative design-direction gate, not statistical population validation.
+**THREE_SESSIONS_REQUIRED_FOR_PASS**: the Human Gate requires **three valid, independent first-exposure directional sessions: A, B, and C** before a directional `PASS` may be issued.
+
+- One or two valid sessions may produce **preliminary findings only**; they cannot produce Human Gate `PASS`.
+- `REVISE` or `BLOCK` may be issued earlier when the observed evidence already supports that decision; there is no value in exposing more participants to a known invalid Slice merely to reach three receipts.
+- An invalidated session does not count toward the three-session floor. Replace it with another independent first-exposure session.
+- The three-session floor is a qualitative design-direction safeguard, not statistical population validation.
 
 Prefer at least two familiarity profiles across the three sessions, for example:
 
@@ -274,6 +279,7 @@ Use `REVISE` when there is no hard blocker, but a material issue repeats across 
 
 Use directional `PASS` only when:
 
+- **three valid independent A/B/C first-exposure receipts exist**;
 - no `BLOCK` finding remains;
 - the player can complete the core representative flow without core-mechanic coaching;
 - critical concepts are demonstrated by both behavior and post-play explanation, not questionnaire agreement alone;
