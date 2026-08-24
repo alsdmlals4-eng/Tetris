@@ -11,6 +11,13 @@ EVIDENCE_PATH = (
     / "validation"
     / "PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
 )
+PLAN_PATH = (
+    ROOT
+    / "docs"
+    / "superpowers"
+    / "plans"
+    / "2026-08-21-phased-turn-production-vertical-slice.md"
+)
 
 
 class HumanEvidenceContractTests(unittest.TestCase):
@@ -42,6 +49,15 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertIn("lower Tier", text)
         self.assertIn("NOT_RUN", text)
         self.assertIn("PASS / REVISE / BLOCK", text)
+
+    def test_vertical_slice_plan_does_not_reintroduce_superseded_phase_timers(self) -> None:
+        text = PLAN_PATH.read_text(encoding="utf-8")
+        self.assertIn("TETRIS-TIME-025", text)
+        self.assertIn("Shared Player Turn Budget", text)
+        self.assertNotIn("phase timer seed starts at 30/30/30 seconds maximum", text)
+        self.assertNotIn("early finish discards unused time", text)
+        self.assertNotIn("only current phase timer advances", text)
+        self.assertNotIn('"bank_unused_time": false', text)
 
 
 if __name__ == "__main__":
