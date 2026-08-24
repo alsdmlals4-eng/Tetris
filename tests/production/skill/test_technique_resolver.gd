@@ -146,3 +146,35 @@ func test_runtime_unimplemented_primitive_is_rejected_before_partial_effect_exec
     assert_false(result["resolved"])
     assert_eq(result["reason"], "EFFECT_OP_NOT_RUNTIME_READY")
     assert_eq(enemy.hp, 100, "conditional multiplier preflight must fail before the preceding base damage executes")
+
+func test_runtime_readiness_is_public_non_mutating_and_matches_resolve_preflight() -> void:
+    var resolver = _resolver()
+    if resolver == null:
+        return
+    var catalog = _catalog()
+    var enemy := ProductionCombatState.new(100)
+    var status := ProductionStatusState.new()
+
+    var state: Dictionary = resolver.readiness(
+        catalog.get_by_id("atk_t3_rift_breach"),
+        {"enemy": enemy, "status_state": status}
+    )
+
+    assert_true(state["ready"])
+    assert_eq(state["reason"], "READY")
+    assert_eq(enemy.hp, 100)
+    assert_false(status.has_status("BREACH", "enemy"))
+
+func test_runtime_readiness_reports_unresolved_contract_before_resource_commit() -> void:
+    var resolver = _resolver()
+    if resolver == null:
+        return
+    var catalog = _catalog()
+
+    var state: Dictionary = resolver.readiness(
+        catalog.get_by_id("sup_t4_mark_weakness"),
+        {"enemy": ProductionCombatState.new(100), "status_state": ProductionStatusState.new()}
+    )
+
+    assert_false(state["ready"])
+    assert_eq(state["reason"], "EFFECT_CONTRACT_UNRESOLVED")
