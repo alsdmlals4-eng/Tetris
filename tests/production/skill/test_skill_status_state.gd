@@ -21,7 +21,6 @@ func test_status_vocabulary_is_bounded_to_current_tactical_contract() -> void:
         "RIFT_WARD",
         "RIFT_SEAL",
         "BATTLE_TRANCE",
-        "WEAKNESS",
     ])
     assert_false(state.apply_status("POISON", "enemy"))
     assert_false(state.has_status("POISON", "enemy"))
