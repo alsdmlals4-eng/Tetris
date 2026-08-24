@@ -104,7 +104,7 @@ The matrix FAILS if telemetry shows:
 | T2 | `Sweeping Cut` / 휩쓸기 | AoE-capable / Flexible | Moderate damage with multi-target target pattern. Normal single-target fallback in the one-boss first Slice. |
 | T3 | `Rift Breach` / 균열 파쇄 | Setup / Enemy Debuff | Moderate damage + one `BREACH` mark consumed by a later ATK. Approved replacement direction for countdown Stagger. |
 | T4 | `Crushing Strike` / 중압 강타 | Raw Burst | High unconditional single-target damage when setup is unavailable or immediate damage matters most. |
-| T5 | `Suppressive Break` / 제압 파쇄 | Damage / Future Weaken | Damage + weakens the next direct-hit enemy Intent. Does not cancel or secretly replace the Telegraph. |
+| T5 | `Suppressive Break` / 제압 파쇄 | Damage / Future Weaken | Damage + weakens the **visible lower-priority Next Forecast when that forecast is a direct-hit action**. It never mitigates the current Telegraph and never waits invisibly for an unknown later direct hit. |
 | T6 | `Execution Edge` / 처형 일격 | Conditional Finisher | Signature burst when `BREACH` exists or enemy HP is below the configured threshold. Intentionally inefficient without condition. |
 
 ### DEF Lane
@@ -115,7 +115,7 @@ The matrix FAILS if telemetry shows:
 | T2 | `Fortify` / 견고한 자세 | Mitigation / Self Buff | Moderate mitigation + small carry-over protection for the next direct hit. Strong when current hit is light and next Forecast is heavy. |
 | T3 | `Counter Stance` / 역습 준비 | Mitigation / Counter | Converts a bounded portion of actually prevented damage into counter damage. More valuable against meaningful direct hits. |
 | T4 | `Bulwark` / 철벽 수호 | Peak Mitigation | Strong immediate protection when survival now matters more than setup/counter value. |
-| T5 | `Rift Ward` / 균열 방벽 | Resource Ward | Reduces one telegraphed Energy/Stock-loss effect such as Rift Siphon or Chain Fracture. Not a direct-HP block. |
+| T5 | `Rift Ward` / 균열 방벽 | Current Resource Ward | Reduces the **current telegraphed** Energy/Stock-loss effect such as Rift Siphon or Chain Fracture during this turn's Enemy Resolve. It is immediate defense and never carries into a future Forecast. |
 | T6 | `Last Bastion` / 불굴의 성채 | Lethal Safety | Emergency lethal-direct-hit safety / HP-floor behavior with bounded mitigation. Intentionally wasteful when the hit is not lethal. |
 
 ### SUP Lane
@@ -126,10 +126,20 @@ The matrix FAILS if telemetry shows:
 | T2 | `Rally` / 재정비 | Self Buff | Buffs the next player Action once. Setup choice when immediate survival is not required. |
 | T3 | `Haste` / 전투 가속 | Time Utility | Adds configured seconds to the next eligible Shared Player Turn Budget under TIME-025. Never mutates current visible timer or Tempo Reference. |
 | T4 | `Mark Weakness` / 약점 지시 | Enemy Debuff / Setup | Marks the enemy so a later ATK gains bounded offensive value. No immediate damage. |
-| T5 | `Rift Seal` / 균열 봉쇄 | Intent Disruption | Reduces one upcoming resource-loss or repair Intent. Direct hits remain DEF territory. |
+| T5 | `Rift Seal` / 균열 봉쇄 | Forecast Intent Disruption | When the **visible Next Forecast** is a resource-loss or repair Rift utility action, bind a Seal to that exact future authored action and reduce it when it later resolves. It never reduces the current Telegraph. |
 | T6 | `Battle Trance` / 전투 몰입 | Expensive Self Setup | No immediate heal/defense. Bounded next-turn Line Energy conversion + Chain reward conversion boost. Bad choice under immediate lethal pressure. |
 
 Names are first-slice working names. Exact copy may change without changing Technique semantics.
+
+### Current vs future response ownership
+
+The player-facing distinction is explicit:
+
+- **DEF T5 Rift Ward = current-turn protection.** It answers the resource-loss action already shown as the current Telegraph.
+- **ATK T5 Suppressive Break = visible future direct-hit pressure control.** It deals damage now and binds `WEAKEN` only to a visible next direct-hit Forecast.
+- **SUP T5 Rift Seal = visible future Rift-utility control.** It is a setup action for a visible next resource-loss/repair Forecast and has no effect on the current Telegraph.
+
+Future-targeted control requires a visible qualifying Next Forecast. It does not silently target unknown future actions.
 
 ## 6. Effect primitive contract
 
@@ -178,9 +188,9 @@ Candidate skill statuses are bounded records with explicit ownership and expiry:
 - `BREACH` — max 1; consumed by qualifying ATK or expires after configured turn boundary.
 - `FORTIFY` — max 1; consumed by next qualifying direct hit or expires.
 - `RALLY` — max 1; consumed by next legal player Action.
-- `WEAKEN` — max 1; applies only to the next qualifying direct-hit enemy Intent.
-- `RIFT_WARD` — max 1; consumed by the next qualifying Energy/Stock loss.
-- `RIFT_SEAL` — max 1; consumed by the next qualifying resource-loss/repair Intent.
+- `WEAKEN` — max 1; created only when ATK T5 has a **visible direct-hit Next Forecast** and bound to that exact forecast action id; consumed/released after that authored action resolves. It does not apply to the current Telegraph or migrate to unknown later actions.
+- `RIFT_WARD` — max 1; bound to the **current telegraphed qualifying Energy/Stock loss** and consumed during this turn's Enemy Resolve. It never carries to a later Forecast.
+- `RIFT_SEAL` — max 1; created only when SUP T5 has a **visible qualifying resource-loss/repair Next Forecast** and bound to that exact forecast action id; consumed/released when that future authored action resolves. It does not apply to the current Telegraph.
 - `BATTLE_TRANCE` — max 1; consumed across the next eligible Line/Chain preparation window.
 
 No unconditional stacking, arbitrary duration extension, or percentage-stack algebra is added in the first Slice.
@@ -232,13 +242,15 @@ Utility Techniques may trade lower immediate output for their control/setup effe
 |---|---|---|
 | Light Smash | DEF T1, DEF T2, ATK T1 | Do not overspend on a light threat. Forecast may justify Fortify. |
 | Gatebreaker Slam | DEF T3, DEF T4, lethal ATK | Counter value vs reliable survival vs kill. |
-| Rift Siphon | DEF T5, SUP T5, spend Energy now | Protect, disrupt, or pre-spend threatened resource. |
-| Chain Fracture | DEF T5, SUP T5, spend high Stock now | Preserve Stock or convert it before loss. |
+| Current Rift Siphon | DEF T5, spend Energy now | Protect the current Energy loss or pre-spend the threatened resource. SUP T5 does not answer the current Siphon. |
+| Current Chain Fracture | DEF T5, spend high Stock now | Protect the current Stock loss or convert Stock before loss. SUP T5 does not answer the current Fracture. |
 | Rift Repair | ATK T3 setup, ATK T4 burst, SUP T4 setup | Immediate damage race vs future offensive setup. |
 | Siege Charge | DEF T4, DEF T6, conditional ATK T6 lethal | Peak mitigation vs lethal safety vs kill-before-resolve. |
 | Low-pressure setup window | ATK T3, SUP T2/T3/T6 | Use time/resources to improve the next turn instead of maximizing current raw output. |
+| Current Light + visible next resource-loss/repair Forecast | SUP T5, low-tier current response | Seal the visible future Rift utility action or preserve Stock while handling the current light threat cheaply. |
+| Current Light + visible next direct-hit Forecast | ATK T5, DEF T2, low-tier current response | Weaken visible future direct-hit pressure, prepare Fortify, or preserve resources. |
 
-Enemy Telegraph remains authored and cannot secretly change because the player selected a counter.
+Enemy Telegraph remains authored and cannot secretly change because the player selected a counter. A forecast-bound status targets an exact visible authored action id; if that action is no longer valid for an explicitly documented encounter-state reason, the status expires rather than hopping to a different hidden action.
 
 ## 11. AoE scope boundary
 
@@ -262,7 +274,8 @@ Do **not** add a mob/add roster merely to prove AoE.
 - Meaning is not color-only.
 - First tutorial turn naturally exposes T1 because Stock is low; it does not modal-explain all 18 Techniques.
 - Higher Tier cells become learnable as Stock grows and Gatebreaker creates relevant Intent situations.
-- Tooltips may explain exact effects, but the primary Action decision must be legible from short tags such as `효율`, `범위`, `설치`, `반격`, `자원보호`, `피니셔`.
+- Forecast-targeted T5 cells show their exact visible forecast target; if no qualifying Next Forecast exists, the control component is unavailable/clearly non-applicable rather than silently targeting an unknown action.
+- Tooltips may explain exact effects, but the primary Action decision must be legible from short tags such as `효율`, `범위`, `설치`, `반격`, `자원보호`, `다음행동`, `피니셔`.
 
 ## 13. Telemetry / validation
 
@@ -271,11 +284,12 @@ Record at minimum:
 - selected lane + Tier + Technique id;
 - available highest Tier at decision time;
 - HP/Energy/Stock before selection;
-- enemy current Intent + next Forecast category;
+- enemy current Intent + next Forecast category/action id;
+- forecast action id bound by WEAKEN/RIFT_SEAL when applicable;
 - overkill amount;
 - prevented damage / counter damage;
 - resource loss prevented;
-- setup status created/consumed;
+- setup status created/consumed/expired-untriggered;
 - whether the player selected the highest available Tier;
 - reason tags available to the decision scenario;
 - victory/defeat and encounter turn index.
@@ -287,7 +301,8 @@ Dominance review metrics:
 - highest-available-Tier pick rate;
 - average resource overkill/waste;
 - Intent→response diversity;
-- T6 pick rate when its condition is false.
+- T6 pick rate when its condition is false;
+- forecast-control pick rate when no qualifying Forecast exists, which should approach zero after UI/tuning correction.
 
 ## 14. Benchmark absorption
 
@@ -309,15 +324,16 @@ The game frames combat around every action counting, attack timing, upgrades and
 - first-Slice mob expansion just to justify AoE;
 - generic long-duration status-stack RPG system;
 - extra Technique-selection submenu;
-- hidden enemy counter-selection after Telegraph.
+- hidden enemy counter-selection after Telegraph;
+- control statuses that silently wait for an unknown future Intent.
 
 ## 15. Five-pass adversarial review
 
 1. **Tier dominance:** T6 all-purpose risk found. Corrected by assigning T6 conditional finisher / lethal safety / long setup and preserving lower-tier efficiency.
-2. **Lane blur:** Diverse effects risk making every lane solve everything. Corrected ownership: ATK pressure, DEF protection, SUP recovery/buff/non-damage disruption.
-3. **Cognitive load:** 18 identities risk tutorial overload. Corrected with one 3×6 grid, Stock-gated exposure, shared tags, no modal catalog dump.
+2. **Lane blur:** Diverse effects risk making every lane solve everything. Final-audit correction separates **DEF current protection** from **ATK/SUP visible future Forecast control**, eliminating the T5 Ward/Seal same-turn redundancy.
+3. **Cognitive load:** 18 identities risk tutorial overload. Corrected with one 3×6 grid, Stock-gated exposure, shared tags, no modal catalog dump, and explicit forecast target display for future-control cells.
 4. **AoE scope:** range attack risk expanding the one-boss Slice. Corrected by schema support + single-target fallback; multi-target content remains later.
-5. **Solo-dev cost:** 18 Technique behaviors risk bespoke-code explosion. Corrected with effect primitives, bounded statuses, data definitions, and scenario-driven verification.
+5. **Solo-dev cost:** 18 Technique behaviors risk bespoke-code explosion. Corrected with effect primitives, bounded statuses, exact forecast-action binding, data definitions, and scenario-driven verification.
 
 `CLEAN_REVIEW_EXIT` for planning structure. Numeric balance remains evidence-tuned.
 
@@ -327,13 +343,14 @@ Current claims allowed:
 
 - `TETRIS-SKILL-026` tactical Tier architecture is documented and user-directed/approved at the design level.
 - Notion owner + GitHub Issue #10 ledger contain the same direction.
-- Effect primitive and dominance/telemetry contracts are specified.
+- Effect primitive, forecast-control ownership, dominance, and telemetry contracts are specified.
 
 Current claims forbidden:
 
 - production skill runtime implemented;
 - 18 Technique data integrated;
 - lower-tier viability proven;
+- forecast-control readability proven;
 - AoE multi-target balance proven;
 - Energy costs or effect magnitudes final;
 - Human playtest PASS.

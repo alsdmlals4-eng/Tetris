@@ -122,7 +122,7 @@ Rules:
 Five independent mechanisms prevent one-direction play:
 
 1. **Stock cap 6:** saving forever can waste future Chain gain.
-2. **Rift Siphon / Chain Fracture:** threatened resources can be protected or pre-spent.
+2. **Rift Siphon / Chain Fracture:** the current threatened resource can be protected with DEF T5 `Rift Ward` or pre-spent; a visible **future** Rift utility Forecast can instead be prepared against with SUP T5 `Rift Seal`.
 3. **Rift Repair / heavy/lethal pressure:** some turns create a reason to commit resources now.
 4. **Setup Techniques:** low immediate output can improve future opportunity, creating the opposite choice from raw spend-now burst.
 5. **Tempo non-currency rule:** fast completion does not directly generate Energy or Stock, preventing time skill from becoming a compounding resource faucet.
@@ -134,34 +134,46 @@ Automated scenario tests use curated states to detect obvious strict dominance o
 | Scenario | Rational candidate set | Purpose |
 |---|---|---|
 | Light hit + scarce resources | ATK T1 / DEF T1 | low-tier efficiency survives |
-| Light hit + heavy next Forecast | DEF T2 Fortify / low-tier response + preserve Stock | future value matters |
+| Light hit + heavy next Forecast | DEF T2 Fortify / ATK T5 Suppressive Break if affordable / low-tier response + preserve Stock | future direct-hit value matters without making current defense mandatory |
 | Heavy direct hit | DEF T3 Counter / DEF T4 Bulwark / lethal ATK | counter vs safety vs race |
-| Energy/Stock loss telegraphed | DEF T5 / SUP T5 / pre-spend threatened resource | protect vs disrupt vs consume |
-| Enemy Repair | ATK T3 Breach / ATK T4 burst / SUP T4 setup | immediate vs future offense |
+| Current Energy/Stock loss Telegraph | DEF T5 Rift Ward / pre-spend threatened resource | current protection vs consume-before-loss; SUP T5 does not answer the current effect |
+| Current Light + visible next resource-loss/repair Forecast | SUP T5 Rift Seal / low-tier current response + preserve Stock | proactive control of a visible future Rift utility action |
+| Enemy Repair as current Telegraph | ATK T3 Breach / ATK T4 burst / SUP T4 setup | immediate damage vs future offense; Rift Seal does not retroactively stop current Repair |
 | Lethal Siege Charge | DEF T4 / DEF T6 / conditional ATK T6 kill | high-Tier moment without single answer |
 | Low-pressure setup window | ATK T3 / SUP T2 / SUP T3 / SUP T6 / preserve | setup may beat raw Tier |
 | Synthetic multi-target future case | ATK T2 Sweeping Cut | AoE schema remains useful without first-Slice mob expansion |
 
 A tuning seed FAILS if its numbers make every candidate except the highest affordable Tier obviously irrational in these fixtures.
 
+### Current vs future control rule
+
+- **DEF T5 Rift Ward** answers the current visible resource-loss Telegraph during this turn's Enemy Resolve.
+- **ATK T5 Suppressive Break** may bind WEAKEN only to a visible next direct-hit Forecast.
+- **SUP T5 Rift Seal** may bind Seal only to a visible next resource-loss/repair Forecast.
+- Forecast control never waits invisibly for an unknown future action or jumps to another action if its bound forecast becomes invalid.
+
+This boundary keeps current survival/protection in DEF while ATK/SUP trade immediate output for visible future control.
+
 ## 8. Encounter integration
 
 Gatebreaker authored intent ladder must expose multiple economic questions over one complete battle:
 
-- **Light:** spend little or invest in setup.
+- **Light:** spend little or invest in setup / visible next-Forecast control.
 - **Heavy:** spend for mitigation/counter or race lethal.
-- **Resource loss:** protect, disrupt, or pre-spend.
-- **Repair:** use immediate damage or future offense setup.
+- **Current resource loss:** protect with Rift Ward or pre-spend.
+- **Visible future resource-loss/repair Forecast:** spend now for Rift Seal setup or preserve Stock for another answer.
+- **Current Repair:** use immediate damage or future offense setup.
 - **Siege/lethal:** peak survival or kill-before-resolve.
 - **Low-pressure window:** invest in next-turn preparation.
 
-Enemy behavior remains authored. It never reads the chosen player Technique and secretly swaps the already-telegraphed current action.
+Enemy behavior remains authored. It never reads the chosen player Technique and secretly swaps the already-telegraphed current action or silently changes a visible forecast-bound status target.
 
 ## 9. First-run teaching contract
 
 - Do not explain all 18 Techniques in a catalog.
 - Stock availability naturally exposes the lower part of the grid first.
-- When a new role becomes materially relevant, short tags/highlights may explain `효율 / 범위 / 설치 / 반격 / 자원보호 / 피니셔`.
+- When a new role becomes materially relevant, short tags/highlights may explain `효율 / 범위 / 설치 / 반격 / 자원보호 / 다음행동 / 피니셔`.
+- Forecast-targeted controls visibly identify which Next Forecast they affect; without a qualifying visible Forecast their control component is clearly non-applicable.
 - Tutorial hints do not secretly pause the Shared Player Turn Budget; only System Pause does.
 - The first 2–3 turns do not use “reach Tier 6” as the tutorial objective.
 - A player should learn `higher Tier = more commitment / different use`, not `higher Tier = upgrade unlocked`.
@@ -176,12 +188,13 @@ Record per turn/action:
 - highest available Tier;
 - selected lane/Tier/Technique;
 - whether the highest available Tier was selected;
-- current Intent and next Forecast category;
+- current Intent and next Forecast category/action id;
+- forecast action id bound by a future-control status;
 - player/enemy HP;
 - overkill;
 - prevented damage / counter damage;
 - threatened resource pre-spent or protected;
-- setup status created/consumed;
+- setup status created/consumed/expired-untriggered;
 - PASS / timeout / Board Break;
 - first turn each Tier became available;
 - first turn each Tier was selected.
@@ -194,7 +207,8 @@ Derived review metrics:
 - Stock-cap waste;
 - Energy surplus/shortage distribution;
 - Intent→response diversity;
-- conditional T6 use when condition is false.
+- conditional T6 use when condition is false;
+- future-control pick rate when no qualifying visible Forecast exists.
 
 ## 11. Simulation Reality Gate
 
@@ -203,13 +217,15 @@ Derived review metrics:
 - a resource state has zero legal actions;
 - a cost curve creates obvious strict dominance under the curated scenario utility assumptions;
 - Stock cap overflow or persistent resource starvation/surplus occurs under seeded runs;
-- deterministic seeds reproduce availability and spending outcomes.
+- deterministic seeds reproduce availability and spending outcomes;
+- forecast-bound statuses stay attached to the exact visible action id and never migrate to hidden future actions.
 
 ### Automated simulation may not claim
 
 - the decision is fun;
 - the player understands why a lower Tier is good;
 - Telegraph/readability is sufficient;
+- future-control target presentation is visually understandable;
 - the final Energy/Stock/effect/Turn-time numbers are balanced.
 
 Human evidence remains mandatory for those claims.
@@ -223,7 +239,8 @@ Minimum A/B/C production runs ask:
 3. Does the player always hoard to 6 or always dump Stock immediately?
 4. Do low tiers remain practical beyond onboarding through efficiency, finishing, or preservation?
 5. Do Siphon/Fracture create `spend now vs protect` decisions rather than pure frustration?
-6. Is T6 memorable as a signature commitment rather than routine housekeeping?
+6. Can the player distinguish `current Rift Ward` from `future Rift Seal / Suppressive Break` without reading a long tooltip?
+7. Is T6 memorable as a signature commitment rather than routine housekeeping?
 
 ## 13. Benchmark absorption
 
@@ -243,17 +260,18 @@ Puzzle performance directly increases combat output, while longer commitment bri
 
 - technique-specific new currencies/cooldowns in the first Slice;
 - finalizing exact economy values before production puzzle/runtime evidence;
-- adding extra enemies merely to validate AoE.
+- adding extra enemies merely to validate AoE;
+- hidden future-control targets that are not already visible to the player.
 
 ## 14. Five-pass adversarial review
 
 1. **Tier-6 hoarding:** corrected with cap pressure, resource-loss threats, now-vs-later Intents, and specialized rather than universal T6.
 2. **Low-tier spam:** corrected by Heavy/Repair/Siege and setup/control opportunities where mid/high Tier has unique purpose.
 3. **One puzzle becomes optional:** prevented by keeping Energy and Stock non-substitutable gates.
-4. **Tutorial overload:** corrected with real puzzle-earned T1 and contextual Tier-role exposure rather than 18-item teaching.
-5. **False precision:** only structural costs, relative seed, scenarios and evidence requirements are locked; exact values remain TUNE_REQUIRED.
+4. **Lane/control overlap:** final audit found current Rift Ward and future Rift Seal could read as the same response. Corrected by binding DEF T5 to the current Telegraph and ATK/SUP future control to exact visible Next Forecast action ids.
+5. **False precision / scope:** only structural costs, relative seed, scenarios and evidence requirements are locked; exact values remain TUNE_REQUIRED and no extra mob/currency/cooldown system is added.
 
-`CLEAN_REVIEW_EXIT` for economy/tier-exposure structure.
+`CLEAN_REVIEW_EXIT` for economy/tier-exposure structure after forecast-control clarification.
 
 ## 15. Implementation Reality Gate
 
@@ -261,6 +279,7 @@ Current claims allowed:
 
 - dual-resource role split is documented;
 - Tier-exposure and anti-dominance validation contract is specified;
+- current-vs-future forecast-control ownership is specified;
 - first-run/encounter scenario requirements are defined;
 - exact numeric values are intentionally not final.
 
@@ -269,6 +288,7 @@ Current claims forbidden:
 - final Energy/Stock economy balanced;
 - Tier pick distribution proven;
 - T6 frequency validated;
+- future-control readability proven;
 - human lower-tier viability proven;
 - production economy runtime implemented.
 
