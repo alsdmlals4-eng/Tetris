@@ -192,7 +192,7 @@ class ProductionCanonContractTests(unittest.TestCase):
 
         canon = BALANCE_CANON_PATH.read_text(encoding="utf-8")
         self.assertIn("TETRIS-BALANCE-027", canon)
-        self.assertIn("DUAL_RESOURCE", canon.upper())
+        self.assertIn("DUAL-RESOURCE", canon.upper())
         self.assertIn("Tier 6", canon)
         self.assertIn("CLEAN_REVIEW_EXIT", canon)
         self.assertIn("BUILD remains deferred", canon)
