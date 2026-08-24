@@ -13,6 +13,9 @@ var technique_resolver: ProductionTechniqueResolver
 var enemy_action_resolver: ProductionEnemyActionResolver
 var skill_session: ProductionSkillSession
 var encounter_director: GatebreakerEncounterDirector = null
+var turn_performance_state: ProductionTurnPerformanceState = ProductionTurnPerformanceState.new()
+var current_turn_time_config: TurnTimeConfig = null
+var pending_tempo_result: Dictionary = {}
 
 var battle_over: bool = false
 var outcome: String = "ONGOING"
@@ -55,7 +58,20 @@ func start_next_player_turn(config, profile_id: String) -> Dictionary:
             "started": false,
             "reason": "BATTLE_OVER",
         }
-    return turn_controller.start_player_turn(config, profile_id, time_effect_state)
+
+    var result: Dictionary = turn_controller.start_player_turn(config, profile_id, time_effect_state)
+    if not bool(result.get("started", false)):
+        return result
+
+    current_turn_time_config = config
+    turn_performance_state.reset_for_next_turn()
+    pending_tempo_result = {}
+    return result
+
+func record_turn_performance_event(event: Dictionary) -> bool:
+    if battle_over:
+        return false
+    return turn_performance_state.record_event(event)
 
 func select_technique(technique_id: String) -> Dictionary:
     if battle_over:
@@ -71,7 +87,16 @@ func select_technique(technique_id: String) -> Dictionary:
     if not bool(runtime_ready.get("ready", false)):
         return _selection_failed(String(runtime_ready.get("reason", "RUNTIME_NOT_READY")))
 
-    return skill_session.select_technique(technique_id)
+    var selected: Dictionary = skill_session.select_technique(technique_id)
+    if not bool(selected.get("accepted", false)):
+        return selected
+
+    turn_performance_state.mark_action(technique_id)
+    pending_tempo_result = _evaluate_tempo()
+
+    var enriched := selected.duplicate(true)
+    _copy_tempo_fields(enriched, pending_tempo_result)
+    return enriched
 
 func resolve_player_action() -> Dictionary:
     if battle_over:
@@ -81,6 +106,8 @@ func resolve_player_action() -> Dictionary:
 
     var technique_id := turn_controller.pending_player_action.id
     if technique_id == "PASS":
+        turn_performance_state.mark_action("PASS")
+        pending_tempo_result = {}
         if not turn_controller.complete_player_resolve():
             return _resolve_failed("PLAYER_RESOLVE_TRANSITION_FAILED")
         return {
@@ -89,16 +116,23 @@ func resolve_player_action() -> Dictionary:
             "technique_id": "PASS",
             "passed": true,
             "enemy_action_cancelled": false,
+            "tempo_eligible": false,
+            "tempo_saved_ratio": 0.0,
+            "tempo_potency_bonus_ratio": 0.0,
+            "tempo_ineligible_reason": "NON_PASS_ACTION_REQUIRED",
         }
 
     var definition := skill_catalog.get_by_id(technique_id)
     if definition.is_empty():
         return _resolve_failed("UNKNOWN_COMMITTED_TECHNIQUE")
 
-    var technique_result := technique_resolver.resolve(definition, _technique_context())
+    var context := _technique_context()
+    context["tempo_potency_bonus_ratio"] = float(pending_tempo_result.get("potency_bonus_ratio", 0.0)) if bool(pending_tempo_result.get("eligible", false)) else 0.0
+    var technique_result := technique_resolver.resolve(definition, context)
     if not bool(technique_result.get("resolved", false)):
         var failed := technique_result.duplicate(true)
         failed["resolved"] = false
+        _copy_tempo_fields(failed, pending_tempo_result)
         return failed
 
     if enemy_state.is_defeated():
@@ -109,6 +143,7 @@ func resolve_player_action() -> Dictionary:
         victory["battle_over"] = true
         victory["outcome"] = outcome
         victory["enemy_action_cancelled"] = true
+        _copy_tempo_fields(victory, pending_tempo_result)
         return victory
 
     if not turn_controller.complete_player_resolve():
@@ -117,6 +152,7 @@ func resolve_player_action() -> Dictionary:
     var resolved := technique_result.duplicate(true)
     resolved["enemy_action_cancelled"] = false
     resolved["battle_over"] = false
+    _copy_tempo_fields(resolved, pending_tempo_result)
     return resolved
 
 func resolve_directed_enemy_action() -> Dictionary:
@@ -243,6 +279,39 @@ func _technique_context() -> Dictionary:
     context["response_state"] = response_state
     context["time_effect_state"] = time_effect_state
     return context
+
+func _evaluate_tempo() -> Dictionary:
+    if current_turn_time_config == null:
+        return {
+            "eligible": false,
+            "saved_ratio": 0.0,
+            "potency_bonus_ratio": 0.0,
+            "ineligible_reason": "MISSING_TIME_CONFIG",
+        }
+
+    var result := TempoEvaluator.evaluate(
+        current_turn_time_config.tempo_reference_seconds,
+        turn_controller.turn_budget.active_used_seconds,
+        turn_performance_state.line_qualified,
+        turn_performance_state.chain_qualified,
+        turn_performance_state.action_non_pass,
+        turn_performance_state.timeout_occurred,
+        turn_performance_state.board_break_occurred,
+        current_turn_time_config.tempo_potency_per_saved_ratio,
+        current_turn_time_config.tempo_potency_cap_ratio
+    )
+    return {
+        "eligible": result.eligible,
+        "saved_ratio": result.saved_ratio,
+        "potency_bonus_ratio": result.potency_bonus_ratio,
+        "ineligible_reason": result.ineligible_reason,
+    }
+
+func _copy_tempo_fields(target: Dictionary, tempo: Dictionary) -> void:
+    target["tempo_eligible"] = bool(tempo.get("eligible", false))
+    target["tempo_saved_ratio"] = float(tempo.get("saved_ratio", 0.0))
+    target["tempo_potency_bonus_ratio"] = float(tempo.get("potency_bonus_ratio", 0.0))
+    target["tempo_ineligible_reason"] = String(tempo.get("ineligible_reason", ""))
 
 func _selection_failed(reason: String) -> Dictionary:
     return {
