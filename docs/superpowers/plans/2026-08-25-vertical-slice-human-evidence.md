@@ -4,7 +4,7 @@
 
 ## Goal
 
-Make the first 6–10 minute representative Vertical Slice testable as a player experience before any claim about fun, readability, tactical comprehension, or final balance is promoted.
+Make the first 6–10 minute representative Vertical Slice testable as a player experience before any claim about fun, readability, tactical comprehension, memorable payoff, or final balance is promoted.
 
 ## Architecture
 
@@ -27,13 +27,14 @@ This avoids mixing dynamic validation state into gameplay authority and avoids d
 - `TETRIS-TIME-025`, `TETRIS-CORE-024`, `TETRIS-SKILL-026`, `TETRIS-BALANCE-027`, and `TETRIS-VISUAL-020` remain authority.
 - The older 2026-08-21 broader implementation plan contains superseded timing clauses; quarantine those clauses explicitly rather than allowing them to override TIME-025.
 - Human evidence status remains `NOT_RUN` until real session receipts exist.
+- Directional Human Gate `PASS` requires three valid independent A/B/C first-exposure receipts. One or two sessions can produce preliminary findings only; `REVISE` / `BLOCK` may be issued earlier when already supported.
 
 ## Task 1 · RED semantic evidence contract
 
 **Files:**
 - Create `tests/tooling/test_human_evidence_contract.py`.
 
-Require a machine-readable evidence index and a Human evidence contract that preserve the claim ceiling, visual-readability dimension, Shared Budget, dual-resource choice, lower-Tier viability, and `PASS / REVISE / BLOCK` gate.
+Require a machine-readable evidence index and a Human evidence contract that preserve the claim ceiling, visual-readability dimension, Shared Budget, dual-resource choice, lower-Tier viability, player-experience signal, three-session PASS floor, and `PASS / REVISE / BLOCK` gate.
 
 **RED evidence:** GitHub Actions must fail specifically because the index/contract do not yet exist or required fields are absent while pre-existing tooling tests remain green.
 
@@ -48,8 +49,8 @@ Define:
 - 6–10 minute representative scope;
 - `OBSERVE_FIRST` / `DO_NOT_COACH_DURING_FIRST_ATTEMPT`;
 - observation followed by non-leading probes;
-- directional A/B/C first-exposure sessions;
-- onboarding, Telegraph, Shared Budget, dual-resource, Tier viability, forecast-control, visual readability, result-feedback dimensions;
+- three required valid A/B/C independent first-exposure receipts before `PASS`;
+- onboarding, Telegraph, Shared Budget, dual-resource, Tier viability, forecast-control, visual readability, result-feedback, and pressure → deliberate choice → readable payoff / memorable-moment evidence dimensions;
 - minimum evidence receipt;
 - `PASS / REVISE / BLOCK` severity/gate;
 - IRG evidence ceilings;
@@ -62,7 +63,7 @@ Define:
 - new child `Vertical Slice · Human Evidence Gate`
 - `Tetris · Home`
 
-Create a readable validation page with the session flow, dimensions, observation checklist, visual-readability checklist, probes, and gate. Home gets only a compact “실제 플레이에서 확인할 것” learning section; raw PR/SHA/CI/work state stays out of Home.
+Create a readable validation page with the session flow, dimensions, observation checklist, visual-readability checklist, experience-signal checks, probes, the three-session PASS floor, and the gate. Home gets only a compact “실제 플레이에서 확인할 것” learning section; raw PR/SHA/CI/work state stays out of Home.
 
 ## Task 4 · Verify and adversarially review
 
@@ -77,9 +78,9 @@ Verify exact branch head:
 Run at least five whole-state adversarial loops over:
 
 1. authority/evidence separation;
-2. observer bias and session feasibility;
+2. observer bias, three-session evidence floor, and session feasibility;
 3. visual readability vs subjective art preference;
-4. IRG/claim ceiling/NOT_RUN honesty;
+4. IRG/claim ceiling/NOT_RUN honesty and experience-signal overclaiming;
 5. maintainability, cost, reversibility, and PR isolation.
 
 Any material correction resets the clean-loop count.
