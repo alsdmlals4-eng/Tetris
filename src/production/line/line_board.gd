@@ -41,6 +41,9 @@ func is_empty() -> bool:
             return false
     return true
 
+func clear_all() -> void:
+    _cells.fill("")
+
 func can_place(cells: Array, origin: Vector2i) -> bool:
     for local_cell in cells:
         var position: Vector2i = origin + Vector2i(local_cell)
