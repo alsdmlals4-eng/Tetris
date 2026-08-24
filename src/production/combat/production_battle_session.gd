@@ -106,7 +106,10 @@ func resolve_player_action() -> Dictionary:
 
     var technique_id := turn_controller.pending_player_action.id
     if technique_id == "PASS":
+        var timeout_occurred := turn_controller.timed_out_this_turn
         turn_performance_state.mark_action("PASS")
+        if timeout_occurred:
+            turn_performance_state.mark_timeout()
         pending_tempo_result = {}
         if not turn_controller.complete_player_resolve():
             return _resolve_failed("PLAYER_RESOLVE_TRANSITION_FAILED")
@@ -115,11 +118,12 @@ func resolve_player_action() -> Dictionary:
             "reason": "RESOLVED",
             "technique_id": "PASS",
             "passed": true,
+            "timeout_occurred": timeout_occurred,
             "enemy_action_cancelled": false,
             "tempo_eligible": false,
             "tempo_saved_ratio": 0.0,
             "tempo_potency_bonus_ratio": 0.0,
-            "tempo_ineligible_reason": "NON_PASS_ACTION_REQUIRED",
+            "tempo_ineligible_reason": "TIMEOUT" if timeout_occurred else "NON_PASS_ACTION_REQUIRED",
         }
 
     var definition := skill_catalog.get_by_id(technique_id)
