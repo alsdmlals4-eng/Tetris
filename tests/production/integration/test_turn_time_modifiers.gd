@@ -81,7 +81,7 @@ func test_effect_created_after_snapshot_does_not_jump_current_clock() -> void:
         return
     var effects := _empty_effects()
     var current = config.create_budget("NORMAL", effects)
-    var current_effective := current.effective_budget_seconds
+    var current_effective: float = current.effective_budget_seconds
     current.consume(10.0)
 
     effects.apply_effect("haste", "haste_default", 8.0, false, 1)
