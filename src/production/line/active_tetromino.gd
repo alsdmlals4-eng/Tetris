@@ -5,6 +5,7 @@ var piece_id: String
 var origin: Vector2i
 var rotation: int = 0
 var catalog: TetrominoCatalog
+var last_successful_action: String = "NONE"
 
 func _init(p_piece_id: String, p_origin: Vector2i, p_catalog: TetrominoCatalog) -> void:
     piece_id = p_piece_id
@@ -19,6 +20,7 @@ func try_move(board: LineBoard, delta: Vector2i) -> bool:
     if not board.can_place(get_cells(), candidate_origin):
         return false
     origin = candidate_origin
+    last_successful_action = "MOVE"
     return true
 
 func try_rotate(board: LineBoard, direction: int) -> bool:
@@ -31,6 +33,7 @@ func try_rotate(board: LineBoard, direction: int) -> bool:
         if board.can_place(target_cells, candidate_origin):
             origin = candidate_origin
             rotation = target_rotation
+            last_successful_action = "ROTATE"
             return true
     return false
 
@@ -39,4 +42,6 @@ func hard_drop(board: LineBoard) -> int:
     while board.can_place(get_cells(), origin + Vector2i(0, distance + 1)):
         distance += 1
     origin += Vector2i(0, distance)
+    if distance > 0:
+        last_successful_action = "HARD_DROP"
     return distance
