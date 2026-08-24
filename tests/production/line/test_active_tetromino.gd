@@ -18,7 +18,7 @@ func _make_piece(piece_id: String, origin: Vector2i):
         return null
     return load(ACTIVE_PATH).new(piece_id, origin, catalog)
 
-func test_move_changes_origin_only_when_candidate_is_legal() -> void:
+func test_move_changes_origin_only_when_occupied_cells_remain_legal() -> void:
     var board := LineBoard.new(10, 20, 4)
     var piece = _make_piece("O", Vector2i(3, 0))
     if piece == null:
@@ -29,8 +29,10 @@ func test_move_changes_origin_only_when_candidate_is_legal() -> void:
     assert_eq(piece.origin, Vector2i(1, 0))
     assert_true(piece.try_move(board, Vector2i.LEFT))
     assert_eq(piece.origin, Vector2i(0, 0))
+    assert_true(piece.try_move(board, Vector2i.LEFT), "piece origin may be negative when all occupied cells remain in bounds")
+    assert_eq(piece.origin, Vector2i(-1, 0))
     assert_false(piece.try_move(board, Vector2i.LEFT))
-    assert_eq(piece.origin, Vector2i(0, 0))
+    assert_eq(piece.origin, Vector2i(-1, 0))
 
 func test_hard_drop_moves_to_lowest_legal_origin_and_returns_distance() -> void:
     var board := LineBoard.new(10, 20, 4)
