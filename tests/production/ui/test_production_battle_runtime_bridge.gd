@@ -85,6 +85,7 @@ func _fixture() -> Dictionary:
     return {
         "ui": ui,
         "turn": turn,
+        "player": player,
         "coordinator": coordinator_script.new(battle, line, chain, ProductionBattlePresenter.new()),
     }
 
@@ -108,3 +109,39 @@ func test_ready_button_routes_through_real_coordinator_and_refreshes_presentatio
     assert_eq(f["turn"].phase, TurnPhase.LINE_SETTLE)
     assert_true(ui.phase_label.text.contains("LINE_SETTLE"))
     assert_false(ui.ready_button.visible)
+
+func test_technique_button_routes_through_real_coordinator_and_refreshes_presentation() -> void:
+    var f := await _fixture()
+    if f.is_empty():
+        return
+    var ui = f["ui"]
+    var bridge = ui.get_node_or_null("RuntimeBridge")
+    assert_not_null(bridge)
+    if bridge == null:
+        return
+
+    var coordinator = f["coordinator"]
+    var turn: TurnController = f["turn"]
+    var player: ProductionCombatState = f["player"]
+    player.apply_energy_delta(20)
+    player.gain_stock(1)
+
+    assert_true(coordinator.request_ready())
+    assert_true(coordinator.complete_settle())
+    assert_true(coordinator.request_ready())
+    assert_true(coordinator.complete_settle())
+    assert_eq(turn.phase, TurnPhase.ACTION)
+    assert_true(bridge.bind_coordinator(coordinator))
+
+    var button: Button = ui.skill_buttons_by_id["atk_t1_quick_cut"]
+    assert_false(button.disabled)
+    var energy_before := player.energy
+    var stock_before := player.stock
+
+    button.pressed.emit()
+
+    assert_eq(player.energy, energy_before - 10)
+    assert_eq(player.stock, stock_before - 1)
+    assert_eq(turn.phase, TurnPhase.PLAYER_RESOLVE)
+    assert_true(ui.phase_label.text.contains("PLAYER_RESOLVE"))
+    assert_true(button.disabled)
