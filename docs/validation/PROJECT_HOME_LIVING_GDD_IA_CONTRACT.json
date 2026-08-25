@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "human_home_role": "PROJECT_LIVING_GDD_VISUAL_DASHBOARD",
+  "ai_workspace_root": "EXISTING_TETRIS_SYSTEM_RECORD",
+  "detail_pages_role": "HUMAN_DETAILED_AUTHORITY",
+  "github_role": "IMPLEMENTATION_AND_MACHINE_TRUTH",
+  "timing_authority": "TETRIS-TIME-025",
+  "combat_authority": "TETRIS-CORE-024",
+  "skill_authority": "TETRIS-SKILL-026",
+  "balance_authority": "TETRIS-BALANCE-027",
+  "visual_authority": "TETRIS-VISUAL-020",
+  "human_evidence_state": "NOT_RUN",
+  "image_state": "VISUAL_REFERENCE_NORTH_STAR_NOT_RUNTIME_PROOF",
+  "protect_draft_build_pr_19": true,
+  "home_reading_order": [
+    "PROJECT_NORTH_STAR",
+    "HOW_THE_GAME_WORKS",
+    "CORE_GAMEPLAY_DATA",
+    "FIRST_6_TO_10_MINUTES",
+    "HOW_IT_SHOULD_LOOK",
+    "VERTICAL_SLICE_CONTENT_LOCK",
+    "DEVELOPMENT_REALITY",
+    "DETAIL_LIBRARY"
+  ],
+  "home_forbidden_operational_content": [
+    "RAW_PR_SHA_CI_LOGS",
+    "LOCAL_PATHS_PORTS_BINDINGS",
+    "MACHINE_SCHEMA_IDS",
+    "WORK_LOGS_AND_HANDOFF_RECEIPTS"
+  ],
+  "ai_workspace_routes": [
+    "CURRENT_AUTHORITY",
+    "IMPLEMENTATION_EVIDENCE",
+    "VALIDATION_EVIDENCE",
+    "MACHINE_DETAIL",
+    "HANDOFF_AND_PROVENANCE"
+  ]
+}
