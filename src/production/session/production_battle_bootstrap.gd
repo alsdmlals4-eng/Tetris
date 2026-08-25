@@ -73,7 +73,7 @@ func _bootstrap_runtime() -> void:
         return
 
     var line = _make_line(turn)
-    if line == null or not line.can_accept_input():
+    if line == null:
         _fail("LINE_SESSION_BOOTSTRAP_FAILED")
         return
 
