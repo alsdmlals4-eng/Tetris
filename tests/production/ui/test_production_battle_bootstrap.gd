@@ -65,9 +65,13 @@ func test_scene_bootstraps_real_production_line_runtime_without_external_binding
 func test_line_bootstrap_refuses_missing_feel_data() -> void:
     var bootstrap := MissingDataBootstrap.new(FEEL_DATA_PATH)
     var turn := TurnController.new(TurnBudget.new())
-    assert_null(bootstrap._make_line(turn), "Missing feel seed must fail closed")
+    var line = bootstrap._make_line(turn)
+    assert_null(line, "Missing feel seed must fail closed")
+    bootstrap.free()
 
 func test_line_bootstrap_refuses_missing_reward_data() -> void:
     var bootstrap := MissingDataBootstrap.new(REWARD_DATA_PATH)
     var turn := TurnController.new(TurnBudget.new())
-    assert_null(bootstrap._make_line(turn), "Missing reward seed must fail closed")
+    var line = bootstrap._make_line(turn)
+    assert_null(line, "Missing reward seed must fail closed")
+    bootstrap.free()
