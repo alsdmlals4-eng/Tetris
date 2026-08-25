@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_ui"]
 [ext_resource type="Script" path="res://src/production/session/production_battle_runtime_bridge.gd" id="2_bridge"]
+[ext_resource type="Script" path="res://src/production/session/production_battle_bootstrap.gd" id="3_bootstrap"]
 
 [node name="ProductionBattle" type="Control"]
 custom_minimum_size = Vector2(1280, 720)
@@ -15,6 +16,9 @@ script = ExtResource("1_ui")
 
 [node name="RuntimeBridge" type="Node" parent="."]
 script = ExtResource("2_bridge")
+
+[node name="RuntimeBootstrap" type="Node" parent="."]
+script = ExtResource("3_bootstrap")
 
 [node name="Layout" type="VBoxContainer" parent="."]
 layout_mode = 1
