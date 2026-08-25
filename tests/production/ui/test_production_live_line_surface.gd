@@ -97,7 +97,7 @@ func test_line_board_view_exposes_visible_active_ghost_hold_and_next_without_mut
         return
 
     var before_origin: Vector2i = line.piece_cycle.active_piece.origin
-    var before := view.snapshot()
+    var before: Dictionary = view.snapshot()
     assert_eq(int(before.get("width", 0)), 10)
     assert_eq(int(before.get("height", 0)), 20)
     assert_eq((before.get("cells", []) as Array).size(), 20)
@@ -110,6 +110,6 @@ func test_line_board_view_exposes_visible_active_ghost_hold_and_next_without_mut
     assert_true(coordinator.line_move(Vector2i.RIGHT))
     assert_true(bridge.has_method("_refresh_presentation"))
     bridge._refresh_presentation()
-    var after := view.snapshot()
+    var after: Dictionary = view.snapshot()
     assert_ne(after.get("active_origin"), before.get("active_origin"))
     assert_eq(line.piece_cycle.active_piece.origin, before_origin + Vector2i.RIGHT)
