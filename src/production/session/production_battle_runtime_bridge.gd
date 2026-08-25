@@ -13,8 +13,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
     if coordinator == null or delta <= 0.0:
         return
-    if coordinator.line_session != null:
-        coordinator.line_session.tick(delta, _soft_drop_held)
+    coordinator.tick_line(delta, _soft_drop_held)
     _refresh_presentation()
 
 func _unhandled_key_input(event: InputEvent) -> void:
