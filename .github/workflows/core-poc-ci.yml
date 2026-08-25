@@ -26,7 +26,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Verify Tetris HiGodot slot 8 binding
+      - name: Verify Tetris shared fixed HiGodot binding
         shell: bash
         run: python -m unittest discover -s tests/tooling -p 'test_*.py' -v
 
