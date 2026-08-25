@@ -77,3 +77,39 @@ func test_coordinator_routes_line_move_rotate_and_hold_without_owning_piece_rule
     assert_true(coordinator.line_hold())
     assert_eq(line.piece_cycle.held_piece_id, original_piece_id)
     assert_eq(coordinator.battle_session.turn_controller.phase, TurnPhase.LINE)
+
+func test_line_board_view_exposes_visible_active_ghost_hold_and_next_without_mutation() -> void:
+    var f := await _standalone_scene()
+    if f.is_empty():
+        return
+
+    var ui = f["ui"]
+    var bridge = f["bridge"]
+    var coordinator = f["coordinator"]
+    var line = coordinator.line_session
+    var view = ui.get_node_or_null("Layout/MainRow/PuzzlePanel/LineBoardHost/LineBoardView")
+    assert_not_null(view, "Production scene must mount a real read-only Line board view")
+    if view == null:
+        return
+
+    assert_true(view.has_method("snapshot"))
+    if not view.has_method("snapshot"):
+        return
+
+    var before_origin: Vector2i = line.piece_cycle.active_piece.origin
+    var before := view.snapshot()
+    assert_eq(int(before.get("width", 0)), 10)
+    assert_eq(int(before.get("height", 0)), 20)
+    assert_eq((before.get("cells", []) as Array).size(), 20)
+    assert_ne(String(before.get("active_piece_id", "")), "")
+    assert_true(before.has("ghost_origin"))
+    assert_true(before.has("held_piece_id"))
+    assert_eq((before.get("next_piece_ids", []) as Array).size(), 5)
+    assert_eq(line.piece_cycle.active_piece.origin, before_origin, "Read-only snapshot must not mutate gameplay state")
+
+    assert_true(coordinator.line_move(Vector2i.RIGHT))
+    assert_true(bridge.has_method("_refresh_presentation"))
+    bridge._refresh_presentation()
+    var after := view.snapshot()
+    assert_ne(after.get("active_origin"), before.get("active_origin"))
+    assert_eq(line.piece_cycle.active_piece.origin, before_origin + Vector2i.RIGHT)
