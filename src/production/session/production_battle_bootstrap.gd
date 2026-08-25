@@ -79,7 +79,11 @@ func _bootstrap_runtime() -> void:
         _fail("LINE_SESSION_BOOTSTRAP_FAILED")
         return
 
-    var time_config := TurnTimeConfig.from_dictionary(_json(TIME_DATA_PATH))
+    var time_data := _json(TIME_DATA_PATH)
+    if not _time_data_is_bootstrap_ready(time_data):
+        _fail("INVALID_TIME_DATA")
+        return
+    var time_config := TurnTimeConfig.from_dictionary(time_data)
     var turn_start: Dictionary = battle.start_next_player_turn(time_config, "NORMAL")
     if not bool(turn_start.get("started", false)):
         _fail("TURN_START_FAILED:%s" % String(turn_start.get("reason", "UNKNOWN")))
@@ -137,6 +141,44 @@ func _make_line(turn: TurnController):
         LineFallState.new(feel),
         reward
     )
+
+func _time_data_is_bootstrap_ready(data: Dictionary) -> bool:
+    if not data.has("balance_status") or String(data["balance_status"]) == "":
+        return false
+    if not data.has("shared_turn_budget") or typeof(data["shared_turn_budget"]) != TYPE_DICTIONARY:
+        return false
+    if not data.has("difficulty_profiles") or typeof(data["difficulty_profiles"]) != TYPE_DICTIONARY:
+        return false
+    if not data.has("tempo_reward") or typeof(data["tempo_reward"]) != TYPE_DICTIONARY:
+        return false
+
+    var shared: Dictionary = data["shared_turn_budget"]
+    for key in ["min_budget_seconds", "max_budget_seconds", "tempo_reference_seconds"]:
+        if not shared.has(key) or not _is_number(shared[key]):
+            return false
+
+    var min_budget := float(shared["min_budget_seconds"])
+    var max_budget := float(shared["max_budget_seconds"])
+    var tempo_reference := float(shared["tempo_reference_seconds"])
+    if min_budget <= 0.0 or max_budget < min_budget or tempo_reference <= 0.0:
+        return false
+
+    var profiles: Dictionary = data["difficulty_profiles"]
+    if not profiles.has("NORMAL") or typeof(profiles["NORMAL"]) != TYPE_DICTIONARY:
+        return false
+    var normal_profile: Dictionary = profiles["NORMAL"]
+    if not normal_profile.has("base_budget_seconds") or not _is_number(normal_profile["base_budget_seconds"]):
+        return false
+    if float(normal_profile["base_budget_seconds"]) <= 0.0:
+        return false
+
+    var tempo_reward: Dictionary = data["tempo_reward"]
+    for key in ["potency_per_saved_ratio", "potency_bonus_cap_ratio"]:
+        if not tempo_reward.has(key) or not _is_number(tempo_reward[key]):
+            return false
+        if float(tempo_reward[key]) < 0.0:
+            return false
+    return true
 
 func _tetromino_data_is_bootstrap_ready(data: Dictionary) -> bool:
     if data.is_empty():
