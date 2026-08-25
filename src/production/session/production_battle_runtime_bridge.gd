@@ -7,6 +7,13 @@ var ui: ProductionBattleUI = null
 func _ready() -> void:
     _bind_ui_signal()
 
+func _process(delta: float) -> void:
+    if coordinator == null or delta <= 0.0:
+        return
+    if coordinator.line_session != null:
+        coordinator.line_session.tick(delta)
+    _refresh_presentation()
+
 func bind_coordinator(value) -> bool:
     if value == null:
         return false
