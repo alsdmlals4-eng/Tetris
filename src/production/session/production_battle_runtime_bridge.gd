@@ -5,6 +5,7 @@ const LINE_VIEW_PATH := "Layout/MainRow/PuzzlePanel/LineBoardHost/LineBoardView"
 
 var coordinator = null
 var ui: ProductionBattleUI = null
+var _soft_drop_held: bool = false
 
 func _ready() -> void:
     _bind_ui_signal()
@@ -13,7 +14,38 @@ func _process(delta: float) -> void:
     if coordinator == null or delta <= 0.0:
         return
     if coordinator.line_session != null:
-        coordinator.line_session.tick(delta)
+        coordinator.line_session.tick(delta, _soft_drop_held)
+    _refresh_presentation()
+
+func _unhandled_key_input(event: InputEvent) -> void:
+    if not event is InputEventKey:
+        return
+    var key := event as InputEventKey
+    if key.echo:
+        return
+
+    if key.keycode == KEY_DOWN:
+        _soft_drop_held = key.pressed
+        return
+
+    if not key.pressed or coordinator == null:
+        return
+
+    match key.keycode:
+        KEY_LEFT:
+            coordinator.line_move(Vector2i.LEFT)
+        KEY_RIGHT:
+            coordinator.line_move(Vector2i.RIGHT)
+        KEY_Z:
+            coordinator.line_rotate(-1)
+        KEY_X:
+            coordinator.line_rotate(1)
+        KEY_C:
+            coordinator.line_hold()
+        KEY_SPACE:
+            coordinator.line_hard_drop()
+        _:
+            return
     _refresh_presentation()
 
 func bind_coordinator(value) -> bool:
