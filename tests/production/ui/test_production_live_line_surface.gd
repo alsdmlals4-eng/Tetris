@@ -161,3 +161,24 @@ func test_engineering_keyboard_routes_move_rotate_hold_soft_drop_and_hard_drop()
     var routed: Array = coordinator.drain_routed_events()
     assert_eq(routed.size(), 1)
     assert_eq(routed[0].get("kind", &""), &"production_line_resolved")
+
+func test_auto_lock_routes_line_result_exactly_once_through_coordinator() -> void:
+    var f := await _standalone_scene()
+    if f.is_empty():
+        return
+
+    var bridge = f["bridge"]
+    var coordinator = f["coordinator"]
+    var line = coordinator.line_session
+    var active_before = line.piece_cycle.active_piece
+    line.piece_cycle.active_piece.origin = line.piece_cycle.get_ghost_origin()
+    var lock_delay: float = line.fall_state.config.lock_delay_seconds
+
+    bridge._process(lock_delay + 0.01)
+
+    assert_ne(line.piece_cycle.active_piece, active_before, "Grounded active piece must auto-lock through existing LineSession semantics")
+    var routed: Array = coordinator.drain_routed_events()
+    assert_eq(routed.size(), 1, "Auto-lock Line result must be routed exactly once through Coordinator")
+    if routed.size() == 1:
+        assert_eq(routed[0].get("kind", &""), &"production_line_resolved")
+    assert_eq(coordinator.drain_routed_events().size(), 0, "Routed Line result must drain exactly once")
