@@ -1,6 +1,7 @@
 extends GutTest
 
 const SCENE_PATH := "res://scenes/production/battle.tscn"
+const TIME_DATA_PATH := "res://data/production/turn_time_config.json"
 const TETROMINO_DATA_PATH := "res://data/production/line_tetrominoes.json"
 const FEEL_DATA_PATH := "res://data/production/line_feel_config.json"
 const REWARD_DATA_PATH := "res://data/production/line_reward_seed.json"
@@ -22,6 +23,23 @@ class StubDataBootstrap:
             return {}
         var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
         return parsed if parsed is Dictionary else {}
+
+func _scene_with_bootstrap(bootstrap: ProductionBattleBootstrap):
+    var packed = load(SCENE_PATH)
+    assert_not_null(packed)
+    if packed == null:
+        bootstrap.free()
+        return null
+
+    var ui = packed.instantiate()
+    var default_bootstrap = ui.get_node_or_null("RuntimeBootstrap")
+    if default_bootstrap != null:
+        ui.remove_child(default_bootstrap)
+        default_bootstrap.free()
+    bootstrap.name = "RuntimeBootstrap"
+    ui.add_child(bootstrap)
+    add_child_autofree(ui)
+    return ui
 
 func test_scene_bootstraps_real_production_line_runtime_without_external_binding() -> void:
     var packed = load(SCENE_PATH)
@@ -64,6 +82,28 @@ func test_scene_bootstraps_real_production_line_runtime_without_external_binding
 
     assert_eq(coordinator.battle_session.turn_controller.phase, TurnPhase.LINE_SETTLE)
     assert_true(ui.phase_label.text.contains("LINE_SETTLE"))
+
+func test_standalone_bootstrap_refuses_malformed_time_data() -> void:
+    var malformed_time := {
+        "difficulty_profiles": {
+            "NORMAL": {
+                "base_budget_seconds": 90.0,
+            },
+        },
+    }
+    var bootstrap := StubDataBootstrap.new(TIME_DATA_PATH, malformed_time)
+    var ui = _scene_with_bootstrap(bootstrap)
+    if ui == null:
+        return
+    await get_tree().process_frame
+    await get_tree().process_frame
+
+    var bridge = ui.get_node_or_null("RuntimeBridge")
+    assert_eq(String(bootstrap.bootstrap_state), "FAILED", "Malformed Shared Turn seed must fail closed")
+    assert_ne(String(bootstrap.failure_reason), "")
+    assert_not_null(bridge)
+    if bridge != null:
+        assert_null(bridge.coordinator, "Malformed Shared Turn seed must not bind a live coordinator")
 
 func test_line_bootstrap_refuses_missing_feel_data() -> void:
     var bootstrap := StubDataBootstrap.new(FEEL_DATA_PATH, {})
