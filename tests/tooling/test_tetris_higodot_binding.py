@@ -163,6 +163,8 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
         workflow = _text(WORKFLOW)
         self.assertIn("tests/tooling", workflow)
         self.assertRegex(workflow, re.compile(r"python\s+-m\s+unittest\s+discover"))
+        self.assertIn("Verify Tetris shared fixed HiGodot binding", workflow)
+        self.assertNotIn("slot 8", workflow.lower())
         self.assertIn("windows-powershell-contract", workflow)
         self.assertIn("shell: powershell", workflow)
         self.assertIn("-StaticSelfTest", workflow)
