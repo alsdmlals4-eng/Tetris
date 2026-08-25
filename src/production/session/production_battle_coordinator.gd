@@ -48,6 +48,15 @@ func complete_settle() -> bool:
         _:
             return false
 
+func line_move(delta: Vector2i) -> bool:
+    return line_session != null and line_session.try_move(delta)
+
+func line_rotate(direction: int) -> bool:
+    return line_session != null and line_session.try_rotate(direction)
+
+func line_hold() -> bool:
+    return line_session != null and line_session.try_hold()
+
 func line_hard_drop():
     if line_session == null:
         return null
