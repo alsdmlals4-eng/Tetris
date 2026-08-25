@@ -48,6 +48,13 @@ func complete_settle() -> bool:
         _:
             return false
 
+func tick_line(delta: float, soft_drop: bool = false) -> bool:
+    if line_session == null:
+        return false
+    line_session.tick(delta, soft_drop)
+    _route_line_events()
+    return true
+
 func line_move(delta: Vector2i) -> bool:
     return line_session != null and line_session.try_move(delta)
 
