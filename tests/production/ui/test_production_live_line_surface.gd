@@ -30,6 +30,13 @@ func _standalone_scene() -> Dictionary:
         "coordinator": bridge.coordinator,
     }
 
+func _key(code: int, pressed: bool = true) -> InputEventKey:
+    var event := InputEventKey.new()
+    event.keycode = code
+    event.pressed = pressed
+    event.echo = false
+    return event
+
 func test_live_line_tick_consumes_shared_budget_and_refreshes_timer() -> void:
     var f := await _standalone_scene()
     if f.is_empty():
@@ -113,3 +120,44 @@ func test_line_board_view_exposes_visible_active_ghost_hold_and_next_without_mut
     var after: Dictionary = view.snapshot()
     assert_ne(after.get("active_origin"), before.get("active_origin"))
     assert_eq(line.piece_cycle.active_piece.origin, before_origin + Vector2i.RIGHT)
+
+func test_engineering_keyboard_routes_move_rotate_hold_soft_drop_and_hard_drop() -> void:
+    var f := await _standalone_scene()
+    if f.is_empty():
+        return
+
+    var bridge = f["bridge"]
+    var coordinator = f["coordinator"]
+    var line = coordinator.line_session
+
+    assert_true(bridge.has_method("_unhandled_key_input"), "Bridge must own the temporary engineering key map")
+    if not bridge.has_method("_unhandled_key_input"):
+        return
+
+    var original_origin: Vector2i = line.piece_cycle.active_piece.origin
+    var original_rotation: int = line.piece_cycle.active_piece.rotation
+    var original_piece_id: String = line.piece_cycle.active_piece.piece_id
+
+    bridge._unhandled_key_input(_key(KEY_RIGHT))
+    assert_eq(line.piece_cycle.active_piece.origin, original_origin + Vector2i.RIGHT)
+
+    bridge._unhandled_key_input(_key(KEY_X))
+    assert_ne(line.piece_cycle.active_piece.rotation, original_rotation)
+    bridge._unhandled_key_input(_key(KEY_Z))
+    assert_eq(line.piece_cycle.active_piece.rotation, original_rotation)
+
+    bridge._unhandled_key_input(_key(KEY_C))
+    assert_eq(line.piece_cycle.held_piece_id, original_piece_id)
+
+    var soft_drop_origin: Vector2i = line.piece_cycle.active_piece.origin
+    bridge._unhandled_key_input(_key(KEY_DOWN, true))
+    bridge._process(0.06)
+    assert_gt(line.piece_cycle.active_piece.origin.y, soft_drop_origin.y, "Held Down must use the existing data-driven soft-drop interval")
+    bridge._unhandled_key_input(_key(KEY_DOWN, false))
+
+    var active_before_drop = line.piece_cycle.active_piece
+    bridge._unhandled_key_input(_key(KEY_SPACE))
+    assert_ne(line.piece_cycle.active_piece, active_before_drop)
+    var routed: Array = coordinator.drain_routed_events()
+    assert_eq(routed.size(), 1)
+    assert_eq(routed[0].get("kind", &""), &"production_line_resolved")
