@@ -1,6 +1,8 @@
 class_name ProductionBattleRuntimeBridge
 extends Node
 
+const LINE_VIEW_PATH := "Layout/MainRow/PuzzlePanel/LineBoardHost/LineBoardView"
+
 var coordinator = null
 var ui: ProductionBattleUI = null
 
@@ -50,4 +52,13 @@ func _refresh_presentation() -> bool:
     if state.is_empty():
         return false
     ui.apply_presentation(state)
+    _refresh_line_view()
     return true
+
+func _refresh_line_view() -> void:
+    if coordinator == null or ui == null or coordinator.line_session == null:
+        return
+    var view = ui.get_node_or_null(LINE_VIEW_PATH)
+    if view == null or not view.has_method("bind_line_session"):
+        return
+    view.bind_line_session(coordinator.line_session)
