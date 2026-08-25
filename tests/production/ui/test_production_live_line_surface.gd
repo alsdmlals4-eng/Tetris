@@ -182,3 +182,26 @@ func test_auto_lock_routes_line_result_exactly_once_through_coordinator() -> voi
     if routed.size() == 1:
         assert_eq(routed[0].get("kind", &""), &"production_line_resolved")
     assert_eq(coordinator.drain_routed_events().size(), 0, "Routed Line result must drain exactly once")
+
+func test_line_timeout_enters_settle_and_closes_keyboard_manipulation() -> void:
+    var f := await _standalone_scene()
+    if f.is_empty():
+        return
+
+    var ui = f["ui"]
+    var bridge = f["bridge"]
+    var coordinator = f["coordinator"]
+    var line = coordinator.line_session
+    var turn = coordinator.battle_session.turn_controller
+    var origin_before: Vector2i = line.piece_cycle.active_piece.origin
+    turn.turn_budget.remaining_seconds = 0.05
+
+    bridge._process(0.10)
+
+    assert_eq(turn.phase, TurnPhase.LINE_SETTLE)
+    assert_true(ui.phase_label.text.contains("LINE_SETTLE"))
+    assert_false(line.can_accept_input())
+
+    bridge._unhandled_key_input(_key(KEY_RIGHT))
+    assert_eq(line.piece_cycle.active_piece.origin, origin_before, "Timed-out LINE must reject keyboard manipulation")
+    assert_false(coordinator.line_move(Vector2i.LEFT))
