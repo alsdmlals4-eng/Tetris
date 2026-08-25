@@ -16,19 +16,20 @@
   },
   "project_binding": {
     "project_key": "TETRIS",
-    "slot": 8,
+    "binding_mode": "SHARED_FIXED_LOCAL",
     "repository": "https://github.com/alsdmlals4-eng/Tetris",
     "project_local_path": "C:\\Users\\user\\Documents\\GitHub\\Ninza\\Tetris",
     "godot_project_path": "C:/Users/user/Documents/GitHub/Ninza/Tetris",
     "godot_project_file": "C:/Users/user/Documents/GitHub/Ninza/Tetris/project.godot",
-    "dedicated_godot_executable": "C:\\Users\\user\\Tools\\Godot-Tetris-4.7.1\\Godot_v4.7.1-stable_win64.exe",
-    "http_port": 8008,
-    "ws_port": 9508,
-    "mcp_url": "http://127.0.0.1:8008/mcp",
-    "codex_home": "C:\\Users\\user\\.codex-tetris"
+    "shared_godot_executable": "C:\\Users\\user\\Tools\\Godot-4.7.1\\Godot_v4.7.1-stable_win64.exe",
+    "http_port": 8000,
+    "ws_port": 9500,
+    "mcp_url": "http://127.0.0.1:8000/mcp",
+    "codex_profile": "DEFAULT_USER_PROFILE",
+    "multi_editor_session_selection": "REQUIRED_WHEN_MULTIPLE_EDITORS_CONNECTED"
   },
   "host_clients": {
-    "codex": "CONFIGURED_BY_PROJECT_LAUNCHER_NOT_RUN",
+    "codex": "SHARED_USER_PROFILE_PRECONFIG_REQUIRED_OR_DOCK_CONFIGURE",
     "chatgpt_cloud": "CANNOT_DIAL_LOCALHOST",
     "gpt_vscode": "NOT_CONFIGURED",
     "deepseek": "FORBIDDEN"
@@ -42,20 +43,19 @@
     "filesystem",
     "runtime"
   ],
-  "telemetry": "DISABLED_BY_PROJECT_LAUNCHER",
-  "static_contract_status": "PASS",
-  "last_verified_at": "2026-08-21T00:22:26Z",
+  "telemetry": "DISABLED_BY_SHARED_EDITOR_SETTING_AND_LAUNCH_ENV",
+  "static_contract_status": "PENDING_EXACT_HEAD_CI",
+  "last_verified_at": null,
   "verification_evidence": [
-    "Exact upstream v3.1.4 tag commit and addon tree matched two existing project deployments.",
-    "Repository tooling contract verifies vendor digest, official Godot distribution hashes, slot 8 paths, loopback ports, launcher safety, live status identity gating, and CI consumption (5/5 tests passed).",
-    "Portable PowerShell 7.6.5 parsed the launcher and its StaticSelfTest reproduced the exact vendored-addon digest; Windows PowerShell 5.1 validation is configured in CI but is not promoted before the exact-head workflow result.",
-    "Isolated Godot 4.7.1 Linux headless import and parse passed; Godot AI reported its expected headless-only server disablement.",
-    "Existing GUT regression suite passed 50/50 tests with 355 assertions, including the strict log guard."
+    "Exact upstream v3.1.4 tag commit and vendored addon integrity remain pinned.",
+    "2026-08-25 operator decision replaces project-dedicated Godot/ports with SHARED_FIXED_LOCAL operation.",
+    "Upstream defaults HTTP 8000 / WS 9500 and supports multiple editors on one backend; exact project session selection remains required before mutation.",
+    "Windows live shared-backend connection and runtime evidence are intentionally not promoted before a real local run."
   ],
   "rollback_release_or_commit": "PRE_ADOPTION_NONE",
-  "rollback_procedure": "Disable the editor plugin, remove addons/godot_ai and its project.godot entry, then delete the dedicated Godot-Tetris-4.7.1 and .codex-tetris directories after confirming no Tetris process is running.",
+  "rollback_procedure": "For Tetris-only rollback, disable the Godot AI editor plugin for this project, remove addons/godot_ai and its project.godot plugin entry, and leave the shared Godot installation and shared user Codex profile untouched.",
   "connection_status": "NOT_RUN",
   "runtime_status": "NOT_RUN",
-  "regression_status": "PASS",
+  "regression_status": "PENDING_EXACT_HEAD_CI",
   "production_readiness": false
 }
