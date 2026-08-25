@@ -44,18 +44,19 @@
     "runtime"
   ],
   "telemetry": "DISABLED_BY_SHARED_EDITOR_SETTING_AND_LAUNCH_ENV",
-  "static_contract_status": "PENDING_EXACT_HEAD_CI",
-  "last_verified_at": null,
+  "static_contract_status": "PASS",
+  "last_verified_at": "2026-08-25T06:16:21Z",
   "verification_evidence": [
-    "Exact upstream v3.1.4 tag commit and vendored addon integrity remain pinned.",
-    "2026-08-25 operator decision replaces project-dedicated Godot/ports with SHARED_FIXED_LOCAL operation.",
-    "Upstream defaults HTTP 8000 / WS 9500 and supports multiple editors on one backend; exact project session selection remains required before mutation.",
-    "Windows live shared-backend connection and runtime evidence are intentionally not promoted before a real local run."
+    "Exact upstream v3.1.4 tag commit, addon tree and vendored content digest remain pinned.",
+    "The shared fixed contract uses the common Godot 4.7.1 path, loopback HTTP 8000 / WS 9500 and the default user Codex profile; project-specific slot/port/profile assumptions are rejected by tooling tests.",
+    "CI run #406 passed 17/17 tooling contracts, Linux PowerShell launcher StaticSelfTest, Windows PowerShell 5.1 launcher StaticSelfTest, Godot 4.7.1 import/parse and the strict GUT log guard.",
+    "CI run #406 passed 349/349 GUT tests with 2902 assertions; the only reported warnings were the two pre-existing Float/Int comparison warnings in Gatebreaker seed tests.",
+    "Windows live shared-backend connection, exact Tetris session selection and runtime authoring readiness remain intentionally NOT_RUN until a real local run."
   ],
   "rollback_release_or_commit": "PRE_ADOPTION_NONE",
   "rollback_procedure": "For Tetris-only rollback, disable the Godot AI editor plugin for this project, remove addons/godot_ai and its project.godot plugin entry, and leave the shared Godot installation and shared user Codex profile untouched.",
   "connection_status": "NOT_RUN",
   "runtime_status": "NOT_RUN",
-  "regression_status": "PENDING_EXACT_HEAD_CI",
+  "regression_status": "PASS",
   "production_readiness": false
 }
