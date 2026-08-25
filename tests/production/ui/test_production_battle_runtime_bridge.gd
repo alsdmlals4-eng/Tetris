@@ -110,7 +110,7 @@ func test_ready_button_routes_through_real_coordinator_and_refreshes_presentatio
     assert_true(ui.phase_label.text.contains("LINE_SETTLE"))
     assert_false(ui.ready_button.visible)
 
-func test_technique_button_routes_through_real_coordinator_and_refreshes_presentation() -> void:
+func test_technique_detail_then_use_routes_through_real_coordinator() -> void:
     var f := await _fixture()
     if f.is_empty():
         return
@@ -134,14 +134,23 @@ func test_technique_button_routes_through_real_coordinator_and_refreshes_present
     assert_true(bridge.bind_coordinator(coordinator))
 
     var button: Button = ui.skill_buttons_by_id["atk_t1_quick_cut"]
-    assert_false(button.disabled)
+    var use_button: Button = ui.get_node_or_null("Layout/MainRow/ActionPanel/SkillDetailPanel/DetailContent/UseTechniqueButton")
+    assert_not_null(use_button)
+    if use_button == null:
+        return
     var energy_before := player.energy
     var stock_before := player.stock
 
     button.pressed.emit()
+    assert_eq(player.energy, energy_before, "Opening skill detail must not spend Energy")
+    assert_eq(player.stock, stock_before, "Opening skill detail must not spend Stock")
+    assert_eq(turn.phase, TurnPhase.ACTION)
+    assert_false(use_button.disabled)
+
+    use_button.pressed.emit()
 
     assert_eq(player.energy, energy_before - 10)
     assert_eq(player.stock, stock_before - 1)
     assert_eq(turn.phase, TurnPhase.PLAYER_RESOLVE)
     assert_true(ui.phase_label.text.contains("PLAYER_RESOLVE"))
-    assert_true(button.disabled)
+    assert_true(use_button.disabled)
