@@ -102,15 +102,24 @@ func _bootstrap_runtime() -> void:
     bootstrap_state = "READY"
 
 func _make_line(turn: TurnController):
-    var catalog := TetrominoCatalog.from_dictionary(_json(TETROMINO_DATA_PATH))
+    var tetromino_data := _json(TETROMINO_DATA_PATH)
+    if tetromino_data.is_empty():
+        return null
+    var catalog := TetrominoCatalog.from_dictionary(tetromino_data)
     if catalog == null:
         return null
 
-    var feel := LineFeelConfig.from_dictionary(_json(FEEL_DATA_PATH))
+    var feel_data := _json(FEEL_DATA_PATH)
+    if feel_data.is_empty():
+        return null
+    var feel := LineFeelConfig.from_dictionary(feel_data)
     if feel == null:
         return null
 
-    var reward := LineRewardConfig.from_dictionary(_json(REWARD_DATA_PATH))
+    var reward_data := _json(REWARD_DATA_PATH)
+    if reward_data.is_empty():
+        return null
+    var reward := LineRewardConfig.from_dictionary(reward_data)
     if reward == null:
         return null
 
