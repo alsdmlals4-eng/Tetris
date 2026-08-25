@@ -1,20 +1,23 @@
 extends GutTest
 
 const SCENE_PATH := "res://scenes/production/battle.tscn"
+const TETROMINO_DATA_PATH := "res://data/production/line_tetrominoes.json"
 const FEEL_DATA_PATH := "res://data/production/line_feel_config.json"
 const REWARD_DATA_PATH := "res://data/production/line_reward_seed.json"
 
-class MissingDataBootstrap:
+class StubDataBootstrap:
     extends ProductionBattleBootstrap
 
-    var missing_path: String = ""
+    var override_path: String = ""
+    var override_data: Dictionary = {}
 
-    func _init(p_missing_path: String) -> void:
-        missing_path = p_missing_path
+    func _init(p_override_path: String, p_override_data: Dictionary) -> void:
+        override_path = p_override_path
+        override_data = p_override_data.duplicate(true)
 
     func _json(path: String) -> Dictionary:
-        if path == missing_path:
-            return {}
+        if path == override_path:
+            return override_data.duplicate(true)
         if not FileAccess.file_exists(path):
             return {}
         var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
@@ -63,15 +66,36 @@ func test_scene_bootstraps_real_production_line_runtime_without_external_binding
     assert_true(ui.phase_label.text.contains("LINE_SETTLE"))
 
 func test_line_bootstrap_refuses_missing_feel_data() -> void:
-    var bootstrap := MissingDataBootstrap.new(FEEL_DATA_PATH)
+    var bootstrap := StubDataBootstrap.new(FEEL_DATA_PATH, {})
     var turn := TurnController.new(TurnBudget.new())
     var line = bootstrap._make_line(turn)
     assert_null(line, "Missing feel seed must fail closed")
     bootstrap.free()
 
 func test_line_bootstrap_refuses_missing_reward_data() -> void:
-    var bootstrap := MissingDataBootstrap.new(REWARD_DATA_PATH)
+    var bootstrap := StubDataBootstrap.new(REWARD_DATA_PATH, {})
     var turn := TurnController.new(TurnBudget.new())
     var line = bootstrap._make_line(turn)
     assert_null(line, "Missing reward seed must fail closed")
+    bootstrap.free()
+
+func test_line_bootstrap_refuses_malformed_tetromino_data() -> void:
+    var bootstrap := StubDataBootstrap.new(TETROMINO_DATA_PATH, {"schema_version": 1})
+    var turn := TurnController.new(TurnBudget.new())
+    var line = bootstrap._make_line(turn)
+    assert_null(line, "Tetromino data without the seven Production pieces must fail closed")
+    bootstrap.free()
+
+func test_line_bootstrap_refuses_malformed_feel_data() -> void:
+    var bootstrap := StubDataBootstrap.new(FEEL_DATA_PATH, {"balance_status": "TUNING_SEED_NOT_FINAL"})
+    var turn := TurnController.new(TurnBudget.new())
+    var line = bootstrap._make_line(turn)
+    assert_null(line, "Feel data missing required fields must fail closed")
+    bootstrap.free()
+
+func test_line_bootstrap_refuses_malformed_reward_data() -> void:
+    var bootstrap := StubDataBootstrap.new(REWARD_DATA_PATH, {"balance_status": "TUNING_SEED_NOT_FINAL"})
+    var turn := TurnController.new(TurnBudget.new())
+    var line = bootstrap._make_line(turn)
+    assert_null(line, "Reward data missing required clear-kind maps must fail closed")
     bootstrap.free()
