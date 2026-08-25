@@ -1,6 +1,24 @@
 extends GutTest
 
 const SCENE_PATH := "res://scenes/production/battle.tscn"
+const FEEL_DATA_PATH := "res://data/production/line_feel_config.json"
+const REWARD_DATA_PATH := "res://data/production/line_reward_seed.json"
+
+class MissingDataBootstrap:
+    extends ProductionBattleBootstrap
+
+    var missing_path: String = ""
+
+    func _init(p_missing_path: String) -> void:
+        missing_path = p_missing_path
+
+    func _json(path: String) -> Dictionary:
+        if path == missing_path:
+            return {}
+        if not FileAccess.file_exists(path):
+            return {}
+        var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+        return parsed if parsed is Dictionary else {}
 
 func test_scene_bootstraps_real_production_line_runtime_without_external_binding() -> void:
     var packed = load(SCENE_PATH)
@@ -43,3 +61,13 @@ func test_scene_bootstraps_real_production_line_runtime_without_external_binding
 
     assert_eq(coordinator.battle_session.turn_controller.phase, TurnPhase.LINE_SETTLE)
     assert_true(ui.phase_label.text.contains("LINE_SETTLE"))
+
+func test_line_bootstrap_refuses_missing_feel_data() -> void:
+    var bootstrap := MissingDataBootstrap.new(FEEL_DATA_PATH)
+    var turn := TurnController.new(TurnBudget.new())
+    assert_null(bootstrap._make_line(turn), "Missing feel seed must fail closed")
+
+func test_line_bootstrap_refuses_missing_reward_data() -> void:
+    var bootstrap := MissingDataBootstrap.new(REWARD_DATA_PATH)
+    var turn := TurnController.new(TurnBudget.new())
+    assert_null(bootstrap._make_line(turn), "Missing reward seed must fail closed")
