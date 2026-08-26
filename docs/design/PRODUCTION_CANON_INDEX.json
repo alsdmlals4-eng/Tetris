@@ -159,14 +159,16 @@
     "core_029_implementation_plan": "DOCUMENTED_EXECUTION_STARTED",
     "core_foundation": "IMPLEMENTED_AUTOMATED_TESTED_HISTORICAL_CONTRACT",
     "pr19_ordered_turn_workstream": "READ_ONLY_SOURCE_SNAPSHOT",
-    "core_029_runtime": "NOT_PRESENT",
-    "production_line_workspace": "NOT_PORTED_TO_CORE_029",
-    "production_chain_workspace": "NOT_PORTED_TO_CORE_029",
-    "simulation_pause_controller": "NOT_PRESENT",
-    "enemy_realtime_scheduler": "NOT_PRESENT",
-    "skill_tactical_pause_runtime": "NOT_PRESENT",
-    "production_60_40_ui": "NOT_PRESENT",
+    "core_029_runtime": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "production_line_workspace": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "production_chain_workspace": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "simulation_pause_controller": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "enemy_realtime_scheduler": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "skill_tactical_pause_runtime": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "production_60_40_ui": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
     "runtime_image_consumers": "NOT_PRESENT_FOR_CORE_029",
-    "production_human_playtest": "NOT_RUN"
+    "production_human_playtest": "NOT_RUN",
+    "merged_main_runtime": "NOT_MERGED",
+    "current_branch_evidence": "EXACT_HEAD_CI_AND_DIRECT_RUNTIME_VERIFIED"
   }
 }
