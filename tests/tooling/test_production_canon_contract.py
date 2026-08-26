@@ -6,8 +6,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = ROOT / "docs" / "design" / "PRODUCTION_CANON_INDEX.json"
 REALTIME_CANON_PATH = ROOT / "docs" / "design" / "PRODUCTION_REALTIME_COMBAT_CANON.md"
-TURN_CANON_PATH = ROOT / "docs" / "design" / "PRODUCTION_TURN_COMBAT_CANON.md"
-TIME_CANON_PATH = ROOT / "docs" / "design" / "PRODUCTION_TURN_TIME_CANON.md"
+TURN_CANON_PATH = "docs/design/PRODUCTION_TURN_COMBAT_CANON.md"
+TIME_CANON_PATH = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
 SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md"
 BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
 PLAN_PATH = (
@@ -86,11 +86,11 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("turn_timeout_pass_flow", superseded)
         self.assertIn("tempo_turn_speed_reward", superseded)
 
-    def test_realtime_canon_exists_and_old_turn_time_canons_are_historical(self) -> None:
+    def test_realtime_canon_exists_and_historical_turn_canons_are_routed_as_provenance(self) -> None:
+        data = self._index()
         self.assertTrue(REALTIME_CANON_PATH.is_file(), "CORE-029 realtime canon must exist")
         realtime = REALTIME_CANON_PATH.read_text(encoding="utf-8")
-        turn = TURN_CANON_PATH.read_text(encoding="utf-8")
-        time = TIME_CANON_PATH.read_text(encoding="utf-8")
+        historical = data["historical_production_documents"]
 
         self.assertIn("TETRIS-CORE-029", realtime)
         self.assertIn("CONTINUOUS_REALTIME", realtime)
@@ -98,8 +98,12 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("LINE", realtime)
         self.assertIn("CHAIN", realtime)
         self.assertIn("FULL_TACTICAL_PAUSE", realtime)
-        self.assertIn("HISTORICAL / SUPERSEDED BY TETRIS-CORE-029", turn)
-        self.assertIn("HISTORICAL / SUPERSEDED BY TETRIS-CORE-029", time)
+        self.assertIn(TURN_CANON_PATH, historical)
+        self.assertIn(TIME_CANON_PATH, historical)
+        self.assertIn("TETRIS-CORE-024", realtime)
+        self.assertIn("TETRIS-TIME-025", realtime)
+        self.assertIn("HISTORICAL", realtime)
+        self.assertIn("SUPERSEDED", realtime)
 
     def test_retained_skill_and_balance_authorities_are_not_silently_rewritten(self) -> None:
         data = self._index()
