@@ -23,7 +23,7 @@ def _text(path: Path) -> str:
 
 def _vendor_digest() -> str:
     digest = hashlib.sha256()
-    for path in sorted(p for p in ADDON.rglob("*") if p.is_file()):
+    for path in sorted(p for p in ADDON.rglob("*") if p.is_file() and p.suffix != ".uid"):
         relative = path.relative_to(ADDON).as_posix().encode("utf-8")
         digest.update(len(relative).to_bytes(4, "big"))
         digest.update(relative)
