@@ -134,3 +134,16 @@ func test_terminal_victory_replaces_the_running_combat_label() -> void:
 	battle._runtime = TerminalRuntime.new({"terminal": true, "paused": false, "player_hp": 100, "player_energy": 0, "player_stock": 0, "enemy_hp": 0, "enemy_eta_seconds": 0.0})
 	battle._refresh_runtime_labels()
 	assert_eq(battle.get_node("MainRow/CombatColumn/SkillPanel/PauseState").text, "VICTORY")
+
+func test_terminal_result_exposes_retry_only_after_combat_ends() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var retry_button = battle.get_node_or_null("MainRow/CombatColumn/SkillPanel/RetryButton")
+	assert_not_null(retry_button, "terminal result flow needs a visible retry control")
+	if retry_button == null:
+		return
+	assert_false(retry_button.visible, "Retry must not compete with active combat controls")
+	battle._runtime = TerminalRuntime.new({"terminal": true, "paused": false, "player_hp": 0, "player_energy": 0, "player_stock": 0, "enemy_hp": 100, "enemy_eta_seconds": 0.0})
+	battle._refresh_runtime_labels()
+	assert_true(retry_button.visible, "Retry must appear after a terminal outcome")
+	assert_true(battle.has_method("_retry_encounter"), "Retry must restart through an explicit battle-owned bridge")

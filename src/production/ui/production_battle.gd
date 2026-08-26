@@ -11,6 +11,7 @@ const CHAIN := "CHAIN"
 @onready var _next_forecast: Label = $MainRow/CombatColumn/ThreatPanel/NextForecast
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceBar
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillPanel/PauseState
+@onready var _retry_button: Button = $MainRow/CombatColumn/SkillPanel/RetryButton
 
 var _runtime = null
 var _workspace_manager = null
@@ -28,6 +29,7 @@ func _ready() -> void:
 	for tier in range(1, 7):
 		get_node("MainRow/CombatColumn/SkillPanel/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
 	$MainRow/CombatColumn/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
+	_retry_button.pressed.connect(_retry_encounter)
 	var bootstrap = load("res://src/production/session/production_battle_bootstrap.gd").new()
 	var result: Dictionary = bootstrap.build_runtime()
 	_runtime = result.get("runtime")
@@ -156,15 +158,20 @@ func _use_selected_skill() -> void:
 		_runtime.use_selected_skill()
 	_refresh_runtime_labels()
 
+func _retry_encounter() -> void:
+	get_tree().reload_current_scene()
+
 func _refresh_runtime_labels() -> void:
 	if _runtime == null:
 		_current_threat.text = "CURRENT THREAT · unavailable"
 		return
 	var snapshot: Dictionary = _runtime.snapshot()
+	var is_terminal: bool = bool(snapshot.get("terminal", false))
 	_current_threat.text = "CURRENT THREAT · ETA %.1fs" % float(snapshot.get("enemy_eta_seconds", 0.0))
 	_next_forecast.text = "NEXT FORECAST · realtime authored schedule"
 	_resource_bar.text = "HP %d / 100    ENERGY %d    STOCK %d / 6" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
-	if bool(snapshot.get("terminal", false)):
+	_retry_button.visible = is_terminal
+	if is_terminal:
 		_pause_state.text = "VICTORY" if int(snapshot.get("enemy_hp", 0)) <= 0 else "DEFEAT"
 	elif _runtime.is_skill_open():
 		_pause_state.text = "TACTICAL PAUSE"
