@@ -16,7 +16,7 @@ HiGodot WS 9508: ws://127.0.0.1:9508
 CODEX_HOME: C:\Users\user\.codex-tetris
 ```
 
-The repository vendors exact `hi-godot/godot-ai` v3.1.4 and enables it as the sole persistent Godot authoring authority. The one-click launcher validates the full vendored-addon digest and the official Godot archive/executable SHA-256, creates or reuses a self-contained Godot 4.7.1 editor, writes only that editor's settings, clears `allow_remote_hosts`, binds HTTP 8008 and WS 9508 to loopback, disables telemetry, verifies listener addresses and owners, then verifies the live status identity (`godot-ai` / `3.1.4` / WS `9508`). It creates a Tetris-only Codex profile and never takes another port, kills an unknown process, or writes shared `.vscode/mcp.json` / `.codex/config.toml` files.
+The repository vendors exact `hi-godot/godot-ai` v3.2.0 and enables it as the sole persistent Godot authoring authority. The one-click launcher validates the full vendored-addon digest and the official Godot archive/executable SHA-256, creates or reuses a self-contained Godot 4.7.1 editor, writes only that editor's settings, clears `allow_remote_hosts`, binds HTTP 8008 and WS 9508 to loopback, disables telemetry, verifies listener addresses and owners, then verifies the live status identity (`godot-ai` / `3.2.0` / WS `9508`). It creates a Tetris-only Codex profile and never takes another port, kills an unknown process, or writes shared `.vscode/mcp.json` / `.codex/config.toml` files.
 
 ## GPT-first operating model and cost
 
@@ -34,7 +34,7 @@ This uses the user's current ChatGPT Pro entitlement plus free local Godot, free
 
 After PR #3 is merged and the Windows checkout is at the exact path above, double-click `RUN_TETRIS_LOCAL.cmd`. The free `uv`/`uvx` runtime used by Godot AI must already be installed; the launcher checks it immediately and links to the official installer instead of waiting for a port timeout. The launcher:
 
-1. verifies the exact repository, `project.godot`, vendored Godot AI 3.1.4, and origin URL;
+1. verifies the exact repository, `project.godot`, vendored Godot AI 3.2.0, and origin URL;
 2. creates or verifies the dedicated self-contained Godot 4.7.1 installation;
 3. fails closed on a concurrent launcher, non-dedicated editor, or unknown HTTP 8008 / WS 9508 owner;
 4. seeds dedicated EditorSettings with 8008/9508 and `keep_server_on_exit=false`;

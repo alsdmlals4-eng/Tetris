@@ -23,7 +23,11 @@ def _text(path: Path) -> str:
 
 def _vendor_digest() -> str:
     digest = hashlib.sha256()
-    for path in sorted(p for p in ADDON.rglob("*") if p.is_file()):
+    files = sorted(
+        (path for path in ADDON.rglob("*") if path.is_file()),
+        key=lambda path: path.relative_to(ADDON).as_posix(),
+    )
+    for path in files:
         relative = path.relative_to(ADDON).as_posix().encode("utf-8")
         digest.update(len(relative).to_bytes(4, "big"))
         digest.update(relative)
@@ -37,18 +41,26 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
     def test_exact_upstream_vendor_is_present_and_integrity_locked(self) -> None:
         self.assertTrue((ADDON / "plugin.cfg").is_file())
         plugin_cfg = _text(ADDON / "plugin.cfg")
-        self.assertRegex(plugin_cfg, r'(?m)^version="3\.1\.4"$')
+        self.assertRegex(plugin_cfg, r'(?m)^version="3\.2\.0"$')
 
         record = json.loads(_text(ADOPTION))
         self.assertEqual(record["provider"], "hi-godot/godot-ai")
-        self.assertEqual(record["exact_release_or_commit"], "v3.1.4")
+        self.assertEqual(record["exact_release_or_commit"], "v3.2.0")
         self.assertEqual(
             record["upstream_tag_commit"],
-            "96cc8b8c3d25ce487e24801d01d5214fea150349",
+            "42c44e4d02ca1836a0e1866361509d3a14d83b0c",
         )
         self.assertEqual(
             record["upstream_addon_tree_sha"],
-            "69010571e11123dfc4e09483f80cb9e6ca93511a",
+            "66a9df59a92f0029efcd35c22fea355c93e8fe49",
+        )
+        self.assertEqual(
+            record["upstream_release_archive_sha256"],
+            "8c4ead3c804e32e0f5b59860f4803ad26e8fff717ec44b72fb5a4fddb0a84d6e",
+        )
+        self.assertEqual(
+            record["vendor_local_extension_files"],
+            ["runtime/game_helper_impl.gd", "runtime/game_helper_impl.gd.uid"],
         )
         self.assertEqual(record["vendor_content_sha256"], _vendor_digest())
         self.assertEqual(record["license"], "MIT")
@@ -92,8 +104,10 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
             "Godot_v4.7.1-stable_win64.exe",
             "$ExpectedGodotZipSha256 = 'c7a289051eaefb460b0106b60e9cd5bee0ef55fd102dcb2bed1eb356cf3d90a1'",
             "$ExpectedGodotExeSha256 = '323f9c4cc5db674e98815cdd8e69da007d5efc779abedc8c0e42883b7fdea12a'",
-            "$ExpectedGodotAiVendorSha256 = '59fd1325f7a361a98c382b9ba3ef47f9a7c635167b2a14479521b4102c3d7329'",
+            "$ExpectedGodotAiVersion = '3.2.0'",
+            "$ExpectedGodotAiVendorSha256 = 'df3856abf8ea3fd948dae66176f67cfe5e7cdd139a0815b253d640f405c0a3f6'",
             "Get-GodotAiVendorDigest",
+            ".Replace('\\', '/')",
             r"C:\Users\user\.codex-tetris",
             "$HttpPort = 8008",
             "$WsPort = 9508",
