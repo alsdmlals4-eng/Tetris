@@ -9,10 +9,11 @@ var _enemy_scheduler
 var _skill_session
 var _pause_controller: SimulationPauseController
 var _response_state
+var _telemetry = null
 var _started := false
 var _terminal := false
 
-func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state) -> void:
+func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null) -> void:
 	_player = player
 	_enemy = enemy
 	_workspace_manager = workspace_manager
@@ -20,6 +21,7 @@ func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspac
 	_skill_session = skill_session
 	_pause_controller = pause_controller
 	_response_state = response_state
+	_telemetry = telemetry
 
 func start_battle() -> Dictionary:
 	if _started or _player == null or _enemy == null or _enemy_scheduler == null:
@@ -28,6 +30,8 @@ func start_battle() -> Dictionary:
 	if not bool(started.get("started", false)):
 		return started
 	_started = true
+	if _telemetry != null:
+		_telemetry.record("BATTLE_STARTED")
 	return {"started": true, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds()}
 
 func process_player_command(command: Dictionary) -> Dictionary:
@@ -45,7 +49,11 @@ func process_player_command(command: Dictionary) -> Dictionary:
 func tick(delta: float) -> Array[Dictionary]:
 	var events: Array[Dictionary] = []
 	if not _started or delta <= 0.0 or _terminal or is_simulation_paused():
+		if _telemetry != null and is_simulation_paused():
+			_telemetry.advance_wall_clock(delta)
 		return events
+	if _telemetry != null:
+		_telemetry.advance_simulation(delta, _workspace_manager.active_workspace() if _workspace_manager != null else "")
 	if _workspace_manager != null:
 		_workspace_manager.process_safe_handoff()
 		_tick_active_puzzle(delta)
@@ -59,12 +67,17 @@ func tick(delta: float) -> Array[Dictionary]:
 func open_skill() -> Dictionary:
 	if _skill_session == null or _terminal:
 		return {"opened": false, "reason": "SKILL_UNAVAILABLE"}
-	return {"opened": _skill_session.open()}
+	var opened: bool = _skill_session.open()
+	if opened and _telemetry != null:
+		_telemetry.begin_tactical_pause()
+	return {"opened": opened}
 
 func close_skill_without_use() -> Dictionary:
 	if _skill_session == null:
 		return {"closed": false, "reason": "SKILL_UNAVAILABLE"}
 	var result: Dictionary = _skill_session.cancel()
+	if bool(result.get("canceled", false)) and _telemetry != null:
+		_telemetry.end_tactical_pause()
 	return {"closed": bool(result.get("canceled", false))}
 
 func is_simulation_paused() -> bool:
