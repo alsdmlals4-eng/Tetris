@@ -8,7 +8,7 @@
 - Consumer type: opaque `Texture2D` in a `TextureRect`; `KEEP_ASPECT_COVERED`; decorative mouse input ignored.
 - Consumer geometry: compact wide stage strip; source may crop at top and bottom, so the safe content area is the center 70% of the image.
 - Import/use: background texture; default filtering/compression is acceptable for this first runtime slice.
-- Placeholder: an in-scene deterministic violet-to-crimson `GradientTexture2D` remains until the PNG is wired.
+- Runtime state: the production PNG is wired directly; no placeholder texture remains in the scene.
 
 ## Visual brief
 
