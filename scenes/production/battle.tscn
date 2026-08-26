@@ -99,6 +99,56 @@ layout_mode = 2
 layout_mode = 2
 text = "TACTICAL PAUSE"
 
+[node name="Attack" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "ATK"
+
+[node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "DEF"
+
+[node name="Support" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "SUP"
+
+[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T1"
+
+[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T2"
+
+[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T3"
+
+[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T4"
+
+[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T5"
+
+[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T6"
+
 [node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillPanel"]
 layout_mode = 2
 text = "ATK / DEF / SUP → T1–T6 → DETAIL → USE"
+
+[node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "USE"

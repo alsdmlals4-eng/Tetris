@@ -80,6 +80,23 @@ func close_skill_without_use() -> Dictionary:
 		_telemetry.end_tactical_pause()
 	return {"closed": bool(result.get("canceled", false))}
 
+func select_skill_category(category: String) -> bool:
+	return _skill_session != null and _skill_session.select_category(category)
+
+func select_skill_technique(technique_id: String) -> Dictionary:
+	if _skill_session == null:
+		return {"selected": false, "reason": "SKILL_UNAVAILABLE"}
+	return _skill_session.select_technique(technique_id)
+
+func use_selected_skill() -> Dictionary:
+	if _skill_session == null:
+		return {"committed": false, "reason": "SKILL_UNAVAILABLE"}
+	var result: Dictionary = _skill_session.commit_selected({"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id()})
+	if bool(result.get("committed", false)) and _telemetry != null:
+		_telemetry.record("TECHNIQUE_USED", result)
+		_telemetry.end_tactical_pause()
+	return result
+
 func is_simulation_paused() -> bool:
 	return _pause_controller != null and _pause_controller.is_paused()
 

@@ -52,3 +52,13 @@ func test_mode_buttons_switch_the_single_visible_puzzle_surface() -> void:
 	battle.set_active_workspace("LINE")
 	assert_true(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/LineBoardView").visible)
 	assert_false(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/ChainBoardView").visible)
+
+func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
+	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
+		return
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	for node_path in ["Attack", "Defense", "Support", "Tier1", "Tier2", "Tier3", "Tier4", "Tier5", "Tier6", "UseButton"]:
+		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillPanel/%s" % node_path))
+	assert_true(battle.has_method("select_skill_category"))
+	assert_true(battle.has_method("select_skill_tier"))

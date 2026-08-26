@@ -15,11 +15,18 @@ const CHAIN := "CHAIN"
 var _runtime = null
 var _workspace_manager = null
 var _pause_bridge: SimulationPauseBridge = null
+var _selected_skill_lane := ""
 
 func _ready() -> void:
 	$MainRow/PuzzleColumn/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
 	$MainRow/PuzzleColumn/ModeBar/ChainButton.pressed.connect(func(): _request_workspace(CHAIN))
 	$MainRow/PuzzleColumn/ModeBar/SkillButton.pressed.connect(_toggle_skill)
+	$MainRow/CombatColumn/SkillPanel/Attack.pressed.connect(func(): select_skill_category("ATTACK"))
+	$MainRow/CombatColumn/SkillPanel/Defense.pressed.connect(func(): select_skill_category("DEFENSE"))
+	$MainRow/CombatColumn/SkillPanel/Support.pressed.connect(func(): select_skill_category("SUPPORT"))
+	for tier in range(1, 7):
+		get_node("MainRow/CombatColumn/SkillPanel/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
+	$MainRow/CombatColumn/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
 	var bootstrap = load("res://src/production/session/production_battle_bootstrap.gd").new()
 	var result: Dictionary = bootstrap.build_runtime()
 	_runtime = result.get("runtime")
@@ -59,6 +66,26 @@ func _toggle_skill() -> void:
 		_runtime.close_skill_without_use()
 	else:
 		_runtime.open_skill()
+	_refresh_runtime_labels()
+
+func select_skill_category(category: String) -> bool:
+	if _runtime == null or not _runtime.is_simulation_paused():
+		return false
+	_selected_skill_lane = category
+	return _runtime.select_skill_category(category)
+
+func select_skill_tier(tier: int) -> Dictionary:
+	if _runtime == null or _selected_skill_lane == "" or tier < 1 or tier > 6:
+		return {"selected": false, "reason": "INVALID_SELECTION"}
+	var prefix: String = String({"ATTACK": "atk", "DEFENSE": "def", "SUPPORT": "sup"}.get(_selected_skill_lane, ""))
+	if prefix == "":
+		return {"selected": false, "reason": "INVALID_SELECTION"}
+	var ids := {"atk": ["quick_cut", "sweeping_arc", "rift_breach", "crushing_strike", "suppressive_break", "execution_edge"], "def": ["guard", "fortify", "counter", "bulwark", "rift_ward", "last_bastion"], "sup": ["second_wind", "rally", "haste", "mark_weakness", "rift_seal", "battle_trance"]}
+	return _runtime.select_skill_technique("%s_t%d_%s" % [prefix, tier, ids[prefix][tier - 1]])
+
+func _use_selected_skill() -> void:
+	if _runtime != null and _runtime.is_simulation_paused():
+		_runtime.use_selected_skill()
 	_refresh_runtime_labels()
 
 func _refresh_runtime_labels() -> void:
