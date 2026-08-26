@@ -35,6 +35,8 @@ func _on_pause_state_changed(paused: bool) -> void:
     _apply_pause_state(paused)
 
 func _apply_pause_state(paused: bool) -> void:
+    if not is_inside_tree():
+        return
     var tree := get_tree()
     if tree == null:
         return
