@@ -16,6 +16,7 @@ var _runtime = null
 var _workspace_manager = null
 var _pause_bridge: SimulationPauseBridge = null
 var _selected_skill_lane := ""
+var _selected_chain_cell := Vector2i(-1, -1)
 
 func _ready() -> void:
 	$MainRow/PuzzleColumn/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
@@ -74,6 +75,57 @@ func _unhandled_input(event: InputEvent) -> void:
 		_runtime.process_player_command({"kind": "TOGGLE_SYSTEM_PAUSE"})
 		_refresh_runtime_labels()
 		get_viewport().set_input_as_handled()
+	else:
+		for action_name in ["line_left", "line_right", "line_soft_drop", "line_rotate_cw", "line_rotate_ccw", "line_hold", "line_hard_drop"]:
+			if event.is_action_pressed(action_name):
+				_handle_line_action(action_name)
+				get_viewport().set_input_as_handled()
+				return
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			_handle_chain_click(event.position)
+
+func _handle_line_action(action_name: String) -> bool:
+	if _runtime == null or _workspace_manager == null or _runtime.is_simulation_paused() or _workspace_manager.active_workspace() != LINE:
+		return false
+	var line_session = _workspace_manager.line_session
+	if line_session == null:
+		return false
+	match action_name:
+		"line_left":
+			return line_session.try_move(Vector2i.LEFT)
+		"line_right":
+			return line_session.try_move(Vector2i.RIGHT)
+		"line_soft_drop":
+			return line_session.try_move(Vector2i.DOWN)
+		"line_rotate_cw":
+			return line_session.try_rotate(1)
+		"line_rotate_ccw":
+			return line_session.try_rotate(-1)
+		"line_hold":
+			return line_session.try_hold()
+		"line_hard_drop":
+			return line_session.hard_drop_and_commit() != null
+	return false
+
+func _handle_chain_click(global_position: Vector2) -> bool:
+	if _runtime == null or _workspace_manager == null or _runtime.is_simulation_paused() or _workspace_manager.active_workspace() != CHAIN:
+		return false
+	var local_position := global_position - _chain_view.global_position
+	var selected: Vector2i = _chain_view.cell_at_local_position(local_position)
+	if selected.x < 0:
+		_selected_chain_cell = Vector2i(-1, -1)
+		_chain_view.set_selected_cell(_selected_chain_cell)
+		return false
+	if _selected_chain_cell.x < 0:
+		_selected_chain_cell = selected
+		_chain_view.set_selected_cell(selected)
+		return true
+	var first := _selected_chain_cell
+	_selected_chain_cell = Vector2i(-1, -1)
+	_chain_view.set_selected_cell(_selected_chain_cell)
+	if abs(first.x - selected.x) + abs(first.y - selected.y) != 1:
+		return false
+	return bool(_workspace_manager.chain_session.begin_swap(first, selected).get("accepted", false))
 
 func _toggle_skill() -> void:
 	if _runtime == null:

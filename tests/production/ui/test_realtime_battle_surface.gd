@@ -68,7 +68,10 @@ func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
 	for action_name in ["workspace_line", "workspace_chain", "open_skill", "pause_game"]:
 		assert_true(InputMap.has_action(action_name), "%s must be a named project action" % action_name)
+		assert_gt(InputMap.action_get_events(action_name).size(), 0, "%s needs a default testable binding" % action_name)
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	assert_true(battle.has_method("_unhandled_input"), "the battle bridge must receive named input actions")
+	assert_true(battle.has_method("_handle_line_action"), "the battle bridge must route Line controls through the active session")
+	assert_true(battle.has_method("_handle_chain_click"), "the battle bridge must route Chain pointer selection through the active session")
 	assert_eq(battle.process_mode, Node.PROCESS_MODE_ALWAYS, "the input bridge must remain available while SceneTree is paused")
