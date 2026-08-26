@@ -17,12 +17,25 @@ EVIDENCE_PATH = (
     / "PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
 )
 
+EXPECTED_DIMENSIONS = [
+    "REALTIME_THREAT_READABILITY",
+    "WORKSPACE_SWITCH_COMPREHENSION",
+    "WORKSPACE_STATE_PERSISTENCE",
+    "TACTICAL_PAUSE_COMPREHENSION",
+    "LINE_ENERGY_VS_CHAIN_STOCK",
+    "TECHNIQUE_DECISION_QUALITY",
+    "SIXTY_FORTY_LAYOUT_READABILITY",
+    "PLAYER_EXPERIENCE_SIGNAL",
+]
+
 
 class HumanEvidenceContractTests(unittest.TestCase):
-    def test_machine_readable_human_evidence_index_declares_gate(self) -> None:
+    def test_machine_readable_human_evidence_index_declares_core_029_gate(self) -> None:
         self.assertTrue(EVIDENCE_INDEX_PATH.is_file(), "human evidence index must exist")
         data = json.loads(EVIDENCE_INDEX_PATH.read_text(encoding="utf-8"))
+
         self.assertEqual(data["project"], "TETRIS")
+        self.assertEqual(data["core_decision"], "TETRIS-CORE-029")
         self.assertEqual(data["status"], "NOT_RUN")
         self.assertEqual(
             data["contract"],
@@ -32,28 +45,36 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertEqual(data["method"], "OBSERVE_THEN_PROBE")
         self.assertTrue(data["human_evidence_required"])
         self.assertEqual(data["minimum_directional_sessions_for_pass"], 3)
-        self.assertIn("VISUAL_READABILITY", data["dimensions"])
-        self.assertIn("TIER_VIABILITY", data["dimensions"])
-        self.assertIn("EXPERIENCE_SIGNAL", data["dimensions"])
+        for dimension in EXPECTED_DIMENSIONS:
+            self.assertIn(dimension, data["dimensions"])
+        self.assertNotIn("SHARED_TURN_BUDGET", data["dimensions"])
+        self.assertNotIn("TEMPO", data["dimensions"])
 
-    def test_human_evidence_contract_preserves_evidence_ceiling(self) -> None:
+    def test_human_evidence_contract_preserves_core_029_evidence_ceiling(self) -> None:
         self.assertTrue(EVIDENCE_PATH.is_file(), "human evidence contract must exist")
         text = EVIDENCE_PATH.read_text(encoding="utf-8")
+
+        self.assertIn("TETRIS-CORE-029", text)
         self.assertIn("OBSERVE_FIRST", text)
         self.assertIn("DO_NOT_COACH_DURING_FIRST_ATTEMPT", text)
         self.assertIn("FUN_HYPOTHESIS", text)
-        self.assertIn("VISUAL_READABILITY", text)
-        self.assertIn("TETRIS-VISUAL-020", text)
-        self.assertIn("Shared Player Turn Budget", text)
-        self.assertIn("Line Energy", text)
+        self.assertIn("TETRIS-VISUAL-028", text)
+        self.assertIn("LINE", text)
+        self.assertIn("CHAIN", text)
+        self.assertIn("Energy", text)
         self.assertIn("Chain Stock", text)
-        self.assertIn("lower Tier", text)
+        self.assertIn("TACTICAL_PAUSE_SKILL", text)
+        self.assertIn("60/40", text)
         self.assertIn("MEMORABLE_MOMENT", text)
         self.assertIn("THREE_SESSIONS_REQUIRED_FOR_PASS", text)
         self.assertIn("NOT_RUN", text)
         self.assertIn("PASS / REVISE / BLOCK", text)
-        self.assertIn("2026-08-21-phased-turn-production-vertical-slice.md", text)
-        self.assertIn("superseded timing clauses", text)
+        self.assertIn("wall-clock", text)
+        self.assertIn("active combat simulation time", text)
+        self.assertIn("tactical-pause duration", text)
+        self.assertNotIn("### C. SHARED_BUDGET_COMPREHENSION", text)
+        self.assertNotIn("### TEMPO", text)
+        self.assertIn("historical provenance", text)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "seed_source": "HISTORICAL_FOUNDATION_LINE_RULES",
+  "notes": "Explicit migration/comparison seed only. Production Energy and Score values require simulation and Human evidence before final lock.",
+  "energy_by_clear_kind": {
+    "NONE": 0,
+    "SINGLE": 10,
+    "DOUBLE": 22,
+    "TRIPLE": 36,
+    "FOUR": 52
+  },
+  "score_by_clear_kind": {
+    "NONE": 0,
+    "SINGLE": 100,
+    "DOUBLE": 300,
+    "TRIPLE": 500,
+    "FOUR": 800
+  }
+}

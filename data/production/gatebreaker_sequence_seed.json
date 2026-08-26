@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "source_contract": "TETRIS-ENCOUNTER-006 / TETRIS-FLOW-015",
+  "phase_2_at_or_below": 0.70,
+  "phase_3_at_or_below": 0.30,
+  "phase_1_cycle": ["light_smash", "gatebreaker_slam", "light_smash"],
+  "phase_2_cycle": ["rift_siphon", "gatebreaker_slam", "chain_fracture", "light_smash"],
+  "phase_2_repair": {
+    "key": "rift_repair",
+    "trigger_at_or_below": 0.50,
+    "max_uses": 1,
+    "requires_base_actions_scheduled": 1
+  },
+  "phase_3_entry": "siege_charge",
+  "phase_3_cycle": ["light_smash", "rift_siphon", "gatebreaker_slam", "chain_fracture"]
+}

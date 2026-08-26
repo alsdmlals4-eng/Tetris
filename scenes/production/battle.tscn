@@ -1,0 +1,177 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
+[ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
+[ext_resource type="Script" path="res://src/production/ui/production_chain_board_view.gd" id="3_chain"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="4_stage_backdrop"]
+
+[node name="Battle" type="Control"]
+process_mode = 3
+script = ExtResource("1_battle")
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainRow" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="PuzzleColumn" type="VBoxContainer" parent="MainRow"]
+custom_minimum_size = Vector2(0, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+
+[node name="ModeBar" type="HBoxContainer" parent="MainRow/PuzzleColumn"]
+layout_mode = 2
+
+[node name="LineButton" type="Button" parent="MainRow/PuzzleColumn/ModeBar"]
+layout_mode = 2
+text = "LINE"
+
+[node name="ChainButton" type="Button" parent="MainRow/PuzzleColumn/ModeBar"]
+layout_mode = 2
+text = "CHAIN"
+
+[node name="SkillButton" type="Button" parent="MainRow/PuzzleColumn/ModeBar"]
+process_mode = 2
+layout_mode = 2
+text = "SKILL"
+
+[node name="PuzzleHost" type="Control" parent="MainRow/PuzzleColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LineBoardView" type="ColorRect" parent="MainRow/PuzzleColumn/PuzzleHost"]
+script = ExtResource("2_line")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.035, 0.055, 0.09, 1)
+
+[node name="ChainBoardView" type="ColorRect" parent="MainRow/PuzzleColumn/PuzzleHost"]
+script = ExtResource("3_chain")
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.06, 0.045, 0.09, 1)
+
+[node name="CombatColumn" type="VBoxContainer" parent="MainRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+theme_override_constants/separation = 8
+
+[node name="ThreatPanel" type="VBoxContainer" parent="MainRow/CombatColumn"]
+layout_mode = 2
+
+[node name="CurrentTelegraph" type="Label" parent="MainRow/CombatColumn/ThreatPanel"]
+layout_mode = 2
+text = "CURRENT THREAT · ETA --"
+
+[node name="NextForecast" type="Label" parent="MainRow/CombatColumn/ThreatPanel"]
+layout_mode = 2
+text = "NEXT FORECAST · --"
+
+[node name="CombatStage" type="ColorRect" parent="MainRow/CombatColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+color = Color(0.08, 0.03, 0.06, 1)
+
+[node name="StageBackdrop" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_stage_backdrop")
+expand_mode = 1
+stretch_mode = 6
+[node name="ResourceBar" type="Label" parent="MainRow/CombatColumn"]
+layout_mode = 2
+text = "HP -- / --    ENERGY --    STOCK -- / 6"
+
+[node name="SkillPanel" type="VBoxContainer" parent="MainRow/CombatColumn"]
+process_mode = 2
+layout_mode = 2
+
+[node name="PauseState" type="Label" parent="MainRow/CombatColumn/SkillPanel"]
+layout_mode = 2
+text = "TACTICAL PAUSE"
+
+[node name="RetryButton" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+visible = false
+layout_mode = 2
+text = "RETRY"
+
+[node name="Attack" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "ATK"
+
+[node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "DEF"
+
+[node name="Support" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "SUP"
+
+[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T1"
+
+[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T2"
+
+[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T3"
+
+[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T4"
+
+[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T5"
+
+[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "T6"
+
+[node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillPanel"]
+layout_mode = 2
+text = "ATK / DEF / SUP → T1–T6 → DETAIL → USE"
+
+[node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+process_mode = 2
+layout_mode = 2
+text = "USE"

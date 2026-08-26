@@ -35,8 +35,6 @@ def _vendor_digest() -> str:
         digest.update(len(payload).to_bytes(8, "big"))
         digest.update(payload)
     return digest.hexdigest()
-
-
 class TetrisHiGodotBindingTests(unittest.TestCase):
     def test_exact_upstream_vendor_is_present_and_integrity_locked(self) -> None:
         self.assertTrue((ADDON / "plugin.cfg").is_file())

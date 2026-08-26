@@ -1,10 +1,10 @@
 # Vanguard Tactical Skill Matrix
 
-- Status: **CURRENT PRODUCTION SKILL CANON / USER-APPROVED DIRECTION / BUILD DEFERRED**
+- Status: **RETAINED PRODUCTION SKILL CANON / CORE-029 REALTIME MIGRATION BOUNDARY**
 - Decision: `TETRIS-SKILL-026 · Situational Tactical Tier Matrix`
 - Date: 2026-08-24
-- Parent combat canon: `TETRIS-CORE-024`
-- Timing canon: `TETRIS-TIME-025`
+- Current combat canon: `TETRIS-CORE-029`
+- Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `15 · Vanguard 스킬 · Tactical Tier Matrix`
 
 ## 1. Product thesis

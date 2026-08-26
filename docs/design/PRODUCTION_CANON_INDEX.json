@@ -1,28 +1,27 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "project": "TETRIS",
   "status": "CURRENT_PRODUCTION_CANON",
-  "current_core_decision": "TETRIS-CORE-024",
-  "current_time_decision": "TETRIS-TIME-025",
+  "current_core_decision": "TETRIS-CORE-029",
   "current_skill_decision": "TETRIS-SKILL-026",
   "current_balance_decision": "TETRIS-BALANCE-027",
-  "primary_canon": "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
-  "timing_canon": "docs/design/PRODUCTION_TURN_TIME_CANON.md",
+  "current_visual_decision": "TETRIS-VISUAL-028",
+  "current_image_decision": "TETRIS-IMAGE-030",
+  "historical_core_decision": "TETRIS-CORE-024",
+  "historical_time_decision": "TETRIS-TIME-025",
+  "primary_canon": "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
   "skill_canon": "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
   "balance_canon": "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
-  "implementation_plan": "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md",
-  "timing_implementation_plan": "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md",
-  "skill_implementation_plan": "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md",
+  "image_asset_contract": "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+  "implementation_plan": "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
   "authority_order": [
-    "docs/design/PRODUCTION_TURN_TIME_CANON.md for player-turn timing, time modifiers, timeout, and Tempo reward",
-    "docs/design/PRODUCTION_TURN_COMBAT_CANON.md for ordered combat turn and non-timing production rules",
-    "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for Vanguard Tier 1-6 Technique identities, effect primitives, dominance guard, current-vs-forecast control ownership, and skill validation",
-    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for Energy/Stock opportunity cost, Tier exposure, curated economy scenarios, forecast-control economy choices, and evidence-ready tuning boundaries",
-    "latest USER_APPROVED decisions in GitHub Issue #10 and synced Notion owner pages",
-    "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md for the timing implementation handoff",
-    "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md except timing clauses superseded by TETRIS-TIME-025",
-    "docs/superpowers/plans/2026-08-24-vanguard-tactical-tier-matrix.md for the skill/economy implementation handoff",
-    "actual code/data/scenes/tests/runtime evidence"
+    "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md for continuous combat, pause, workspace switching, enemy scheduling, and battle composition",
+    "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for retained Vanguard Technique identity subject to CORE-029 realtime migration boundaries",
+    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for retained Energy/Chain Stock opportunity cost and Tier commitment subject to CORE-029 realtime migration boundaries",
+    "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md for runtime-consumer-first production image requirements",
+    "latest USER_APPROVED project Decisions and synced Notion Human-facing owner pages",
+    "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md for implementation sequencing",
+    "actual code, data, scenes, tests, exact-head CI, runtime receipts, and Human evidence"
   ],
   "retained_decisions": [
     "TETRIS-CORE-001",
@@ -31,14 +30,22 @@
     "TETRIS-SKILL-026",
     "TETRIS-BALANCE-027",
     "TETRIS-UX-023",
-    "TETRIS-VISUAL-020",
+    "TETRIS-VISUAL-028",
     "TETRIS-ENCOUNTER-006",
     "TETRIS-WORLD-004",
-    "TETRIS-AUDIO-014"
+    "TETRIS-AUDIO-014",
+    "TETRIS-IMAGE-030"
+  ],
+  "superseded_decisions": [
+    "TETRIS-CORE-024",
+    "TETRIS-TIME-025"
   ],
   "superseded_contracts": [
-    "continuous_enemy_combat_clock",
-    "free_manual_board_switching",
+    "ordered_line_chain_action_enemy_turn",
+    "shared_player_turn_budget",
+    "ready_stage_handoff",
+    "turn_timeout_pass_flow",
+    "tempo_turn_speed_reward",
     "tactical_run_lock",
     "background_chain_resolution_while_line_active",
     "puyo_style_production_chain",
@@ -51,7 +58,14 @@
     "single_interchangeable_combat_resource",
     "technique_specific_first_slice_currency_or_cooldown",
     "future_control_waits_for_hidden_unknown_intent",
-    "def_and_support_same_turn_resource_ward_overlap"
+    "def_and_support_same_turn_resource_ward_overlap",
+    "production_image_without_runtime_consumer"
+  ],
+  "historical_production_documents": [
+    "docs/design/PRODUCTION_TURN_COMBAT_CANON.md",
+    "docs/design/PRODUCTION_TURN_TIME_CANON.md",
+    "docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md",
+    "docs/superpowers/plans/2026-08-21-shared-turn-budget-tempo.md"
   ],
   "historical_foundation_documents": [
     "docs/design/CORE_GAMEPLAY_GDD.md",
@@ -59,44 +73,33 @@
     "docs/superpowers/plans/2026-08-19-core-dual-board-poc.md",
     "docs/validation/POC_45S_VALIDATION.md"
   ],
-  "production_turn": [
-    "ENEMY_TELEGRAPH",
-    "LINE_PHASE",
-    "LINE_SETTLE",
-    "CHAIN_PHASE",
-    "CHAIN_SETTLE",
-    "ACTION_PHASE",
-    "PLAYER_ACTION_RESOLVE",
-    "ENEMY_ACTION_RESOLVE"
-  ],
-  "turn_time": {
-    "model": "SHARED_PLAYER_TURN_BUDGET",
-    "budget_spans": ["LINE", "CHAIN", "ACTION"],
-    "migration_seed_total_seconds": 90,
-    "migration_seed_is_final_balance": false,
-    "early_finish": true,
-    "early_finish_reward": "TEMPO_BONUS",
-    "settle_consumes_budget": false,
-    "system_pause_consumes_budget": false,
-    "forced_animation_consumes_budget": false,
-    "unused_time_banks_to_future_turn": false,
-    "snapshot_at_turn_start": true,
-    "modifier_model": "FLAT_SECONDS_WITH_STACK_GROUPS_FIRST",
-    "modifier_sources": ["DIFFICULTY", "ITEM", "EQUIPMENT", "SUPPORT", "STATUS", "ENCOUNTER"],
-    "modifier_changes_tempo_reference": false,
-    "tempo_reference_model": "UNMODIFIED_PERFORMANCE_REFERENCE",
-    "tempo_requires_line_qualification": true,
-    "tempo_requires_chain_qualification": true,
-    "tempo_requires_non_pass_action": true,
-    "tempo_timeout_eligible": false,
-    "tempo_board_break_eligible_first_slice": false,
-    "tempo_first_reward_target": "CURRENT_ACTION_POTENCY_PLUS_NON_CURRENCY_SCORE"
+  "combat_time": {
+    "model": "CONTINUOUS_REALTIME",
+    "encounter_end": "VICTORY_OR_DEFEAT",
+    "active_workspaces": ["LINE", "CHAIN"],
+    "free_workspace_switching": true,
+    "inactive_workspace_simulates": false,
+    "skill_mode": "FULL_TACTICAL_PAUSE",
+    "manual_pause": "FULL_SIMULATION_PAUSE",
+    "shared_player_turn_budget": false,
+    "tempo_bonus": false,
+    "same_frame_skill_open_preempts_uncommitted_enemy_action": true,
+    "enemy_action_commit_point_explicit": true
+  },
+  "ui": {
+    "puzzle_surface_target_ratio": 0.6,
+    "combat_surface_target_ratio": 0.4,
+    "mandatory_sidecar": false,
+    "single_large_mode_switch_puzzle_surface": true,
+    "persistent_right_combat_surface": true,
+    "skill_pause_indicator_required": true
   },
   "production_chain": {
     "grammar": "SWAP_MATCH",
-    "new_swap_after_timer_expiry": false,
-    "already_triggered_cascade_settles_before_action": true,
-    "autonomous_swap": false
+    "autonomous_swap": false,
+    "already_committed_cascade_settles_to_stable_before_switch": true,
+    "workspace_state_persists_when_inactive": true,
+    "stock_cap": 6
   },
   "production_skill": {
     "lanes": ["ATTACK", "DEFENSE", "SUPPORT"],
@@ -107,40 +110,21 @@
     "lower_tier_viability_required": true,
     "highest_available_tier_is_default": false,
     "implementation_model": "DATA_DRIVEN_EFFECT_PRIMITIVES",
-    "effect_primitives": [
-      "DAMAGE_SINGLE",
-      "DAMAGE_AOE",
-      "MITIGATE_CURRENT_DIRECT",
-      "COUNTER_FROM_PREVENTED_DAMAGE",
-      "HEAL_SELF",
-      "APPLY_SELF_BUFF",
-      "APPLY_ENEMY_DEBUFF",
-      "PROTECT_RESOURCE_LOSS",
-      "MODIFY_NEXT_TURN_BUDGET",
-      "CONDITIONAL_MULTIPLIER",
-      "LETHAL_SAFETY",
-      "TARGET_PATTERN"
+    "selection_commit": "EXPLICIT_USE_ONLY",
+    "skill_open_pause": "FULL_TACTICAL_PAUSE",
+    "turn_bound_semantics_status": "REALTIME_MIGRATION_REQUIRED",
+    "realtime_disabled_until_migrated": [
+      "HASTE",
+      "BATTLE_TRANCE",
+      "TURN_ONLY_STATUS_DURATION",
+      "TEMPO_SCALING"
     ],
     "forecast_control": {
       "future_control_requires_visible_forecast": true,
       "future_control_binds_exact_action_id": true,
       "bound_action_invalidates_status": "EXPIRE_NO_RETARGET",
-      "atk_t5_target": "VISIBLE_NEXT_FORECAST_DIRECT_HIT",
-      "def_t5_target": "CURRENT_TELEGRAPH_RESOURCE_LOSS",
-      "sup_t5_target": "VISIBLE_NEXT_FORECAST_RESOURCE_LOSS_OR_REPAIR",
       "future_control_applies_to_current_telegraph": false
-    },
-    "tempo_non_scalable_fields": [
-      "HASTE_SECONDS",
-      "STATUS_DURATION",
-      "STOCK_COST",
-      "ENERGY_COST",
-      "WARD_COUNT",
-      "TARGET_COUNT",
-      "LETHAL_HP_FLOOR"
-    ],
-    "aoe_first_slice_validation": "SINGLE_TARGET_FALLBACK_ONLY",
-    "action_timeout_fallback": "PASS"
+    }
   },
   "resource_economy": {
     "model": "DUAL_RESOURCE_OPPORTUNITY_COST",
@@ -150,38 +134,41 @@
     "chain_stock_cap": 6,
     "stock_cost_equals_tier": true,
     "energy_cost_status": "TUNING_SEED_NOT_FINAL",
-    "energy_relative_cost_seed": [1.0, 1.25, 1.55, 1.9, 2.2, 2.55],
     "tier_exposure_model": "CONTEXTUAL_PROGRESSIVE_EXPOSURE",
-    "tutorial_grants_resources_directly": false,
-    "tutorial_uses_authored_production_board_seed": true,
-    "tier6_routine_per_turn_expectation": false,
     "technique_specific_first_slice_currency": false,
     "technique_specific_first_slice_cooldown": false,
-    "tempo_direct_resource_reward": false,
-    "current_resource_loss_response": ["DEF_T5_RIFT_WARD", "PRESPEND_THREATENED_RESOURCE"],
-    "future_rift_utility_forecast_response": ["SUP_T5_RIFT_SEAL", "PRESERVE_FOR_OTHER_RESPONSE"],
-    "automated_balance_scope": "IMPOSSIBLE_STATE_AND_OBVIOUS_DOMINANCE_ONLY",
     "human_balance_evidence_required": true
   },
+  "image_production": {
+    "model": "RUNTIME_CONSUMER_FIRST",
+    "generation_status": "PAUSED_UNTIL_CONSUMER_EXISTS",
+    "concept_sheet_is_production_asset": false,
+    "required_consumer_fields": [
+      "target_res_path",
+      "consumer_scene",
+      "consumer_node_or_slot",
+      "size_or_aspect",
+      "alpha_crop_anchor",
+      "import_or_use_mode"
+    ],
+    "one_explicit_approval_one_image": true,
+    "atlas_allowed_only_when_runtime_consumes_exact_sheet": true
+  },
   "implementation_reality": {
-    "production_turn_canon": "DOCUMENTED_USER_APPROVED",
-    "production_time_canon": "DOCUMENTED_USER_APPROVED_BUILD_DEFERRED",
-    "production_skill_canon": "DOCUMENTED_USER_APPROVED_BUILD_DEFERRED",
-    "production_balance_structure": "DOCUMENTED_PLANNING_CONTINUATION_BUILD_DEFERRED",
-    "production_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
-    "timing_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
-    "skill_implementation_plan": "DOCUMENTED_BUILD_DEFERRED",
+    "core_029_canon": "DOCUMENTED_USER_APPROVED_IMPLEMENTATION_AUTHORIZED",
+    "core_029_implementation_plan": "DOCUMENTED_EXECUTION_STARTED",
     "core_foundation": "IMPLEMENTED_AUTOMATED_TESTED_HISTORICAL_CONTRACT",
-    "production_turn_controller": "NOT_PRESENT",
-    "production_shared_turn_budget": "NOT_PRESENT",
-    "production_time_modifier_pipeline": "NOT_PRESENT",
-    "production_tempo_bonus": "NOT_PRESENT",
-    "production_line_engine": "NOT_PRESENT",
-    "production_swap_match_chain_engine": "NOT_PRESENT",
-    "production_skill_effect_primitives": "NOT_PRESENT",
-    "production_tier_1_to_6_runtime": "NOT_PRESENT",
-    "production_resource_economy_runtime": "NOT_PRESENT",
-    "production_forecast_control_runtime": "NOT_PRESENT",
-    "production_human_playtest": "NOT_RUN"
+    "pr19_ordered_turn_workstream": "READ_ONLY_SOURCE_SNAPSHOT",
+    "core_029_runtime": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "production_line_workspace": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "production_chain_workspace": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "simulation_pause_controller": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "enemy_realtime_scheduler": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "skill_tactical_pause_runtime": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "production_60_40_ui": "IMPLEMENTED_ON_CURRENT_DRAFT_PR",
+    "runtime_image_consumers": "NOT_PRESENT_FOR_CORE_029",
+    "production_human_playtest": "NOT_RUN",
+    "merged_main_runtime": "NOT_MERGED",
+    "current_branch_evidence": "EXACT_HEAD_CI_AND_DIRECT_RUNTIME_VERIFIED"
   }
 }

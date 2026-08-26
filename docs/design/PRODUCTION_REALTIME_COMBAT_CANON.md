@@ -1,0 +1,342 @@
+# Production Continuous Real-Time Combat Canon
+
+- Status: **CURRENT PRODUCTION CANON / USER_APPROVED / IMPLEMENTATION AUTHORIZED**
+- Decision: `TETRIS-CORE-029 · Continuous Real-Time Mode-Switch Combat + Full Tactical Pause`
+- Date: 2026-08-26
+- Repository: `alsdmlals4-eng/Tetris`
+- Scope: first production-quality Vertical Slice combat architecture and later production gameplay unless superseded by a newer USER_APPROVED Decision.
+
+## 1. Authority and supersession boundary
+
+This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the 60/40 battle composition.
+
+The following production documents are **HISTORICAL / SUPERSEDED** where they define ordered player/enemy turns or turn-budget timing:
+
+- `TETRIS-CORE-024` — `docs/design/PRODUCTION_TURN_COMBAT_CANON.md`
+- `TETRIS-TIME-025` — `docs/design/PRODUCTION_TURN_TIME_CANON.md`
+
+Their bodies remain preserved as provenance. They do not override this canon.
+
+Retained authorities:
+
+- `TETRIS-CORE-021` where it defines production Swap-Match Chain grammar;
+- `TETRIS-SKILL-026` for Vanguard `ATK / DEF / SUP × Tier 1–6` Technique identity, tactical commitment, and non-turn-bound effect intent;
+- `TETRIS-BALANCE-027` for Line Energy / Chain Stock dual-resource opportunity cost and Tier commitment;
+- `TETRIS-VISUAL-028` for Hand-Drawn Mystic Fantasy + Clean Puzzle UI direction;
+- authored Telegraph / visible Next Forecast principles where compatible with continuous combat.
+
+Machine routing authority is `docs/design/PRODUCTION_CANON_INDEX.json`.
+
+## 2. Product thesis
+
+Combat runs continuously from encounter start until Victory or Defeat. The player and enemy share one real-time combat timeline.
+
+The player continuously decides where attention is most valuable:
+
+```text
+LINE workspace  → build Energy
+CHAIN workspace → build Chain/Combo performance and Chain Stock/Tier access
+SKILL workspace → FULL_TACTICAL_PAUSE, inspect and commit a Technique
+```
+
+Core player question:
+
+> The enemy is acting in real time. Should I keep building Energy, switch to Chain for stronger Tier access, or freeze the fight now and spend what I have on the right Attack / Defense / Support Technique?
+
+Pressure comes from real-time enemy threat plus the opportunity cost of attention, not from an ordered player-turn countdown.
+
+## 3. Canonical encounter lifecycle
+
+```text
+BATTLE_START
+→ COMBAT_RUNNING
+   ├─ active workspace = LINE
+   ├─ active workspace = CHAIN
+   └─ open SKILL → TACTICAL_PAUSE_SKILL
+                    → inspect / select / explicit USE
+                    → COMBAT_RUNNING
+→ VICTORY | DEFEAT
+```
+
+There is no mandatory player-turn boundary between these states.
+
+Encounter terminal conditions are real combat terminal conditions, normally enemy HP ≤ 0 or player HP ≤ 0.
+
+The production slice presents the terminal result as `VICTORY` or `DEFEAT` and exposes a terminal-only `RETRY` action that reloads the current Frontier Gate encounter. Retry starts a fresh encounter; it does not alter the retained combat, puzzle, or balance rules.
+
+## 4. CONTINUOUS_REALTIME time model
+
+While `COMBAT_RUNNING`:
+
+- enemy action ETA and authored scheduler advance;
+- active puzzle workspace simulation advances;
+- combat statuses/cooldowns defined as real-time advance;
+- combat animation, simulation-driven VFX, and combat audio advance;
+- inactive puzzle workspace does not accept input and does not advance its puzzle simulation except for completion of an already-committed safe-switch boundary.
+
+There is no ordered LINE → CHAIN → ACTION stage timer and no turn-speed reward model in CORE-029.
+
+Telemetry must distinguish:
+
+- wall-clock encounter duration;
+- active combat simulation time;
+- tactical-pause duration;
+- manual-pause duration.
+
+Wall-clock reading time inside a paused Skill surface is not automatically treated as poor performance.
+
+## 5. FULL_TACTICAL_PAUSE
+
+Opening Skill enters `TACTICAL_PAUSE_SKILL`.
+
+During this state simulation is fully stopped:
+
+- enemy ETA/scheduler progression stops;
+- enemy action resolution cannot advance;
+- puzzle gravity, lock delay, Chain resolution, and puzzle timers stop;
+- combat status ticks and real-time cooldowns stop;
+- simulation-driven animation/VFX stop;
+- simulation audio is paused/held consistently;
+- only Skill/UI navigation, selection, cancel, and explicit USE confirmation remain active.
+
+The player may spend unlimited wall-clock time reading the Skill surface in the first Slice.
+
+Manual system pause also stops the full simulation. `TACTICAL_PAUSE_SKILL` and manual pause may share a low-level pause primitive, but they remain distinct player-facing states and telemetry reasons.
+
+Pause ownership must be tokenized/reference-safe so one subsystem cannot resume simulation while another pause reason remains active.
+
+## 6. Persistent puzzle workspaces
+
+The battle owns two independent long-lived puzzle states:
+
+```text
+LineWorkspaceState
+ChainWorkspaceState
+```
+
+Only one is visible and input-active at a time inside the large Puzzle Surface.
+
+### LINE
+
+- production falling-block Line grammar;
+- Line Clear remains the primary Energy source;
+- board, active piece, Hold, Next/queue, ghost, gravity, lock-delay, randomizer, and related legal state persist when leaving LINE;
+- switching away does not rebuild the board, reroll the queue, respawn the active piece, or reset lock timing.
+
+### CHAIN
+
+- production Swap-Match grammar: adjacent swap → match → clear → gravity/refill → cascade → stable board;
+- Chain/Combo performance remains the primary source of Chain Stock/Tier opportunity;
+- board, refill/randomizer state, selection/history required for legal continuation, and pending deterministic resolution persist when leaving CHAIN;
+- switching away does not grant free progress or reroll state.
+
+Required return invariant:
+
+```text
+LINE state A
+→ CHAIN state B
+→ LINE exact legal continuation of A
+→ CHAIN exact legal continuation of B
+```
+
+Switching changes visibility and input ownership, not workspace identity.
+
+## 7. Deterministic safe workspace switching
+
+The player may request `LINE ↔ CHAIN` freely during `COMBAT_RUNNING`.
+
+The request is accepted by the input layer, but handoff commits only at the next deterministic puzzle-safe boundary:
+
+- LINE: after the currently committed atomic movement/rotation/drop/placement step resolves;
+- CHAIN: after the currently committed swap plus any already-triggered clear/gravity/refill/cascade reaches a stable board.
+
+After a switch request, the outgoing workspace accepts no new puzzle input. Enemy combat time continues while the safe boundary finishes.
+
+At handoff:
+
+1. commit puzzle rewards/telemetry exactly once;
+2. preserve the exact outgoing workspace state;
+3. freeze its puzzle simulation;
+4. restore the incoming workspace exactly;
+5. transfer input authority.
+
+Switching must not reset gravity/lock delay, reroll Hold/Next/refill, duplicate rewards, cancel a committed Board Break, erase an unfavorable legal state, pause the enemy scheduler, or mint Energy/Stock.
+
+## 8. Enemy real-time scheduler and Telegraph
+
+Enemy actions run on a continuous authored schedule during `COMBAT_RUNNING`.
+
+Minimum persistent information:
+
+- current action identity/category;
+- expected result or damage/resource effect;
+- current ETA when time-scheduled;
+- lower-priority visible Next Forecast when authored/known;
+- enemy HP/phase/state.
+
+The current telegraphed action is not secretly replaced in direct reaction to the player's current board or selected counter unless a later approved visible reactive-archetype rule explicitly allows it.
+
+### Same-frame Skill-open boundary
+
+Ordering is deterministic:
+
+1. process Skill-open intent at the beginning of the input frame;
+2. if `TACTICAL_PAUSE_SKILL` is entered before the enemy action commit point, simulation freezes and the action waits;
+3. after the explicit commit point is crossed, opening Skill cannot retroactively cancel the committed action.
+
+The commit point is state in the scheduler, not inferred from animation timing.
+
+Enemy exact cadence/ETA values remain `TUNE_REQUIRED` until runtime and Human evidence justify them.
+
+## 9. Skill tactical decision surface
+
+Skill is not an ordered action phase.
+
+Entry flow:
+
+```text
+COMBAT_RUNNING
+→ open SKILL
+→ TACTICAL_PAUSE_SKILL
+→ ATK / DEF / SUP
+→ selected lane T1–T6
+→ select Technique
+→ inspect detail / cost / condition / target
+→ explicit USE
+→ resolve atomically
+→ COMBAT_RUNNING at exact paused simulation time
+```
+
+Selecting a row never spends resources. Only explicit USE commits.
+
+On successful USE:
+
+- configured Energy and Chain Stock are spent atomically;
+- Technique effects resolve through approved data-driven primitives;
+- Skill closes unless the Technique owns a bounded explicit resolution state;
+- combat resumes at the exact paused simulation time;
+- the previously active LINE/CHAIN workspace remains unchanged by reading the Skill UI.
+
+Cancel resumes combat with no spend.
+
+## 10. Resource and Tier contract
+
+Retained structural identity:
+
+- **Energy** is primarily earned through LINE;
+- **Chain Stock** is primarily earned through CHAIN/Combo performance;
+- the resources are not interchangeable;
+- Stock cap baseline is 6;
+- Tier N baseline spends N Stock;
+- Energy cost remains Technique-specific and data-driven;
+- Tier is a tactical commitment band, not a linear instruction to choose the highest available Tier.
+
+The opportunity-cost question is now real-time:
+
+> While the enemy clock keeps moving, how long can I safely stay in LINE or CHAIN before I pause and spend resources?
+
+Exact gains, costs, enemy cadence, cooldowns, and magnitudes remain `TUNE_REQUIRED` / `TUNING_SEED_NOT_FINAL` until supported by runtime and Human evidence.
+
+## 11. SKILL-026 migration boundary
+
+Do not silently translate turn-bound effects into seconds.
+
+The following remain `REALTIME_MIGRATION_REQUIRED` and fail closed until a separate bounded semantic decision is approved:
+
+- Haste defined as additional time for a future player-turn budget;
+- Battle Trance defined only as a next-turn LINE/CHAIN preparation window;
+- status durations defined only by turn boundaries where no event-bound meaning already exists;
+- turn-speed/Tempo-based potency or eligibility;
+- wording whose only valid trigger is a current-turn enemy-resolve boundary.
+
+Retained non-turn-bound families include direct damage, healing, mitigation, counter from prevented damage, resource ward, setup/debuff primitives, lethal safety, targeting, and exact current-vs-visible-next action binding where their semantics remain valid under real-time scheduling.
+
+## 12. UI / UX contract
+
+Target desktop composition:
+
+- left ≈ **60%**: one large Puzzle Surface;
+- right ≈ **40%**: persistent Combat Stage + enemy threat + resources + Skill surface.
+
+The ratio is a readability target, not a fixed pixel law. 1280×720 validation may adjust the exact split without making the puzzle secondary.
+
+The left surface shows only the active full puzzle workspace:
+
+```text
+LINE selected  → large falling-block board
+CHAIN selected → large Swap-Match board
+```
+
+The inactive board is not a mandatory full sidecar.
+
+The right surface keeps at least:
+
+- player/enemy combat representation;
+- enemy HP/phase;
+- Current Telegraph + ETA;
+- lower-priority Next Forecast when known;
+- player HP / Energy / Chain Stock;
+- mode controls `LINE / CHAIN / SKILL`.
+
+Skill-open state visibly communicates `TACTICAL PAUSE`, preserves the frozen puzzle as context, and prioritizes `ATK / DEF / SUP → T1–T6 → detail → USE` while keeping the motivating enemy threat readable.
+
+Do not show obsolete ordered stage rails, stage-advance READY UI, turn-timeout PASS UI, or the superseded turn-speed reward UI as current production controls.
+
+## 13. Runtime ownership
+
+Recommended responsibility split:
+
+### `ProductionCombatRuntime`
+Owns encounter lifecycle, global simulation state, Victory/Defeat, and subsystem orchestration. It does not own puzzle rules.
+
+### `SimulationPauseController`
+Owns pause reasons/tokens and effective simulation pause state.
+
+### `PuzzleWorkspaceManager`
+Owns active workspace id, persistent LINE/CHAIN references, switch request, safe-boundary handoff, and puzzle input authority. It does not own Energy/Stock formulas.
+
+### `EnemyActionScheduler`
+Owns current authored action, ETA, explicit commit point, Next Forecast, pause-aware advancement, and deterministic resolution request.
+
+### `ProductionResourceState`
+Owns HP/Energy/Stock and atomic gain/spend events.
+
+### `TechniqueSession`
+Owns paused browse/selection/eligibility/detail/confirm state. It does not advance combat time.
+
+### `TechniqueResolver`
+Owns atomic spend + effect execution after explicit USE.
+
+### UI presenter/view
+Reads authoritative state and renders it; UI does not become gameplay authority.
+
+## 14. Board Break
+
+Board Break remains puzzle-local failure with combat consequence.
+
+At a deterministic puzzle boundary:
+
+1. detect failure;
+2. apply configured HP/resource consequence atomically;
+3. reset only the failed workspace according to its puzzle contract;
+4. preserve the other workspace state;
+5. continue enemy real-time scheduling unless the game is in tactical/system pause or has reached Victory/Defeat.
+
+Board Break does not create a hidden turn boundary. Exact penalties remain `TUNE_REQUIRED` unless another retained canon already locks them.
+
+## 15. Evidence and Implementation Reality Gate
+
+Evidence classes remain separate:
+
+- this canon/spec → approved design intent;
+- branch files/tests → exact-branch implementation evidence only;
+- GitHub Actions → automated evidence for the tested SHA only;
+- merged-main readback → merged repository truth;
+- target-device runtime receipt → observed runtime on that target;
+- Human first-exposure receipts → comprehension/readability/choice/experience evidence only for the tested build.
+
+Current CORE-029 runtime status at canon migration start: **NOT_PRESENT**.
+
+Draft PR #19 ordered-turn implementation is a **READ_ONLY source snapshot** for selected reusable deterministic components. Its old ordered orchestration is not current CORE-029 runtime evidence and is not merged wholesale.
+
+User Windows runtime, first-exposure comprehension, readability, fun, memorable payoff, and final balance remain **NOT_RUN / FUN_HYPOTHESIS / TUNE_REQUIRED** until the corresponding receipts exist.

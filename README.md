@@ -4,84 +4,105 @@
 
 ## 현재 Production 방향
 
-현재 1턴의 기본 순서는 다음과 같습니다.
+현재 production combat authority는 `TETRIS-CORE-029 · Continuous Real-Time Mode-Switch Combat + Full Tactical Pause`입니다.
 
 ```text
-적 행동예고
-→ Line/Tetris: Energy 준비
-→ Swap-Match Chain: Chain Stock / Tier 준비
-→ Action: Attack / Defense / Support × Tier 1–6 중 행동 선택·발동
-→ 적 행동 발동
-→ 다음 적 행동예고
-→ 반복
+BATTLE_START
+→ COMBAT_RUNNING
+   ↔ LINE workspace
+   ↔ CHAIN workspace
+   ↔ SKILL / TACTICAL_PAUSE_SKILL
+→ VICTORY | DEFEAT
 ```
 
 핵심 원칙:
 
-- Line은 **Energy** 준비를 담당하고 Chain은 **Chain Stock / Tier 접근권** 준비를 담당합니다. `TETRIS-BALANCE-027`에 따라 두 자원은 서로 대체되지 않습니다.
-- Energy는 Technique의 유연한 throughput/utility 비용이고, Chain Stock은 이번 판단에 얼마나 크게 커밋할지 정하는 Tier 비용입니다. Tier N은 Stock N을 소비합니다.
-- Chain Stock cap은 6을 기준으로 하므로 무조건 6까지 모으는 것도 무료가 아닙니다. cap 근처에서는 추가 Stock 획득 기회를 잃을 수 있고, resource-loss/repair/heavy/lethal Intent가 `지금 쓸지, 지킬지, 다음 Turn을 준비할지`를 바꿉니다.
-- `TETRIS-SKILL-026`부터 Tier는 단순한 `상위 Tier = 더 좋은 같은 기술`이 아니라 **얼마나 많은 Stock을 현재 판단에 커밋할지 나타내는 tactical band**입니다.
-- 낮은 Tier는 자원 효율·마무리·가벼운 대응, 중간 Tier는 setup/counter/debuff/ward, 높은 Tier는 조건부 signature·lethal safety·장기 setup을 담당합니다. 가능한 최고 Tier가 항상 정답이면 설계 실패로 판정합니다.
-- Attack/Defense/Support 각 Tier는 player-facing Technique identity가 달라질 수 있지만 공통 effect primitive와 데이터 조합으로 구현하여 18개의 별도 subsystem/script를 만들지 않습니다.
-- 첫 tutorial Turn은 숨은 무료 자원 지급 대신 실제 production Line/Chain board의 authored seed에서 의미 있는 Energy/Stock 성과를 만들고 T1을 자연스럽게 경험하게 합니다. 처음부터 T6 도달을 목표로 가르치지 않습니다.
-- 정확한 Line Energy gain, Technique Energy cost, 피해/회복/상태 수치와 Tier 선택 빈도는 **TUNE_REQUIRED**입니다. 자동 simulation은 impossible state와 명백한 dominance를 찾는 데 사용하고, 재미·이해도·최종 밸런스는 Human evidence로 판정합니다.
-- Chain은 production **Swap-Match** 퍼즐입니다.
-- `TETRIS-TIME-025`부터 Line / Chain / Action은 **하나의 shared player-turn time budget**을 공동 소비합니다.
-- Enemy Telegraph, Line/Chain settle, 강제 애니메이션/전환, Enemy Resolve, System Pause는 이 플레이어 입력 시간을 소비하지 않습니다.
-- 플레이어는 합법적인 안정 상태에서 `READY`로 Line/Chain을 조기 종료할 수 있고, 남은 시간은 다음 player stage로 그대로 이어집니다.
-- Action을 확정하면 공유 타이머가 즉시 정지하고, 의미 있는 Line+Chain 성과를 낸 뒤 빠르게 완료한 턴은 남은 성과 기준에 따라 **Tempo Bonus**를 받을 수 있습니다.
-- Tempo 평가는 실제 사용 가능 시간과 별도의 unmodified performance reference를 사용하므로 Haste/아이템/쉬운 난이도로 시간을 늘린 것만으로 보상이 부풀지 않습니다.
-- Tempo는 처음부터 Energy/Stock을 직접 지급하지 않아 자원 snowball을 만들지 않습니다.
-- 난이도·아이템/장비·Support Haste·상태이상 Slow·명시적 encounter effect는 하나의 data-driven turn-budget modifier pipeline으로 처리합니다.
-- 첫 migration 비교 seed는 이전 `30s / 30s / 30s` 총합과 동일한 90초 ceiling을 사용할 수 있지만 최종값은 아니며, 더 짧은 총시간/난이도별 값은 runtime·human evidence로 비교합니다.
-- 공유 시간이 0이 되면 현재 퍼즐의 이미 커밋된 settle만 끝내고 남은 player-input stage는 사용할 수 없으며 `PASS` fallback으로 적 행동까지 진행해 deadlock을 막습니다.
-- Chain 입력 종료 시 새 Swap은 금지되지만 이미 시작된 cascade는 stable까지 마무리한 뒤 보상을 확정합니다.
-- 플레이어 행동이 먼저 발동한 뒤, 턴 시작에 예고된 적 행동이 발동합니다.
-- 기존의 항상 흐르는 적 Combat Clock과 자유 Line↔Chain 전환 / Tactical RUN·LOCK / 독립 30/30/30 phase reset은 현재 production turn 구조에서 사용하지 않습니다.
-- Score는 전투 자원이 아니라 performance evidence입니다.
+- 전투는 시작부터 승리/패배까지 실시간으로 계속 진행됩니다.
+- 플레이어와 적은 같은 combat timeline을 공유하며 교대식 player/enemy turn은 없습니다.
+- 화면 왼쪽 약 60%는 **하나의 큰 Puzzle Surface**, 오른쪽 약 40%는 persistent Combat/Threat/Resource/Skill surface입니다.
+- 플레이어는 `LINE ↔ CHAIN`을 자유롭게 전환합니다.
+- LINE과 CHAIN은 서로 독립적인 persistent workspace입니다. 전환해도 보드/queue/randomizer/진행상태를 새로 만들지 않습니다.
+- LINE은 **Energy** 준비를 담당합니다.
+- CHAIN은 production **Swap-Match**이며 Chain/Combo performance를 통해 **Chain Stock / Tier opportunity**를 준비합니다.
+- Energy와 Chain Stock은 서로 대체되지 않습니다.
+- Chain Stock cap baseline은 6이고 Tier N은 Stock N을 소비하는 구조를 유지합니다.
+- `ATK / DEF / SUP × T1–T6` Technique identity는 유지하지만 Tier는 단순한 강함 순서가 아니라 tactical commitment band입니다.
+- 적의 Current Telegraph + ETA는 LINE/CHAIN 플레이 중 실시간으로 진행됩니다. 알려진 Next Forecast는 더 낮은 우선순위로 표시합니다.
+- `SKILL`을 열면 `TACTICAL_PAUSE_SKILL`이 되어 **시뮬레이션 전체가 완전히 정지**합니다.
+- Skill에서는 `ATK / DEF / SUP → 선택 lane T1–T6 → 상세 → 별도 USE`로 판단합니다.
+- Technique 행 선택은 자원을 쓰지 않으며, **USE만 commit point**입니다.
+- 취소 또는 USE 후에는 정확히 멈춘 combat time과 이전 active puzzle workspace로 복귀합니다.
+- 수동 Pause도 full simulation pause이지만 Skill tactical pause와 player-facing state/telemetry reason은 구분합니다.
+- Haste, Battle Trance, turn-only status duration, Tempo scaling은 `REALTIME_MIGRATION_REQUIRED`이며 임의로 seconds 의미로 번역하지 않습니다.
+- 정확한 Energy gain/cost, Chain→Stock mapping, 적 cadence, effect magnitude는 `TUNE_REQUIRED / TUNING_SEED_NOT_FINAL`입니다.
+- 자동 테스트는 deterministic legality/regression을 증명할 수 있지만 재미·가독성·처음 이해도·최종 밸런스는 Human evidence가 필요합니다.
 
-현재 Production 정본:
+## 현재 Production 정본
 
-1. `docs/design/PRODUCTION_TURN_TIME_CANON.md` — timing / modifier / timeout / Tempo authority.
-2. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — ordered combat turn and remaining non-timing production rules.
-3. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — Vanguard tactical Tier / Technique / dominance guard authority.
-4. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — Line Energy / Chain Stock opportunity cost, Tier exposure, anti-hoarding/spam, simulation/Human evidence boundary.
+1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — CORE-029 current combat authority.
+2. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained SKILL-026 Technique identity, subject to realtime migration boundaries.
+3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 dual-resource/Tier structure.
+4. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
 5. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
+6. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan.
 
-`docs/design/CORE_GAMEPLAY_GDD.md`, `POC_RULESET_V0_1.md`, 기존 45초 POC 및 PR #3 구현은 삭제 대상이 아니라 **Core Combat Foundation / Engineering Harness**로 보존합니다. 기존 자동 검증 PASS는 Foundation의 역사 계약을 증명하며 최신 Production turn 구현 완료를 뜻하지 않습니다.
+Historical provenance:
+
+- `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — CORE-024 ordered-turn history.
+- `docs/design/PRODUCTION_TURN_TIME_CANON.md` — TIME-025 Shared Turn Budget history.
+- `docs/design/CORE_GAMEPLAY_GDD.md`, `POC_RULESET_V0_1.md`, PR #3 — Core Combat Foundation / Engineering Harness.
+
+Historical PASS evidence remains historical; it is not relabeled as CORE-029 runtime evidence.
+
+## 이미지 제작 원칙
+
+Production 이미지는 설명용 시트가 아니라 **실제 Godot 소비처가 있는 asset**만 만듭니다.
+
+이미지 생성 전에 반드시 다음을 고정합니다.
+
+```text
+res:// target asset path
+consumer scene
+consumer node / material / UI slot
+required size / aspect
+alpha / crop / anchor
+Godot import / use mode
+```
+
+소비처가 없으면 production image를 생성하지 않습니다.
+
+따라서 Battle UI concept sheet, character master/pose explanation sheet, combined UI sheet, generic mood/reference sheet는 runtime이 그 파일 자체를 직접 소비하지 않는 한 production backlog가 아닙니다. Sprite atlas도 실제 runtime이 해당 atlas를 소비할 때만 허용합니다.
+
+현재 CORE-029 runtime consumer가 아직 구현 중이므로 신규 이미지 생성은 **PAUSED**입니다. 이미지 작업 재개 시 한 번의 명시적 생성 승인마다 정확히 한 이미지 결과만 생성하고 검수 후 멈춥니다.
 
 ## 현재 구현 경계
 
-- Core Combat Foundation / Engineering Harness: **main에 존재**
-- Production Line Engine: **미구현**
-- Production Swap-Match Chain Engine: **미구현**
-- Production Turn Controller: **미구현**
-- Production Shared Turn Budget / Time Modifier / Tempo: **미구현**
-- Production SKILL-026 Tactical Tier Matrix / Effect Primitive runtime: **미구현**
-- Production BALANCE-027 dual-resource economy / Tier exposure runtime: **미구현**
-- Production Tier 1–6 Skill/HUD: **미구현**
-- 사용자 Windows Production runtime / human playtest: **NOT_RUN**
+- Core Combat Foundation / Engineering Harness: **main에 존재**.
+- CORE-029 written canon/spec/implementation plan: **branch에서 진행 중**.
+- CORE-029 Production runtime: **아직 NOT_PRESENT**.
+- Draft PR #19 ordered-turn implementation: **READ_ONLY source snapshot**, wholesale merge/cherry-pick 금지.
+- Production Line/Chain reusable deterministic components: Task-by-task로 선별 port 예정.
+- full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 60/40 production scene: 아직 구현 전.
+- CORE-029 runtime-consumed final image assets: 아직 구현 전.
+- 사용자 Windows Production runtime / first-exposure Human playtest: **NOT_RUN**.
+
+## Human evidence
+
+Human validation contract:
+
+`docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md`
+
+첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, Energy vs Chain Stock, Technique decision quality, 60/40 layout readability, player experience signal을 검증합니다.
+
+Positive directional PASS는 세 개의 독립 first-exposure A/B/C receipt가 필요합니다. Concept art나 자동 test를 Human readability/fun evidence로 승격하지 않습니다.
 
 ## Windows Core Foundation 로컬 검증
 
-PR #3에서 흡수된 기존 Core Foundation을 사용자 Windows PC에서 검증할 때는 저장소 루트의 `RUN_LOCAL_VALIDATION.cmd`를 **더블클릭**합니다. 이 검증은 기존 Engineering Harness 계약에 대한 증거이며 Production turn gameplay 검증으로 승격하지 않습니다.
+기존 Core Foundation을 사용자 Windows PC에서 검증할 때 저장소 루트의 `RUN_LOCAL_VALIDATION.cmd`를 사용할 수 있습니다. 이 검증은 Historical Engineering Harness evidence이며 CORE-029 gameplay validation으로 승격하지 않습니다.
 
-검증기는 `%LOCALAPPDATA%\TetrisCorePocValidation` 아래 격리된 sandbox를 만들고 다음 순서로 진행합니다.
+Canonical CI pins:
 
-1. 검증 브랜치를 fresh clone
-2. Godot `4.7.1-stable` / GUT `9.7.1` 준비
-3. Windows import/parse
-4. 전체 GUT suite + strict log guard
-5. 기존 POC 45초 수동 검증
-6. JSON 증거 저장
+- Godot `4.7.1-stable`
+- GUT `9.7.1`
 
-성공 증거:
-
-- `local_preflight.json`
-- `manual_validation_report.json`
-- `local_validation_evidence.json`
-
-실패하거나 다시 시작하려면 `%LOCALAPPDATA%\TetrisCorePocValidation` 폴더를 삭제하면 됩니다. 기존 Godot 설치/프로젝트/설정은 검증 대상이 아니며 변경하지 않습니다.
-
-역사 Foundation 판정 기준은 `docs/validation/POC_45S_VALIDATION.md`를 따릅니다.
+Runtime / Human evidence는 실제 실행 receipt 없이 PASS로 주장하지 않습니다.

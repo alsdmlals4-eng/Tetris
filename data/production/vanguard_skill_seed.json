@@ -1,0 +1,24 @@
+{
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "source_contract": "TETRIS-SKILL-026 / TETRIS-BALANCE-027",
+  "techniques": [
+    {"id":"atk_t1_quick_cut","lane":"ATTACK","tier":1,"energy_cost":10,"stock_cost":1,"effects":[{"op":"DAMAGE_SINGLE","magnitude":12}]},
+    {"id":"atk_t2_sweeping_arc","lane":"ATTACK","tier":2,"energy_cost":13,"stock_cost":2,"effects":[{"op":"DAMAGE_AOE","magnitude":16}]},
+    {"id":"atk_t3_rift_breach","lane":"ATTACK","tier":3,"energy_cost":16,"stock_cost":3,"effects":[{"op":"DAMAGE_SINGLE","magnitude":18}]},
+    {"id":"atk_t4_crushing_strike","lane":"ATTACK","tier":4,"energy_cost":19,"stock_cost":4,"effects":[{"op":"DAMAGE_SINGLE","magnitude":30}]},
+    {"id":"atk_t5_suppressive_break","lane":"ATTACK","tier":5,"energy_cost":22,"stock_cost":5,"effects":[{"op":"DAMAGE_SINGLE","magnitude":24}]},
+    {"id":"atk_t6_execution_edge","lane":"ATTACK","tier":6,"energy_cost":26,"stock_cost":6,"effects":[{"op":"DAMAGE_SINGLE","magnitude":28},{"op":"CONDITIONAL_MULTIPLIER","magnitude":2}]},
+    {"id":"def_t1_guard","lane":"DEFENSE","tier":1,"energy_cost":10,"stock_cost":1,"effects":[{"op":"MITIGATE_CURRENT_DIRECT","magnitude":10}]},
+    {"id":"def_t2_fortify","lane":"DEFENSE","tier":2,"energy_cost":13,"stock_cost":2,"effects":[{"op":"MITIGATE_CURRENT_DIRECT","magnitude":16}]},
+    {"id":"def_t3_counter","lane":"DEFENSE","tier":3,"energy_cost":16,"stock_cost":3,"effects":[{"op":"COUNTER_FROM_PREVENTED_DAMAGE","magnitude":50}]},
+    {"id":"def_t4_bulwark","lane":"DEFENSE","tier":4,"energy_cost":19,"stock_cost":4,"effects":[{"op":"MITIGATE_CURRENT_DIRECT","magnitude":28}]},
+    {"id":"def_t5_rift_ward","lane":"DEFENSE","tier":5,"energy_cost":22,"stock_cost":5,"effects":[{"op":"PROTECT_RESOURCE_LOSS","magnitude":50}]},
+    {"id":"def_t6_last_bastion","lane":"DEFENSE","tier":6,"energy_cost":26,"stock_cost":6,"effects":[{"op":"LETHAL_SAFETY","magnitude":1,"charges":1}]},
+    {"id":"sup_t1_second_wind","lane":"SUPPORT","tier":1,"energy_cost":10,"stock_cost":1,"effects":[{"op":"HEAL_SELF","magnitude":15}]},
+    {"id":"sup_t2_rally","lane":"SUPPORT","tier":2,"energy_cost":13,"stock_cost":2,"effects":[{"op":"HEAL_SELF","magnitude":22}]},
+    {"id":"sup_t3_haste","lane":"SUPPORT","tier":3,"energy_cost":16,"stock_cost":3,"runtime_status":"REALTIME_MIGRATION_REQUIRED","effects":[{"op":"HEAL_SELF","magnitude":1}]},
+    {"id":"sup_t4_mark_weakness","lane":"SUPPORT","tier":4,"energy_cost":19,"stock_cost":4,"runtime_status":"REALTIME_MIGRATION_REQUIRED","effects":[{"op":"HEAL_SELF","magnitude":1}]},
+    {"id":"sup_t5_rift_seal","lane":"SUPPORT","tier":5,"energy_cost":22,"stock_cost":5,"effects":[{"op":"HEAL_SELF","magnitude":32}]},
+    {"id":"sup_t6_battle_trance","lane":"SUPPORT","tier":6,"energy_cost":26,"stock_cost":6,"runtime_status":"REALTIME_MIGRATION_REQUIRED","effects":[{"op":"HEAL_SELF","magnitude":1}]}
+  ]
+}

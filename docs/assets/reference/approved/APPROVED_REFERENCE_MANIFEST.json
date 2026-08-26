@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "approved_image_storage": [
+      "project_local_file",
+      "notion_asset_library"
+    ],
+    "runtime_consumer_required_for_promotion": true,
+    "default_classification_without_consumer": "APPROVED_REFERENCE"
+  },
+  "assets": [
+    {
+      "asset_id": "IMG-P0-001",
+      "name": "Battle Screen Composition Mockup",
+      "local_path": "docs/assets/reference/approved/TETRIS-IMG-P0-001-battle-screen-composition-mockup.png",
+      "source_filename": "ChatGPT Image 2026년 8월 20일 오후 10_46_45.png",
+      "sha256": "9e93439d2728c8a440c8d630c219c14fddccc8cf269715f0e06e315d57515a2b",
+      "dimensions_px": [1306, 1205],
+      "approval_status": "APPROVED_REFERENCE",
+      "reference_scope": "battle UI composition, puzzle/combat hierarchy, and ATK/DEF/SUP lane language",
+      "runtime_consumer": "NOT_PRESENT",
+      "runtime_integration": "NOT_IMPLEMENTED",
+      "runtime_verification": "NOT_RUN"
+    },
+    {
+      "asset_id": "IMG-P0-002",
+      "name": "Frontier Shield Vanguard Master",
+      "local_path": "docs/assets/reference/approved/TETRIS-IMG-P0-002-frontier-shield-vanguard-master.png",
+      "source_filename": "ChatGPT Image 2026년 8월 20일 오후 10_25_33.png",
+      "sha256": "a79bf08a0c2371f6a176103eb11cf6efca468656ac632ed2f08df2f9f3948c3a",
+      "dimensions_px": [1448, 1086],
+      "approval_status": "APPROVED_REFERENCE",
+      "reference_scope": "Vanguard identity, silhouette, equipment, and ATK/DEF/SUP expression",
+      "runtime_consumer": "NOT_PRESENT",
+      "runtime_integration": "NOT_IMPLEMENTED",
+      "runtime_verification": "NOT_RUN"
+    },
+    {
+      "asset_id": "IMG-P0-003",
+      "name": "Asymmetric Breach Colossus Master",
+      "local_path": "docs/assets/reference/approved/TETRIS-IMG-P0-003-asymmetric-breach-colossus-master.png",
+      "source_filename": "ChatGPT Image 2026년 8월 20일 오후 10_31_28.png",
+      "sha256": "e4343cb7292cdd5b0deeb90524f6c6c0b7930392c608a905e6b2b16a1e6c5812",
+      "dimensions_px": [1448, 1086],
+      "approval_status": "APPROVED_REFERENCE",
+      "reference_scope": "Gatebreaker identity, asymmetric ram-arm, Rift Core, and intent poses",
+      "runtime_consumer": "NOT_PRESENT",
+      "runtime_integration": "NOT_IMPLEMENTED",
+      "runtime_verification": "NOT_RUN"
+    }
+  ]
+}

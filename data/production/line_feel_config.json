@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "gravity_seconds_per_cell": 1.0,
+  "soft_drop_multiplier": 20.0,
+  "lock_delay_seconds": 0.5,
+  "max_lock_resets": 15,
+  "das_seconds": 0.15,
+  "arr_seconds": 0.04
+}
