@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "effects": [
+    {
+      "id": "support_haste_seed",
+      "stack_group": "haste_default",
+      "flat_seconds": 8.0,
+      "stackable": false,
+      "expires_after_turns": 1
+    },
+    {
+      "id": "encounter_slow_seed",
+      "stack_group": "slow_default",
+      "flat_seconds": -5.0,
+      "stackable": false,
+      "expires_after_turns": 1
+    },
+    {
+      "id": "equipment_boots_seed",
+      "stack_group": "equipment_boots",
+      "flat_seconds": 3.0,
+      "stackable": false,
+      "expires_after_turns": -1
+    }
+  ]
+}

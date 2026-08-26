@@ -1,0 +1,264 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_ui"]
+[ext_resource type="Script" path="res://src/production/session/production_battle_runtime_bridge.gd" id="2_bridge"]
+[ext_resource type="Script" path="res://src/production/session/production_battle_bootstrap.gd" id="3_bootstrap"]
+[ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="4_line_view"]
+
+[node name="ProductionBattle" type="Control"]
+custom_minimum_size = Vector2(1280, 720)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ui")
+
+[node name="RuntimeBridge" type="Node" parent="."]
+script = ExtResource("2_bridge")
+
+[node name="RuntimeBootstrap" type="Node" parent="."]
+script = ExtResource("3_bootstrap")
+
+[node name="Layout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 20.0
+offset_right = -24.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 10
+
+[node name="TopBar" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+theme_override_constants/separation = 18
+
+[node name="TelegraphPanel" type="VBoxContainer" parent="Layout/TopBar"]
+custom_minimum_size = Vector2(820, 96)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="CurrentTelegraph" type="Label" parent="Layout/TopBar/TelegraphPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "CURRENT · 대기 중"
+autowrap_mode = 2
+
+[node name="NextForecast" type="Label" parent="Layout/TopBar/TelegraphPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "NEXT · 미확인"
+autowrap_mode = 2
+
+[node name="TurnPanel" type="VBoxContainer" parent="Layout/TopBar"]
+custom_minimum_size = Vector2(300, 96)
+layout_mode = 2
+alignment = 1
+
+[node name="PhaseLabel" type="Label" parent="Layout/TopBar/TurnPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "PHASE · ENEMY_TELEGRAPH"
+horizontal_alignment = 2
+
+[node name="SharedTimer" type="Label" parent="Layout/TopBar/TurnPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "TURN · 0.0s"
+horizontal_alignment = 2
+
+[node name="ResourceBar" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 36
+
+[node name="HPLabel" type="Label" parent="Layout/ResourceBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "HP · 100 / 100"
+
+[node name="EnergyLabel" type="Label" parent="Layout/ResourceBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "ENERGY · 0"
+
+[node name="StockLabel" type="Label" parent="Layout/ResourceBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "STOCK · 0 / 6"
+
+[node name="MainRow" type="HBoxContainer" parent="Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 18
+
+[node name="PuzzlePanel" type="VBoxContainer" parent="Layout/MainRow"]
+custom_minimum_size = Vector2(650, 500)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="PuzzleTitle" type="Label" parent="Layout/MainRow/PuzzlePanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "ACTIVE PUZZLE"
+horizontal_alignment = 1
+
+[node name="LineBoardHost" type="PanelContainer" parent="Layout/MainRow/PuzzlePanel"]
+custom_minimum_size = Vector2(620, 480)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="LineBoardView" type="Control" parent="Layout/MainRow/PuzzlePanel/LineBoardHost"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("4_line_view")
+
+[node name="ChainBoardHost" type="PanelContainer" parent="Layout/MainRow/PuzzlePanel"]
+visible = false
+custom_minimum_size = Vector2(620, 480)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EngineeringLabel" type="Label" parent="Layout/MainRow/PuzzlePanel/ChainBoardHost"]
+layout_mode = 2
+text = "CHAIN BOARD · engineering surface"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActionPanel" type="VBoxContainer" parent="Layout/MainRow"]
+custom_minimum_size = Vector2(520, 500)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ActionTitle" type="Label" parent="Layout/MainRow/ActionPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "VANGUARD · TECHNIQUES"
+horizontal_alignment = 1
+
+[node name="TempoLabel" type="Label" parent="Layout/MainRow/ActionPanel"]
+layout_mode = 2
+text = "TEMPO · 조건 확인 중"
+horizontal_alignment = 1
+
+[node name="LaneTabs" type="HBoxContainer" parent="Layout/MainRow/ActionPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AttackLaneButton" type="Button" parent="Layout/MainRow/ActionPanel/LaneTabs"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "공격"
+
+[node name="DefenseLaneButton" type="Button" parent="Layout/MainRow/ActionPanel/LaneTabs"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "방어"
+
+[node name="SupportLaneButton" type="Button" parent="Layout/MainRow/ActionPanel/LaneTabs"]
+custom_minimum_size = Vector2(0, 38)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "보조"
+
+[node name="SkillList" type="VBoxContainer" parent="Layout/MainRow/ActionPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+
+[node name="SkillRow1" type="Button" parent="Layout/MainRow/ActionPanel/SkillList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "T1 · -"
+alignment = 0
+
+[node name="SkillRow2" type="Button" parent="Layout/MainRow/ActionPanel/SkillList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "T2 · -"
+alignment = 0
+
+[node name="SkillRow3" type="Button" parent="Layout/MainRow/ActionPanel/SkillList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "T3 · -"
+alignment = 0
+
+[node name="SkillRow4" type="Button" parent="Layout/MainRow/ActionPanel/SkillList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "T4 · -"
+alignment = 0
+
+[node name="SkillRow5" type="Button" parent="Layout/MainRow/ActionPanel/SkillList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "T5 · -"
+alignment = 0
+
+[node name="SkillRow6" type="Button" parent="Layout/MainRow/ActionPanel/SkillList"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "T6 · -"
+alignment = 0
+
+[node name="SkillDetailPanel" type="PanelContainer" parent="Layout/MainRow/ActionPanel"]
+visible = false
+custom_minimum_size = Vector2(0, 142)
+layout_mode = 2
+
+[node name="DetailContent" type="VBoxContainer" parent="Layout/MainRow/ActionPanel/SkillDetailPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SkillDetailTitle" type="Label" parent="Layout/MainRow/ActionPanel/SkillDetailPanel/DetailContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 17
+text = "기술을 선택하세요"
+autowrap_mode = 2
+
+[node name="SkillDetailMeta" type="Label" parent="Layout/MainRow/ActionPanel/SkillDetailPanel/DetailContent"]
+layout_mode = 2
+text = ""
+autowrap_mode = 2
+
+[node name="SkillDetailEffects" type="Label" parent="Layout/MainRow/ActionPanel/SkillDetailPanel/DetailContent"]
+layout_mode = 2
+size_flags_vertical = 3
+text = ""
+autowrap_mode = 2
+
+[node name="SkillDetailReadiness" type="Label" parent="Layout/MainRow/ActionPanel/SkillDetailPanel/DetailContent"]
+layout_mode = 2
+text = ""
+autowrap_mode = 2
+
+[node name="UseTechniqueButton" type="Button" parent="Layout/MainRow/ActionPanel/SkillDetailPanel/DetailContent"]
+custom_minimum_size = Vector2(180, 38)
+layout_mode = 2
+size_flags_horizontal = 4
+disabled = true
+text = "사용"
+
+[node name="ReadyButton" type="Button" parent="Layout/MainRow/ActionPanel"]
+visible = false
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "READY · 다음 단계"

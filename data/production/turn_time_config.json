@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "shared_turn_budget": {
+    "base_budget_seconds": 90.0,
+    "min_budget_seconds": 30.0,
+    "max_budget_seconds": 120.0,
+    "tempo_reference_seconds": 90.0
+  },
+  "difficulty_profiles": {
+    "EASY": {
+      "base_budget_seconds": 105.0
+    },
+    "NORMAL": {
+      "base_budget_seconds": 90.0
+    },
+    "HARD": {
+      "base_budget_seconds": 75.0
+    }
+  },
+  "tempo_reward": {
+    "potency_per_saved_ratio": 0.20,
+    "potency_bonus_cap_ratio": 0.15
+  }
+}

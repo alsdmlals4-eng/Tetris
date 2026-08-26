@@ -69,44 +69,48 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
         self.assertFalse((ROOT / ".vscode" / "mcp.json").exists())
         self.assertFalse((ROOT / ".codex" / "config.toml").exists())
 
-    def test_slot_eight_binding_is_exact_loopback_and_runtime_honest(self) -> None:
+    def test_shared_fixed_binding_uses_upstream_default_loopback_ports(self) -> None:
         record = json.loads(_text(ADOPTION))
         binding = record["project_binding"]
-        self.assertEqual(binding["slot"], 8)
+        self.assertEqual(binding["binding_mode"], "SHARED_FIXED_LOCAL")
+        self.assertNotIn("slot", binding)
         self.assertEqual(binding["project_local_path"], r"C:\Users\user\Documents\GitHub\Ninza\Tetris")
         self.assertEqual(binding["godot_project_path"], "C:/Users/user/Documents/GitHub/Ninza/Tetris")
-        self.assertEqual(binding["http_port"], 8008)
-        self.assertEqual(binding["ws_port"], 9508)
-        self.assertEqual(binding["mcp_url"], "http://127.0.0.1:8008/mcp")
+        self.assertEqual(
+            binding["shared_godot_executable"],
+            r"C:\Users\user\Tools\Godot-4.7.1\Godot_v4.7.1-stable_win64.exe",
+        )
+        self.assertEqual(binding["http_port"], 8000)
+        self.assertEqual(binding["ws_port"], 9500)
+        self.assertEqual(binding["mcp_url"], "http://127.0.0.1:8000/mcp")
+        self.assertEqual(binding["codex_profile"], "DEFAULT_USER_PROFILE")
         self.assertEqual(record["network_mode"], "LOOPBACK_ONLY")
         self.assertEqual(record["connection_status"], "NOT_RUN")
         self.assertEqual(record["runtime_status"], "NOT_RUN")
         self.assertFalse(record["production_readiness"])
 
-    def test_launcher_owns_dedicated_godot_ports_and_codex_profile(self) -> None:
+    def test_launcher_reuses_shared_godot_ports_and_default_codex_profile(self) -> None:
         self.assertTrue(LAUNCHER.is_file())
         launcher = _text(LAUNCHER)
         required = (
             r"C:\Users\user\Documents\GitHub\Ninza\Tetris",
-            r"C:\Users\user\Tools\Godot-Tetris-4.7.1",
+            r"C:\Users\user\Tools\Godot-4.7.1",
             "Godot_v4.7.1-stable_win64.exe",
             "$ExpectedGodotZipSha256 = 'c7a289051eaefb460b0106b60e9cd5bee0ef55fd102dcb2bed1eb356cf3d90a1'",
             "$ExpectedGodotExeSha256 = '323f9c4cc5db674e98815cdd8e69da007d5efc779abedc8c0e42883b7fdea12a'",
             "$ExpectedGodotAiVendorSha256 = '59fd1325f7a361a98c382b9ba3ef47f9a7c635167b2a14479521b4102c3d7329'",
             "Get-GodotAiVendorDigest",
-            r"C:\Users\user\.codex-tetris",
-            "$HttpPort = 8008",
-            "$WsPort = 9508",
+            "$HttpPort = 8000",
+            "$WsPort = 9500",
             "godot_ai/http_port",
             "godot_ai/ws_port",
             "godot_ai/allow_remote_hosts",
             "godot_ai/telemetry_enabled",
-            "http://127.0.0.1:8008/mcp",
+            "http://127.0.0.1:8000/mcp",
             "GODOT_AI_DISABLE_TELEMETRY",
-            "PORT_CONFLICT_FAIL_CLOSED",
-            "NON_DEDICATED_TETRIS_EDITOR_CONFLICT_FAIL_CLOSED",
+            "SHARED_HIGODOT_FOREIGN_PORT_CONFLICT",
             "Test-LoopbackListener",
-            "Wait-ForExactHiGodotStatus",
+            "Wait-ForSharedHiGodotStatus",
             "HIGODOT_STATUS_IDENTITY_MISMATCH",
             "[switch]$StaticSelfTest",
             "UV_OR_GODOT_AI_NOT_FOUND",
@@ -120,6 +124,13 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
             self.assertIn(token, launcher)
 
         for forbidden in (
+            "Godot-Tetris-4.7.1",
+            ".codex-tetris",
+            "TETRIS_DEDICATED",
+            "PROJECT_DEDICATED",
+            "$HttpPort = 8008",
+            "$WsPort = 9508",
+            "NON_DEDICATED_TETRIS_EDITOR_CONFLICT_FAIL_CLOSED",
             "taskkill",
             "Stop-Process",
             "git reset",
@@ -136,16 +147,24 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
         self.assertIn("start_tetris_local_executor.ps1", _text(ENTRYPOINT))
         binding = _text(BINDING)
         for token in (
-            "HTTP 8008",
-            "WS 9508",
+            "SHARED_FIXED_LOCAL",
+            "HTTP 8000",
+            "WS 9500",
+            "UPSTREAM_DEFAULT_PORTS",
+            "MULTI_EDITOR_SHARED_BACKEND_SUPPORTED",
             "ASSIGNED_NOT_RUNTIME_VERIFIED",
             "CLOUD_CHATGPT_CANNOT_DIAL_LOCALHOST",
             "NO_ADDITIONAL_PAID_PLAN_REQUIRED",
         ):
             self.assertIn(token, binding)
+        for stale in ("slot 8", "8008", "9508", ".codex-tetris", "dedicated_godot"):
+            self.assertNotIn(stale, binding)
+
         workflow = _text(WORKFLOW)
         self.assertIn("tests/tooling", workflow)
         self.assertRegex(workflow, re.compile(r"python\s+-m\s+unittest\s+discover"))
+        self.assertIn("Verify Tetris shared fixed HiGodot binding", workflow)
+        self.assertNotIn("slot 8", workflow.lower())
         self.assertIn("windows-powershell-contract", workflow)
         self.assertIn("shell: powershell", workflow)
         self.assertIn("-StaticSelfTest", workflow)
