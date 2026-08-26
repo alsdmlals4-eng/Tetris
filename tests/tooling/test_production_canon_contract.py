@@ -6,6 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 INDEX_PATH = ROOT / "docs" / "design" / "PRODUCTION_CANON_INDEX.json"
 REALTIME_CANON_PATH = ROOT / "docs" / "design" / "PRODUCTION_REALTIME_COMBAT_CANON.md"
+IMAGE_CONTRACT_PATH = ROOT / "docs" / "design" / "RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
 TURN_CANON_PATH = "docs/design/PRODUCTION_TURN_COMBAT_CANON.md"
 TIME_CANON_PATH = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
 SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md"
@@ -116,6 +117,21 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertTrue(BALANCE_CANON_PATH.is_file())
         self.assertIn("TETRIS-SKILL-026", SKILL_CANON_PATH.read_text(encoding="utf-8"))
         self.assertIn("TETRIS-BALANCE-027", BALANCE_CANON_PATH.read_text(encoding="utf-8"))
+
+    def test_image_production_requires_a_runtime_consumer_contract(self) -> None:
+        data = self._index()
+        self.assertEqual(
+            data["image_asset_contract"],
+            "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+        )
+        self.assertTrue(IMAGE_CONTRACT_PATH.is_file())
+        text = IMAGE_CONTRACT_PATH.read_text(encoding="utf-8")
+        self.assertIn("TETRIS-IMAGE-030", text)
+        self.assertIn("target res:// asset path", text)
+        self.assertIn("consumer scene path", text)
+        self.assertIn("consumer node / material / UI slot", text)
+        self.assertIn("concept sheet", text)
+        self.assertIn("new image generation remains **PAUSED**", text)
 
     def test_human_entrypoints_route_to_realtime_canon_and_plan(self) -> None:
         self.assertTrue(PLAN_PATH.is_file(), "CORE-029 implementation plan must exist")
