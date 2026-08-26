@@ -3,6 +3,18 @@ extends GutTest
 
 const BATTLE_SCENE_PATH := "res://scenes/production/battle.tscn"
 
+class TerminalRuntime:
+	var _snapshot: Dictionary
+
+	func _init(snapshot: Dictionary) -> void:
+		_snapshot = snapshot
+
+	func snapshot() -> Dictionary:
+		return _snapshot
+
+	func is_skill_open() -> bool:
+		return false
+
 func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey and event.physical_keycode == expected_key:
@@ -108,3 +120,17 @@ func test_line_actions_keep_letter_bindings_and_add_directional_aliases() -> voi
 	assert_true(_has_physical_key("line_soft_drop", KEY_DOWN))
 	assert_true(_has_physical_key("line_rotate_cw", KEY_X))
 	assert_true(_has_physical_key("line_rotate_cw", KEY_UP))
+
+func test_terminal_defeat_replaces_the_running_combat_label() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	battle._runtime = TerminalRuntime.new({"terminal": true, "paused": false, "player_hp": 0, "player_energy": 0, "player_stock": 0, "enemy_hp": 100, "enemy_eta_seconds": 0.0})
+	battle._refresh_runtime_labels()
+	assert_eq(battle.get_node("MainRow/CombatColumn/SkillPanel/PauseState").text, "DEFEAT")
+
+func test_terminal_victory_replaces_the_running_combat_label() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	battle._runtime = TerminalRuntime.new({"terminal": true, "paused": false, "player_hp": 100, "player_energy": 0, "player_stock": 0, "enemy_hp": 0, "enemy_eta_seconds": 0.0})
+	battle._refresh_runtime_labels()
+	assert_eq(battle.get_node("MainRow/CombatColumn/SkillPanel/PauseState").text, "VICTORY")

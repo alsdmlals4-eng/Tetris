@@ -164,7 +164,9 @@ func _refresh_runtime_labels() -> void:
 	_current_threat.text = "CURRENT THREAT · ETA %.1fs" % float(snapshot.get("enemy_eta_seconds", 0.0))
 	_next_forecast.text = "NEXT FORECAST · realtime authored schedule"
 	_resource_bar.text = "HP %d / 100    ENERGY %d    STOCK %d / 6" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
-	if _runtime.is_skill_open():
+	if bool(snapshot.get("terminal", false)):
+		_pause_state.text = "VICTORY" if int(snapshot.get("enemy_hp", 0)) <= 0 else "DEFEAT"
+	elif _runtime.is_skill_open():
 		_pause_state.text = "TACTICAL PAUSE"
 	elif bool(snapshot.get("paused", false)):
 		_pause_state.text = "SYSTEM PAUSE"
