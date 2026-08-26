@@ -9,6 +9,9 @@ var _audio_paused_by_bridge: Dictionary = {}
 func _init() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
 
+func _ready() -> void:
+    _apply_pause_state(_controller != null and _controller.is_paused())
+
 func _exit_tree() -> void:
     _disconnect_controller()
 

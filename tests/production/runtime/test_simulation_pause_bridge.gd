@@ -148,3 +148,20 @@ func test_bridge_does_not_resume_tree_until_last_pause_token_is_released() -> vo
 
     assert_true(controller.release(menu))
     assert_false(get_tree().paused)
+
+func test_bridge_reconciles_a_prebound_paused_controller_when_entering_tree() -> void:
+    var controller = _new_script_instance(CONTROLLER_PATH)
+    var bridge = _new_script_instance(BRIDGE_PATH)
+    if controller == null or bridge == null:
+        return
+
+    var token: int = controller.acquire(TACTICAL_SKILL)
+    assert_gt(token, 0)
+    bridge.bind_controller(controller)
+    assert_false(get_tree().paused, "an unparented bridge cannot pause a SceneTree")
+
+    _own(bridge)
+    assert_true(get_tree().paused, "bridge entry must reconcile an already-paused controller")
+
+    assert_true(controller.release(token))
+    assert_false(get_tree().paused, "releasing after bridge entry must resume immediately")
