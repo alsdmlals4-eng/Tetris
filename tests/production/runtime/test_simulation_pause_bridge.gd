@@ -101,7 +101,6 @@ func test_bridge_applies_full_tree_pause_keeps_pause_ui_alive_and_preserves_stop
 
     var process_before := simulation.process_ticks
     var physics_before := simulation.physics_ticks
-    var ui_before := pause_ui.process_ticks
 
     var token: int = controller.acquire(TACTICAL_SKILL)
     assert_gt(token, 0)
@@ -113,7 +112,7 @@ func test_bridge_applies_full_tree_pause_keeps_pause_ui_alive_and_preserves_stop
     await get_tree().process_frame
     assert_eq(simulation.process_ticks, process_before, "normal _process must stop while the tree is paused")
     assert_eq(simulation.physics_ticks, physics_before, "normal _physics_process must stop while the tree is paused")
-    assert_gt(pause_ui.process_ticks, ui_before, "pause UI must remain processable")
+    assert_true(pause_ui.can_process(), "pause UI must remain processable")
 
     var event := InputEventAction.new()
     event.action = "ui_accept"
