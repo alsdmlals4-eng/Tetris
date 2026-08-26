@@ -42,6 +42,12 @@ func _requirements_exist() -> bool:
 func _read_json(path: String):
     return JSON.parse_string(FileAccess.get_file_as_string(path))
 
+func _has_property(instance: Object, property_name: String) -> bool:
+    for property in instance.get_property_list():
+        if String(property.get("name", "")) == property_name:
+            return true
+    return false
+
 func _make_session():
     if not _requirements_exist():
         return null
@@ -68,7 +74,7 @@ func test_realtime_line_session_exists_without_turn_controller_ownership() -> vo
 
     assert_true(session.can_accept_input())
     assert_true(session.input_enabled)
-    assert_false("turn_controller" in session)
+    assert_false(_has_property(session, "turn_controller"))
     assert_true(session.has_method("set_input_enabled"))
     assert_true(session.has_method("snapshot_runtime_state"))
 
