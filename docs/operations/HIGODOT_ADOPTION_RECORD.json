@@ -2,11 +2,16 @@
   "schema_version": 1,
   "artifact_role": "HIGODOT_ADOPTION_RECORD",
   "provider": "hi-godot/godot-ai",
-  "exact_release_or_commit": "v3.1.4",
-  "upstream_tag_commit": "96cc8b8c3d25ce487e24801d01d5214fea150349",
-  "upstream_addon_tree_sha": "69010571e11123dfc4e09483f80cb9e6ca93511a",
-  "vendor_content_sha256": "59fd1325f7a361a98c382b9ba3ef47f9a7c635167b2a14479521b4102c3d7329",
-  "source": "https://github.com/hi-godot/godot-ai/releases/tag/v3.1.4",
+  "exact_release_or_commit": "v3.2.0",
+  "upstream_tag_commit": "42c44e4d02ca1836a0e1866361509d3a14d83b0c",
+  "upstream_addon_tree_sha": "66a9df59a92f0029efcd35c22fea355c93e8fe49",
+  "upstream_release_archive_sha256": "8c4ead3c804e32e0f5b59860f4803ad26e8fff717ec44b72fb5a4fddb0a84d6e",
+  "vendor_local_extension_files": [
+    "runtime/game_helper_impl.gd",
+    "runtime/game_helper_impl.gd.uid"
+  ],
+  "vendor_content_sha256": "df3856abf8ea3fd948dae66176f67cfe5e7cdd139a0815b253d640f405c0a3f6",
+  "source": "https://github.com/hi-godot/godot-ai/releases/tag/v3.2.0",
   "license": "MIT",
   "godot_version": "4.7.1-stable",
   "godot_distribution": {
@@ -44,9 +49,9 @@
   ],
   "telemetry": "DISABLED_BY_PROJECT_LAUNCHER",
   "static_contract_status": "PASS",
-  "last_verified_at": "2026-08-21T00:22:26Z",
+  "last_verified_at": "2026-08-26T14:45:00Z",
   "verification_evidence": [
-    "Exact upstream v3.1.4 tag commit and addon tree matched two existing project deployments.",
+    "Official v3.2.0 release archive SHA-256, tag commit, and addon tree were read from hi-godot/godot-ai. The project vendor intentionally adds only runtime/game_helper_impl.gd and its UID; the full local vendor digest locks the resulting byte set.",
     "Repository tooling contract verifies vendor digest, official Godot distribution hashes, slot 8 paths, loopback ports, launcher safety, live status identity gating, and CI consumption (5/5 tests passed).",
     "Portable PowerShell 7.6.5 parsed the launcher and its StaticSelfTest reproduced the exact vendored-addon digest; Windows PowerShell 5.1 validation is configured in CI but is not promoted before the exact-head workflow result.",
     "Isolated Godot 4.7.1 Linux headless import and parse passed; Godot AI reported its expected headless-only server disablement.",
