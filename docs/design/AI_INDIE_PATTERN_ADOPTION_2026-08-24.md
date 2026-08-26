@@ -5,13 +5,14 @@ status: USER_DIRECTED_ADAPTATION
 work_mode: PLAN_REVIEW
 runtime_mutation: NONE
 source_base_merge: dff09d83c3892a70ba5fee86a59d36086889a6c5
-production_authority: TETRIS-TIME-025 + TETRIS-CORE-024
+historical_production_authority: TETRIS-TIME-025 + TETRIS-CORE-024
+current_production_authority: TETRIS-CORE-029
 human_production_playtest: NOT_RUN
 ```
 
 ## 결론
 
-현재 Tetris 제품은 `Enemy Telegraph → Line → Chain → Action → Enemy Resolve`의 읽을 수 있는 turn decision이 핵심이다. AI/RNG novelty를 추가할 이유가 없다.
+이 문서는 2026-08-24의 ordered-turn 기준 패턴 검토 기록이다. 현재 Tetris 제품의 실행 권위는 `TETRIS-CORE-029`이며, 연속 실시간 전투 안에서 적 위협을 읽고 LINE·CHAIN·Skill을 자유롭게 전환하는 판단이 핵심이다. AI/RNG novelty를 추가할 이유가 없다는 결론은 유지한다.
 
 이번 적용은 **생산 AI의 범위·누락 Gate, 코어 정체성 잠금 뒤 breadth 확장, Human feedback 기반 재설계**에 한정한다.
 

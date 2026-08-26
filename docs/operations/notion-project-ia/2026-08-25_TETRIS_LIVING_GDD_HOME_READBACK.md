@@ -2,6 +2,8 @@
 
 Date: 2026-08-25
 
+> Historical receipt: this is a faithful readback of the 2026-08-25 Notion state. It predates `TETRIS-CORE-029`; its CORE-024/TIME-025 references are provenance only and must not be read as current production authority. Current repository authority is `docs/design/PRODUCTION_CANON_INDEX.json` → `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md`. Notion synchronization remains a separate tracked operation.
+
 ## Purpose
 
 Record the durable readback for the approved Tetris Notion information-architecture migration:

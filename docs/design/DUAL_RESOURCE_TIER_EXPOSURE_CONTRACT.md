@@ -1,11 +1,11 @@
 # Dual-Resource Tier Exposure Contract
 
-- Status: **CURRENT PRODUCTION BALANCE STRUCTURE / PLANNING CONTINUATION / BUILD DEFERRED**
+- Status: **RETAINED PRODUCTION BALANCE STRUCTURE / CORE-029 REALTIME MIGRATION BOUNDARY**
 - Decision: `TETRIS-BALANCE-027 · Dual-Resource Opportunity Cost + Tier Exposure`
 - Date: 2026-08-24
 - Parent skill decision: `TETRIS-SKILL-026`
-- Turn authority: `TETRIS-CORE-024`
-- Timing authority: `TETRIS-TIME-025`
+- Current combat authority: `TETRIS-CORE-029`
+- Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
 
 ## 1. Product thesis
