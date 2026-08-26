@@ -105,6 +105,11 @@ func _switch_and_handoff(manager, target: String) -> Dictionary:
     assert_true(bool(requested.get("accepted", false)), "valid workspace request must be accepted")
     return manager.process_safe_handoff()
 
+func _without_input_enabled(snapshot: Dictionary) -> Dictionary:
+    var state: Dictionary = snapshot.duplicate(true)
+    state.erase("input_enabled")
+    return state
+
 func test_manager_exposes_workspace_api_and_starts_with_line_input_only() -> void:
     var fixture := _make_workspace_fixture()
     if fixture.is_empty():
@@ -229,6 +234,83 @@ func test_rapid_switches_preserve_runtime_state_and_do_not_duplicate_chain_rewar
     if rewards.size() == 1:
         assert_eq(String(rewards[0].get("kind", "")), "production_chain_resolved")
     assert_eq(chain_session.drain_events().size(), 0, "switch spam must not duplicate drained rewards")
+
+func test_accepted_line_to_chain_request_closes_line_input_before_handoff_without_mutating_line_state() -> void:
+    var fixture := _make_workspace_fixture()
+    if fixture.is_empty():
+        return
+    var manager = fixture["manager"]
+    var line_session = fixture["line"]
+    var chain_session = fixture["chain"]
+
+    var gravity: float = line_session.fall_state.config.gravity_seconds_per_cell
+    line_session.tick(gravity * 0.75, false)
+    assert_true(line_session.try_hold())
+    var line_before_request: Dictionary = line_session.snapshot_runtime_state()
+
+    var requested: Dictionary = manager.request_switch(CHAIN)
+    assert_true(bool(requested.get("accepted", false)))
+    assert_eq(manager.active_workspace(), LINE)
+    assert_true(manager.is_switch_pending())
+    assert_false(manager.line_input_enabled(), "accepted handoff must close outgoing Line input immediately")
+    assert_false(line_session.can_accept_input())
+    assert_false(manager.chain_input_enabled())
+    assert_false(chain_session.can_accept_input())
+
+    assert_false(line_session.try_move(Vector2i.RIGHT)), "outgoing Line cannot accept a move after handoff acceptance")
+    assert_null(line_session.hard_drop_and_commit(), "handoff acceptance must never force or allow a Line placement")
+    var disabled_tick: Dictionary = line_session.tick(gravity, false)
+    assert_eq(String(disabled_tick.get("reason", "")), "INPUT_DISABLED")
+    assert_eq(
+        _without_input_enabled(line_session.snapshot_runtime_state()),
+        _without_input_enabled(line_before_request),
+        "input attempted after accepted handoff must not mutate the outgoing Line continuation"
+    )
+
+func test_cancelled_chain_to_line_request_restores_chain_input_after_existing_resolution_settles() -> void:
+    var fixture := _make_workspace_fixture()
+    if fixture.is_empty():
+        return
+    var manager = fixture["manager"]
+    var line_session = fixture["line"]
+    var chain_session = fixture["chain"]
+
+    var to_chain: Dictionary = _switch_and_handoff(manager, CHAIN)
+    assert_true(bool(to_chain.get("switched", false)))
+    var committed_swap: Dictionary = chain_session.begin_swap(Vector2i(1, 0), Vector2i(1, 1))
+    assert_true(bool(committed_swap.get("accepted", false)))
+    assert_true(chain_session.is_resolving())
+
+    var to_line: Dictionary = manager.request_switch(LINE)
+    assert_true(bool(to_line.get("accepted", false)))
+    assert_true(manager.is_switch_pending())
+    var cancelled: Dictionary = manager.request_switch(CHAIN)
+    assert_true(bool(cancelled.get("accepted", false)))
+    assert_false(manager.is_switch_pending())
+    assert_eq(manager.active_workspace(), CHAIN)
+    assert_false(chain_session.can_accept_input(), "Chain remains closed only while its committed work is resolving")
+
+    var resolution: Dictionary = chain_session.complete_pending_resolution()
+    assert_true(bool(resolution.get("success", false)))
+    assert_false(chain_session.is_resolving())
+    var settled_chain_state: Dictionary = chain_session.snapshot_runtime_state()
+
+    var no_handoff: Dictionary = manager.process_safe_handoff()
+    assert_false(bool(no_handoff.get("switched", false)))
+    assert_eq(manager.active_workspace(), CHAIN)
+    assert_false(manager.is_switch_pending())
+    assert_true(manager.chain_input_enabled(), "public handoff processing must restore active Chain input after cancellation")
+    assert_true(chain_session.can_accept_input())
+    assert_false(line_session.can_accept_input())
+    assert_eq(
+        _without_input_enabled(chain_session.snapshot_runtime_state()),
+        _without_input_enabled(settled_chain_state),
+        "restoring cancelled Chain ownership must keep the settled board and RNG on the same session"
+    )
+
+    var rewards: Array = chain_session.drain_events()
+    assert_eq(rewards.size(), 1, "restoring active Chain input must not duplicate its completed reward request")
+    assert_eq(chain_session.drain_events().size(), 0)
 
 func test_switch_away_from_committed_chain_resolution_stays_pending_until_the_board_is_stable() -> void:
     var fixture := _make_workspace_fixture()
