@@ -62,6 +62,8 @@ There is no mandatory player-turn boundary between these states.
 
 Encounter terminal conditions are real combat terminal conditions, normally enemy HP ≤ 0 or player HP ≤ 0.
 
+The production slice presents the terminal result as `VICTORY` or `DEFEAT` and exposes a terminal-only `RETRY` action that reloads the current Frontier Gate encounter. Retry starts a fresh encounter; it does not alter the retained combat, puzzle, or balance rules.
+
 ## 4. CONTINUOUS_REALTIME time model
 
 While `COMBAT_RUNNING`:

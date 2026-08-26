@@ -136,6 +136,7 @@ BATTLE_START
 ↔ TACTICAL_PAUSE_SKILL
 → COMBAT_RUNNING
 → VICTORY | DEFEAT
+→ Result / Retry
 ```
 
 `PRODUCTION_CANON_INDEX.json` becomes schema 3. Required minimum fields:
