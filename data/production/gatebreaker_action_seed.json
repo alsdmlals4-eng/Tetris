@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "source_contract": "TETRIS-ENCOUNTER-006 / Gatebreaker Encounter",
+  "actions": [
+    {
+      "key": "light_smash",
+      "kind": "DIRECT_HP_RATIO",
+      "hp_ratio": 0.12,
+      "phase_ids": [1, 2, 3],
+      "tags": ["DIRECT_HIT", "LIGHT"]
+    },
+    {
+      "key": "gatebreaker_slam",
+      "kind": "DIRECT_HP_RATIO",
+      "hp_ratio": 0.35,
+      "phase_ids": [1, 2, 3],
+      "tags": ["DIRECT_HIT", "HEAVY"]
+    },
+    {
+      "key": "rift_siphon",
+      "kind": "ENERGY_LOSS",
+      "amount": 20,
+      "phase_ids": [2, 3],
+      "tags": ["RIFT_UTILITY", "RESOURCE_LOSS", "ENERGY"]
+    },
+    {
+      "key": "chain_fracture",
+      "kind": "STOCK_LOSS",
+      "amount": 2,
+      "phase_ids": [2, 3],
+      "tags": ["RIFT_UTILITY", "RESOURCE_LOSS", "STOCK"]
+    },
+    {
+      "key": "rift_repair",
+      "kind": "ENEMY_HEAL_RATIO",
+      "hp_ratio": 0.08,
+      "phase_ids": [2],
+      "max_uses_per_encounter": 1,
+      "tags": ["RIFT_UTILITY", "REPAIR"]
+    },
+    {
+      "key": "siege_charge",
+      "kind": "DIRECT_HP_RATIO",
+      "hp_ratio": 0.55,
+      "phase_ids": [3],
+      "tags": ["DIRECT_HIT", "HEAVY", "SIEGE"]
+    }
+  ]
+}

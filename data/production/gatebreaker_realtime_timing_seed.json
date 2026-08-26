@@ -1,0 +1,12 @@
+{
+  "balance_status": "TUNING_SEED_NOT_FINAL",
+  "commit_lead_seconds": 0.0,
+  "action_seconds": {
+    "light_smash": 8.0,
+    "gatebreaker_slam": 12.0,
+    "rift_siphon": 10.0,
+    "chain_fracture": 10.0,
+    "rift_repair": 9.0,
+    "siege_charge": 14.0
+  }
+}
