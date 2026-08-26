@@ -257,7 +257,7 @@ func test_accepted_line_to_chain_request_closes_line_input_before_handoff_withou
     assert_false(manager.chain_input_enabled())
     assert_false(chain_session.can_accept_input())
 
-    assert_false(line_session.try_move(Vector2i.RIGHT)), "outgoing Line cannot accept a move after handoff acceptance")
+    assert_false(line_session.try_move(Vector2i.RIGHT), "outgoing Line cannot accept a move after handoff acceptance")
     assert_null(line_session.hard_drop_and_commit(), "handoff acceptance must never force or allow a Line placement")
     var disabled_tick: Dictionary = line_session.tick(gravity, false)
     assert_eq(String(disabled_tick.get("reason", "")), "INPUT_DISABLED")
