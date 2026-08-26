@@ -72,8 +72,9 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertIn("wall-clock", text)
         self.assertIn("active combat simulation time", text)
         self.assertIn("tactical-pause duration", text)
-        self.assertNotIn("Shared Player Turn Budget", text)
-        self.assertNotIn("Tempo Bonus", text)
+        self.assertNotIn("### C. SHARED_BUDGET_COMPREHENSION", text)
+        self.assertNotIn("### TEMPO", text)
+        self.assertIn("historical provenance", text)
 
 
 if __name__ == "__main__":
