@@ -19,3 +19,16 @@ func test_telemetry_records_required_events_and_excludes_pause_from_active_simul
 	assert_almost_eq(float(summary.get("tactical_pause_duration", 0.0)), 4.0, 0.001)
 	assert_eq(int(summary.get("technique_use_count", 0)), 1)
 	assert_eq(telemetry.events().size(), 4)
+
+func test_telemetry_tracks_manual_pause_and_total_wall_clock_without_charging_reading_time_to_simulation() -> void:
+	var telemetry = load(TELEMETRY_PATH).new()
+	telemetry.advance_simulation(2.0, "CHAIN")
+	telemetry.begin_manual_pause()
+	telemetry.advance_wall_clock(3.0)
+	telemetry.end_manual_pause()
+	var summary: Dictionary = telemetry.summary()
+	assert_almost_eq(float(summary.get("active_simulation_duration", 0.0)), 2.0, 0.001)
+	assert_almost_eq(float(summary.get("chain_residency_duration", 0.0)), 2.0, 0.001)
+	assert_almost_eq(float(summary.get("manual_pause_duration", 0.0)), 3.0, 0.001)
+	assert_almost_eq(float(summary.get("wall_clock_encounter_duration", 0.0)), 5.0, 0.001)
+	assert_eq(telemetry.events().map(func(event): return String(event.get("kind", ""))), ["SYSTEM_PAUSE_OPENED", "SYSTEM_PAUSE_CLOSED"])

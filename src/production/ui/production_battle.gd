@@ -59,12 +59,26 @@ func set_active_workspace(workspace: String) -> bool:
 func _request_workspace(workspace: String) -> void:
 	if _runtime != null:
 		_runtime.process_player_command({"kind": "SWITCH_WORKSPACE", "target": workspace})
-	set_active_workspace(workspace)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("workspace_line"):
+		_request_workspace(LINE)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("workspace_chain"):
+		_request_workspace(CHAIN)
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("open_skill"):
+		_toggle_skill()
+		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("pause_game") and _runtime != null:
+		_runtime.process_player_command({"kind": "TOGGLE_SYSTEM_PAUSE"})
+		_refresh_runtime_labels()
+		get_viewport().set_input_as_handled()
 
 func _toggle_skill() -> void:
 	if _runtime == null:
 		return
-	if _runtime.is_simulation_paused():
+	if _runtime.is_skill_open():
 		_runtime.close_skill_without_use()
 	else:
 		_runtime.open_skill()
@@ -98,4 +112,9 @@ func _refresh_runtime_labels() -> void:
 	_current_threat.text = "CURRENT THREAT · ETA %.1fs" % float(snapshot.get("enemy_eta_seconds", 0.0))
 	_next_forecast.text = "NEXT FORECAST · realtime authored schedule"
 	_resource_bar.text = "HP %d / 100    ENERGY %d    STOCK %d / 6" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
-	_pause_state.text = "TACTICAL PAUSE" if bool(snapshot.get("paused", false)) else "COMBAT RUNNING"
+	if _runtime.is_skill_open():
+		_pause_state.text = "TACTICAL PAUSE"
+	elif bool(snapshot.get("paused", false)):
+		_pause_state.text = "SYSTEM PAUSE"
+	else:
+		_pause_state.text = "COMBAT RUNNING"

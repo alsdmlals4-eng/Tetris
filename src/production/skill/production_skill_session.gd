@@ -25,6 +25,9 @@ func open() -> bool:
 	_pause_token = _pause_controller.acquire(TACTICAL_SKILL)
 	return _pause_token != 0
 
+func is_open() -> bool:
+	return _pause_token != 0
+
 func select_category(category: String) -> bool:
 	if _pause_token == 0 or not LANES.has(category):
 		return false

@@ -64,3 +64,11 @@ func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
 		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillPanel/%s" % node_path))
 	assert_true(battle.has_method("select_skill_category"))
 	assert_true(battle.has_method("select_skill_tier"))
+
+func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
+	for action_name in ["workspace_line", "workspace_chain", "open_skill", "pause_game"]:
+		assert_true(InputMap.has_action(action_name), "%s must be a named project action" % action_name)
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	assert_true(battle.has_method("_unhandled_input"), "the battle bridge must receive named input actions")
+	assert_eq(battle.process_mode, Node.PROCESS_MODE_ALWAYS, "the input bridge must remain available while SceneTree is paused")

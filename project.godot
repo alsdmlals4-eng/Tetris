@@ -21,6 +21,22 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 
 [input]
+workspace_line={
+"deadzone": 0.5,
+"events": []
+}
+workspace_chain={
+"deadzone": 0.5,
+"events": []
+}
+open_skill={
+"deadzone": 0.5,
+"events": []
+}
+pause_game={
+"deadzone": 0.5,
+"events": []
+}
 mode_line={
 "deadzone": 0.5,
 "events": []

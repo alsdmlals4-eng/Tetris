@@ -81,6 +81,25 @@ func test_runtime_does_not_tick_enemy_or_active_puzzle_while_tactical_skill_is_o
 	runtime.tick(1.0)
 	assert_almost_eq(scheduler.remaining_seconds(), before_eta - 1.0, 0.001)
 
+func test_manual_and_tactical_pause_tokens_compose_without_resuming_enemy_time_early() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var skill = _skill_session(pause, player)
+	var runtime = load(RUNTIME_PATH).new(player, enemy, null, scheduler, skill, pause, null)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	var before_eta: float = scheduler.remaining_seconds()
+	assert_true(bool(runtime.process_player_command({"kind": "TOGGLE_SYSTEM_PAUSE"}).get("paused", false)))
+	assert_true(bool(runtime.open_skill().get("opened", false)))
+	assert_true(bool(runtime.close_skill_without_use().get("closed", false)))
+	assert_true(runtime.is_simulation_paused(), "closing Skill must preserve an independent manual pause")
+	runtime.tick(1.0)
+	assert_almost_eq(scheduler.remaining_seconds(), before_eta, 0.001)
+	assert_false(bool(runtime.process_player_command({"kind": "TOGGLE_SYSTEM_PAUSE"}).get("paused", true)))
+	runtime.tick(1.0)
+	assert_almost_eq(scheduler.remaining_seconds(), before_eta - 1.0, 0.001)
+
 func test_runtime_commits_each_puzzle_reward_once_and_marks_terminal_without_turn_transitions() -> void:
 	var pause = load(PAUSE_PATH).new()
 	var player = load(COMBAT_STATE_PATH).new(100)

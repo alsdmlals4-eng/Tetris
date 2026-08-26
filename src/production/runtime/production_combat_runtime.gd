@@ -12,6 +12,7 @@ var _response_state
 var _telemetry = null
 var _started := false
 var _terminal := false
+var _system_pause_token: int = 0
 
 func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null) -> void:
 	_player = player
@@ -32,6 +33,9 @@ func start_battle() -> Dictionary:
 	_started = true
 	if _telemetry != null:
 		_telemetry.record("BATTLE_STARTED")
+		if _workspace_manager != null:
+			_telemetry.record("WORKSPACE_ENTERED", {"workspace": _workspace_manager.active_workspace()})
+		_telemetry.record("ENEMY_TELEGRAPH_STARTED", {"action_id": current_action_id()})
 	return {"started": true, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds()}
 
 func process_player_command(command: Dictionary) -> Dictionary:
@@ -43,7 +47,12 @@ func process_player_command(command: Dictionary) -> Dictionary:
 		"SWITCH_WORKSPACE":
 			if _workspace_manager == null:
 				return {"accepted": false, "reason": "WORKSPACE_UNAVAILABLE"}
-			return _workspace_manager.request_switch(String(command.get("target", "")))
+			var switch_result: Dictionary = _workspace_manager.request_switch(String(command.get("target", "")))
+			if bool(switch_result.get("accepted", false)) and _telemetry != null:
+				_telemetry.record("WORKSPACE_SWITCH_REQUESTED", {"target": String(command.get("target", ""))})
+			return switch_result
+		"TOGGLE_SYSTEM_PAUSE":
+			return toggle_system_pause()
 	return {"accepted": false, "reason": "UNKNOWN_COMMAND"}
 
 func tick(delta: float) -> Array[Dictionary]:
@@ -55,12 +64,23 @@ func tick(delta: float) -> Array[Dictionary]:
 	if _telemetry != null:
 		_telemetry.advance_simulation(delta, _workspace_manager.active_workspace() if _workspace_manager != null else "")
 	if _workspace_manager != null:
-		_workspace_manager.process_safe_handoff()
+		var previous_workspace: String = _workspace_manager.active_workspace()
+		var handoff: Dictionary = _workspace_manager.process_safe_handoff()
+		if bool(handoff.get("switched", false)) and _telemetry != null:
+			var active_workspace: String = _workspace_manager.active_workspace()
+			_telemetry.record("WORKSPACE_EXITED", {"workspace": previous_workspace})
+			_telemetry.record("WORKSPACE_SWITCH_COMMITTED", {"workspace": active_workspace})
+			_telemetry.record("WORKSPACE_ENTERED", {"workspace": active_workspace})
 		_tick_active_puzzle(delta)
 		_commit_puzzle_events(events)
 	var context := {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id()}
+	var action_before: String = current_action_id()
 	for event in _enemy_scheduler.tick_simulation(delta, context):
 		events.append(event)
+		if _telemetry != null and String(event.get("kind", "")) == "ENEMY_ACTION_RESOLVED":
+			_telemetry.record("ENEMY_ACTION_RESOLVED", event)
+	if _telemetry != null and action_before != "" and current_action_id() != action_before:
+		_telemetry.record("ENEMY_TELEGRAPH_STARTED", {"action_id": current_action_id()})
 	_resolve_terminal(events)
 	return events
 
@@ -79,6 +99,25 @@ func close_skill_without_use() -> Dictionary:
 	if bool(result.get("canceled", false)) and _telemetry != null:
 		_telemetry.end_tactical_pause()
 	return {"closed": bool(result.get("canceled", false))}
+
+func toggle_system_pause() -> Dictionary:
+	if _pause_controller == null:
+		return {"changed": false, "reason": "PAUSE_UNAVAILABLE"}
+	if _system_pause_token == 0:
+		_system_pause_token = _pause_controller.acquire(SimulationPauseController.SYSTEM_MENU)
+		if _system_pause_token == 0:
+			return {"changed": false, "reason": "PAUSE_UNAVAILABLE"}
+		if _telemetry != null:
+			_telemetry.begin_manual_pause()
+		return {"changed": true, "paused": true}
+	var released := _pause_controller.release(_system_pause_token)
+	_system_pause_token = 0
+	if released and _telemetry != null:
+		_telemetry.end_manual_pause()
+	return {"changed": released, "paused": false}
+
+func is_skill_open() -> bool:
+	return _skill_session != null and _skill_session.is_open()
 
 func select_skill_category(category: String) -> bool:
 	return _skill_session != null and _skill_session.select_category(category)
@@ -103,6 +142,9 @@ func is_simulation_paused() -> bool:
 func is_terminal() -> bool:
 	return _terminal
 
+func current_action_id() -> String:
+	return _enemy_scheduler.current_action_id() if _enemy_scheduler != null else ""
+
 func snapshot() -> Dictionary:
 	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "player_energy": _player.energy if _player != null else 0, "player_stock": _player.stock if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0}
 
@@ -114,18 +156,31 @@ func _tick_active_puzzle(delta: float) -> void:
 
 func _commit_puzzle_events(events: Array[Dictionary]) -> void:
 	for event in _workspace_manager.line_session.drain_events():
-		if String(event.get("kind", "")) == "production_line_resolved":
+		var kind: String = String(event.get("kind", ""))
+		if kind == "production_line_resolved":
 			_player.apply_line_event(event)
 			events.append(event)
+			if _telemetry != null:
+				_telemetry.record("LINE_REWARD", event)
+		elif kind == "production_line_board_break":
+			events.append(event)
+			if _telemetry != null:
+				_telemetry.record("BOARD_BREAK", event)
 	for event in _workspace_manager.chain_session.drain_events():
 		if String(event.get("kind", "")) == "production_chain_resolved":
 			_player.gain_stock(int(event.get("stock_requested", 0)))
 			events.append(event)
+			if _telemetry != null:
+				_telemetry.record("CHAIN_REWARD", event)
 
 func _resolve_terminal(events: Array[Dictionary]) -> void:
 	if _enemy.is_defeated():
 		_terminal = true
 		events.append({"kind": "VICTORY"})
+		if _telemetry != null:
+			_telemetry.record("VICTORY")
 	elif _player.is_defeated():
 		_terminal = true
 		events.append({"kind": "DEFEAT"})
+		if _telemetry != null:
+			_telemetry.record("DEFEAT")
