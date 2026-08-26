@@ -2,6 +2,8 @@
 
 > Status: **NOT_RUN**
 >
+> Core authority: `TETRIS-CORE-029 · Continuous Real-Time Mode-Switch Combat + Full Tactical Pause`
+>
 > Claim ceiling: **FUN_HYPOTHESIS** until real Human evidence exists.
 >
 > Method: `OBSERVE_FIRST` → short non-leading probes → evidence classification.
@@ -10,330 +12,268 @@
 
 ## 1. Purpose and authority boundary
 
-This contract defines how the first representative 6–10 minute Vertical Slice will be evaluated by real players. It does **not** create new gameplay rules and it does not promote unmerged implementation claims.
+This contract defines how a representative 6–10 minute CORE-029 Vertical Slice will be evaluated by real players. It does not create gameplay rules, promote unmerged branch claims, or treat concept art as runtime evidence.
 
-Current gameplay authority remains:
+Current authorities:
 
-1. `TETRIS-TIME-025` — Shared Player Turn Budget, READY, timeout, time modifiers, Tempo.
-2. `TETRIS-CORE-024` — ordered turn/combat and Enemy Telegraph.
-3. `TETRIS-SKILL-026` — Vanguard ATK / DEF / SUP × Tier 1–6 tactical Technique identities.
-4. `TETRIS-BALANCE-027` — Line Energy / Chain Stock opportunity cost and Tier exposure.
-5. `TETRIS-VISUAL-020` — current Vertical Slice visual direction.
+1. `TETRIS-CORE-029` — continuous real-time combat, persistent LINE↔CHAIN switching, full Skill tactical pause, enemy ETA/commit scheduling, 60/40 battle composition.
+2. `TETRIS-SKILL-026` — retained ATK / DEF / SUP × Tier 1–6 Technique identity where not turn-bound.
+3. `TETRIS-BALANCE-027` — retained Line Energy / Chain Stock opportunity cost and Tier commitment.
+4. `TETRIS-VISUAL-028` — Hand-Drawn Mystic Fantasy + Clean Puzzle UI.
+5. `TETRIS-IMAGE-030` — production images require a real runtime consumer.
 
-The older `docs/superpowers/plans/2026-08-21-phased-turn-production-vertical-slice.md` remains a broader implementation handoff reference only. Its **superseded timing clauses** such as independent phase timers, 30/30/30 timer resets, or per-phase unused-time discard never override `TETRIS-TIME-025` and must not be copied into current Production behavior.
+`TETRIS-CORE-024` and `TETRIS-TIME-025` are historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
 
-An open Draft BUILD PR is implementation evidence only for its verified branch state. Until exact-head merge and post-merge readback, it is not merged-main runtime truth.
-
-## 2. What the session must represent
-
-The target first-exposure session is one production-quality representative Slice:
-
-```text
-Title
-→ Frontier Gate Arrival
-→ first real Tutorial Turn
-→ Gatebreaker live battle
-→ Result
-→ Fast Retry / next goal
-```
+## 2. Representative session
 
 Target total session: **6–10 minutes**.
 
-Representative scope:
+The tested Slice must contain the actual production interaction, not an explanatory sheet or isolated subsystem demo:
+
+```text
+Title / entry
+→ Frontier Gate encounter starts
+→ COMBAT_RUNNING
+   ↔ LINE
+   ↔ CHAIN
+   ↔ TACTICAL_PAUSE_SKILL
+→ Victory | Defeat
+→ Result / Retry
+```
+
+Minimum representative scope:
 
 - one Vanguard;
 - one Gatebreaker;
-- one Frontier Gate;
-- actual Production Line puzzle;
-- actual Production Swap-Match Chain puzzle;
-- current Telegraph and lower-priority visible Next Forecast where applicable;
-- one **Shared Player Turn Budget** across Line → Chain → Action;
+- one Frontier Gate encounter;
+- one large left Puzzle Surface switching between persistent LINE and CHAIN states;
+- persistent right Combat/Threat/Resource/Skill surface;
+- real-time enemy threat with current Telegraph + ETA and lower-priority Next Forecast where authored;
 - Line Energy and Chain Stock as non-interchangeable resources;
-- contextual Tier 1–6 Technique choices;
-- result feedback that makes player-action and enemy-action consequences attributable.
+- ATK / DEF / SUP → T1–T6 → detail → explicit USE;
+- Skill opens `TACTICAL_PAUSE_SKILL` and fully pauses simulation;
+- manual pause is distinct from Skill tactical pause;
+- actual gameplay-consumed visual assets where available, never explanation-only sheets presented as runtime proof.
 
-A debug harness, static mockup, isolated subsystem scene, or designer explanation is not a substitute for this representative flow.
+## 3. Measurement boundary
 
-## 3. Research method
+Record separate time classes when telemetry/runtime support exists:
+
+- **wall-clock** encounter duration;
+- **active combat simulation time**;
+- **tactical-pause duration**;
+- manual-pause duration.
+
+Do not classify a player as slow merely because they read the paused Skill UI for longer. CORE-029 intentionally separates real-time execution pressure from paused tactical cognition.
+
+## 4. Research method
 
 ### OBSERVE_FIRST
 
-Use the broadest prompt that still exposes the intended content, such as “이 구간을 평소 게임하듯 진행해 주세요.” Do not tell the player the intended solution, resource relationship, optimal Tier, or where to look for a UI answer.
+Use a broad prompt such as “이 구간을 평소 게임하듯 진행해 주세요.” Do not teach the intended solution, correct workspace order, resource relationship, ideal Tier, or where to look for a UI answer.
 
-During the first attempt:
+During first exposure:
 
-- watch what the player actually does before asking why;
-- record deviations from design intent rather than correcting them immediately;
-- do not confirm whether an action is correct while the player is deciding;
-- do not explain Telegraph, Energy, Stock, Tier, READY, Tempo, or forecast-control unless the shipped experience itself provides that explanation;
-- only intervene when progress is otherwise impossible, accessibility/device operation requires it, or the session would produce no additional evidence;
-- every intervention is itself evidence and must be recorded.
+- observe before asking why;
+- record deviations instead of correcting them immediately;
+- do not tell the player when to switch LINE/CHAIN;
+- do not explain that switching preserves both board states unless the shipped experience itself communicates it;
+- do not explain that Skill fully pauses simulation unless the shipped presentation communicates it;
+- do not explain optimal Energy/Stock/Tier use;
+- record every moderator intervention.
 
 ### OBSERVE_THEN_PROBE
 
-After the relevant decision or after the first attempt, use short non-leading questions to understand motivation. Observation answers **what happened**; the probe helps distinguish **why it happened**.
-
-Recommended probes:
+After a decision or the first attempt, use non-leading questions such as:
 
 1. “방금 적이 무엇을 하려고 했다고 생각했나요?”
-2. “Line과 Chain에서 각각 무엇을 얻었다고 생각했나요?”
-3. “왜 그 Technique와 Tier를 골랐나요?”
-4. “시간을 어디에 더 썼고 왜 그렇게 했나요?”
-5. “지금 위협과 다음 Forecast를 어떻게 구분했나요?”
-6. “방금 선택이 결과를 어떻게 바꿨다고 생각하나요?”
+2. “왜 LINE이나 CHAIN으로 전환했나요?”
+3. “다시 돌아왔을 때 보드가 어떻게 될 거라고 예상했나요?”
+4. “Skill 화면을 열었을 때 전투 시간이 어떻게 된다고 생각했나요?”
+5. “Energy와 Chain Stock을 각각 어디서 얻는다고 생각했나요?”
+6. “왜 그 Technique와 Tier를 골랐나요?”
 7. “가장 늦게 찾았거나 헷갈린 정보는 무엇이었나요?”
-8. “지금 플레이에서 가장 기억에 남는 순간은 무엇이었나요? 왜 그랬나요?”
+8. “가장 기억에 남는 순간은 무엇이었나요? 왜 그랬나요?”
 9. “다시 한다면 무엇을 다르게 하겠나요?”
 
-Avoid leading questions such as “Shared Timer가 이해됐나요?” or “낮은 Tier가 더 효율적인 상황인 걸 알았나요?”.
+## 5. Directional A / B / C sessions
 
-## 4. Directional A / B / C sessions
+**THREE_SESSIONS_REQUIRED_FOR_PASS**: directional `PASS` requires three valid, independent first-exposure receipts A/B/C.
 
-**THREE_SESSIONS_REQUIRED_FOR_PASS**: the Human Gate requires **three valid, independent first-exposure directional sessions: A, B, and C** before a directional `PASS` may be issued.
+- one or two sessions may produce preliminary findings only;
+- `REVISE` or `BLOCK` may be issued earlier if evidence already supports it;
+- invalidated sessions do not count;
+- preserve participant familiarity tags instead of treating one player as representative of the market.
 
-- One or two valid sessions may produce **preliminary findings only**; they cannot produce Human Gate `PASS`.
-- `REVISE` or `BLOCK` may be issued earlier when the observed evidence already supports that decision; there is no value in exposing more participants to a known invalid Slice merely to reach three receipts.
-- An invalidated session does not count toward the three-session floor. Replace it with another independent first-exposure session.
-- The three-session floor is a qualitative design-direction safeguard, not statistical population validation.
+## 6. Evidence dimensions
 
-Prefer at least two familiarity profiles across the three sessions, for example:
+### A. REALTIME_THREAT_READABILITY
 
-- falling-block puzzle familiarity;
-- match-3 / swap-match familiarity;
-- tactical/turn-based combat familiarity;
-- low familiarity with one or more of the above.
+Observe whether the player notices what the enemy is doing while actively solving the puzzle.
 
-Participants should not read internal design/canon documents before first exposure. Record familiarity tags rather than treating one participant as representative of the whole market.
+Check:
 
-## 5. Evidence dimensions
+- Current Telegraph is noticed before consequences land;
+- current ETA is understood as enemy action timing, not a player-turn timer;
+- Next Forecast remains findable without competing with Current;
+- the player sometimes changes what they are doing because the threat matters.
 
-### A. ONBOARDING_COMPREHENSION
+### B. WORKSPACE_SWITCH_COMPREHENSION
 
-Observe whether the player can move from Title → Gate Arrival → first real Turn without mechanic coaching and can form a usable first mental model from the shipped presentation.
+Observe whether free `LINE ↔ CHAIN` switching is understood as an intentional tactical tool rather than a stage order.
 
-Evidence questions:
+Check:
 
-- Do they know the immediate objective?
-- Can they identify what must be acted on now?
-- Can they proceed after a mistake without a moderator explaining the system?
+- the player discovers or understands both directions of switching;
+- they do not wait for a nonexistent phase completion before switching;
+- they can explain why they chose one workspace over the other at a real moment of pressure.
 
-### B. TELEGRAPH_RESPONSE
+### C. WORKSPACE_STATE_PERSISTENCE
 
-The current Enemy Telegraph must change or constrain a real player decision rather than acting as decorative information.
+The player should understand that switching changes the visible/active workspace, not the identity of either board.
 
-Evidence questions:
+Check:
 
-- Does the player notice the current threat before committing the Action?
-- Can they explain, in their own words, what they expected the enemy to do?
-- Does their resource/Tier choice ever respond to the threat?
+- after returning to LINE, they recognize the prior Line board as preserved;
+- after returning to CHAIN, they recognize the prior Chain board as preserved;
+- switch behavior does not create an expectation of reroll/reset/free recovery;
+- state preservation supports planning rather than surprise.
 
-### C. SHARED_BUDGET_COMPREHENSION
+### D. TACTICAL_PAUSE_COMPREHENSION
 
-The player must experience one **Shared Player Turn Budget**, not three independent timers.
+Skill must read as a full tactical pause.
 
-Evidence questions:
+Check:
 
-- Do they behave as though time spent in Line reduces time available for Chain/Action?
-- Does READY read as an intentional “stop here and carry remaining time forward” decision?
-- Do they mistake the timer for an enemy ETA, a phase-reset clock, or background Combat Clock?
-- Does pressure create meaningful allocation rather than pure panic or paralysis?
+- the player understands that enemy ETA stops while Skill is open;
+- frozen puzzle/combat context remains legible;
+- they are willing to read Technique details rather than rushing because they think combat is still advancing;
+- cancel and USE resume the exact paused combat situation without hidden time progress.
 
-Exact seconds and Tempo curve remain `TUNE_REQUIRED`.
+### E. LINE_ENERGY_VS_CHAIN_STOCK
 
-### D. DUAL_RESOURCE_CHOICE
+Check whether the dual-resource distinction is understood:
 
-Both puzzle stages must matter to combat decisions.
+- Line produces **Energy**;
+- Chain/Combo produces **Chain Stock** / Tier access;
+- Energy and Chain Stock are not interchangeable;
+- the player can describe a real reason to stay in one workspace longer or switch to the other.
 
-Evidence questions:
+### F. TECHNIQUE_DECISION_QUALITY
 
-- Does the player associate **Line Energy** with Line performance?
-- Does the player associate **Chain Stock** with Chain performance and Tier access?
-- Do they understand that Energy and Stock are not interchangeable?
-- Does at least one decision expose a real tradeoff between spending more Shared time on Line versus Chain?
+Check:
 
-### E. TIER_VIABILITY
+- ATK / DEF / SUP categories are understandable;
+- T1–T6 reads as tactical commitment, not simply “highest number wins”;
+- row selection/detail inspection does not feel like immediate resource spend;
+- explicit USE is understood as the commit point;
+- lower Tier remains a plausible choice in at least some contexts.
 
-Tier is a tactical commitment band, not a linear “always pick the highest available” ladder.
+Turn-bound Techniques such as Haste/Battle Trance remain outside a positive Human claim until their CORE-029 realtime semantics are separately approved and implemented.
 
-Evidence questions:
+### G. SIXTY_FORTY_LAYOUT_READABILITY
 
-- Can the player give a reason for choosing a lower Tier after tutorial exposure?
-- Does a **lower Tier** remain understandable as an efficient, finishing, preserving, or immediate-response option?
-- Does routine hoard-to-6 or instant-dump behavior become the only intelligible policy?
-- Does Tier 6 feel like a signature commitment candidate rather than housekeeping?
+`TETRIS-VISUAL-028` is evaluated as gameplay readability, not taste polling.
 
-Automated dominance fixtures can reject obvious impossible/strict-dominance states, but only Human evidence can validate actual choice comprehension.
+Target hierarchy:
 
-### F. FORECAST_CONTROL
+1. large left Puzzle Surface remains the primary manipulation area;
+2. right Combat/Threat surface remains continuously readable;
+3. Current Telegraph + ETA is high priority;
+4. HP / Energy / Chain Stock remain findable;
+5. LINE / CHAIN / SKILL controls remain obvious;
+6. Skill-open state prioritizes ATK / DEF / SUP → T1–T6 → detail → USE while frozen puzzle/threat context remains visible;
+7. decorative character, boss, VFX, and background never obscure critical puzzle or threat information.
 
-Current-vs-future response ownership must remain legible:
+Target desktop composition is approximately **60/40**. This is a readability target, not a fixed pixel law.
 
-- DEF T5 `Rift Ward` responds to the **current** telegraphed resource-loss threat.
-- ATK T5 / SUP T5 future control acts only on a qualifying **visible Next Forecast** and exact action id.
+Visual evidence must use actual runtime-consumed assets when making runtime-readability claims. A concept or explanation sheet cannot substitute for the screen the game actually renders.
 
-Evidence questions:
+### H. PLAYER_EXPERIENCE_SIGNAL / MEMORABLE_MOMENT
 
-- Can the player distinguish “지금 막는 것” from “다음에 보이는 것을 준비해서 제어하는 것”?
-- Does the lower-priority forecast remain findable without competing with the current Telegraph?
+Look for at least one observable sequence of:
 
-### G. VISUAL_READABILITY
+**pressure → deliberate switch/Skill decision → readable payoff**.
 
-`TETRIS-VISUAL-020` is validated here as **gameplay readability under the intended art direction**, not as a simple taste poll.
+Record:
 
-Critical hierarchy:
+- what pressure caused the plan change;
+- whether the choice was LINE, CHAIN, Skill, Technique, or Tier;
+- what result the player attributed to that choice;
+- what moment they recall without being told what the intended highlight was;
+- whether failure produces an understandable “next time I would…” thought.
 
-1. current Telegraph;
-2. active phase and one Shared Timer;
-3. active puzzle board and legal interaction;
-4. Energy / Chain Stock / legal Tier-cost information;
-5. Technique choice and target;
-6. lower-priority Next Forecast;
-7. decorative character, boss, VFX and background detail.
+Use the token `MEMORABLE_MOMENT` in receipts for the first strong recall candidate.
 
-The current concept images — Battle Screen Composition Mockup, Frontier Shield Vanguard, and Asymmetric Breach Colossus — are visual references, not runtime proof and not final assets by themselves.
+This remains a directional experience signal, not proof of universal fun, retention, or market success.
 
-The Battle Screen Composition Mockup's historical `3.2s / 8.4s / 14.0s` enemy ETA-style labels are visual residue. They must not be interpreted as current timing authority or reproduced as independent enemy/phase timers.
+## 7. Minimum evidence receipt
 
-Readability checks:
+Each session receipt records when available:
 
-- current Telegraph remains more salient than the lower-priority Next Forecast;
-- one Shared Timer cannot reasonably be mistaken for an enemy ETA or phase-reset timer;
-- Line/Chain cells remain readable under character art, VFX, pixel-fracture accents, lighting and screen effects;
-- active stage and legal Technique choices can be found without scanning the entire screen repeatedly;
-- cost, target and disabled/legal state are distinguishable at decision time;
-- damage, mitigation, resource loss/protection and enemy response are attributable after resolve;
-- decorative motion/effects do not cover critical information during the moment it must be read.
-
-A participant disliking anime/pixel styling is not automatically a `VISUAL_READABILITY` failure. Conversely, liking the art does not prove that the combat UI is readable.
-
-### H. RESULT_FEEDBACK
-
-The player should connect the puzzle/time/resource/Technique decision to its result.
-
-Evidence questions:
-
-- Can they explain what their Action changed?
-- Can they separate Player Action Resolve from Enemy Resolve?
-- After a bad outcome, can they state at least one actionable reason to change the next attempt?
-
-### I. EXPERIENCE_SIGNAL / MEMORABLE_MOMENT
-
-Usability is necessary but not sufficient. The Slice should produce at least one observable sequence of **pressure → deliberate choice → readable payoff** that the player can recall without being told what the intended highlight was.
-
-Evidence questions:
-
-- Is there a moment where the player visibly slows down, commits, reacts, or changes plan because the threat/time/resource tradeoff matters?
-- After the session, what moment does the player recall first and why?
-- Does a successful defensive/offensive/support decision create clear relief, payoff, or anticipation rather than only numerical cleanup?
-- Does failure create an understandable “next time I would…” thought rather than opaque frustration?
-- Is the memorable moment caused by the game's decision structure, not only by decorative art or spectacle?
-
-This is a **directional experience signal**, not proof of universal fun, retention, or market success. A/B/C may disagree; preserve the disagreement rather than averaging it into a false certainty.
-
-## 6. Minimum evidence receipt
-
-Each session receipt records, when available:
-
-- session id `A`, `B`, or `C`;
+- session id A/B/C;
 - date;
-- build/commit/PR SHA actually played;
-- deterministic seed or encounter seed;
+- exact build/commit/PR SHA played;
+- deterministic encounter/puzzle seed;
 - device/input method;
 - participant familiarity tags;
 - whether internal design knowledge was absent before first exposure;
 - completion / abandonment;
-- every moderator intervention and timestamp;
-- first major confusion and its consequence;
-- first self-initiated plan change caused by Telegraph/time/resource pressure;
-- READY / timeout behavior;
-- meaningful Line Energy and Chain Stock state at key decisions;
-- selected lane / Tier / Technique where relevant;
-- current Telegraph and visible Next Forecast involved in the decision;
-- result and player explanation;
-- recalled memorable moment and reason;
-- screen/video recording reference if consent and tooling allow it;
-- timestamped observation notes.
+- moderator interventions with timestamps;
+- first detected enemy threat and what the player thought it meant;
+- first self-initiated LINE↔CHAIN switch and reason;
+- evidence that both workspace states persisted across return;
+- first Skill-open moment and whether the player understood full pause;
+- key Energy / Chain Stock states;
+- selected lane / Tier / Technique / USE outcome;
+- wall-clock, active combat simulation time, tactical-pause duration if telemetry exists;
+- first major confusion and consequence;
+- `MEMORABLE_MOMENT` candidate and player explanation;
+- screen/video reference if consent/tooling permit.
 
-Telemetry is useful once the representative runtime exists, but telemetry is not required to define this planning contract and cannot replace observation/interview evidence for comprehension or experience meaning.
-
-## 7. Severity and gate
-
-Every finding is classified by impact on the intended first-session experience.
+## 8. Gate
 
 ### BLOCK
 
-Use `BLOCK` when any core issue makes the representative Slice invalid as a Human proof, including:
+Examples:
 
-- the player cannot progress without mechanic coaching that the shipped game would not provide;
-- a core rule is repeatedly interpreted backwards in a way that changes decisions;
-- current Telegraph / next Forecast / Shared Timer hierarchy causes repeated high-impact wrong decisions;
-- critical puzzle/UI information is materially obscured by art or VFX;
-- the player cannot attribute the combat result to their own Action and the enemy response;
-- the test build does not actually represent the current canon being evaluated.
+- real-time enemy threat cannot be read while solving the puzzle;
+- switching appears to reset/reroll state or is repeatedly misunderstood as stage progression;
+- Skill appears paused visually but hidden enemy/puzzle/status time continues;
+- player cannot distinguish Energy and Chain Stock;
+- critical 60/40 UI information is obscured;
+- the build under test does not actually implement CORE-029;
+- a concept/reference image is presented instead of the runtime screen whose readability is being claimed.
 
 ### REVISE
 
-Use `REVISE` when there is no hard blocker, but a material issue repeats across independent sessions or reliably pushes core decisions in the wrong direction. Revise the smallest owning layer — tutorial, UI hierarchy, wording, timing seed, encounter seed, economy seed, visual treatment, or implementation — then re-run the affected evidence.
+Use when a material issue repeats or pushes core decisions in the wrong direction without invalidating the whole Slice. Fix the smallest owning layer, then re-test affected evidence.
 
 ### PASS
 
-Use directional `PASS` only when:
+Use directional PASS only when:
 
-- **three valid independent A/B/C first-exposure receipts exist**;
-- no `BLOCK` finding remains;
-- the player can complete the core representative flow without core-mechanic coaching;
-- critical concepts are demonstrated by both behavior and post-play explanation, not questionnaire agreement alone;
-- no same high-severity misunderstanding repeats unresolved across the directional sessions;
-- at least one pressure → deliberate choice → readable payoff candidate is observed and captured as experience evidence;
-- any remaining issue is explicitly bounded and does not invalidate the core design hypothesis.
+- three valid independent A/B/C first-exposure receipts exist;
+- no BLOCK remains;
+- core flow is completable without mechanic coaching;
+- real-time threat, free switching, persistent state, tactical pause, dual resources, and Technique commit are demonstrated by behavior plus explanation;
+- the 60/40 screen remains readable during representative pressure;
+- at least one pressure → deliberate choice → readable payoff candidate is observed.
 
-The gate is **PASS / REVISE / BLOCK**. `PASS` is directional evidence for the tested Slice/build; it is not statistical market proof, final commercial validation, proof of retention, or proof that all players will find the game fun.
+The gate is **PASS / REVISE / BLOCK**.
 
-## 8. Evidence ceiling / Implementation Reality Gate
+## 9. Implementation Reality Gate
 
-Current state remains **NOT_RUN** until a real representative build is played and receipts exist.
+Current state remains **NOT_RUN** until real Human receipts exist.
 
 Evidence classes must not be promoted:
 
-- static canon/docs → proves approved design intent only;
-- automated tests → can prove deterministic legality/state transitions/known dominance guards, not fun or comprehension;
-- designer/developer self-play → can prove smoke/runtime behavior, not external first-time onboarding;
-- concept art/mockups → can prove visual target intent, not runtime visual readability;
-- Draft PR branch evidence → proves only that branch at its exact verified head;
-- merged runtime + device receipt → proves callable/observed runtime behavior on that target;
-- Human session receipt → may support the specific comprehension/readability/choice/experience claims actually observed.
+- static canon/docs → approved intent only;
+- generated image/reference → visual candidate only;
+- imported asset + actual runtime consumer → runtime wiring evidence;
+- automated tests → deterministic behavior only, not fun/comprehension;
+- Draft PR → exact-branch evidence only;
+- merged runtime/device receipt → observed runtime behavior on that target;
+- Human receipt → only the specific comprehension/readability/choice/experience claims observed.
 
-Until Human receipts exist, fun, tension, readability, Tier-choice comprehension, memorable payoff and final balance remain **FUN_HYPOTHESIS** / `TUNE_REQUIRED` as appropriate.
-
-## 9. What happens after the first Human gate
-
-If `PASS`:
-
-- retain the core model;
-- tune exact seconds, Energy cost/gain, effect magnitude, encounter pressure and visual emphasis from observed evidence;
-- preserve which pressure/choice/payoff moments actually became memorable before adding more spectacle;
-- do not use the pass as justification to add classes, bosses, biomes, currencies or new subsystems before the representative Slice is stable.
-
-If `REVISE`:
-
-- fix the smallest owning cause;
-- preserve the raw receipt;
-- re-run only enough scope to disprove/confirm the revised hypothesis, then do a representative regression pass.
-
-If `BLOCK`:
-
-- stop breadth expansion;
-- resolve the blocking mental-model/readability/flow issue before treating the Slice as production-direction proof.
-
-## 10. External method basis — discovery, not project canon
-
-This procedure adapts standard Games User Research practice: start from design intent, prefer broad/undirected tasks, avoid teaching the solution through moderation, observe actual behavior, and use short neutral probes to understand motivation.
-
-Reference reading:
-
-- https://gamesuserresearch.com/find-usability-issues-in-games-with-playtests/
-- https://gamesuserresearch.com/choose-the-right-playtest-method/
-- https://gamesuserresearch.com/running-a-games-user-research-study/
-- https://gamesuserresearch.com/how-to-run-unbiased-player-interviews/
-
-These external references inform the research method only. They do not override Tetris gameplay canon.
+Until Human receipts exist, fun, readability, memorable payoff, and final balance remain **FUN_HYPOTHESIS** / `TUNE_REQUIRED` as appropriate.
