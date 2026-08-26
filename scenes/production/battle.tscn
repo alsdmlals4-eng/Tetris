@@ -1,19 +1,21 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
 [ext_resource type="Script" path="res://src/production/ui/production_chain_board_view.gd" id="3_chain"]
 [ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="4_stage_backdrop"]
+[ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="5_theme"]
 
 [node name="Battle" type="Control"]
 process_mode = 3
-script = ExtResource("1_battle")
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("5_theme")
+script = ExtResource("1_battle")
 
 [node name="MainRow" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -25,33 +27,37 @@ grow_vertical = 2
 theme_override_constants/separation = 12
 
 [node name="PuzzleColumn" type="VBoxContainer" parent="MainRow"]
-custom_minimum_size = Vector2(0, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.6
+theme_override_constants/separation = 8
 
-[node name="ModeBar" type="HBoxContainer" parent="MainRow/PuzzleColumn"]
+[node name="ModeFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
 layout_mode = 2
 
-[node name="LineButton" type="Button" parent="MainRow/PuzzleColumn/ModeBar"]
+[node name="ModeBar" type="HBoxContainer" parent="MainRow/PuzzleColumn/ModeFrame"]
 layout_mode = 2
-text = "LINE"
+theme_override_constants/separation = 8
 
-[node name="ChainButton" type="Button" parent="MainRow/PuzzleColumn/ModeBar"]
+[node name="LineButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
 layout_mode = 2
-text = "CHAIN"
+text = "LINE · 1"
 
-[node name="SkillButton" type="Button" parent="MainRow/PuzzleColumn/ModeBar"]
+[node name="ChainButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
+layout_mode = 2
+text = "CHAIN · 2"
+
+[node name="SkillButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
 process_mode = 2
 layout_mode = 2
-text = "SKILL"
+size_flags_horizontal = 3
+text = "TACTICAL SKILL · K"
 
 [node name="PuzzleHost" type="Control" parent="MainRow/PuzzleColumn"]
 layout_mode = 2
 size_flags_vertical = 3
 
 [node name="LineBoardView" type="ColorRect" parent="MainRow/PuzzleColumn/PuzzleHost"]
-script = ExtResource("2_line")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -59,9 +65,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.035, 0.055, 0.09, 1)
+script = ExtResource("2_line")
 
 [node name="ChainBoardView" type="ColorRect" parent="MainRow/PuzzleColumn/PuzzleHost"]
-script = ExtResource("3_chain")
 visible = false
 layout_mode = 1
 anchors_preset = 15
@@ -70,6 +76,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.06, 0.045, 0.09, 1)
+script = ExtResource("3_chain")
 
 [node name="CombatColumn" type="VBoxContainer" parent="MainRow"]
 layout_mode = 2
@@ -77,15 +84,22 @@ size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.4
 theme_override_constants/separation = 8
 
-[node name="ThreatPanel" type="VBoxContainer" parent="MainRow/CombatColumn"]
+[node name="ThreatFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 layout_mode = 2
 
-[node name="CurrentTelegraph" type="Label" parent="MainRow/CombatColumn/ThreatPanel"]
+[node name="ThreatPanel" type="VBoxContainer" parent="MainRow/CombatColumn/ThreatFrame"]
 layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="CurrentTelegraph" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.52, 1)
+theme_override_font_sizes/font_size = 18
 text = "CURRENT THREAT · ETA --"
 
-[node name="NextForecast" type="Label" parent="MainRow/CombatColumn/ThreatPanel"]
+[node name="NextForecast" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.71, 0.82, 1)
 text = "NEXT FORECAST · --"
 
 [node name="CombatStage" type="ColorRect" parent="MainRow/CombatColumn"]
@@ -104,74 +118,100 @@ mouse_filter = 2
 texture = ExtResource("4_stage_backdrop")
 expand_mode = 1
 stretch_mode = 6
-[node name="ResourceBar" type="Label" parent="MainRow/CombatColumn"]
+
+[node name="ResourceFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 layout_mode = 2
+
+[node name="ResourceBar" type="Label" parent="MainRow/CombatColumn/ResourceFrame"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.66, 0.84, 1, 1)
 text = "HP -- / --    ENERGY --    STOCK -- / 6"
 
-[node name="SkillPanel" type="VBoxContainer" parent="MainRow/CombatColumn"]
+[node name="SkillFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 process_mode = 2
 layout_mode = 2
 
-[node name="PauseState" type="Label" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="SkillPanel" type="VBoxContainer" parent="MainRow/CombatColumn/SkillFrame"]
+process_mode = 2
 layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PauseState" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.82, 0.62, 1, 1)
+theme_override_font_sizes/font_size = 18
 text = "TACTICAL PAUSE"
 
-[node name="RetryButton" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="RetryButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
 visible = false
 layout_mode = 2
-text = "RETRY"
+text = "RETRY ENCOUNTER"
 
-[node name="Attack" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="SkillCategories" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="Attack" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
 text = "ATK"
 
-[node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
 text = "DEF"
 
-[node name="Support" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Support" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
 text = "SUP"
 
-[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="TierGrid" type="GridContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+layout_mode = 2
+columns = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+
+[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
 process_mode = 2
 layout_mode = 2
 text = "T1"
 
-[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
 process_mode = 2
 layout_mode = 2
 text = "T2"
 
-[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
 process_mode = 2
 layout_mode = 2
 text = "T3"
 
-[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
 process_mode = 2
 layout_mode = 2
 text = "T4"
 
-[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
 process_mode = 2
 layout_mode = 2
 text = "T5"
 
-[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
 process_mode = 2
 layout_mode = 2
 text = "T6"
 
-[node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.71, 0.82, 1)
 text = "ATK / DEF / SUP → T1–T6 → DETAIL → USE"
 
-[node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillPanel"]
+[node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
 layout_mode = 2
-text = "USE"
+text = "USE SELECTED TECHNIQUE"

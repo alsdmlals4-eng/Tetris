@@ -7,11 +7,11 @@ const CHAIN := "CHAIN"
 
 @onready var _line_view: Control = $MainRow/PuzzleColumn/PuzzleHost/LineBoardView
 @onready var _chain_view: Control = $MainRow/PuzzleColumn/PuzzleHost/ChainBoardView
-@onready var _current_threat: Label = $MainRow/CombatColumn/ThreatPanel/CurrentTelegraph
-@onready var _next_forecast: Label = $MainRow/CombatColumn/ThreatPanel/NextForecast
-@onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceBar
-@onready var _pause_state: Label = $MainRow/CombatColumn/SkillPanel/PauseState
-@onready var _retry_button: Button = $MainRow/CombatColumn/SkillPanel/RetryButton
+@onready var _current_threat: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/CurrentTelegraph
+@onready var _next_forecast: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/NextForecast
+@onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceBar
+@onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
+@onready var _retry_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton
 
 var _runtime = null
 var _workspace_manager = null
@@ -20,15 +20,15 @@ var _selected_skill_lane := ""
 var _selected_chain_cell := Vector2i(-1, -1)
 
 func _ready() -> void:
-	$MainRow/PuzzleColumn/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
-	$MainRow/PuzzleColumn/ModeBar/ChainButton.pressed.connect(func(): _request_workspace(CHAIN))
-	$MainRow/PuzzleColumn/ModeBar/SkillButton.pressed.connect(_toggle_skill)
-	$MainRow/CombatColumn/SkillPanel/Attack.pressed.connect(func(): select_skill_category("ATTACK"))
-	$MainRow/CombatColumn/SkillPanel/Defense.pressed.connect(func(): select_skill_category("DEFENSE"))
-	$MainRow/CombatColumn/SkillPanel/Support.pressed.connect(func(): select_skill_category("SUPPORT"))
+	$MainRow/PuzzleColumn/ModeFrame/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
+	$MainRow/PuzzleColumn/ModeFrame/ModeBar/ChainButton.pressed.connect(func(): _request_workspace(CHAIN))
+	$MainRow/PuzzleColumn/ModeFrame/ModeBar/SkillButton.pressed.connect(_toggle_skill)
+	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Attack.pressed.connect(func(): select_skill_category("ATTACK"))
+	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Defense.pressed.connect(func(): select_skill_category("DEFENSE"))
+	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Support.pressed.connect(func(): select_skill_category("SUPPORT"))
 	for tier in range(1, 7):
-		get_node("MainRow/CombatColumn/SkillPanel/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
-	$MainRow/CombatColumn/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
+		get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
+	$MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
 	_retry_button.pressed.connect(_retry_encounter)
 	var bootstrap = load("res://src/production/session/production_battle_bootstrap.gd").new()
 	var result: Dictionary = bootstrap.build_runtime()
