@@ -74,7 +74,7 @@ func is_terminal() -> bool:
 	return _terminal
 
 func snapshot() -> Dictionary:
-	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0}
+	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "player_energy": _player.energy if _player != null else 0, "player_stock": _player.stock if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0}
 
 func _tick_active_puzzle(delta: float) -> void:
 	if _workspace_manager.active_workspace() == "LINE" and _workspace_manager.line_session != null:

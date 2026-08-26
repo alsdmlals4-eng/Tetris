@@ -32,8 +32,10 @@ func test_skill_panel_is_pause_capable_and_chain_board_starts_hidden() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	var skill_panel: Control = battle.get_node("MainRow/CombatColumn/SkillPanel")
+	var skill_button: Button = battle.get_node("MainRow/PuzzleColumn/ModeBar/SkillButton")
 	var chain_view: Control = battle.get_node("MainRow/PuzzleColumn/PuzzleHost/ChainBoardView")
 	assert_eq(skill_panel.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
+	assert_eq(skill_button.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
 	assert_false(chain_view.visible, "LINE is the initial active workspace; Chain should not share the puzzle surface")
 
 func test_mode_buttons_switch_the_single_visible_puzzle_surface() -> void:
