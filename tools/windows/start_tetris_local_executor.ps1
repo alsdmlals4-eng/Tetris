@@ -23,12 +23,12 @@ $CodexHome = 'C:\Users\user\.codex-tetris'
 $HttpPort = 8008
 $WsPort = 9508
 $ExpectedGodotVersion = '4.7.1'
-$ExpectedGodotAiVersion = '3.1.4'
+$ExpectedGodotAiVersion = '3.2.0'
 $GodotZipName = 'Godot_v4.7.1-stable_win64.exe.zip'
 $OfficialGodotZip = 'https://github.com/godotengine/godot-builds/releases/download/4.7.1-stable/Godot_v4.7.1-stable_win64.exe.zip'
 $ExpectedGodotZipSha256 = 'c7a289051eaefb460b0106b60e9cd5bee0ef55fd102dcb2bed1eb356cf3d90a1'
 $ExpectedGodotExeSha256 = '323f9c4cc5db674e98815cdd8e69da007d5efc779abedc8c0e42883b7fdea12a'
-$ExpectedGodotAiVendorSha256 = '59fd1325f7a361a98c382b9ba3ef47f9a7c635167b2a14479521b4102c3d7329'
+$ExpectedGodotAiVendorSha256 = 'df3856abf8ea3fd948dae66176f67cfe5e7cdd139a0815b253d640f405c0a3f6'
 $ManagedCodexMarker = '# TETRIS_DEDICATED_PROFILE_MANAGED'
 $ExpectedPidFileFragment = 'app_userdata/Tetris/godot_ai_server.pid'
 $BootstrapWaitSeconds = 120
@@ -300,7 +300,7 @@ function Assert-ProjectIdentity {
     if ($accepted -notcontains $observed) {
         Fail-Bootstrap "Wrong Tetris origin: $observed"
     }
-    Write-Step 'Exact Tetris repository and Godot AI 3.1.4 vendor verified.'
+    Write-Step 'Exact Tetris repository and Godot AI 3.2.0 vendor verified.'
 }
 
 function Find-LocalGodotExecutable {
