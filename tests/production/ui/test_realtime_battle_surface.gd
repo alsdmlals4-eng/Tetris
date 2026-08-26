@@ -71,6 +71,20 @@ func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
 	assert_true(battle.has_method("select_skill_category"))
 	assert_true(battle.has_method("select_skill_tier"))
 
+func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
+	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
+		return
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var backdrop = battle.get_node_or_null("MainRow/CombatColumn/CombatStage/StageBackdrop")
+	assert_not_null(backdrop, "CombatStage must own the named backdrop consumer")
+	if backdrop == null:
+		return
+	assert_true(backdrop is TextureRect, "the stage backdrop must consume a Texture2D directly")
+	assert_not_null(backdrop.texture, "the stage backdrop needs a deterministic placeholder or production texture")
+	assert_eq(backdrop.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_COVERED, "the wide stage slot must cover its full bounds")
+	assert_true(backdrop.mouse_filter == Control.MOUSE_FILTER_IGNORE, "the decorative backdrop must never intercept battle controls")
+
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
 	for action_name in [
 		"workspace_line", "workspace_chain", "open_skill", "pause_game",

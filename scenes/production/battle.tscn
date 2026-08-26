@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
 [ext_resource type="Script" path="res://src/production/ui/production_chain_board_view.gd" id="3_chain"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="4_stage_backdrop"]
 
 [node name="Battle" type="Control"]
 process_mode = 3
@@ -92,6 +93,17 @@ layout_mode = 2
 size_flags_vertical = 3
 color = Color(0.08, 0.03, 0.06, 1)
 
+[node name="StageBackdrop" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_stage_backdrop")
+expand_mode = 1
+stretch_mode = 6
 [node name="ResourceBar" type="Label" parent="MainRow/CombatColumn"]
 layout_mode = 2
 text = "HP -- / --    ENERGY --    STOCK -- / 6"
