@@ -46,6 +46,23 @@ func fill_stable_board(board: ChainBoard) -> bool:
 
     return board.find_match_groups().is_empty()
 
+func fill_playable_board(board: ChainBoard, max_attempts: int = 128) -> bool:
+    if board == null or _palette.is_empty() or max_attempts <= 0:
+        return false
+
+    var original_board: Array = board.snapshot()
+    var original_rng_state: int = get_rng_state()
+
+    for _attempt in range(max_attempts):
+        if not fill_stable_board(board):
+            continue
+        if board.find_match_groups().is_empty() and board.has_available_swap():
+            return true
+
+    board.restore(original_board)
+    restore_rng_state(original_rng_state)
+    return false
+
 func _would_create_starting_match(board: ChainBoard, position: Vector2i, symbol: String) -> bool:
     if position.x >= 2:
         if board.get_cell(position + Vector2i(-1, 0)) == symbol and board.get_cell(position + Vector2i(-2, 0)) == symbol:

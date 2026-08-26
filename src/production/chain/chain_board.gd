@@ -160,3 +160,22 @@ func try_swap_for_match(first: Vector2i, second: Vector2i) -> Dictionary:
         "reason": "MATCH",
         "groups": groups,
     }
+
+func has_available_swap() -> bool:
+    var original: Array = snapshot()
+    var directions: Array[Vector2i] = [Vector2i.RIGHT, Vector2i.DOWN]
+
+    for y in range(height):
+        for x in range(width):
+            var first := Vector2i(x, y)
+            for direction in directions:
+                var second: Vector2i = first + direction
+                if not _inside(second):
+                    continue
+                var result: Dictionary = try_swap_for_match(first, second)
+                restore(original)
+                if bool(result.get("accepted", false)):
+                    return true
+
+    restore(original)
+    return false
