@@ -104,7 +104,8 @@ func _draw_meta_rail(rail_rect: Rect2, meta: Dictionary) -> void:
 	if last_clear != "":
 		var clear_y := minf(rail_rect.end.y - 22.0, y + 22.0 + next_preview.size() * 27.0 + 12.0)
 		_draw_text(font, Vector2(x, clear_y), "LAST CLEAR", 10, Color("71869c"))
-		_draw_text(font, Vector2(x, clear_y + 14.0), last_clear, 10, Color("f7d67d"))
+		for index in range(last_clear.split(" · ").size()):
+			_draw_text(font, Vector2(x, clear_y + 14.0 + index * 12.0), String(last_clear.split(" · ")[index]), 10, Color("f7d67d"))
 
 func _draw_section(rail_rect: Rect2, y: float, title: String, active: bool) -> void:
 	var color := Color("8cc8ff") if active else Color("65788e")
