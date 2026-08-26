@@ -29,13 +29,13 @@ func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> v
 	var battle = scene.instantiate()
 	add_child_autofree(battle)
 	for node_path in [
-		"MainRow/PuzzleColumn/ModeBar",
+		"MainRow/PuzzleColumn/ModeFrame/ModeBar",
 		"MainRow/PuzzleColumn/PuzzleHost/LineBoardView",
 		"MainRow/PuzzleColumn/PuzzleHost/ChainBoardView",
-		"MainRow/CombatColumn/ThreatPanel",
+		"MainRow/CombatColumn/ThreatFrame/ThreatPanel",
 		"MainRow/CombatColumn/CombatStage",
-		"MainRow/CombatColumn/ResourceBar",
-		"MainRow/CombatColumn/SkillPanel",
+		"MainRow/CombatColumn/ResourceFrame/ResourceBar",
+		"MainRow/CombatColumn/SkillFrame/SkillPanel",
 	]:
 		assert_not_null(battle.get_node_or_null(node_path), "%s is required by the 60/40 battle composition" % node_path)
 	var puzzle_column: Control = battle.get_node_or_null("MainRow/PuzzleColumn")
@@ -44,13 +44,25 @@ func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> v
 	assert_almost_eq(combat_column.size_flags_stretch_ratio, 0.4, 0.01)
 	assert_eq(battle.find_children("*Turn*", "", true, false).size(), 0, "CORE-029 must not restore a turn rail")
 
+func test_battle_surface_uses_named_theme_and_semantic_visual_frames() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	assert_not_null(battle.theme, "the production battle surface must use its named visual theme")
+	for node_path in [
+		"MainRow/PuzzleColumn/ModeFrame",
+		"MainRow/CombatColumn/ThreatFrame",
+		"MainRow/CombatColumn/ResourceFrame",
+		"MainRow/CombatColumn/SkillFrame",
+	]:
+		assert_not_null(battle.get_node_or_null(node_path), "%s must provide a semantic visual hierarchy frame" % node_path)
+
 func test_skill_panel_is_pause_capable_and_chain_board_starts_hidden() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
 		return
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	var skill_panel: Control = battle.get_node("MainRow/CombatColumn/SkillPanel")
-	var skill_button: Button = battle.get_node("MainRow/PuzzleColumn/ModeBar/SkillButton")
+	var skill_panel: Control = battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel")
+	var skill_button: Button = battle.get_node("MainRow/PuzzleColumn/ModeFrame/ModeBar/SkillButton")
 	var chain_view: Control = battle.get_node("MainRow/PuzzleColumn/PuzzleHost/ChainBoardView")
 	assert_eq(skill_panel.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
 	assert_eq(skill_button.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
@@ -78,10 +90,23 @@ func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
 		return
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	for node_path in ["Attack", "Defense", "Support", "Tier1", "Tier2", "Tier3", "Tier4", "Tier5", "Tier6", "UseButton"]:
-		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillPanel/%s" % node_path))
+	for node_path in ["Attack", "Defense", "Support"]:
+		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/%s" % node_path))
+	for tier in range(1, 7):
+		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton"))
 	assert_true(battle.has_method("select_skill_category"))
 	assert_true(battle.has_method("select_skill_tier"))
+
+func test_skill_panel_groups_categories_and_tiers_for_the_compact_combat_column() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var skill_panel_path := "MainRow/CombatColumn/SkillFrame/SkillPanel"
+	assert_not_null(battle.get_node_or_null("%s/SkillCategories" % skill_panel_path))
+	var tier_grid = battle.get_node_or_null("%s/TierGrid" % skill_panel_path)
+	assert_not_null(tier_grid)
+	if tier_grid != null:
+		assert_eq(tier_grid.columns, 3, "six tiers must use a compact 3-column grid instead of pushing USE below the viewport")
 
 func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
@@ -126,19 +151,19 @@ func test_terminal_defeat_replaces_the_running_combat_label() -> void:
 	add_child_autofree(battle)
 	battle._runtime = TerminalRuntime.new({"terminal": true, "paused": false, "player_hp": 0, "player_energy": 0, "player_stock": 0, "enemy_hp": 100, "enemy_eta_seconds": 0.0})
 	battle._refresh_runtime_labels()
-	assert_eq(battle.get_node("MainRow/CombatColumn/SkillPanel/PauseState").text, "DEFEAT")
+	assert_eq(battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState").text, "DEFEAT")
 
 func test_terminal_victory_replaces_the_running_combat_label() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	battle._runtime = TerminalRuntime.new({"terminal": true, "paused": false, "player_hp": 100, "player_energy": 0, "player_stock": 0, "enemy_hp": 0, "enemy_eta_seconds": 0.0})
 	battle._refresh_runtime_labels()
-	assert_eq(battle.get_node("MainRow/CombatColumn/SkillPanel/PauseState").text, "VICTORY")
+	assert_eq(battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState").text, "VICTORY")
 
 func test_terminal_result_exposes_retry_only_after_combat_ends() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	var retry_button = battle.get_node_or_null("MainRow/CombatColumn/SkillPanel/RetryButton")
+	var retry_button = battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton")
 	assert_not_null(retry_button, "terminal result flow needs a visible retry control")
 	if retry_button == null:
 		return
