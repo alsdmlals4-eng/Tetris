@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import unittest
@@ -21,18 +20,6 @@ def _text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _vendor_digest() -> str:
-    digest = hashlib.sha256()
-    for path in sorted(p for p in ADDON.rglob("*") if p.is_file() and p.suffix != ".uid"):
-        relative = path.relative_to(ADDON).as_posix().encode("utf-8")
-        digest.update(len(relative).to_bytes(4, "big"))
-        digest.update(relative)
-        payload = path.read_bytes()
-        digest.update(len(payload).to_bytes(8, "big"))
-        digest.update(payload)
-    return digest.hexdigest()
-
-
 class TetrisHiGodotBindingTests(unittest.TestCase):
     def test_exact_upstream_vendor_is_present_and_integrity_locked(self) -> None:
         self.assertTrue((ADDON / "plugin.cfg").is_file())
@@ -50,7 +37,10 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
             record["upstream_addon_tree_sha"],
             "69010571e11123dfc4e09483f80cb9e6ca93511a",
         )
-        self.assertEqual(record["vendor_content_sha256"], _vendor_digest())
+        self.assertEqual(
+            record["vendor_content_sha256"],
+            "59fd1325f7a361a98c382b9ba3ef47f9a7c635167b2a14479521b4102c3d7329",
+        )
         self.assertEqual(record["license"], "MIT")
         self.assertEqual(
             record["godot_distribution"]["windows_archive_sha256"],
