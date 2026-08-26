@@ -66,7 +66,10 @@ func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
 	assert_true(battle.has_method("select_skill_tier"))
 
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
-	for action_name in ["workspace_line", "workspace_chain", "open_skill", "pause_game"]:
+	for action_name in [
+		"workspace_line", "workspace_chain", "open_skill", "pause_game",
+		"line_left", "line_right", "line_soft_drop", "line_rotate_cw", "line_rotate_ccw", "line_hold", "line_hard_drop",
+	]:
 		assert_true(InputMap.has_action(action_name), "%s must be a named project action" % action_name)
 		assert_gt(InputMap.action_get_events(action_name).size(), 0, "%s needs a default testable binding" % action_name)
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
