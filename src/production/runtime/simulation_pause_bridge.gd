@@ -50,7 +50,7 @@ func _pause_playing_simulation_audio(tree: SceneTree) -> void:
 
 func _resume_audio_paused_by_bridge() -> void:
     for audio_id in _audio_paused_by_bridge:
-        var node := ObjectDB.instance_from_id(audio_id)
+        var node: Object = instance_from_id(audio_id)
         if node is AudioStreamPlayer:
             node.stream_paused = false
     _audio_paused_by_bridge.clear()
