@@ -108,7 +108,7 @@ git commit -m "feat: add line directional control aliases"
 
 **Interfaces:**
 - Consumes: `ProductionLineSession.piece_cycle`, `held_piece_id`, `hold_used_for_active`, `peek_next(5)`, and `last_line_result`.
-- Produces: `func get_meta_snapshot() -> Dictionary` with `hold_piece_id`, `hold_available`, `next_preview`, and `last_clear`; `static func format_last_clear(result: LineClearResult) -> String`.
+- Produces: `func get_meta_snapshot() -> Dictionary` with `hold_piece_id`, `hold_available`, `next_preview`, and `last_clear`; `func format_last_clear(result: LineClearResult) -> String`.
 
 - [ ] **Step 1: Write failing mapping tests**
 
@@ -127,12 +127,13 @@ func test_meta_snapshot_uses_exact_hold_and_next_five_from_cycle() -> void:
     assert_eq(meta["next_preview"], expected)
 
 func test_last_clear_label_reports_existing_advanced_fields_without_reward_change() -> void:
+	var view := ProductionLineBoardView.new()
     var result := LineClearResult.new(true, "T", 1, "SINGLE", 10, 100)
     result.spin_kind = "T_SPIN"
     result.combo_index = 2
     result.back_to_back = true
     result.perfect_clear = true
-    assert_eq(ProductionLineBoardView.format_last_clear(result), "PERFECT CLEAR · T-SPIN SINGLE · B2B · COMBO ×3")
+    assert_eq(view.format_last_clear(result), "PERFECT CLEAR · T-SPIN SINGLE · B2B · COMBO ×3")
 ```
 
 - [ ] **Step 2: Run test to verify RED**
