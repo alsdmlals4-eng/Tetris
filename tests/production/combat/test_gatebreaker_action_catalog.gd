@@ -35,12 +35,12 @@ func test_seed_values_match_current_human_encounter_canon() -> void:
         return
 
     assert_eq(catalog.get_by_key("light_smash")["kind"], "DIRECT_HP_RATIO")
-    assert_eq(catalog.get_by_key("light_smash")["hp_ratio"], 0.12)
-    assert_eq(catalog.get_by_key("gatebreaker_slam")["hp_ratio"], 0.35)
+    assert_almost_eq(float(catalog.get_by_key("light_smash")["hp_ratio"]), 0.12, 0.001)
+    assert_almost_eq(float(catalog.get_by_key("gatebreaker_slam")["hp_ratio"]), 0.35, 0.001)
     assert_eq(catalog.get_by_key("rift_siphon")["amount"], 20)
     assert_eq(catalog.get_by_key("chain_fracture")["amount"], 2)
-    assert_eq(catalog.get_by_key("rift_repair")["hp_ratio"], 0.08)
-    assert_eq(catalog.get_by_key("siege_charge")["hp_ratio"], 0.55)
+    assert_almost_eq(float(catalog.get_by_key("rift_repair")["hp_ratio"]), 0.08, 0.001)
+    assert_almost_eq(float(catalog.get_by_key("siege_charge")["hp_ratio"]), 0.55, 0.001)
 
 func test_phase_permissions_follow_current_gatebreaker_phase_contract() -> void:
     var catalog = _catalog()
