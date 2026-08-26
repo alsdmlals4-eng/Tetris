@@ -37,6 +37,8 @@ func test_skill_panel_is_pause_capable_and_chain_board_starts_hidden() -> void:
 	assert_eq(skill_panel.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
 	assert_eq(skill_button.process_mode, Node.PROCESS_MODE_WHEN_PAUSED)
 	assert_false(chain_view.visible, "LINE is the initial active workspace; Chain should not share the puzzle surface")
+	assert_true(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/LineBoardView").has_method("bind_line_session"))
+	assert_true(chain_view.has_method("bind_chain_session"))
 
 func test_mode_buttons_switch_the_single_visible_puzzle_surface() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):

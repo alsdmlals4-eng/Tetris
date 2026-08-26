@@ -45,6 +45,8 @@ func _process(delta: float) -> void:
 	_runtime.tick(delta)
 	if _workspace_manager != null:
 		set_active_workspace(_workspace_manager.active_workspace())
+		_line_view.bind_line_session(_workspace_manager.line_session)
+		_chain_view.bind_chain_session(_workspace_manager.chain_session)
 	_refresh_runtime_labels()
 
 func set_active_workspace(workspace: String) -> bool:

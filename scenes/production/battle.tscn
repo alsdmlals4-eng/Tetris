@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
+[ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
+[ext_resource type="Script" path="res://src/production/ui/production_chain_board_view.gd" id="3_chain"]
 
 [node name="Battle" type="Control"]
 script = ExtResource("1_battle")
@@ -47,6 +49,7 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="LineBoardView" type="ColorRect" parent="MainRow/PuzzleColumn/PuzzleHost"]
+script = ExtResource("2_line")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,6 +59,7 @@ grow_vertical = 2
 color = Color(0.035, 0.055, 0.09, 1)
 
 [node name="ChainBoardView" type="ColorRect" parent="MainRow/PuzzleColumn/PuzzleHost"]
+script = ExtResource("3_chain")
 visible = false
 layout_mode = 1
 anchors_preset = 15
