@@ -1,26 +1,37 @@
 ; Engine configuration file.
-; Core Dual-Board Combat POC
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
 config_version=5
 
 [application]
+
 config/name="Tetris"
 run/main_scene="res://scenes/poc_battle.tscn"
+config/features=PackedStringArray("4.7")
 
-[editor_plugins]
-enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
+[autoload]
+
+_mcp_game_helper="*res://addons/godot_ai/runtime/game_helper.gd"
 
 [display]
+
 window/size/viewport_width=960
 window/size/viewport_height=540
 window/size/window_width_override=960
 window/size/window_height_override=540
 window/stretch/mode="canvas_items"
 
-[rendering]
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_ai/plugin.cfg")
 
 [input]
+
 mode_line={
 "deadzone": 0.5,
 "events": []
@@ -45,3 +56,8 @@ skill_heal={
 "deadzone": 0.5,
 "events": []
 }
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
