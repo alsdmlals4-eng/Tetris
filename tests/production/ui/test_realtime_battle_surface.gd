@@ -3,6 +3,12 @@ extends GutTest
 
 const BATTLE_SCENE_PATH := "res://scenes/production/battle.tscn"
 
+func _has_physical_key(action_name: String, expected_key: Key) -> bool:
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey and event.physical_keycode == expected_key:
+			return true
+	return false
+
 func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> void:
 	assert_true(ResourceLoader.exists(BATTLE_SCENE_PATH), "CORE-029 production battle scene must exist")
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
@@ -78,3 +84,13 @@ func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause
 	assert_true(battle.has_method("_handle_line_action"), "the battle bridge must route Line controls through the active session")
 	assert_true(battle.has_method("_handle_chain_click"), "the battle bridge must route Chain pointer selection through the active session")
 	assert_eq(battle.process_mode, Node.PROCESS_MODE_ALWAYS, "the input bridge must remain available while SceneTree is paused")
+
+func test_line_actions_keep_letter_bindings_and_add_directional_aliases() -> void:
+	assert_true(_has_physical_key("line_left", KEY_A))
+	assert_true(_has_physical_key("line_left", KEY_LEFT))
+	assert_true(_has_physical_key("line_right", KEY_D))
+	assert_true(_has_physical_key("line_right", KEY_RIGHT))
+	assert_true(_has_physical_key("line_soft_drop", KEY_S))
+	assert_true(_has_physical_key("line_soft_drop", KEY_DOWN))
+	assert_true(_has_physical_key("line_rotate_cw", KEY_X))
+	assert_true(_has_physical_key("line_rotate_cw", KEY_UP))
