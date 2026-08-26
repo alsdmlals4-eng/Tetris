@@ -65,11 +65,13 @@ Run: `./tools/windows/start_tetris_local_executor.ps1 -StaticSelfTest`
 
 Expected: both pass with the new local vendor digest.
 
-- [ ] **Step 5: Run the full CI-equivalent suite and commit.**
+- [x] **Step 5: Run the full CI-equivalent suite and commit.**
 
 Run: tooling 17/17, Windows static contract, Godot import/parse, strict GUT guard, complete GUT suite.
 
 Commit: `fix: reconcile Godot AI v3.2 vendor contract`
+
+Evidence: exact-head CI run `32983625843` passed the Python tooling suite (17 tests), Windows PowerShell 5.1 static contract, Godot 4.7.1 import/parse, strict GUT guard, and the complete GUT suite. Five scope, integrity, stale-reference, launcher-safety, and out-of-scope adversarial review loops found no new issue.
 
 ## Plan self-review
 
