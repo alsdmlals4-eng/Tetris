@@ -13,16 +13,27 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = REPO_ROOT / "docs/assets/reference/approved/APPROVED_REFERENCE_MANIFEST.json"
 CONTRACT_PATH = REPO_ROOT / "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
+BATTLE_SCENE_PATH = REPO_ROOT / "scenes/production/battle.tscn"
 EXPECTED_ASSETS = {
     "TETRIS-IMG-033": {
         "path": "assets/production/characters/vanguard_combat_cutout_v1.png",
         "source": "IMG-P0-002",
         "consumer": "MainRow/CombatColumn/CombatStage/VanguardReference",
+        "resource_id": "6_vanguard_cutout",
+        "node_name": "VanguardReference",
+        "anchor_left": "0.0",
+        "anchor_right": "0.6",
+        "z_index": "2",
     },
     "TETRIS-IMG-034": {
         "path": "assets/production/bosses/gatebreaker_combat_cutout_v1.png",
         "source": "IMG-P0-003",
         "consumer": "MainRow/CombatColumn/CombatStage/GatebreakerReference",
+        "resource_id": "7_gatebreaker_cutout",
+        "node_name": "GatebreakerReference",
+        "anchor_left": "0.34",
+        "anchor_right": "1.0",
+        "z_index": "1",
     },
 }
 
@@ -100,6 +111,13 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def scene_node_block(scene: str, node_name: str) -> str:
+    header = f'[node name="{node_name}" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]'
+    start = scene.index(header)
+    next_node = scene.find("\n[node ", start + len(header))
+    return scene[start:] if next_node == -1 else scene[start:next_node]
+
+
 class RuntimeCharacterAssetContractTests(unittest.TestCase):
     def test_approved_source_derivatives_are_present_and_transparent(self) -> None:
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -121,8 +139,14 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 self.assertEqual(asset["derived_from"], expected["source"])
                 self.assertEqual(asset["planned_consumer_node"], expected["consumer"])
                 self.assertEqual(asset["approval_status"], "SOURCE_ASSET_CANDIDATE")
-                self.assertEqual(asset["runtime_integration"], "NOT_IMPLEMENTED")
-                self.assertEqual(asset["runtime_verification"], "NOT_RUN")
+                self.assertEqual(asset["runtime_integration"], "IMPLEMENTED_ON_BRANCH")
+                self.assertEqual(asset["runtime_verification"], "SCENE_TREE_EQUIVALENT_RENDER_VERIFIED")
+                self.assertIn("aspect-centered stage slot", asset["geometry_contract"])
+                self.assertNotIn("bottom anchor", asset["geometry_contract"])
+                self.assertIn("StageBackdrop and both cutouts visible", asset["runtime_render_evidence"])
+                self.assertIn("non-retained local test result", asset["runtime_render_evidence"])
+                self.assertNotIn("direct branch render", asset["runtime_render_evidence"])
+                self.assertNotIn("screenshot SHA-256", asset["runtime_render_evidence"])
                 self.assertIn(asset_id, contract)
                 self.assertIn(expected["consumer"], contract)
 
@@ -140,6 +164,34 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     png_has_transparent_rgba_pixel(image_path),
                     "PNG must contain at least one actually transparent pixel",
                 )
+
+        self.assertIn("full-height, aspect-centered stage slot", contract)
+        self.assertNotIn("centered bottom", contract)
+
+    def test_cutouts_are_bound_inside_the_production_combat_stage(self) -> None:
+        scene = BATTLE_SCENE_PATH.read_text(encoding="utf-8")
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        assets_by_id = {asset["asset_id"]: asset for asset in manifest["assets"]}
+
+        self.assertIn('[node name="StageBackdrop" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]', scene)
+        for asset_id, expected in EXPECTED_ASSETS.items():
+            with self.subTest(asset_id=asset_id):
+                asset = assets_by_id[asset_id]
+                self.assertIn(
+                    f'[ext_resource type="Texture2D" path="res://{expected["path"]}" id="{expected["resource_id"]}"]',
+                    scene,
+                )
+                block = scene_node_block(scene, expected["node_name"])
+                self.assertIn(f'texture = ExtResource("{expected["resource_id"]}")', block)
+                self.assertIn("anchor_top = 0.0", block)
+                self.assertIn("anchor_bottom = 1.0", block)
+                self.assertIn(f'anchor_left = {expected["anchor_left"]}', block)
+                self.assertIn(f'anchor_right = {expected["anchor_right"]}', block)
+                self.assertIn(f'z_index = {expected["z_index"]}', block)
+                self.assertIn("mouse_filter = 2", block)
+                self.assertIn("expand_mode = 1", block)
+                self.assertIn("stretch_mode = 5", block)
+                self.assertEqual(asset["runtime_consumer"], expected["consumer"])
 
 
 if __name__ == "__main__":
