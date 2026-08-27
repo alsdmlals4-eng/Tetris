@@ -20,8 +20,9 @@ Their bodies remain preserved as provenance. They do not override this canon.
 Retained authorities:
 
 - `TETRIS-CORE-021` where it defines production Swap-Match Chain grammar;
+- `TETRIS-CHAIN-038` for the current orthogonal-swap, straight-3+ horizontal/vertical/diagonal match grammar and optional MP lock;
 - `TETRIS-SKILL-026` for Vanguard `ATK / DEF / SUP × Tier 1–6` Technique identity, tactical commitment, and non-turn-bound effect intent;
-- `TETRIS-BALANCE-027` for Line Energy / Chain Stock dual-resource opportunity cost and Tier commitment;
+- `TETRIS-BALANCE-027` for the Line MP / Chain Combo dual-resource opportunity cost and Tier commitment;
 - `TETRIS-VISUAL-028` for Hand-Drawn Mystic Fantasy + Clean Puzzle UI direction;
 - authored Telegraph / visible Next Forecast principles where compatible with continuous combat.
 
@@ -34,14 +35,14 @@ Combat runs continuously from encounter start until Victory or Defeat. The playe
 The player continuously decides where attention is most valuable:
 
 ```text
-LINE workspace  → build Energy
-CHAIN workspace → build Chain/Combo performance and Chain Stock/Tier access
+LINE workspace  → recover MP
+CHAIN workspace → earn Combo and Tier access
 SKILL workspace → FULL_TACTICAL_PAUSE, inspect and commit a Technique
 ```
 
 Core player question:
 
-> The enemy is acting in real time. Should I keep building Energy, switch to Chain for stronger Tier access, or freeze the fight now and spend what I have on the right Attack / Defense / Support Technique?
+> The enemy is acting in real time. Should I recover MP in LINE, switch to CHAIN to earn Combo or set up a later Combo with MP, or freeze the fight now and spend what I have on the right Attack / Defense / Support Technique?
 
 Pressure comes from real-time enemy threat plus the opportunity cost of attention, not from an ordered player-turn countdown.
 
@@ -119,16 +120,19 @@ Only one is visible and input-active at a time inside the large Puzzle Surface.
 ### LINE
 
 - production falling-block Line grammar;
-- Line Clear remains the primary Energy source;
+- Line Clear remains the primary MP source (current internal runtime field: `energy`);
 - board, active piece, Hold, Next/queue, ghost, gravity, lock-delay, randomizer, and related legal state persist when leaving LINE;
 - switching away does not rebuild the board, reroll the queue, respawn the active piece, or reset lock timing.
 
 ### CHAIN
 
-- production Swap-Match grammar: adjacent swap → match → clear → gravity/refill → cascade → stable board;
-- Chain/Combo performance remains the primary source of Chain Stock/Tier opportunity;
+- production grammar: orthogonally adjacent swap → straight horizontal/vertical/diagonal 3+ match → clear → gravity/refill → cascade → stable board;
+- a no-match restores the pre-swap board unless the player spends configured MP to keep that swap as a later Combo setup; that kept swap gives no immediate clear or Combo;
+- Chain performance remains the primary source of Combo/Tier opportunity (current internal runtime field: `stock` / historical `Chain Stock`);
 - board, refill/randomizer state, selection/history required for legal continuation, and pending deterministic resolution persist when leaving CHAIN;
 - switching away does not grant free progress or reroll state.
+
+`TETRIS-CHAIN-038` is current approved design, not a claim that its whole grammar is in the merged runtime: current code detects only horizontal/vertical runs and has no MP-lock path. Exact implementation alignment is `PARTIAL_HV_ONLY_NO_MP_LOCK` until its Phase 2 review and exact-head verification complete.
 
 Required return invariant:
 
@@ -160,7 +164,7 @@ At handoff:
 4. restore the incoming workspace exactly;
 5. transfer input authority.
 
-Switching must not reset gravity/lock delay, reroll Hold/Next/refill, duplicate rewards, cancel a committed Board Break, erase an unfavorable legal state, pause the enemy scheduler, or mint Energy/Stock.
+Switching must not reset gravity/lock delay, reroll Hold/Next/refill, duplicate rewards, cancel a committed Board Break, erase an unfavorable legal state, pause the enemy scheduler, or mint MP/Combo.
 
 ## 8. Enemy real-time scheduler and Telegraph
 
@@ -211,7 +215,7 @@ Selecting a row never spends resources. Only explicit USE commits.
 
 On successful USE:
 
-- configured Energy and Chain Stock are spent atomically;
+- configured MP and Combo costs are spent atomically (current internal fields: `energy` and `stock`);
 - Technique effects resolve through approved data-driven primitives;
 - Skill closes unless the Technique owns a bounded explicit resolution state;
 - combat resumes at the exact paused simulation time;
@@ -223,12 +227,12 @@ Cancel resumes combat with no spend.
 
 Retained structural identity:
 
-- **Energy** is primarily earned through LINE;
-- **Chain Stock** is primarily earned through CHAIN/Combo performance;
+- **MP** is primarily earned through LINE;
+- **Combo** is primarily earned through CHAIN performance;
 - the resources are not interchangeable;
-- Stock cap baseline is 6;
-- Tier N baseline spends N Stock;
-- Energy cost remains Technique-specific and data-driven;
+- Combo cap baseline is 6;
+- Tier N baseline spends N Combo;
+- MP cost remains Technique-specific and data-driven; a failed-swap MP lock is an additional optional CHAIN board-shaping spend with amount `TUNE_REQUIRED`;
 - Tier is a tactical commitment band, not a linear instruction to choose the highest available Tier.
 
 The opportunity-cost question is now real-time:
@@ -275,7 +279,7 @@ The right surface keeps at least:
 - enemy HP/phase;
 - Current Telegraph + ETA;
 - lower-priority Next Forecast when known;
-- player HP / Energy / Chain Stock;
+- player HP / MP / Combo;
 - mode controls `LINE / CHAIN / SKILL`.
 
 Skill-open state visibly communicates `TACTICAL PAUSE`, preserves the frozen puzzle as context, and prioritizes `ATK / DEF / SUP → T1–T6 → detail → USE` while keeping the motivating enemy threat readable.
@@ -293,13 +297,13 @@ Owns encounter lifecycle, global simulation state, Victory/Defeat, and subsystem
 Owns pause reasons/tokens and effective simulation pause state.
 
 ### `PuzzleWorkspaceManager`
-Owns active workspace id, persistent LINE/CHAIN references, switch request, safe-boundary handoff, and puzzle input authority. It does not own Energy/Stock formulas.
+Owns active workspace id, persistent LINE/CHAIN references, switch request, safe-boundary handoff, and puzzle input authority. It does not own MP/Combo formulas.
 
 ### `EnemyActionScheduler`
 Owns current authored action, ETA, explicit commit point, Next Forecast, pause-aware advancement, and deterministic resolution request.
 
 ### `ProductionResourceState`
-Owns HP/Energy/Stock and atomic gain/spend events.
+Owns HP/MP/Combo semantics and atomic gain/spend events; the current implementation field names remain `energy` / `stock` until Phase 2 migration.
 
 ### `TechniqueSession`
 Owns paused browse/selection/eligibility/detail/confirm state. It does not advance combat time.

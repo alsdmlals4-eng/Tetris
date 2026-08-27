@@ -18,9 +18,10 @@ Current authorities:
 
 1. `TETRIS-CORE-029` — continuous real-time combat, persistent LINE↔CHAIN switching, full Skill tactical pause, enemy ETA/commit scheduling, 60/40 battle composition.
 2. `TETRIS-SKILL-026` — retained ATK / DEF / SUP × Tier 1–6 Technique identity where not turn-bound.
-3. `TETRIS-BALANCE-027` — retained Line Energy / Chain Stock opportunity cost and Tier commitment.
-4. `TETRIS-VISUAL-028` — Hand-Drawn Mystic Fantasy + Clean Puzzle UI.
-5. `TETRIS-IMAGE-030` — production images require a real runtime consumer.
+3. `TETRIS-BALANCE-027` — retained Line MP / Chain Combo opportunity cost and Tier commitment.
+4. `TETRIS-CHAIN-038` — straight-3+ horizontal/vertical/diagonal CHAIN rule and optional MP lock.
+5. `TETRIS-VISUAL-028` — Hand-Drawn Mystic Fantasy + Clean Puzzle UI.
+6. `TETRIS-IMAGE-030` — production images require a real runtime consumer.
 
 `TETRIS-CORE-024` and `TETRIS-TIME-025` are historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
 
@@ -49,7 +50,7 @@ Minimum representative scope:
 - one large left Puzzle Surface switching between persistent LINE and CHAIN states;
 - persistent right Combat/Threat/Resource/Skill surface;
 - real-time enemy threat with current Telegraph + ETA and lower-priority Next Forecast where authored;
-- Line Energy and Chain Stock as non-interchangeable resources;
+- Line MP and Chain Combo as non-interchangeable resources, including optional MP lock after a failed CHAIN swap;
 - ATK / DEF / SUP → T1–T6 → detail → explicit USE;
 - Skill opens `TACTICAL_PAUSE_SKILL` and fully pauses simulation;
 - manual pause is distinct from Skill tactical pause;
@@ -79,7 +80,7 @@ During first exposure:
 - do not tell the player when to switch LINE/CHAIN;
 - do not explain that switching preserves both board states unless the shipped experience itself communicates it;
 - do not explain that Skill fully pauses simulation unless the shipped presentation communicates it;
-- do not explain optimal Energy/Stock/Tier use;
+- do not explain optimal MP/Combo/Tier or MP-lock use;
 - record every moderator intervention.
 
 ### OBSERVE_THEN_PROBE
@@ -90,7 +91,7 @@ After a decision or the first attempt, use non-leading questions such as:
 2. “왜 LINE이나 CHAIN으로 전환했나요?”
 3. “다시 돌아왔을 때 보드가 어떻게 될 거라고 예상했나요?”
 4. “Skill 화면을 열었을 때 전투 시간이 어떻게 된다고 생각했나요?”
-5. “Energy와 Chain Stock을 각각 어디서 얻는다고 생각했나요?”
+5. “MP와 Combo를 각각 어디서 얻는다고 생각했나요? 매치가 안 난 교환은 어떻게 될까요?”
 6. “왜 그 Technique와 Tier를 골랐나요?”
 7. “가장 늦게 찾았거나 헷갈린 정보는 무엇이었나요?”
 8. “가장 기억에 남는 순간은 무엇이었나요? 왜 그랬나요?”
@@ -150,13 +151,14 @@ Check:
 - they are willing to read Technique details rather than rushing because they think combat is still advancing;
 - cancel and USE resume the exact paused combat situation without hidden time progress.
 
-### E. LINE_ENERGY_VS_CHAIN_STOCK
+### E. LINE_MP_VS_CHAIN_COMBO_AND_MP_LOCK
 
 Check whether the dual-resource distinction is understood:
 
-- Line produces **Energy**;
-- Chain/Combo produces **Chain Stock** / Tier access;
-- Energy and Chain Stock are not interchangeable;
+- LINE produces **MP**;
+- CHAIN produces **Combo** / Tier access;
+- MP and Combo are not interchangeable;
+- a no-match CHAIN swap reverts by default; MP may instead preserve that swapped setup without immediate Combo;
 - the player can describe a real reason to stay in one workspace longer or switch to the other.
 
 ### F. TECHNIQUE_DECISION_QUALITY
@@ -180,7 +182,7 @@ Target hierarchy:
 1. large left Puzzle Surface remains the primary manipulation area;
 2. right Combat/Threat surface remains continuously readable;
 3. Current Telegraph + ETA is high priority;
-4. HP / Energy / Chain Stock remain findable;
+4. HP / MP / Combo remain findable;
 5. LINE / CHAIN / SKILL controls remain obvious;
 6. Skill-open state prioritizes ATK / DEF / SUP → T1–T6 → detail → USE while frozen puzzle/threat context remains visible;
 7. decorative character, boss, VFX, and background never obscure critical puzzle or threat information.
@@ -224,7 +226,7 @@ Each session receipt records when available:
 - first self-initiated LINE↔CHAIN switch and reason;
 - evidence that both workspace states persisted across return;
 - first Skill-open moment and whether the player understood full pause;
-- key Energy / Chain Stock states;
+- key MP / Combo states and any MP-lock decision;
 - selected lane / Tier / Technique / USE outcome;
 - wall-clock, active combat simulation time, tactical-pause duration if telemetry exists;
 - first major confusion and consequence;
@@ -240,7 +242,7 @@ Examples:
 - real-time enemy threat cannot be read while solving the puzzle;
 - switching appears to reset/reroll state or is repeatedly misunderstood as stage progression;
 - Skill appears paused visually but hidden enemy/puzzle/status time continues;
-- player cannot distinguish Energy and Chain Stock;
+- player cannot distinguish MP and Combo, or mistakes MP lock for an immediate Combo reward;
 - critical 60/40 UI information is obscured;
 - the build under test does not actually implement CORE-029;
 - a concept/reference image is presented instead of the runtime screen whose readability is being claimed.

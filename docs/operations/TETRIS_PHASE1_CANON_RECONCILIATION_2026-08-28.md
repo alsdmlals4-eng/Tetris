@@ -13,6 +13,7 @@ Mode: REVIEW → documentation reconciliation; no Godot implementation or asset 
 | CURRENT | Battle stage, Vanguard/Gatebreaker cutouts, and attack/telegraph VFX have named nodes in `scenes/production/battle.tscn` and pass consumer-contract tests. | Implemented consumer binding only. Human readability remains unverified. |
 | CURRENT | `FULL_GAME_SCREEN_SURFACE_INVENTORY.md` and `SCREEN_SURFACE_INVENTORY.json` | Battle and tactical Skill are runtime surfaces; title/setup/route/briefing/result/workshop/codex remain planned or mixed. |
 | CURRENT | `TETRIS-ONBOARDING-037`; `FIRST_SESSION_ONBOARDING_CONTRACT.md` | User approved the intended first-session structure: short verified world/threat briefing → explicit Deploy → CORE-029 battle with contextual tutorial. It is documented, not implemented or Human-validated. |
+| CURRENT | `TETRIS-CHAIN-038`; `CHAIN_COMBO_MP_CONTRACT.md` | User confirmed the cross-workspace resource loop: LINE recovers MP and CHAIN earns Combo. CHAIN matches straight horizontal/vertical/both-diagonal 3+ runs; a no-match normally restores, while optional MP may retain the swap for later setup without immediate Combo. It is documented, not implemented or Human-validated. |
 | HISTORICAL | `CORE_GAMEPLAY_GDD.md`, `POC_RULESET_V0_1.md`, core POC tests and PR #3 | Engineering foundation/provenance; not CORE-029 gameplay proof. |
 | SUPERSEDED | `TETRIS-CORE-024`, `TETRIS-TIME-025`; ordered phase rail, Shared Player Turn Timer, READY, timeout/PASS, Tempo | Preserve as provenance only; never use as current UX, visual, or runtime requirement. |
 | CONFLICT_FIXED | Notion Home, Visual Bible, and Flow Map contained present-tense references to unmerged PR #24, no image slots, Shared Turn Timer, and ordered-phase UX. | Current-truth correction blocks and targeted text corrections were written and read back in Notion. |
@@ -24,7 +25,7 @@ Mode: REVIEW → documentation reconciliation; no Godot implementation or asset 
 
 ```text
 Current Telegraph + ETA
-→ choose LINE (Energy) or CHAIN (Chain Stock / Tier access)
+→ choose LINE (MP recovery) or CHAIN (Combo / Tier access)
 → operate the active persistent workspace under live pressure
 → SKILL pauses the whole simulation
 → ATK / DEF / SUP → T1–T6 → detail → explicit USE
@@ -42,9 +43,9 @@ The differentiated hook is not “Tetris plus combat.” It is the tension betwe
 | Pointed fun | PARTIAL | Design intent is explicit; no first-exposure receipts demonstrate that it is felt. |
 | Core and session loop | CURRENT | Continuous combat loop above is canonical; full 6–10 minute first session framing is planned. |
 | Progression / meta loop | UNKNOWN_UNVERIFIED | Route, workshop, and long-term reward surfaces are planned; no implemented loop is current proof. |
-| Core systems | CURRENT | Persistent LINE/CHAIN, dual resources, telegraph/ETA, full tactical pause, explicit Technique commit. |
+| Core systems | CURRENT | Persistent LINE/CHAIN, LINE→MP / CHAIN→Combo dual resources, straight-3+ CHAIN grammar, telegraph/ETA, full tactical pause, explicit Technique commit. |
 | Supporting systems | PARTIAL | Forecast, terminal retry, stage/character/VFX consumers exist; onboarding, rewards, audio, and meta systems lack runtime/player proof. |
-| Meaningful choice and trade-off | CURRENT as design; PARTIAL as experience | Time/attention between Energy and Stock, present response vs future preparation, Tier commitment. Tuning/understanding are unverified. |
+| Meaningful choice and trade-off | CURRENT as design; PARTIAL as experience | Time/attention between MP and Combo, present response vs future preparation, optional MP board-shaping versus skill capacity, and Tier commitment. Tuning/understanding are unverified. |
 | Failure learning / reattempt motivation | PARTIAL | Terminal retry exists; clear causal learning and reward-loop evidence are not yet present. |
 | First impression / sales point | PARTIAL | Visual North Star and five planned screen references exist; no target-resolution player response or store validation. |
 | Protected strengths | CURRENT | One large readable puzzle surface; two non-substitutable resources; threat hierarchy; explicit-use pause; visual clarity over spectacle. |
@@ -52,9 +53,16 @@ The differentiated hook is not “Tetris plus combat.” It is the tension betwe
 
 ## User-approved first-session correction · Issue #54
 
-The prior state had planned title/briefing/manual surfaces but no accepted first-session learning order. The user approved a small world explanation and tutorial. `TETRIS-ONBOARDING-037` therefore fixes the intended entry as `TITLE → BATTLE_BRIEFING → CONTINUOUS_BATTLE → RESULT/RETRY` and restricts its world text to the verified Vanguard / Frontier Gate / Gatebreaker / immediate-threat relationship. The tutorial occurs in actual CORE-029 battle: Telegraph/ETA → LINE/Energy → CHAIN/Stock/Tier → full Skill pause and explicit USE → one unforced response.
+The prior state had planned title/briefing/manual surfaces but no accepted first-session learning order. The user approved a small world explanation and tutorial. `TETRIS-ONBOARDING-037` therefore fixes the intended entry as `TITLE → BATTLE_BRIEFING → CONTINUOUS_BATTLE → RESULT/RETRY` and restricts its world text to the verified Vanguard / Frontier Gate / Gatebreaker / immediate-threat relationship. The tutorial occurs in actual CORE-029 battle: Telegraph/ETA → LINE/MP → CHAIN/Combo/Tier → optional MP lock as later setup → full Skill pause and explicit USE → one unforced response.
 
 This correction does not add a scene, a runtime asset, a separate turn mode, or Human/player proof. It also does not impose the later full route/setup/meta path on the current direct-entry slice.
+
+## User correction · MP / Combo ownership and CHAIN grammar · Issue #56
+
+- **Incident:** the prior user-facing restatement incorrectly placed MP recovery in CHAIN. Current documentation still exposed implementation-oriented `Energy / Chain Stock` labels, while the approved player economy is `LINE → MP` and `CHAIN → Combo`. The merged CHAIN resolver also proves only horizontal/vertical matching and compulsory no-match restore, so treating the newly approved diagonal/MP-lock rule as runtime-complete would be false.
+- **Solution:** `TETRIS-CHAIN-038` creates one player-facing contract: orthogonal swaps, straight horizontal/vertical/both-diagonal 3+ runs, default restore for no-match, and optional MP lock that preserves the swapped setup without immediate Combo. The current `energy` / `stock` fields remain explicitly mapped rather than duplicated as a third resource. Canon, onboarding, screen inventory, Human evidence criteria, README, and `AGENTS.md` now point to the same owner.
+- **Lesson:** no Base promotion. The `MP → failed-swap lock → later Combo setup` economy and its labels are project-specific; the reusable lesson is already covered by Base's canonical freshness and evidence-ceiling contracts.
+- **Evidence ceiling:** `PARTIAL_HV_ONLY_NO_MP_LOCK`. Documentation and tooling contracts are verified; Phase 2 Godot implementation, target-resolution UI composition, balance tuning, and Human/player comprehension remain unimplemented or `NOT_RUN`.
 
 ### Incident / Solution / Lesson
 
@@ -83,7 +91,7 @@ This is a planning/understanding pack, not a list of runtime assets or a usabili
 | `TETRIS-SCREEN-002` Title / Main Menu | Planned reference `TETRIS-SREF-001`; future Title scene | Start a run; understand the game’s threat/puzzle identity at a glance. | Title, start affordance, Gate silhouette, visual North Star. | Final title copy, input, actual scene consumer. |
 | `TETRIS-SCREEN-005` Frontier Route | Planned reference `TETRIS-SREF-002`; future RouteMap | Choose a risk/reward route. | Current/reachable/locked/danger/reward shapes. | Actual map rules, rewards, progression meaning. |
 | `TETRIS-SCREEN-006` Battle Briefing | Planned reference `TETRIS-SREF-003`; future BattleBriefing | Read the upcoming Gatebreaker threat and launch with intent. | Enemy identity, first Telegraph, launch action. | Briefing data contract and no-surprise onboarding. |
-| `TETRIS-SCREEN-008` Continuous Battle | Runtime `scenes/production/battle.tscn` | Switch LINE/CHAIN, prepare the right resource, survive the live threat. | Current Telegraph + ETA, HP/Energy/Stock, active workspace, stage/character/VFX feedback. | Target-resolution capture, first-use comprehension, tuning. |
+| `TETRIS-SCREEN-008` Continuous Battle | Runtime `scenes/production/battle.tscn` | Switch LINE/CHAIN, prepare the right resource, survive the live threat. | Current Telegraph + ETA, HP/MP/Combo, active workspace, stage/character/VFX feedback. | Target-resolution capture, first-use comprehension, tuning. |
 | `TETRIS-SCREEN-009` Tactical Skill | Battle-owned runtime overlay | Pause, compare Technique cost/fit, explicitly commit or cancel. | Frozen threat/puzzle context, family/tier/detail/USE distinction. | Human comprehension of pause and affordability. |
 | `TETRIS-SCREEN-010` Result / Reward | Planned reference `TETRIS-SREF-004`; retry is runtime-existing | Understand outcome; retry or take a reward/next-route action. | Outcome, causal feedback, reward/next action regions. | Reward data, loss learning, persistence. |
 | `TETRIS-SCREEN-012` Codex / Manual | Planned reference `TETRIS-SREF-005` | Resolve a misunderstanding without burying the core loop in text. | Topics, diagrams, input legend. | Trigger/context/help content and scene consumer. |
@@ -91,7 +99,7 @@ This is a planning/understanding pack, not a list of runtime assets or a usabili
 ## Current Work-5 position and next order
 
 1. **Intent / core direction:** CURRENT and approved (CORE-029, VISUAL-028).
-2. **Representative runtime slice:** IMPLEMENTED with automated-contract evidence; player-evidence ceiling remains `NOT_RUN`.
+2. **Representative runtime slice:** IMPLEMENTED with automated-contract evidence, but `TETRIS-CHAIN-038` is only `PARTIAL_HV_ONLY_NO_MP_LOCK`; player-evidence ceiling remains `NOT_RUN`.
 3. **Human usability / player experience validation:** next required gate.
 4. **First-session and meta-loop completion:** first-session design is now user-approved and documented; its runtime implementation remains gated behind Phase 2 review and first-exposure evidence. Title/route/result/meta screens remain planning-only.
 5. **Production expansion / polish:** defer until the first-exposure findings choose the smallest corrective slice.

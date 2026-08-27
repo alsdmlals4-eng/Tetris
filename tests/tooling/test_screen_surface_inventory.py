@@ -57,6 +57,8 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
         self.assertEqual("COVERED_EXISTING_FOR_CORE_RUNTIME", rows["TETRIS-SCREEN-007"]["coverage_status"])
         self.assertIn("TETRIS-ONBOARDING-037", GUIDE.read_text(encoding="utf-8"))
+        self.assertIn("TETRIS-CHAIN-038", GUIDE.read_text(encoding="utf-8"))
+        self.assertIn("CHAIN_COMBO_MP_CONTRACT", rows["TETRIS-SCREEN-007"]["screen_design_reference"])
 
     def test_human_guide_requires_whole_screen_evidence_and_existing_asset_reuse(self) -> None:
         text = GUIDE.read_text(encoding="utf-8")

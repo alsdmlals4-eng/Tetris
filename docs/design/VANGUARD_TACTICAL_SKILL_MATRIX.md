@@ -11,7 +11,7 @@
 
 The Vanguard skill system must not collapse into `save Stock → press the highest Tier available`.
 
-The player reads the enemy Telegraph, checks HP / Energy / Chain Stock / next Forecast, then chooses the **cheapest or most specialized Technique that solves the current problem while preserving future options**.
+The player reads the enemy Telegraph, checks HP / MP / Combo / next Forecast, then chooses the **cheapest or most specialized Technique that solves the current problem while preserving future options**. Player-facing MP/Combo maps to current implementation fields `energy`/`stock` under `TETRIS-CHAIN-038`.
 
 Current lanes remain:
 
@@ -27,9 +27,9 @@ Retain from `TETRIS-SKILL-022`:
 
 - three persistent lanes: Attack / Defense / Support;
 - Tier range 1–6;
-- `Tier N` requires `Stock >= N` plus configured Energy;
-- using Tier N spends exactly N Chain Stock plus its Energy cost;
-- no core terminology change from `Energy` to Mana/Magic/Spell.
+- `Tier N` requires `Combo >= N` plus configured MP;
+- using Tier N spends exactly N Combo plus its MP cost;
+- player-facing terminology is `MP` / `Combo`; internal data fields remain `energy_cost` / `stock` until Phase 2 migration.
 
 Supersede these interpretations:
 
@@ -82,7 +82,7 @@ Every T2–T6 Technique must leave at least one encounter state where a lower Ti
 ### Forbidden dominance patterns
 
 - T6 bundles more damage + more defense + more healing + more control than lower tiers.
-- Energy efficiency monotonically improves with Tier.
+- MP efficiency monotonically improves with Tier.
 - a higher Tier strictly contains the lower Tier effect for a modest cost increase.
 - a status/debuff is only a decorative extra on a numerically dominant high Tier.
 
@@ -115,7 +115,7 @@ The matrix FAILS if telemetry shows:
 | T2 | `Fortify` / 견고한 자세 | Mitigation / Self Buff | Moderate mitigation + small carry-over protection for the next direct hit. Strong when current hit is light and next Forecast is heavy. |
 | T3 | `Counter Stance` / 역습 준비 | Mitigation / Counter | Converts a bounded portion of actually prevented damage into counter damage. More valuable against meaningful direct hits. |
 | T4 | `Bulwark` / 철벽 수호 | Peak Mitigation | Strong immediate protection when survival now matters more than setup/counter value. |
-| T5 | `Rift Ward` / 균열 방벽 | Current Resource Ward | Reduces the **current telegraphed** Energy/Stock-loss effect such as Rift Siphon or Chain Fracture during this turn's Enemy Resolve. It is immediate defense and never carries into a future Forecast. |
+| T5 | `Rift Ward` / 균열 방벽 | Current Resource Ward | Reduces the **current telegraphed** MP/Combo-loss effect such as Rift Siphon or Chain Fracture during this turn's Enemy Resolve. It is immediate defense and never carries into a future Forecast. |
 | T6 | `Last Bastion` / 불굴의 성채 | Lethal Safety | Emergency lethal-direct-hit safety / HP-floor behavior with bounded mitigation. Intentionally wasteful when the hit is not lethal. |
 
 ### SUP Lane
@@ -127,7 +127,7 @@ The matrix FAILS if telemetry shows:
 | T3 | `Haste` / 전투 가속 | Time Utility | Adds configured seconds to the next eligible Shared Player Turn Budget under TIME-025. Never mutates current visible timer or Tempo Reference. |
 | T4 | `Mark Weakness` / 약점 지시 | Enemy Debuff / Setup | Marks the enemy so a later ATK gains bounded offensive value. No immediate damage. |
 | T5 | `Rift Seal` / 균열 봉쇄 | Forecast Intent Disruption | When the **visible Next Forecast** is a resource-loss or repair Rift utility action, bind a Seal to that exact future authored action and reduce it when it later resolves. It never reduces the current Telegraph. |
-| T6 | `Battle Trance` / 전투 몰입 | Expensive Self Setup | No immediate heal/defense. Bounded next-turn Line Energy conversion + Chain reward conversion boost. Bad choice under immediate lethal pressure. |
+| T6 | `Battle Trance` / 전투 몰입 | Expensive Self Setup | No immediate heal/defense. Bounded next-turn Line MP conversion + Chain reward conversion boost. Bad choice under immediate lethal pressure. |
 
 Names are first-slice working names. Exact copy may change without changing Technique semantics.
 
@@ -189,7 +189,7 @@ Candidate skill statuses are bounded records with explicit ownership and expiry:
 - `FORTIFY` — max 1; consumed by next qualifying direct hit or expires.
 - `RALLY` — max 1; consumed by next legal player Action.
 - `WEAKEN` — max 1; created only when ATK T5 has a **visible direct-hit Next Forecast** and bound to that exact forecast action id; consumed/released after that authored action resolves. It does not apply to the current Telegraph or migrate to unknown later actions.
-- `RIFT_WARD` — max 1; bound to the **current telegraphed qualifying Energy/Stock loss** and consumed during this turn's Enemy Resolve. It never carries to a later Forecast.
+- `RIFT_WARD` — max 1; bound to the **current telegraphed qualifying MP/Combo loss** and consumed during this turn's Enemy Resolve. It never carries to a later Forecast.
 - `RIFT_SEAL` — max 1; created only when SUP T5 has a **visible qualifying resource-loss/repair Next Forecast** and bound to that exact forecast action id; consumed/released when that future authored action resolves. It does not apply to the current Telegraph.
 - `BATTLE_TRANCE` — max 1; consumed across the next eligible Line/Chain preparation window.
 
@@ -209,7 +209,7 @@ Tempo must **not** scale:
 
 - Haste seconds;
 - status duration;
-- Stock/Energy cost;
+- Combo/MP cost;
 - number of ward charges;
 - AoE target count;
 - Last Bastion HP-floor behavior;
@@ -217,11 +217,11 @@ Tempo must **not** scale:
 
 This prevents loops such as `finish fast → stronger Haste → more time → easier future Tempo`.
 
-## 9. Energy/Stock budget rule
+## 9. MP/Combo budget rule
 
-Stock cost remains exactly equal to Tier: `1,2,3,4,5,6`.
+Combo cost remains exactly equal to Tier: `1,2,3,4,5,6`.
 
-Exact Energy values remain `TUNE_REQUIRED` until production simulation/human evidence. Initial comparison may use T1-relative Energy factors around:
+Exact MP values remain `TUNE_REQUIRED` until production simulation/human evidence. Initial comparison may use T1-relative MP factors around:
 
 ```text
 T1 1.00
@@ -234,7 +234,7 @@ T6 2.55
 
 This is a **comparison seed, not final canon**.
 
-Utility Techniques may trade lower immediate output for their control/setup effect and may deviate within a bounded band. Higher Tier must not automatically improve Energy efficiency.
+Utility Techniques may trade lower immediate output for their control/setup effect and may deviate within a bounded band. Higher Tier must not automatically improve MP efficiency.
 
 ## 10. Gatebreaker response diversity
 
@@ -242,7 +242,7 @@ Utility Techniques may trade lower immediate output for their control/setup effe
 |---|---|---|
 | Light Smash | DEF T1, DEF T2, ATK T1 | Do not overspend on a light threat. Forecast may justify Fortify. |
 | Gatebreaker Slam | DEF T3, DEF T4, lethal ATK | Counter value vs reliable survival vs kill. |
-| Current Rift Siphon | DEF T5, spend Energy now | Protect the current Energy loss or pre-spend the threatened resource. SUP T5 does not answer the current Siphon. |
+| Current Rift Siphon | DEF T5, spend MP now | Protect the current MP loss or pre-spend the threatened resource. SUP T5 does not answer the current Siphon. |
 | Current Chain Fracture | DEF T5, spend high Stock now | Protect the current Stock loss or convert Stock before loss. SUP T5 does not answer the current Fracture. |
 | Rift Repair | ATK T3 setup, ATK T4 burst, SUP T4 setup | Immediate damage race vs future offensive setup. |
 | Siege Charge | DEF T4, DEF T6, conditional ATK T6 lethal | Peak mitigation vs lethal safety vs kill-before-resolve. |
@@ -269,8 +269,8 @@ Do **not** add a mob/add roster merely to prove AoE.
 ## 12. UI / onboarding contract
 
 - Keep one 3×6 lane grid; no Technique submenu in the first Slice.
-- Each cell shows lane, Tier, Technique name/icon, Stock gate, Energy gate, and a short tactical tag.
-- Readiness must still distinguish `Stock insufficient`, `Energy insufficient`, and `Ready`.
+- Each cell shows lane, Tier, Technique name/icon, Combo gate, MP gate, and a short tactical tag.
+- Readiness must still distinguish `Combo insufficient`, `MP insufficient`, and `Ready`.
 - Meaning is not color-only.
 - First tutorial turn naturally exposes T1 because Stock is low; it does not modal-explain all 18 Techniques.
 - Higher Tier cells become learnable as Stock grows and Gatebreaker creates relevant Intent situations.
@@ -283,7 +283,7 @@ Record at minimum:
 
 - selected lane + Tier + Technique id;
 - available highest Tier at decision time;
-- HP/Energy/Stock before selection;
+- HP/MP/Combo before selection;
 - enemy current Intent + next Forecast category/action id;
 - forecast action id bound by WEAKEN/RIFT_SEAL when applicable;
 - overkill amount;
@@ -352,7 +352,7 @@ Current claims forbidden:
 - lower-tier viability proven;
 - forecast-control readability proven;
 - AoE multi-target balance proven;
-- Energy costs or effect magnitudes final;
+- MP costs or effect magnitudes final;
 - Human playtest PASS.
 
 Runtime BUILD remains blocked until the user separately declares `기획 완료 / BUILD 진행` or equivalent.

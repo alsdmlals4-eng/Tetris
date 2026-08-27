@@ -8,22 +8,24 @@
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
 
+> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend configured MP to stay in place for later Combo setup, with no immediate Combo reward. Exact lock cost remains `TUNE_REQUIRED`.
+
 ## 1. Product thesis
 
 The combat economy must not collapse into either:
 
-- `hoard Chain Stock until Tier 6, then press the biggest button`; or
+- `hoard Combo until Tier 6, then press the biggest button`; or
 - `spam the cheapest Tier every turn because saving has no meaningful payoff`.
 
 The intended question after Line and Chain settle is:
 
-> Given the enemy Telegraph, my HP, Energy, Chain Stock, current setup, and the next Forecast, how much should I spend **now** and how much option value should I preserve for the next turn?
+> Given the enemy Telegraph, my HP, MP, Combo, current setup, and the next Forecast, how much should I spend **now** and how much option value should I preserve for the next turn?
 
-Energy and Chain Stock remain deliberately non-interchangeable so both puzzle phases keep a distinct combat purpose.
+MP and Combo remain deliberately non-interchangeable so both puzzle phases keep a distinct combat purpose.
 
 ## 2. Alternatives considered
 
-### A. Merge Energy and Stock into one resource
+### A. Merge MP and Combo into one resource
 
 - Strength: simplest economy and UI.
 - Failure: Line and Chain become alternate ways to buy the same result; one puzzle can become strategically redundant.
@@ -31,9 +33,9 @@ Energy and Chain Stock remain deliberately non-interchangeable so both puzzle ph
 
 ### B. Dual-resource opportunity cost — ADOPT
 
-- Line creates **Energy**, the flexible/repeatable throughput resource.
-- Chain creates **Chain Stock**, the persistent Tier-access / commitment resource.
-- Tier N spends exactly N Stock; Energy supplies a separate technique-specific soft price.
+- Line creates **MP**, the flexible/repeatable throughput resource.
+- Chain creates **Combo**, the persistent Tier-access / commitment resource.
+- Tier N spends exactly N Combo; MP supplies a separate technique-specific soft price.
 - Lower tiers tend toward efficiency/light commitment; higher tiers provide peak, specialization, or action compression.
 - Decision: **ADOPT**.
 
@@ -45,24 +47,24 @@ Energy and Chain Stock remain deliberately non-interchangeable so both puzzle ph
 
 ## 3. Resource ownership
 
-### Energy
+### MP
 
 - Primary source: production Line.
 - Persists across turns until spent or explicitly modified.
-- Represents flexible ability throughput and technique-specific utility price.
-- No passive `+1 Energy/sec` production recovery in the first production baseline.
-- Lower tiers generally retain strong Energy efficiency, but utility Techniques may price differently from same-Tier raw damage.
+- Represents flexible ability throughput, technique-specific utility price, and the optional failed-swap CHAIN lock price.
+- No passive `+1 MP/sec` production recovery in the first production baseline.
+- Lower tiers generally retain strong MP efficiency, but utility Techniques may price differently from same-Tier raw damage.
 
-### Chain Stock
+### Combo
 
 - Primary source: production Swap-Match Chain.
 - Persists across turns until spent or explicitly modified.
 - Production cap: **6**, aligned with current Tier range.
-- Tier N action spends exactly N Stock.
+- Tier N action spends exactly N Combo.
 - Tier 6 therefore consumes the entire full-cap commitment budget from a fresh cap state and must create a real next-turn opportunity cost.
-- Stock gain at cap may be wasted; indefinite hoarding therefore has a visible lost-opportunity edge instead of being free.
+- Combo gain at cap may be wasted; indefinite hoarding therefore has a visible lost-opportunity edge instead of being free.
 
-Neither resource may silently substitute for the other in first-Slice Skill legality.
+Neither resource may silently substitute for the other in first-Slice Skill legality. The MP lock is a deliberate cross-workspace spend, not a Combo grant or a substitute for a Tier cost.
 
 ## 4. Tier exposure over a first run
 
@@ -75,12 +77,12 @@ Use an authored production board seed that makes at least one meaningful Line re
 - The player earns the resources through the real puzzles.
 - The tutorial does not simply gift T1 resources behind the scenes.
 - T1 should become a natural first legal action under competent basic completion.
-- Higher tiers remain visibly gated by Stock/Energy rather than being modal-hidden.
+- Higher tiers remain visibly gated by Combo/MP rather than being modal-hidden.
 
 ### Early fight
 
 - T1–T2 are the most common visible choices.
-- Light pressure teaches efficient low commitment and future Stock preservation.
+- Light pressure teaches efficient low commitment and future Combo preservation.
 
 ### Mid fight
 
@@ -95,37 +97,37 @@ Use an authored production board seed that makes at least one meaningful Line re
 
 ## 5. Cost curve boundary
 
-Stock grammar is fixed structurally:
+Combo grammar is fixed structurally:
 
 ```text
 Tier:       1  2  3  4  5  6
-Stock cost: 1  2  3  4  5  6
+Combo cost: 1  2  3  4  5  6
 ```
 
-Energy values are **TUNE_REQUIRED**. A first comparison seed may use T1-relative factors around:
+MP values are **TUNE_REQUIRED**. A first comparison seed may use T1-relative factors around:
 
 ```text
 1.00 / 1.25 / 1.55 / 1.90 / 2.20 / 2.55
 ```
 
-This ratio is not final canon. It exists to initialize impossible-state and dominance simulation once production Line Energy gain data exists.
+This ratio is not final canon. It exists to initialize impossible-state and dominance simulation once production Line MP gain data exists.
 
 Rules:
 
-- higher Tier must not automatically improve Energy efficiency;
+- higher Tier must not automatically improve MP efficiency;
 - a utility-heavy Technique may exchange immediate output for control/setup value;
 - a high-Tier specialized action may be deliberately inefficient outside its condition;
-- exact Energy gain/cost and effect magnitude remain runtime/human-evidence tuning.
+- exact MP gain/cost, failed-swap lock cost, and effect magnitude remain runtime/human-evidence tuning.
 
 ## 6. Anti-hoarding / anti-spam pressure
 
 Five independent mechanisms prevent one-direction play:
 
-1. **Stock cap 6:** saving forever can waste future Chain gain.
+1. **Combo cap 6:** saving forever can waste future CHAIN gain.
 2. **Rift Siphon / Chain Fracture:** the current threatened resource can be protected with DEF T5 `Rift Ward` or pre-spent; a visible **future** Rift utility Forecast can instead be prepared against with SUP T5 `Rift Seal`.
 3. **Rift Repair / heavy/lethal pressure:** some turns create a reason to commit resources now.
 4. **Setup Techniques:** low immediate output can improve future opportunity, creating the opposite choice from raw spend-now burst.
-5. **Tempo non-currency rule:** fast completion does not directly generate Energy or Stock, preventing time skill from becoming a compounding resource faucet.
+5. **Tempo non-currency rule:** fast completion does not directly generate MP or Combo, preventing time skill from becoming a compounding resource faucet.
 
 ## 7. Curated scenario contract
 
@@ -134,10 +136,10 @@ Automated scenario tests use curated states to detect obvious strict dominance o
 | Scenario | Rational candidate set | Purpose |
 |---|---|---|
 | Light hit + scarce resources | ATK T1 / DEF T1 | low-tier efficiency survives |
-| Light hit + heavy next Forecast | DEF T2 Fortify / ATK T5 Suppressive Break if affordable / low-tier response + preserve Stock | future direct-hit value matters without making current defense mandatory |
+| Light hit + heavy next Forecast | DEF T2 Fortify / ATK T5 Suppressive Break if affordable / low-tier response + preserve Combo | future direct-hit value matters without making current defense mandatory |
 | Heavy direct hit | DEF T3 Counter / DEF T4 Bulwark / lethal ATK | counter vs safety vs race |
-| Current Energy/Stock loss Telegraph | DEF T5 Rift Ward / pre-spend threatened resource | current protection vs consume-before-loss; SUP T5 does not answer the current effect |
-| Current Light + visible next resource-loss/repair Forecast | SUP T5 Rift Seal / low-tier current response + preserve Stock | proactive control of a visible future Rift utility action |
+| Current MP/Combo loss Telegraph | DEF T5 Rift Ward / pre-spend threatened resource | current protection vs consume-before-loss; SUP T5 does not answer the current effect |
+| Current Light + visible next resource-loss/repair Forecast | SUP T5 Rift Seal / low-tier current response + preserve Combo | proactive control of a visible future Rift utility action |
 | Enemy Repair as current Telegraph | ATK T3 Breach / ATK T4 burst / SUP T4 setup | immediate damage vs future offense; Rift Seal does not retroactively stop current Repair |
 | Lethal Siege Charge | DEF T4 / DEF T6 / conditional ATK T6 kill | high-Tier moment without single answer |
 | Low-pressure setup window | ATK T3 / SUP T2 / SUP T3 / SUP T6 / preserve | setup may beat raw Tier |
@@ -161,7 +163,7 @@ Gatebreaker authored intent ladder must expose multiple economic questions over 
 - **Light:** spend little or invest in setup / visible next-Forecast control.
 - **Heavy:** spend for mitigation/counter or race lethal.
 - **Current resource loss:** protect with Rift Ward or pre-spend.
-- **Visible future resource-loss/repair Forecast:** spend now for Rift Seal setup or preserve Stock for another answer.
+- **Visible future resource-loss/repair Forecast:** spend now for Rift Seal setup or preserve Combo for another answer.
 - **Current Repair:** use immediate damage or future offense setup.
 - **Siege/lethal:** peak survival or kill-before-resolve.
 - **Low-pressure window:** invest in next-turn preparation.
@@ -171,7 +173,7 @@ Enemy behavior remains authored. It never reads the chosen player Technique and 
 ## 9. First-run teaching contract
 
 - Do not explain all 18 Techniques in a catalog.
-- Stock availability naturally exposes the lower part of the grid first.
+- Combo availability naturally exposes the lower part of the grid first.
 - When a new role becomes materially relevant, short tags/highlights may explain `효율 / 범위 / 설치 / 반격 / 자원보호 / 다음행동 / 피니셔`.
 - Forecast-targeted controls visibly identify which Next Forecast they affect; without a qualifying visible Forecast their control component is clearly non-applicable.
 - Tutorial hints do not secretly pause the Shared Player Turn Budget; only System Pause does.
@@ -182,9 +184,9 @@ Enemy behavior remains authored. It never reads the chosen player Technique and 
 
 Record per turn/action:
 
-- Energy at turn start / after Line / after Chain / before Action / after Action;
-- Stock at turn start / after Chain / before Action / after Action;
-- Stock gain lost at cap;
+- MP at encounter start / after LINE / before and after an MP lock / before and after Technique use;
+- Combo at encounter start / after CHAIN resolution / before and after Technique use;
+- Combo gain lost at cap;
 - highest available Tier;
 - selected lane/Tier/Technique;
 - whether the highest available Tier was selected;
@@ -203,9 +205,9 @@ Derived review metrics:
 
 - highest-available-Tier pick rate;
 - lower-tier unused rate;
-- Stock carried distribution;
-- Stock-cap waste;
-- Energy surplus/shortage distribution;
+- Combo carried distribution;
+- Combo-cap waste;
+- MP surplus/shortage distribution;
 - Intent→response diversity;
 - conditional T6 use when condition is false;
 - future-control pick rate when no qualifying visible Forecast exists.
@@ -216,7 +218,7 @@ Derived review metrics:
 
 - a resource state has zero legal actions;
 - a cost curve creates obvious strict dominance under the curated scenario utility assumptions;
-- Stock cap overflow or persistent resource starvation/surplus occurs under seeded runs;
+- Combo cap overflow or persistent resource starvation/surplus occurs under seeded runs;
 - deterministic seeds reproduce availability and spending outcomes;
 - forecast-bound statuses stay attached to the exact visible action id and never migrate to hidden future actions.
 
@@ -226,7 +228,7 @@ Derived review metrics:
 - the player understands why a lower Tier is good;
 - Telegraph/readability is sufficient;
 - future-control target presentation is visually understandable;
-- the final Energy/Stock/effect/Turn-time numbers are balanced.
+- the final MP/Combo/effect/Turn-time numbers are balanced.
 
 Human evidence remains mandatory for those claims.
 
@@ -235,12 +237,13 @@ Human evidence remains mandatory for those claims.
 Minimum A/B/C production runs ask:
 
 1. Can the player explain **why they did not choose the highest available Tier** using Intent/resources/future plan?
-2. Does Line matter because Energy matters, and Chain matter because Stock/Tier option value matters?
-3. Does the player always hoard to 6 or always dump Stock immediately?
-4. Do low tiers remain practical beyond onboarding through efficiency, finishing, or preservation?
-5. Do Siphon/Fracture create `spend now vs protect` decisions rather than pure frustration?
-6. Can the player distinguish `current Rift Ward` from `future Rift Seal / Suppressive Break` without reading a long tooltip?
-7. Is T6 memorable as a signature commitment rather than routine housekeeping?
+2. Does LINE matter because MP matters, and CHAIN matter because Combo/Tier option value matters?
+3. Does the player always hoard to 6 or always dump Combo immediately?
+4. Can the player explain that an MP lock preserves a failed CHAIN setup without falsely awarding Combo?
+5. Do low tiers remain practical beyond onboarding through efficiency, finishing, or preservation?
+6. Do Siphon/Fracture create `spend now vs protect` decisions rather than pure frustration?
+7. Can the player distinguish `current Rift Ward` from `future Rift Seal / Suppressive Break` without reading a long tooltip?
+8. Is T6 memorable as a signature commitment rather than routine housekeeping?
 
 ## 13. Benchmark absorption
 
@@ -267,7 +270,7 @@ Puzzle performance directly increases combat output, while longer commitment bri
 
 1. **Tier-6 hoarding:** corrected with cap pressure, resource-loss threats, now-vs-later Intents, and specialized rather than universal T6.
 2. **Low-tier spam:** corrected by Heavy/Repair/Siege and setup/control opportunities where mid/high Tier has unique purpose.
-3. **One puzzle becomes optional:** prevented by keeping Energy and Stock non-substitutable gates.
+3. **One puzzle becomes optional:** prevented by keeping MP and Combo non-substitutable gates while allowing only the explicit MP lock board-shaping spend.
 4. **Lane/control overlap:** final audit found current Rift Ward and future Rift Seal could read as the same response. Corrected by binding DEF T5 to the current Telegraph and ATK/SUP future control to exact visible Next Forecast action ids.
 5. **False precision / scope:** only structural costs, relative seed, scenarios and evidence requirements are locked; exact values remain TUNE_REQUIRED and no extra mob/currency/cooldown system is added.
 
@@ -285,7 +288,7 @@ Current claims allowed:
 
 Current claims forbidden:
 
-- final Energy/Stock economy balanced;
+- final MP/Combo economy balanced;
 - Tier pick distribution proven;
 - T6 frequency validated;
 - future-control readability proven;

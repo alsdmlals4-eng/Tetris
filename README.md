@@ -22,10 +22,11 @@ BATTLE_START
 - 화면 왼쪽 약 60%는 **하나의 큰 Puzzle Surface**, 오른쪽 약 40%는 persistent Combat/Threat/Resource/Skill surface입니다.
 - 플레이어는 `LINE ↔ CHAIN`을 자유롭게 전환합니다.
 - LINE과 CHAIN은 서로 독립적인 persistent workspace입니다. 전환해도 보드/queue/randomizer/진행상태를 새로 만들지 않습니다.
-- LINE은 **Energy** 준비를 담당합니다.
-- CHAIN은 production **Swap-Match**이며 Chain/Combo performance를 통해 **Chain Stock / Tier opportunity**를 준비합니다.
-- Energy와 Chain Stock은 서로 대체되지 않습니다.
-- Chain Stock cap baseline은 6이고 Tier N은 Stock N을 소비하는 구조를 유지합니다.
+- LINE은 **MP** 회복을 담당합니다. 현재 구현 내부 필드명은 `energy`입니다.
+- CHAIN은 상하좌우 인접 교환 뒤 가로·세로·양쪽 대각선의 직선 3칸 이상을 판정하며, 성공 Chain으로 **Combo / Tier opportunity**를 준비합니다. 현재 구현 내부 필드명은 `stock`입니다.
+- 매치가 없는 교환은 원상복귀합니다. 플레이어는 MP를 써서 그 배치를 다음 Combo 설계용으로 고정할 수 있으나, 이 선택은 즉시 Combo를 주지 않습니다.
+- MP와 Combo는 서로 대체되지 않습니다. Combo cap baseline은 6이고 Tier N은 Combo N을 소비하는 구조를 유지합니다.
+- 위 CHAIN 대각선/MP-lock 규칙은 사용자 승인 정본이며, 현재 merged runtime은 가로·세로 판정과 기본 원상복귀만 구현했습니다. Phase 2 구현 검토 전에는 runtime 완료로 해석하지 않습니다.
 - `ATK / DEF / SUP × T1–T6` Technique identity는 유지하지만 Tier는 단순한 강함 순서가 아니라 tactical commitment band입니다.
 - 적의 Current Telegraph + ETA는 LINE/CHAIN 플레이 중 실시간으로 진행됩니다. 알려진 Next Forecast는 더 낮은 우선순위로 표시합니다.
 - `SKILL`을 열면 `TACTICAL_PAUSE_SKILL`이 되어 **시뮬레이션 전체가 완전히 정지**합니다.
@@ -34,17 +35,18 @@ BATTLE_START
 - 취소 또는 USE 후에는 정확히 멈춘 combat time과 이전 active puzzle workspace로 복귀합니다.
 - 수동 Pause도 full simulation pause이지만 Skill tactical pause와 player-facing state/telemetry reason은 구분합니다.
 - Haste, Battle Trance, turn-only status duration, Tempo scaling은 `REALTIME_MIGRATION_REQUIRED`이며 임의로 seconds 의미로 번역하지 않습니다.
-- 정확한 Energy gain/cost, Chain→Stock mapping, 적 cadence, effect magnitude는 `TUNE_REQUIRED / TUNING_SEED_NOT_FINAL`입니다.
+- 정확한 MP 회복/비용, MP-lock 비용, Chain→Combo mapping, 적 cadence, effect magnitude는 `TUNE_REQUIRED / TUNING_SEED_NOT_FINAL`입니다.
 - 자동 테스트는 deterministic legality/regression을 증명할 수 있지만 재미·가독성·처음 이해도·최종 밸런스는 Human evidence가 필요합니다.
 
 ## 현재 Production 정본
 
 1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — CORE-029 current combat authority.
 2. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained SKILL-026 Technique identity, subject to realtime migration boundaries.
-3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 dual-resource/Tier structure.
-4. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
-5. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
-6. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan.
+3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 MP/Combo/Tier structure.
+4. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
+5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
+6. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
+7. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
 
 Historical provenance:
 
@@ -91,7 +93,7 @@ Human validation contract:
 
 `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md`
 
-첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, Energy vs Chain Stock, Technique decision quality, 60/40 layout readability, player experience signal을 검증합니다.
+첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, MP vs Combo와 MP-lock 이해, Technique decision quality, 60/40 layout readability, player experience signal을 검증합니다.
 
 Positive directional PASS는 세 개의 독립 first-exposure A/B/C receipt가 필요합니다. Concept art나 자동 test를 Human readability/fun evidence로 승격하지 않습니다.
 
