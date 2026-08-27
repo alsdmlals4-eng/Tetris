@@ -168,7 +168,7 @@
     "production_60_40_ui": "IMPLEMENTED_ON_MERGED_MAIN",
     "runtime_image_consumers": "IMPLEMENTED_ON_MERGED_MAIN",
     "production_human_playtest": "NOT_RUN",
-    "merged_main_runtime": "MERGED_AUTOMATED_VERTICAL_SLICE_READY",
-    "current_branch_evidence": "MERGED_MAIN_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE"
+    "merged_main_runtime": "MERGED_AUTOMATED_VERTICAL_SLICE_READY_TREE_EQUIVALENT_SOURCE_HEAD",
+    "current_branch_evidence": "TREE_EQUIVALENT_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE"
   }
 }

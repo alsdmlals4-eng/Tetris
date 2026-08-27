@@ -79,7 +79,7 @@ CORE-029 baseline에는 `TETRIS-IMG-031` StageBackdrop이라는 실제 runtime c
 
 - Core Combat Foundation / Engineering Harness: **main에 존재**.
 - CORE-029 written canon/spec/implementation plan: **main 구현과 함께 유지**.
-- CORE-029 Production runtime: **main에 구현됨**; 자동 검증은 `AUTOMATED_VERTICAL_SLICE_READY`까지 확보됐습니다.
+- CORE-029 Production runtime: **main에 구현됨**; `AUTOMATED_VERTICAL_SLICE_READY` 근거는 squash-merge main과 tree-equivalent인 source head의 CI/runtime 증거이며, 별도 main-commit runtime 영수증은 아직 없습니다.
 - Draft PR #19 ordered-turn implementation: **READ_ONLY source snapshot**, wholesale merge/cherry-pick 금지.
 - Production Line/Chain reusable deterministic components, full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 60/40 production scene: **main에 구현됨**.
 - CORE-029 runtime-consumed image assets: `TETRIS-IMG-031` StageBackdrop이 main에서 소비됩니다. Draft PR #33의 Gatebreaker composition은 branch-only evidence이며 병합 전 main 사실을 바꾸지 않습니다.
