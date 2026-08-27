@@ -89,6 +89,46 @@
       "runtime_verification": "SCENE_TREE_EQUIVALENT_RENDER_VERIFIED",
       "runtime_render_evidence": "Godot 4.7.1 local scene-tree-equivalent renderer · res://scenes/production/battle.tscn · 960x540; StageBackdrop and both cutouts visible in CombatStage. This is a non-retained local test result, not an exact-head repository capture artifact.",
       "rollback": "Delete this versioned derived file and this manifest entry only; preserve IMG-P0-003."
+    },
+    {
+      "asset_id": "TETRIS-IMG-035",
+      "name": "Vanguard Attack Accent v1",
+      "local_path": "assets/production/vfx/vanguard_attack_accent_v1.png",
+      "derivation_type": "ORIGINAL_GENERATED_TRANSPARENT_RUNTIME_VFX",
+      "sha256": "b66fea881cd1bd19bb7d9098563c81ab5ff9b9817dc7568a12418ddb4920a3f7",
+      "dimensions_px": [1254, 1254],
+      "approval_status": "SOURCE_ASSET_CANDIDATE",
+      "reference_scope": "silver-white frontier attack arc with restrained gold and violet rift accents; no text, UI, character, or weapon baked into the image",
+      "gameplay_purpose": "successful ATTACK technique feedback",
+      "planned_consumer_scene": "scenes/production/battle.tscn",
+      "planned_consumer_node": "MainRow/CombatColumn/CombatStage/VanguardAttackAccent",
+      "consumer_type": "Texture2D on TextureRect",
+      "geometry_contract": "transparent RGBA square, open centre, generous transparent margins, aspect-centred slot over the Vanguard side of CombatStage",
+      "import_contract": "lossless VFX/UI import; Godot default filter remains implementation-owned",
+      "runtime_consumer": "MainRow/CombatColumn/CombatStage/VanguardAttackAccent",
+      "runtime_integration": "IMPLEMENTED_ON_BRANCH",
+      "runtime_verification": "PENDING_EXACT_HEAD_RENDER",
+      "rollback": "Delete this versioned file and manifest entry only; no approved source asset is altered."
+    },
+    {
+      "asset_id": "TETRIS-IMG-036",
+      "name": "Gatebreaker Threat Telegraph v1",
+      "local_path": "assets/production/vfx/gatebreaker_threat_telegraph_v1.png",
+      "derivation_type": "ORIGINAL_GENERATED_TRANSPARENT_RUNTIME_VFX",
+      "sha256": "69b0d69f0dd99f885df9a2e886706afb5a1e5aa52382df606b1e62936d267e55",
+      "dimensions_px": [1254, 1254],
+      "approval_status": "SOURCE_ASSET_CANDIDATE",
+      "reference_scope": "dark violet broken rift ring with restrained magenta glow; no text, UI, character, or weapon baked into the image",
+      "gameplay_purpose": "active enemy telegraph feedback",
+      "planned_consumer_scene": "scenes/production/battle.tscn",
+      "planned_consumer_node": "MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph",
+      "consumer_type": "Texture2D on TextureRect",
+      "geometry_contract": "transparent RGBA square, hollow centre, generous transparent margins, aspect-centred slot behind Gatebreaker inside CombatStage",
+      "import_contract": "lossless VFX/UI import; Godot default filter remains implementation-owned",
+      "runtime_consumer": "MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph",
+      "runtime_integration": "IMPLEMENTED_ON_BRANCH",
+      "runtime_verification": "PENDING_EXACT_HEAD_RENDER",
+      "rollback": "Delete this versioned file and manifest entry only; no approved source asset is altered."
     }
   ]
 }

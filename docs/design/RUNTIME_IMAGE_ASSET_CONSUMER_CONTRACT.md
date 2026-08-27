@@ -151,3 +151,14 @@ The user has approved bounded derivation of two runtime source-asset candidates 
 | `TETRIS-IMG-034` · Gatebreaker Combat Cutout v1 | `IMG-P0-003` | `res://assets/production/bosses/gatebreaker_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | `TextureRect.texture: Texture2D` | transparent alpha; full body with asymmetric ram-arm and visible Rift Core; max source dimension 1536 px; full-height, aspect-centered stage slot | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: IMPLEMENTED_ON_BRANCH` · `RUNTIME_VERIFICATION: SCENE_TREE_EQUIVALENT_RENDER_VERIFIED` |
 
 Issue #42 binds both approved cutouts as pointer-transparent, aspect-preserving direct children of `CombatStage`. The Vanguard uses the left 60% of the stage at foreground z-order; Gatebreaker uses the right 66% at the background z-order. This preserves the stage backdrop and keeps the puzzle, forecast, resource, and skill regions outside the art bounds. A Godot 4.7.1 GUI render of the scene-equivalent branch tree at 960×540 confirmed the existing stage backdrop and both cutouts are visible; it does not establish Human readability or final commercial-art approval.
+
+## 11. Authored combat VFX candidates · Issue #47
+
+The user explicitly requested the needed production images on 2026-08-28 after the screen-coverage audit. This bounded request produces only the two named VFX assets below; it does not reopen a generic image queue or turn UI labels into baked artwork.
+
+| Asset | Exact target | Scene consumer | Purpose | Geometry / import | Runtime behavior |
+| --- | --- | --- | --- | --- | --- |
+| `TETRIS-IMG-035` · Vanguard Attack Accent v1 | `res://assets/production/vfx/vanguard_attack_accent_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/VanguardAttackAccent` | successful `ATTACK` technique feedback | 1254×1254 RGBA; transparent square crop; keep the open centre visible; `TextureRect.texture`, aspect-centred, pointer-transparent, lossless UI/VFX import | shown for 0.42 seconds only after a committed ATTACK technique |
+| `TETRIS-IMG-036` · Gatebreaker Threat Telegraph v1 | `res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph` | active enemy telegraph feedback | 1254×1254 RGBA; transparent square crop and hollow centre; `TextureRect.texture`, aspect-centred behind the boss, pointer-transparent, lossless UI/VFX import | subtly pulses only while a non-terminal enemy ETA is active |
+
+Both assets are original generated source candidates, not derivatives of the approved masters and not a claim of human readability approval. The static geometry keeps the VFX inside the CombatStage so it cannot cover the puzzle, forecast, resource, or skill controls.
