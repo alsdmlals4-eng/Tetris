@@ -37,11 +37,26 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
     def test_runtime_and_planned_surfaces_are_not_promoted_to_each_other(self) -> None:
         rows = {row["screen_id"]: row for row in json.loads(INVENTORY.read_text(encoding="utf-8"))["screens"]}
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
-        self.assertEqual("COVERED_EXISTING", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertEqual("COVERED_EXISTING_FOR_CORE_RUNTIME", rows["TETRIS-SCREEN-007"]["coverage_status"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-008"]["consumer_kind"])
         self.assertEqual("PLANNED_GAME_SURFACE", rows["TETRIS-SCREEN-002"]["consumer_kind"])
         self.assertEqual("PRODUCT_DISTRIBUTION", rows["TETRIS-SCREEN-016"]["consumer_kind"])
         self.assertNotEqual("COVERED_EXISTING", rows["TETRIS-SCREEN-016"]["coverage_status"])
+
+    def test_first_session_briefing_is_required_but_not_promoted_to_runtime(self) -> None:
+        inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
+        rows = {row["screen_id"]: row for row in inventory["screens"]}
+
+        self.assertEqual("TETRIS-ONBOARDING-037", inventory["first_session_onboarding"]["decision"])
+        self.assertEqual(
+            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+            inventory["first_session_onboarding"]["status"],
+        )
+        self.assertEqual("PLANNED_GAME_SURFACE", rows["TETRIS-SCREEN-006"]["consumer_kind"])
+        self.assertEqual("GAP_BLOCKING_FOR_INTENDED_FIRST_SESSION", rows["TETRIS-SCREEN-006"]["coverage_status"])
+        self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
+        self.assertEqual("COVERED_EXISTING_FOR_CORE_RUNTIME", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertIn("TETRIS-ONBOARDING-037", GUIDE.read_text(encoding="utf-8"))
 
     def test_human_guide_requires_whole_screen_evidence_and_existing_asset_reuse(self) -> None:
         text = GUIDE.read_text(encoding="utf-8")

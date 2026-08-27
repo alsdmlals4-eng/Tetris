@@ -11,6 +11,7 @@ TURN_CANON_PATH = "docs/design/PRODUCTION_TURN_COMBAT_CANON.md"
 TIME_CANON_PATH = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
 SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md"
 BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
+ONBOARDING_CONTRACT_PATH = ROOT / "docs" / "design" / "FIRST_SESSION_ONBOARDING_CONTRACT.md"
 PLAN_PATH = (
     ROOT
     / "docs"
@@ -44,6 +45,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-026")
         self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-027")
+        self.assertEqual(data["current_onboarding_decision"], "TETRIS-ONBOARDING-037")
         self.assertEqual(
             data["skill_canon"],
             "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
@@ -51,6 +53,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(
             data["balance_canon"],
             "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
+        )
+        self.assertEqual(
+            data["onboarding_contract"],
+            "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md",
         )
 
     def test_continuous_realtime_time_and_workspace_contract_is_machine_readable(self) -> None:
@@ -113,10 +119,33 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("TETRIS-SKILL-026", retained)
         self.assertIn("TETRIS-BALANCE-027", retained)
         self.assertIn("TETRIS-VISUAL-028", retained)
+        self.assertIn("TETRIS-ONBOARDING-037", retained)
         self.assertTrue(SKILL_CANON_PATH.is_file())
         self.assertTrue(BALANCE_CANON_PATH.is_file())
         self.assertIn("TETRIS-SKILL-026", SKILL_CANON_PATH.read_text(encoding="utf-8"))
         self.assertIn("TETRIS-BALANCE-027", BALANCE_CANON_PATH.read_text(encoding="utf-8"))
+
+    def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
+        data = self._index()
+        reality = data["implementation_reality"]
+        onboarding = ONBOARDING_CONTRACT_PATH.read_text(encoding="utf-8")
+
+        self.assertTrue(ONBOARDING_CONTRACT_PATH.is_file())
+        self.assertEqual(
+            reality["first_session_briefing_and_tutorial"],
+            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+        )
+        for token in (
+            "TETRIS-ONBOARDING-037",
+            "Vanguard",
+            "Frontier Gate",
+            "Gatebreaker",
+            "Current Telegraph and ETA",
+            "USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED",
+        ):
+            self.assertIn(token, onboarding)
+        self.assertIn("Shared Turn Timer", onboarding)
+        self.assertIn("3×6", onboarding)
 
     def test_image_production_requires_a_runtime_consumer_contract(self) -> None:
         data = self._index()

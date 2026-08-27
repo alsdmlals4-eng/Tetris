@@ -7,17 +7,20 @@
   "current_balance_decision": "TETRIS-BALANCE-027",
   "current_visual_decision": "TETRIS-VISUAL-028",
   "current_image_decision": "TETRIS-IMAGE-030",
+  "current_onboarding_decision": "TETRIS-ONBOARDING-037",
   "historical_core_decision": "TETRIS-CORE-024",
   "historical_time_decision": "TETRIS-TIME-025",
   "primary_canon": "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
   "skill_canon": "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
   "balance_canon": "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
   "image_asset_contract": "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+  "onboarding_contract": "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md",
   "implementation_plan": "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
   "authority_order": [
     "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md for continuous combat, pause, workspace switching, enemy scheduling, and battle composition",
     "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for retained Vanguard Technique identity subject to CORE-029 realtime migration boundaries",
     "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for retained Energy/Chain Stock opportunity cost and Tier commitment subject to CORE-029 realtime migration boundaries",
+    "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md for the approved first-session briefing and embedded tutorial boundary",
     "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md for runtime-consumer-first production image requirements",
     "latest USER_APPROVED project Decisions and synced Notion Human-facing owner pages",
     "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md for implementation sequencing",
@@ -34,7 +37,8 @@
     "TETRIS-ENCOUNTER-006",
     "TETRIS-WORLD-004",
     "TETRIS-AUDIO-014",
-    "TETRIS-IMAGE-030"
+    "TETRIS-IMAGE-030",
+    "TETRIS-ONBOARDING-037"
   ],
   "superseded_decisions": [
     "TETRIS-CORE-024",
@@ -168,6 +172,7 @@
     "production_60_40_ui": "IMPLEMENTED_ON_MERGED_MAIN",
     "runtime_image_consumers": "IMPLEMENTED_ON_MERGED_MAIN",
     "production_human_playtest": "NOT_RUN",
+    "first_session_briefing_and_tutorial": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
     "merged_main_runtime": "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
     "runtime_evidence_identity": "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
     "runtime_baseline_main_sha": "1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a",
