@@ -1,6 +1,6 @@
 # Runtime Character Cutout Binding Specification
 
-**Issue:** #42  
+**Issue:** #42
 **Canon:** `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` (CORE-029) and `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md`
 
 ## Player-facing result
