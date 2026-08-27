@@ -157,13 +157,29 @@ class ProductionCanonContractTests(unittest.TestCase):
             self.assertEqual(reality[key], "IMPLEMENTED_ON_MERGED_MAIN")
         self.assertEqual(
             reality["merged_main_runtime"],
-            "MERGED_AUTOMATED_VERTICAL_SLICE_READY_TREE_EQUIVALENT_SOURCE_HEAD",
+            "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
         )
         self.assertEqual(
-            reality["current_branch_evidence"],
-            "TREE_EQUIVALENT_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
+            reality["runtime_evidence_identity"],
+            "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
         )
+        self.assertEqual(
+            reality["runtime_baseline_main_sha"],
+            "1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a",
+        )
+        self.assertEqual(
+            reality["runtime_evidence_source_head_sha"],
+            "92b59bccd2ea45f772003b4abac2d9aa84672307",
+        )
+        self.assertEqual(
+            reality["documentation_reconciliation_base_sha"],
+            "fb55b96f2612497f356bae6586429b944d35d7a8",
+        )
+        self.assertEqual(reality["production_human_playtest"], "NOT_RUN")
         self.assertIn("CORE-029 Production runtime: **main에 구현됨**", readme)
+        self.assertIn("1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a", readme)
+        self.assertIn("92b59bccd2ea45f772003b4abac2d9aa84672307", readme)
+        self.assertIn("fb55b96f2612497f356bae6586429b944d35d7a8", readme)
         self.assertNotIn("CORE-029 Production runtime: **아직 NOT_PRESENT**", readme)
         self.assertIn("TETRIS-IMG-031", image_contract)
         self.assertIn(
