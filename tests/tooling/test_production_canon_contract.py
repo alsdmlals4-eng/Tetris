@@ -157,11 +157,11 @@ class ProductionCanonContractTests(unittest.TestCase):
             self.assertEqual(reality[key], "IMPLEMENTED_ON_MERGED_MAIN")
         self.assertEqual(
             reality["merged_main_runtime"],
-            "MERGED_AUTOMATED_VERTICAL_SLICE_READY_TREE_EQUIVALENT_SOURCE_HEAD",
+            "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
         )
         self.assertEqual(
             reality["current_branch_evidence"],
-            "TREE_EQUIVALENT_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
+            "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
         )
         self.assertIn("CORE-029 Production runtime: **main에 구현됨**", readme)
         self.assertNotIn("CORE-029 Production runtime: **아직 NOT_PRESENT**", readme)
