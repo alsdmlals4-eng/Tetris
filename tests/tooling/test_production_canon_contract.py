@@ -120,9 +120,14 @@ class ProductionCanonContractTests(unittest.TestCase):
 
     def test_image_production_requires_a_runtime_consumer_contract(self) -> None:
         data = self._index()
+        image_production = data["image_production"]
         self.assertEqual(
             data["image_asset_contract"],
             "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+        )
+        self.assertEqual(
+            image_production["generation_status"],
+            "PAUSED_PENDING_APPROVED_CONSUMER_GAP",
         )
         self.assertTrue(IMAGE_CONTRACT_PATH.is_file())
         text = IMAGE_CONTRACT_PATH.read_text(encoding="utf-8")
@@ -153,6 +158,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(
             reality["merged_main_runtime"],
             "MERGED_AUTOMATED_VERTICAL_SLICE_READY",
+        )
+        self.assertEqual(
+            reality["current_branch_evidence"],
+            "MERGED_MAIN_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
         )
         self.assertIn("CORE-029 Production runtime: **main에 구현됨**", readme)
         self.assertNotIn("CORE-029 Production runtime: **아직 NOT_PRESENT**", readme)

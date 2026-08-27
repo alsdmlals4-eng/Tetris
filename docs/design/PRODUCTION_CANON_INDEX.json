@@ -141,7 +141,7 @@
   },
   "image_production": {
     "model": "RUNTIME_CONSUMER_FIRST",
-    "generation_status": "PAUSED_UNTIL_CONSUMER_EXISTS",
+    "generation_status": "PAUSED_PENDING_APPROVED_CONSUMER_GAP",
     "concept_sheet_is_production_asset": false,
     "required_consumer_fields": [
       "target_res_path",
@@ -169,6 +169,6 @@
     "runtime_image_consumers": "IMPLEMENTED_ON_MERGED_MAIN",
     "production_human_playtest": "NOT_RUN",
     "merged_main_runtime": "MERGED_AUTOMATED_VERTICAL_SLICE_READY",
-    "current_branch_evidence": "MERGED_MAIN_EXACT_HEAD_CI_AND_RUNTIME_EVIDENCE"
+    "current_branch_evidence": "MERGED_MAIN_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE"
   }
 }
