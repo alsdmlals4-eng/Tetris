@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import struct
 import unittest
 from pathlib import Path
@@ -38,11 +39,22 @@ def read_png_header(path: Path) -> tuple[int, int, int]:
     return width, height, color_type
 
 
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 class RuntimeCharacterAssetContractTests(unittest.TestCase):
     def test_approved_source_derivatives_are_present_and_transparent(self) -> None:
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         assets_by_id = {asset["asset_id"]: asset for asset in manifest["assets"]}
         contract = CONTRACT_PATH.read_text(encoding="utf-8")
+
+        for source_id in ("IMG-P0-002", "IMG-P0-003"):
+            with self.subTest(approved_source=source_id):
+                source = assets_by_id[source_id]
+                self.assertEqual(
+                    sha256(REPO_ROOT / source["local_path"]), source["sha256"]
+                )
 
         for asset_id, expected in EXPECTED_ASSETS.items():
             with self.subTest(asset_id=asset_id):
@@ -60,6 +72,8 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 image_path = REPO_ROOT / expected["path"]
                 self.assertTrue(image_path.is_file(), f"missing {image_path}")
                 width, height, color_type = read_png_header(image_path)
+                self.assertEqual(sha256(image_path), asset["sha256"])
+                self.assertEqual(asset["dimensions_px"], [width, height])
                 self.assertGreater(width, 0)
                 self.assertGreater(height, 0)
                 self.assertLessEqual(max(width, height), 1536)
