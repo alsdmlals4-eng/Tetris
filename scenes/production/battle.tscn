@@ -1,10 +1,57 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
 [ext_resource type="Script" path="res://src/production/ui/production_chain_board_view.gd" id="3_chain"]
 [ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="4_stage_backdrop"]
 [ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="5_theme"]
+[ext_resource type="Texture2D" path="res://docs/assets/reference/approved/TETRIS-IMG-P0-003-asymmetric-breach-colossus-master.png" id="6_gatebreaker_master"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gatebreaker_crop"]
+atlas = ExtResource("6_gatebreaker_master")
+region = Rect2(0, 105, 820, 500)
+
+[sub_resource type="StyleBoxFlat" id="StyleMatrixAttack"]
+bg_color = Color(0.15, 0.045, 0.06, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.9, 0.25, 0.2, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+content_margin_left = 3.0
+content_margin_right = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleMatrixDefense"]
+bg_color = Color(0.035, 0.09, 0.16, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.58, 1, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+content_margin_left = 3.0
+content_margin_right = 3.0
+
+[sub_resource type="StyleBoxFlat" id="StyleMatrixSupport"]
+bg_color = Color(0.04, 0.13, 0.07, 0.96)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.36, 0.86, 0.28, 0.9)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+content_margin_left = 3.0
+content_margin_right = 3.0
 
 [node name="Battle" type="Control"]
 process_mode = 3
@@ -91,11 +138,22 @@ layout_mode = 2
 layout_mode = 2
 theme_override_constants/separation = 4
 
+[node name="BossReadout" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.78, 0.8, 1)
+theme_override_font_sizes/font_size = 16
+text = "GATEBREAKER · HP -- / 100"
+
+[node name="TimelineHeader" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.66, 0.88, 1)
+text = "ENEMY ACTION TIMELINE · LIVE"
+
 [node name="CurrentTelegraph" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5, 0.52, 1)
-theme_override_font_sizes/font_size = 18
-text = "CURRENT THREAT · ETA --"
+theme_override_font_sizes/font_size = 16
+text = "CURRENT ACTION · ETA --"
 
 [node name="NextForecast" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
 layout_mode = 2
@@ -118,6 +176,28 @@ mouse_filter = 2
 texture = ExtResource("4_stage_backdrop")
 expand_mode = 1
 stretch_mode = 6
+
+[node name="BossReference" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+self_modulate = Color(1, 1, 1, 0.94)
+texture = SubResource("AtlasTexture_gatebreaker_crop")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BossTopMask" type="ColorRect" parent="MainRow/CombatColumn/CombatStage"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+anchor_bottom = 0.075
+grow_horizontal = 2
+mouse_filter = 2
+color = Color(0.035, 0.04, 0.07, 0.96)
 
 [node name="ResourceFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 layout_mode = 2
@@ -148,68 +228,206 @@ visible = false
 layout_mode = 2
 text = "RETRY ENCOUNTER"
 
-[node name="SkillCategories" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+[node name="SkillMatrix" type="VBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 4
 
-[node name="Attack" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
-process_mode = 2
+[node name="AttackRow" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix"]
 layout_mode = 2
-size_flags_horizontal = 3
+theme_override_constants/separation = 4
+
+[node name="Lane" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow"]
+custom_minimum_size = Vector2(34, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.34, 0.29, 1)
 text = "ATK"
+vertical_alignment = 1
 
-[node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
+[node name="Tiers" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow/Tiers"]
 process_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
-text = "DEF"
-
-[node name="Support" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
-process_mode = 2
-layout_mode = 2
-size_flags_horizontal = 3
-text = "SUP"
-
-[node name="TierGrid" type="GridContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
-layout_mode = 2
-columns = 3
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
-
-[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixAttack")
 text = "T1"
 
-[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow/Tiers"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixAttack")
 text = "T2"
 
-[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow/Tiers"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixAttack")
 text = "T3"
 
-[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow/Tiers"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixAttack")
 text = "T4"
 
-[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow/Tiers"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixAttack")
 text = "T5"
 
-[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/AttackRow/Tiers"]
 process_mode = 2
 layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.72, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixAttack")
+text = "T6"
+
+[node name="DefenseRow" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Lane" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow"]
+custom_minimum_size = Vector2(34, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.34, 0.7, 1, 1)
+text = "DEF"
+vertical_alignment = 1
+
+[node name="Tiers" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.86, 1, 1)
+theme_override_styles/normal = SubResource("StyleMatrixDefense")
+text = "T1"
+
+[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.86, 1, 1)
+theme_override_styles/normal = SubResource("StyleMatrixDefense")
+text = "T2"
+
+[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.86, 1, 1)
+theme_override_styles/normal = SubResource("StyleMatrixDefense")
+text = "T3"
+
+[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.86, 1, 1)
+theme_override_styles/normal = SubResource("StyleMatrixDefense")
+text = "T4"
+
+[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.86, 1, 1)
+theme_override_styles/normal = SubResource("StyleMatrixDefense")
+text = "T5"
+
+[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/DefenseRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.7, 0.86, 1, 1)
+theme_override_styles/normal = SubResource("StyleMatrixDefense")
+text = "T6"
+
+[node name="SupportRow" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Lane" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow"]
+custom_minimum_size = Vector2(34, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 1, 0.42, 1)
+text = "SUP"
+vertical_alignment = 1
+
+[node name="Tiers" type="HBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.76, 1, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixSupport")
+text = "T1"
+
+[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.76, 1, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixSupport")
+text = "T2"
+
+[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.76, 1, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixSupport")
+text = "T3"
+
+[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.76, 1, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixSupport")
+text = "T4"
+
+[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.76, 1, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixSupport")
+text = "T5"
+
+[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/SupportRow/Tiers"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.76, 1, 0.7, 1)
+theme_override_styles/normal = SubResource("StyleMatrixSupport")
 text = "T6"
 
 [node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.71, 0.82, 1)
-text = "ATK / DEF / SUP → T1–T6 → DETAIL → USE"
+text = "PAUSE → SELECT TECHNIQUE → USE"
 
 [node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2

@@ -7,6 +7,7 @@ const CHAIN := "CHAIN"
 
 @onready var _line_view: Control = $MainRow/PuzzleColumn/PuzzleHost/LineBoardView
 @onready var _chain_view: Control = $MainRow/PuzzleColumn/PuzzleHost/ChainBoardView
+@onready var _boss_readout: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/BossReadout
 @onready var _current_threat: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/CurrentTelegraph
 @onready var _next_forecast: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/NextForecast
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceBar
@@ -23,11 +24,9 @@ func _ready() -> void:
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/ChainButton.pressed.connect(func(): _request_workspace(CHAIN))
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/SkillButton.pressed.connect(_toggle_skill)
-	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Attack.pressed.connect(func(): select_skill_category("ATTACK"))
-	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Defense.pressed.connect(func(): select_skill_category("DEFENSE"))
-	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Support.pressed.connect(func(): select_skill_category("SUPPORT"))
-	for tier in range(1, 7):
-		get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
+	_connect_skill_matrix_row("AttackRow", "ATTACK")
+	_connect_skill_matrix_row("DefenseRow", "DEFENSE")
+	_connect_skill_matrix_row("SupportRow", "SUPPORT")
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
 	_retry_button.pressed.connect(_retry_encounter)
 	var bootstrap = load("res://src/production/session/production_battle_bootstrap.gd").new()
@@ -153,6 +152,13 @@ func select_skill_tier(tier: int) -> Dictionary:
 	var ids := {"atk": ["quick_cut", "sweeping_arc", "rift_breach", "crushing_strike", "suppressive_break", "execution_edge"], "def": ["guard", "fortify", "counter", "bulwark", "rift_ward", "last_bastion"], "sup": ["second_wind", "rally", "haste", "mark_weakness", "rift_seal", "battle_trance"]}
 	return _runtime.select_skill_technique("%s_t%d_%s" % [prefix, tier, ids[prefix][tier - 1]])
 
+func select_skill_matrix(lane: String, tier: int) -> Dictionary:
+	if lane not in ["ATTACK", "DEFENSE", "SUPPORT"] or tier < 1 or tier > 6:
+		return {"selected": false, "reason": "INVALID_SELECTION"}
+	if not select_skill_category(lane):
+		return {"selected": false, "reason": "SKILL_NOT_PAUSED"}
+	return select_skill_tier(tier)
+
 func _use_selected_skill() -> void:
 	if _runtime != null and _runtime.is_simulation_paused():
 		_runtime.use_selected_skill()
@@ -163,11 +169,13 @@ func _retry_encounter() -> void:
 
 func _refresh_runtime_labels() -> void:
 	if _runtime == null:
+		_boss_readout.text = "GATEBREAKER · HP unavailable"
 		_current_threat.text = "CURRENT THREAT · unavailable"
 		return
 	var snapshot: Dictionary = _runtime.snapshot()
 	var is_terminal: bool = bool(snapshot.get("terminal", false))
-	_current_threat.text = "CURRENT THREAT · ETA %.1fs" % float(snapshot.get("enemy_eta_seconds", 0.0))
+	_boss_readout.text = "GATEBREAKER · HP %d / 100" % int(snapshot.get("enemy_hp", 0))
+	_current_threat.text = "CURRENT ACTION · ETA %.1fs" % float(snapshot.get("enemy_eta_seconds", 0.0))
 	_next_forecast.text = "NEXT FORECAST · realtime authored schedule"
 	_resource_bar.text = "HP %d / 100    ENERGY %d    STOCK %d / 6" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
 	_retry_button.visible = is_terminal
@@ -179,3 +187,8 @@ func _refresh_runtime_labels() -> void:
 		_pause_state.text = "SYSTEM PAUSE"
 	else:
 		_pause_state.text = "COMBAT RUNNING"
+
+func _connect_skill_matrix_row(row_name: String, lane: String) -> void:
+	for tier in range(1, 7):
+		var button: Button = get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/%s/Tiers/Tier%d" % [row_name, tier])
+		button.pressed.connect(select_skill_matrix.bind(lane, tier))
