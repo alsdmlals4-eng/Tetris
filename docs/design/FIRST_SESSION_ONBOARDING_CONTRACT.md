@@ -3,7 +3,7 @@
 - Decision: `TETRIS-ONBOARDING-037`
 - Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
 - Issue: #54
-- Authority: `TETRIS-CORE-029`, the current Screen Surface Inventory, and the user's 2026-08-28 approval.
+- Authority: `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, the current Screen Surface Inventory, and the user's 2026-08-28 approvals.
 - Scope boundary: this is the intended first-session learning contract. It does not claim a Godot scene, runtime asset, localized final copy, Human/player validation, or a broader world-history canon.
 
 ## Player promise at first contact
@@ -39,10 +39,11 @@ It reserves the existing `TETRIS-SREF-003` briefing reference's threat and launc
 | Step | Player question | Required feedback | Guardrail |
 | --- | --- | --- | --- |
 | 1. Read threat | “What is about to happen, and how long do I have?” | Current Telegraph and ETA remain visible while the player can still act. | Explain live pressure without a Shared Turn Timer or phase rail. |
-| 2. Make Energy | “What does LINE prepare?” | A clear LINE result visibly changes Energy and points to an affordable response. | Do not use hidden grants or imply LINE is the only correct workspace. |
-| 3. Open Tier access | “What does CHAIN prepare that LINE cannot?” | A clear CHAIN result visibly changes Stock and the reachable Technique Tier. | Keep LINE and CHAIN non-interchangeable; do not force an old Line→Chain order. |
+| 2. Recover MP | “What does LINE prepare?” | A clear LINE result visibly changes MP and points to an affordable response. | Do not use hidden grants or imply LINE is the only correct workspace. |
+| 3. Earn Combo | “What does CHAIN prepare that LINE cannot?” | A straight horizontal, vertical, or diagonal 3+ CHAIN match visibly changes Combo and the reachable Technique Tier. A failed swap visibly reverts. | Keep LINE and CHAIN non-interchangeable; do not force an old Line→Chain order. |
+| 3b. Optional setup | “Can I keep a useful failed swap?” | When affordable, explain that MP may keep a no-match swap for a later Combo setup, with no immediate clear or Combo. | Do not require this transaction in the first tutorial or imply it is a third resource. |
 | 4. Commit deliberately | “When should I stop time and which Technique is worth the cost?” | Skill opening visibly freezes the same threat/puzzle state; category → selected lane → T1–T6 → detail → explicit **USE** makes the commit and result legible. | Cancel returns to the exact paused state. Do not show an always-visible 3×6 matrix or auto-commit on selection. |
-| 5. Apply learning | “What do I prepare or commit before this next threat?” | The player makes one unforced response using the visible ETA, Energy, Stock/Tier, and Technique result. | The encounter may be forgiving, but it must not be a non-interactive demonstration. |
+| 5. Apply learning | “What do I prepare or commit before this next threat?” | The player makes one unforced response using the visible ETA, MP, Combo/Tier, and Technique result. | The encounter may be forgiving, but it must not be a non-interactive demonstration. |
 
 ## Scope and production gates
 
@@ -57,7 +58,7 @@ Before the tutorial can be marked effective, first-exposure receipts must show t
 
 1. state the immediate threat and why Deploy starts it;
 2. identify the Current Telegraph/ETA before acting;
-3. distinguish LINE → Energy from CHAIN → Stock/Tier access;
+3. distinguish LINE → MP from CHAIN → Combo/Tier access, including why MP can optionally preserve a failed CHAIN setup without awarding Combo;
 4. explain that Skill pauses the simulation and that **USE**, not row selection, commits; and
 5. make and explain one resource/Technique response to a visible threat.
 

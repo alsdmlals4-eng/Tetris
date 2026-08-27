@@ -12,6 +12,7 @@ TIME_CANON_PATH = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
 SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md"
 BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
 ONBOARDING_CONTRACT_PATH = ROOT / "docs" / "design" / "FIRST_SESSION_ONBOARDING_CONTRACT.md"
+CHAIN_CONTRACT_PATH = ROOT / "docs" / "design" / "CHAIN_COMBO_MP_CONTRACT.md"
 PLAN_PATH = (
     ROOT
     / "docs"
@@ -46,6 +47,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-026")
         self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-027")
         self.assertEqual(data["current_onboarding_decision"], "TETRIS-ONBOARDING-037")
+        self.assertEqual(data["current_chain_decision"], "TETRIS-CHAIN-038")
         self.assertEqual(
             data["skill_canon"],
             "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
@@ -57,6 +59,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(
             data["onboarding_contract"],
             "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md",
+        )
+        self.assertEqual(
+            data["chain_combo_mp_contract"],
+            "docs/design/CHAIN_COMBO_MP_CONTRACT.md",
         )
 
     def test_continuous_realtime_time_and_workspace_contract_is_machine_readable(self) -> None:
@@ -120,10 +126,31 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("TETRIS-BALANCE-027", retained)
         self.assertIn("TETRIS-VISUAL-028", retained)
         self.assertIn("TETRIS-ONBOARDING-037", retained)
+        self.assertIn("TETRIS-CHAIN-038", retained)
         self.assertTrue(SKILL_CANON_PATH.is_file())
         self.assertTrue(BALANCE_CANON_PATH.is_file())
         self.assertIn("TETRIS-SKILL-026", SKILL_CANON_PATH.read_text(encoding="utf-8"))
         self.assertIn("TETRIS-BALANCE-027", BALANCE_CANON_PATH.read_text(encoding="utf-8"))
+
+    def test_chain_contract_keeps_line_mp_and_chain_combo_distinct(self) -> None:
+        data = self._index()
+        chain = data["production_chain"]
+        resources = data["resource_economy"]["player_facing_resources"]
+        text = CHAIN_CONTRACT_PATH.read_text(encoding="utf-8")
+
+        self.assertTrue(CHAIN_CONTRACT_PATH.is_file())
+        self.assertEqual(chain["swap_adjacency"], "ORTHOGONAL_ONLY")
+        self.assertEqual(
+            chain["match_axes"],
+            ["HORIZONTAL", "VERTICAL", "DIAGONAL_DOWN_RIGHT", "DIAGONAL_DOWN_LEFT"],
+        )
+        self.assertEqual(chain["invalid_swap_default"], "RESTORE_PRE_SWAP_STATE")
+        self.assertEqual(resources["mp"]["owner"], "LINE")
+        self.assertEqual(resources["mp"]["runtime_field"], "energy")
+        self.assertEqual(resources["combo"]["owner"], "CHAIN")
+        self.assertEqual(resources["combo"]["runtime_field"], "stock")
+        for token in ("TETRIS-CHAIN-038", "DIAGONAL_DOWN_RIGHT", "DIAGONAL_DOWN_LEFT", "TUNE_REQUIRED"):
+            self.assertIn(token, text)
 
     def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
         data = self._index()
@@ -222,9 +249,11 @@ class ProductionCanonContractTests(unittest.TestCase):
 
         for text in (agents, readme):
             self.assertIn("docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md", text)
+            self.assertIn("docs/design/CHAIN_COMBO_MP_CONTRACT.md", text)
             self.assertIn("TETRIS-CORE-029", text)
             self.assertIn("docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md", text)
             self.assertNotIn("One turn is `Enemy Telegraph → Line Phase → Line Settle → Chain Phase", text)
+        self.assertIn("TETRIS-CHAIN-038 amendment", PLAN_PATH.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

@@ -22,7 +22,7 @@ EXPECTED_DIMENSIONS = [
     "WORKSPACE_SWITCH_COMPREHENSION",
     "WORKSPACE_STATE_PERSISTENCE",
     "TACTICAL_PAUSE_COMPREHENSION",
-    "LINE_ENERGY_VS_CHAIN_STOCK",
+    "LINE_MP_VS_CHAIN_COMBO_AND_MP_LOCK",
     "TECHNIQUE_DECISION_QUALITY",
     "SIXTY_FORTY_LAYOUT_READABILITY",
     "PLAYER_EXPERIENCE_SIGNAL",
@@ -61,8 +61,9 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertIn("TETRIS-VISUAL-028", text)
         self.assertIn("LINE", text)
         self.assertIn("CHAIN", text)
-        self.assertIn("Energy", text)
-        self.assertIn("Chain Stock", text)
+        self.assertIn("MP", text)
+        self.assertIn("Combo", text)
+        self.assertIn("TETRIS-CHAIN-038", text)
         self.assertIn("TACTICAL_PAUSE_SKILL", text)
         self.assertIn("60/40", text)
         self.assertIn("MEMORABLE_MOMENT", text)

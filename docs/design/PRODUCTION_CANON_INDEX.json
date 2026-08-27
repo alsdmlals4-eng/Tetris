@@ -8,6 +8,7 @@
   "current_visual_decision": "TETRIS-VISUAL-028",
   "current_image_decision": "TETRIS-IMAGE-030",
   "current_onboarding_decision": "TETRIS-ONBOARDING-037",
+  "current_chain_decision": "TETRIS-CHAIN-038",
   "historical_core_decision": "TETRIS-CORE-024",
   "historical_time_decision": "TETRIS-TIME-025",
   "primary_canon": "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
@@ -15,11 +16,12 @@
   "balance_canon": "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
   "image_asset_contract": "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
   "onboarding_contract": "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md",
+  "chain_combo_mp_contract": "docs/design/CHAIN_COMBO_MP_CONTRACT.md",
   "implementation_plan": "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
   "authority_order": [
     "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md for continuous combat, pause, workspace switching, enemy scheduling, and battle composition",
     "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md for retained Vanguard Technique identity subject to CORE-029 realtime migration boundaries",
-    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md for retained Energy/Chain Stock opportunity cost and Tier commitment subject to CORE-029 realtime migration boundaries",
+    "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md and docs/design/CHAIN_COMBO_MP_CONTRACT.md for the MP/Combo opportunity cost, CHAIN grammar, and Tier commitment subject to CORE-029 realtime migration boundaries",
     "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md for the approved first-session briefing and embedded tutorial boundary",
     "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md for runtime-consumer-first production image requirements",
     "latest USER_APPROVED project Decisions and synced Notion Human-facing owner pages",
@@ -38,7 +40,8 @@
     "TETRIS-WORLD-004",
     "TETRIS-AUDIO-014",
     "TETRIS-IMAGE-030",
-    "TETRIS-ONBOARDING-037"
+    "TETRIS-ONBOARDING-037",
+    "TETRIS-CHAIN-038"
   ],
   "superseded_decisions": [
     "TETRIS-CORE-024",
@@ -99,18 +102,22 @@
     "skill_pause_indicator_required": true
   },
   "production_chain": {
-    "grammar": "SWAP_MATCH",
+    "grammar": "ORTHOGONAL_SWAP_STRAIGHT_3PLUS_HV_BOTH_DIAGONALS_MP_LOCK",
     "autonomous_swap": false,
+    "swap_adjacency": "ORTHOGONAL_ONLY",
+    "match_axes": ["HORIZONTAL", "VERTICAL", "DIAGONAL_DOWN_RIGHT", "DIAGONAL_DOWN_LEFT"],
+    "invalid_swap_default": "RESTORE_PRE_SWAP_STATE",
+    "invalid_swap_optional_mp_lock": "KEEP_SWAPPED_BOARD_WITHOUT_IMMEDIATE_CLEAR_OR_COMBO",
     "already_committed_cascade_settles_to_stable_before_switch": true,
     "workspace_state_persists_when_inactive": true,
-    "stock_cap": 6
+    "combo_cap": 6
   },
   "production_skill": {
     "lanes": ["ATTACK", "DEFENSE", "SUPPORT"],
     "tier_min": 1,
     "tier_max": 6,
     "tier_model": "TACTICAL_COMMITMENT_BAND",
-    "stock_cost_equals_tier": true,
+    "combo_cost_equals_tier": true,
     "lower_tier_viability_required": true,
     "highest_available_tier_is_default": false,
     "implementation_model": "DATA_DRIVEN_EFFECT_PRIMITIVES",
@@ -132,12 +139,15 @@
   },
   "resource_economy": {
     "model": "DUAL_RESOURCE_OPPORTUNITY_COST",
-    "energy_owner": "LINE",
-    "stock_owner": "CHAIN",
+    "player_facing_resources": {
+      "mp": {"runtime_field": "energy", "owner": "LINE"},
+      "combo": {"runtime_field": "stock", "historical_name": "Chain Stock", "owner": "CHAIN"}
+    },
     "resources_interchangeable": false,
-    "chain_stock_cap": 6,
-    "stock_cost_equals_tier": true,
-    "energy_cost_status": "TUNING_SEED_NOT_FINAL",
+    "combo_cap": 6,
+    "combo_cost_equals_tier": true,
+    "mp_cost_status": "TUNING_SEED_NOT_FINAL",
+    "mp_lock_cost_status": "TUNE_REQUIRED",
     "tier_exposure_model": "CONTEXTUAL_PROGRESSIVE_EXPOSURE",
     "technique_specific_first_slice_currency": false,
     "technique_specific_first_slice_cooldown": false,
@@ -172,6 +182,8 @@
     "production_60_40_ui": "IMPLEMENTED_ON_MERGED_MAIN",
     "runtime_image_consumers": "IMPLEMENTED_ON_MERGED_MAIN",
     "production_human_playtest": "NOT_RUN",
+    "chain_038_runtime_alignment": "PARTIAL_HV_ONLY_NO_MP_LOCK",
+    "chain_038_phase_2_plan_gate": "REQUIRES_IMPLEMENTATION_REVIEW_BEFORE_GODOT_BUILD",
     "first_session_briefing_and_tutorial": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
     "merged_main_runtime": "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
     "runtime_evidence_identity": "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",

@@ -6,11 +6,12 @@ Read current production gameplay in this order:
 
 1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 60:40 battle composition authority (`TETRIS-CORE-029`).
 2. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained Vanguard `ATK / DEF / SUP × Tier 1–6` Technique identity and tactical commitment authority where not turn-bound (`TETRIS-SKILL-026`).
-3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained Line Energy / Chain Stock opportunity cost and Tier commitment structure (`TETRIS-BALANCE-027`).
-4. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
-5. Latest USER_APPROVED project Decisions and synced Notion owner pages.
-6. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan.
-7. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
+3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained Line MP / Chain Combo opportunity cost and Tier commitment structure (`TETRIS-BALANCE-027`).
+4. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar and optional MP lock (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
+5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
+6. Latest USER_APPROVED project Decisions and synced Notion owner pages.
+7. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
+8. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
@@ -55,9 +56,10 @@ They do not override CORE-029.
 - Player may request `LINE ↔ CHAIN` freely during `COMBAT_RUNNING`.
 - LINE and CHAIN are independent persistent workspaces. Switching does not rebuild/reroll/reset the inactive workspace.
 - Inactive workspace does not simulate except completion of an already-committed deterministic safe-switch boundary.
-- LINE remains the primary Energy source.
-- CHAIN is production Swap-Match and remains the primary Chain Stock/Tier opportunity source.
-- Chain Stock cap baseline is 6. Tier N spends Stock N under retained BALANCE-027 structure.
+- LINE remains the primary MP source (current internal field: `energy`).
+- CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; it remains the primary Combo/Tier opportunity source (current internal field: `stock`).
+- A no-match restores by default; optional MP may keep that swapped board for later Combo setup without immediate clear or Combo. MP lock cost is `TUNE_REQUIRED`.
+- Combo cap baseline is 6. Tier N spends Combo N under retained BALANCE-027 structure.
 - Enemy Current Telegraph + ETA continues while the player solves LINE/CHAIN.
 - Visible Next Forecast remains lower priority than Current.
 - Opening SKILL enters `TACTICAL_PAUSE_SKILL` and fully stops combat simulation.
@@ -74,7 +76,7 @@ They do not override CORE-029.
 
 - Target desktop composition: approximately `60% large Puzzle Surface / 40% persistent Combat-Threat-Resource-Skill surface`.
 - The ratio is a readability target, not a fixed pixel law.
-- Right-side surface keeps enemy HP/phase, Current Telegraph + ETA, lower-priority Next Forecast when known, player HP/Energy/Chain Stock, and LINE/CHAIN/SKILL controls readable.
+- Right-side surface keeps enemy HP/phase, Current Telegraph + ETA, lower-priority Next Forecast when known, player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
 - Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context.
 - Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, Shared Turn Timer, READY, turn timeout/PASS, or Tempo UI as current production behavior.
 - Puzzle/HUD readability outranks decorative character, environment, and VFX detail.
