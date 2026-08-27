@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
@@ -7,6 +7,8 @@
 [ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="5_theme"]
 [ext_resource type="Texture2D" path="res://assets/production/characters/vanguard_combat_cutout_v1.png" id="6_vanguard_cutout"]
 [ext_resource type="Texture2D" path="res://assets/production/bosses/gatebreaker_combat_cutout_v1.png" id="7_gatebreaker_cutout"]
+[ext_resource type="Texture2D" path="res://assets/production/vfx/vanguard_attack_accent_v1.png" id="8_vanguard_attack_fx"]
+[ext_resource type="Texture2D" path="res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png" id="9_gatebreaker_telegraph_fx"]
 
 [node name="Battle" type="Control"]
 process_mode = 3
@@ -121,6 +123,21 @@ texture = ExtResource("4_stage_backdrop")
 expand_mode = 1
 stretch_mode = 6
 
+[node name="GatebreakerThreatTelegraph" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
+z_index = 0
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.36
+anchor_top = 0.08
+anchor_right = 1.0
+anchor_bottom = 0.96
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("9_gatebreaker_telegraph_fx")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="VanguardReference" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
 z_index = 2
 layout_mode = 1
@@ -148,6 +165,22 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("7_gatebreaker_cutout")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VanguardAttackAccent" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
+visible = false
+z_index = 3
+layout_mode = 1
+anchors_preset = 0
+anchor_left = 0.0
+anchor_top = 0.16
+anchor_right = 0.66
+anchor_bottom = 0.92
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_vanguard_attack_fx")
 expand_mode = 1
 stretch_mode = 5
 

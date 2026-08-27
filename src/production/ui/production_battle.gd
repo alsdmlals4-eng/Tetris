@@ -12,12 +12,16 @@ const CHAIN := "CHAIN"
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceBar
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
 @onready var _retry_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton
+@onready var _vanguard_attack_accent: TextureRect = $MainRow/CombatColumn/CombatStage/VanguardAttackAccent
+@onready var _gatebreaker_threat_telegraph: TextureRect = $MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph
 
 var _runtime = null
 var _workspace_manager = null
 var _pause_bridge: SimulationPauseBridge = null
 var _selected_skill_lane := ""
 var _selected_chain_cell := Vector2i(-1, -1)
+var _stage_vfx_elapsed := 0.0
+var _vanguard_attack_fx_remaining := 0.0
 
 func _ready() -> void:
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
@@ -41,6 +45,7 @@ func _ready() -> void:
 		_pause_bridge.bind_controller(pause_controller)
 	set_active_workspace(LINE)
 	_refresh_runtime_labels()
+	_refresh_stage_vfx(0.0)
 
 func _process(delta: float) -> void:
 	if _runtime == null:
@@ -51,6 +56,7 @@ func _process(delta: float) -> void:
 		_line_view.bind_line_session(_workspace_manager.line_session)
 		_chain_view.bind_chain_session(_workspace_manager.chain_session)
 	_refresh_runtime_labels()
+	_refresh_stage_vfx(delta)
 
 func set_active_workspace(workspace: String) -> bool:
 	if workspace != LINE and workspace != CHAIN:
@@ -155,8 +161,34 @@ func select_skill_tier(tier: int) -> Dictionary:
 
 func _use_selected_skill() -> void:
 	if _runtime != null and _runtime.is_simulation_paused():
-		_runtime.use_selected_skill()
+		var result: Dictionary = _runtime.use_selected_skill()
+		if bool(result.get("committed", false)) and _selected_skill_lane == "ATTACK":
+			_trigger_vanguard_attack_fx()
 	_refresh_runtime_labels()
+
+func _trigger_vanguard_attack_fx() -> void:
+	_vanguard_attack_fx_remaining = 0.42
+	_vanguard_attack_accent.visible = true
+	_vanguard_attack_accent.modulate = Color(1.0, 1.0, 1.0, 0.9)
+
+func _refresh_stage_vfx(delta: float) -> void:
+	_stage_vfx_elapsed += maxf(0.0, delta)
+	if _vanguard_attack_fx_remaining > 0.0:
+		_vanguard_attack_fx_remaining = maxf(0.0, _vanguard_attack_fx_remaining - delta)
+		var slash_alpha := 0.9 * (_vanguard_attack_fx_remaining / 0.42)
+		_vanguard_attack_accent.visible = slash_alpha > 0.0
+		_vanguard_attack_accent.modulate = Color(1.0, 1.0, 1.0, slash_alpha)
+	else:
+		_vanguard_attack_accent.visible = false
+	if _runtime == null:
+		_gatebreaker_threat_telegraph.visible = false
+		return
+	var snapshot: Dictionary = _runtime.snapshot()
+	var active_telegraph := not bool(snapshot.get("terminal", false)) and float(snapshot.get("enemy_eta_seconds", 0.0)) > 0.0
+	_gatebreaker_threat_telegraph.visible = active_telegraph
+	if active_telegraph:
+		var pulse := 0.22 + 0.08 * (0.5 + 0.5 * sin(_stage_vfx_elapsed * 3.0))
+		_gatebreaker_threat_telegraph.modulate = Color(1.0, 1.0, 1.0, pulse)
 
 func _retry_encounter() -> void:
 	get_tree().reload_current_scene()
