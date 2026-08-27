@@ -15,6 +15,21 @@ class TerminalRuntime:
 	func is_skill_open() -> bool:
 		return false
 
+class MatrixRuntime:
+	var selected_category := ""
+	var selected_technique := ""
+
+	func is_simulation_paused() -> bool:
+		return true
+
+	func select_skill_category(category: String) -> bool:
+		selected_category = category
+		return true
+
+	func select_skill_technique(technique_id: String) -> Dictionary:
+		selected_technique = technique_id
+		return {"selected": true, "technique_id": technique_id}
+
 func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey and event.physical_keycode == expected_key:
@@ -90,23 +105,42 @@ func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
 		return
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	for node_path in ["Attack", "Defense", "Support"]:
-		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/%s" % node_path))
-	for tier in range(1, 7):
-		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier))
+	for row_name in ["AttackRow", "DefenseRow", "SupportRow"]:
+		var tier_row = battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillMatrix/%s/Tiers" % row_name)
+		assert_not_null(tier_row, "%s must expose six direct tier controls" % row_name)
+		if tier_row != null:
+			assert_eq(tier_row.get_child_count(), 6, "%s must offer T1 through T6" % row_name)
 	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton"))
-	assert_true(battle.has_method("select_skill_category"))
-	assert_true(battle.has_method("select_skill_tier"))
+	assert_true(battle.has_method("select_skill_matrix"))
 
 func test_skill_panel_groups_categories_and_tiers_for_the_compact_combat_column() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	var skill_panel_path := "MainRow/CombatColumn/SkillFrame/SkillPanel"
-	assert_not_null(battle.get_node_or_null("%s/SkillCategories" % skill_panel_path))
-	var tier_grid = battle.get_node_or_null("%s/TierGrid" % skill_panel_path)
-	assert_not_null(tier_grid)
-	if tier_grid != null:
-		assert_eq(tier_grid.columns, 3, "six tiers must use a compact 3-column grid instead of pushing USE below the viewport")
+	var matrix = battle.get_node_or_null("%s/SkillMatrix" % skill_panel_path)
+	assert_not_null(matrix)
+	if matrix != null:
+		assert_eq(matrix.get_child_count(), 3, "the compact combat column needs one actionable row per ATK/DEF/SUP lane")
+
+func test_skill_matrix_composes_existing_category_and_tier_selection() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var runtime := MatrixRuntime.new()
+	battle._runtime = runtime
+	var selected: Dictionary = battle.select_skill_matrix("ATTACK", 4)
+	assert_true(bool(selected.get("selected", false)))
+	assert_eq(runtime.selected_category, "ATTACK")
+	assert_eq(runtime.selected_technique, "atk_t4_crushing_strike")
+
+func test_skill_matrix_rejects_an_unknown_lane_without_selecting_it() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var runtime := MatrixRuntime.new()
+	battle._runtime = runtime
+	var selected: Dictionary = battle.select_skill_matrix("RIFT", 2)
+	assert_false(bool(selected.get("selected", false)))
+	assert_eq(String(selected.get("reason", "")), "INVALID_SELECTION")
+	assert_eq(runtime.selected_category, "")
 
 func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
@@ -121,6 +155,12 @@ func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	assert_not_null(backdrop.texture, "the stage backdrop needs a deterministic placeholder or production texture")
 	assert_eq(backdrop.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_COVERED, "the wide stage slot must cover its full bounds")
 	assert_true(backdrop.mouse_filter == Control.MOUSE_FILTER_IGNORE, "the decorative backdrop must never intercept battle controls")
+	var boss_reference = battle.get_node_or_null("MainRow/CombatColumn/CombatStage/BossReference")
+	assert_true(boss_reference is TextureRect, "CombatStage must expose the approved Gatebreaker crop through a named consumer")
+	if boss_reference != null:
+		assert_not_null(boss_reference.texture)
+		assert_eq(boss_reference.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/ThreatFrame/ThreatPanel/BossReadout"))
 
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
 	for action_name in [
@@ -172,3 +212,11 @@ func test_terminal_result_exposes_retry_only_after_combat_ends() -> void:
 	battle._refresh_runtime_labels()
 	assert_true(retry_button.visible, "Retry must appear after a terminal outcome")
 	assert_true(battle.has_method("_retry_encounter"), "Retry must restart through an explicit battle-owned bridge")
+
+func test_boss_readout_refreshes_from_the_enemy_snapshot() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	battle._runtime = TerminalRuntime.new({"terminal": false, "paused": false, "player_hp": 100, "player_energy": 20, "player_stock": 3, "enemy_hp": 73, "enemy_eta_seconds": 4.5})
+	battle._refresh_runtime_labels()
+	assert_string_contains(battle.get_node("MainRow/CombatColumn/ThreatFrame/ThreatPanel/BossReadout").text, "73")
+	assert_string_contains(battle.get_node("MainRow/CombatColumn/ThreatFrame/ThreatPanel/CurrentTelegraph").text, "4.5")
