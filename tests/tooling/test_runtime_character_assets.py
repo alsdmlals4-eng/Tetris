@@ -6,6 +6,7 @@ import json
 import hashlib
 import struct
 import unittest
+import zlib
 from pathlib import Path
 
 
@@ -26,8 +27,8 @@ EXPECTED_ASSETS = {
 }
 
 
-def read_png_header(path: Path) -> tuple[int, int, int]:
-    """Return PNG width, height, and color type without optional dependencies."""
+def read_png_header(path: Path) -> tuple[int, int, int, int]:
+    """Return PNG geometry/format facts needed by this no-dependency contract."""
     header = path.read_bytes()[:29]
     if header[:8] != b"\x89PNG\r\n\x1a\n" or header[12:16] != b"IHDR":
         raise AssertionError(f"{path} is not a valid PNG with an IHDR header")
@@ -36,7 +37,63 @@ def read_png_header(path: Path) -> tuple[int, int, int]:
     )
     if bit_depth not in (8, 16):
         raise AssertionError(f"{path} uses unsupported bit depth {bit_depth}")
-    return width, height, color_type
+    return width, height, bit_depth, color_type
+
+
+def png_has_transparent_rgba_pixel(path: Path) -> bool:
+    """Decode non-interlaced 8-bit RGBA scanlines and find an alpha value below 255."""
+    png = path.read_bytes()
+    width, height, bit_depth, color_type = read_png_header(path)
+    if bit_depth != 8 or color_type != 6:
+        return False
+
+    compressed = bytearray()
+    offset = 8
+    while offset < len(png):
+        length = struct.unpack(">I", png[offset : offset + 4])[0]
+        chunk_type = png[offset + 4 : offset + 8]
+        chunk_data = png[offset + 8 : offset + 8 + length]
+        if chunk_type == b"IDAT":
+            compressed.extend(chunk_data)
+        offset += 12 + length
+        if chunk_type == b"IEND":
+            break
+
+    raw = zlib.decompress(compressed)
+    stride = width * 4
+    cursor = 0
+    previous = bytearray(stride)
+    for _ in range(height):
+        filter_type = raw[cursor]
+        cursor += 1
+        encoded = raw[cursor : cursor + stride]
+        cursor += stride
+        row = bytearray(stride)
+        for index, value in enumerate(encoded):
+            left = row[index - 4] if index >= 4 else 0
+            up = previous[index]
+            up_left = previous[index - 4] if index >= 4 else 0
+            if filter_type == 0:
+                reconstructed = value
+            elif filter_type == 1:
+                reconstructed = value + left
+            elif filter_type == 2:
+                reconstructed = value + up
+            elif filter_type == 3:
+                reconstructed = value + ((left + up) // 2)
+            elif filter_type == 4:
+                pa = abs(up - up_left)
+                pb = abs(left - up_left)
+                pc = abs(left + up - 2 * up_left)
+                predictor = left if pa <= pb and pa <= pc else (up if pb <= pc else up_left)
+                reconstructed = value + predictor
+            else:
+                raise AssertionError(f"{path} has unsupported PNG filter {filter_type}")
+            row[index] = reconstructed & 0xFF
+        if any(alpha < 255 for alpha in row[3::4]):
+            return True
+        previous = row
+    return False
 
 
 def sha256(path: Path) -> str:
@@ -71,13 +128,18 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
 
                 image_path = REPO_ROOT / expected["path"]
                 self.assertTrue(image_path.is_file(), f"missing {image_path}")
-                width, height, color_type = read_png_header(image_path)
+                width, height, bit_depth, color_type = read_png_header(image_path)
                 self.assertEqual(sha256(image_path), asset["sha256"])
                 self.assertEqual(asset["dimensions_px"], [width, height])
                 self.assertGreater(width, 0)
                 self.assertGreater(height, 0)
                 self.assertLessEqual(max(width, height), 1536)
-                self.assertIn(color_type, (4, 6), "PNG must encode alpha")
+                self.assertEqual(bit_depth, 8)
+                self.assertEqual(color_type, 6, "PNG must be RGBA, not merely alpha-capable")
+                self.assertTrue(
+                    png_has_transparent_rgba_pixel(image_path),
+                    "PNG must contain at least one actually transparent pixel",
+                )
 
 
 if __name__ == "__main__":
