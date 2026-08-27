@@ -12,6 +12,7 @@ Mode: REVIEW → documentation reconciliation; no Godot implementation or asset 
 | CURRENT | `TETRIS-VISUAL-028 · Hand-Drawn Mystic Fantasy + Clean Puzzle UI` and approved reference manifest | Visual direction is retained. Reference images are not runtime proof unless their exact documented consumer is present. |
 | CURRENT | Battle stage, Vanguard/Gatebreaker cutouts, and attack/telegraph VFX have named nodes in `scenes/production/battle.tscn` and pass consumer-contract tests. | Implemented consumer binding only. Human readability remains unverified. |
 | CURRENT | `FULL_GAME_SCREEN_SURFACE_INVENTORY.md` and `SCREEN_SURFACE_INVENTORY.json` | Battle and tactical Skill are runtime surfaces; title/setup/route/briefing/result/workshop/codex remain planned or mixed. |
+| CURRENT | `TETRIS-ONBOARDING-037`; `FIRST_SESSION_ONBOARDING_CONTRACT.md` | User approved the intended first-session structure: short verified world/threat briefing → explicit Deploy → CORE-029 battle with contextual tutorial. It is documented, not implemented or Human-validated. |
 | HISTORICAL | `CORE_GAMEPLAY_GDD.md`, `POC_RULESET_V0_1.md`, core POC tests and PR #3 | Engineering foundation/provenance; not CORE-029 gameplay proof. |
 | SUPERSEDED | `TETRIS-CORE-024`, `TETRIS-TIME-025`; ordered phase rail, Shared Player Turn Timer, READY, timeout/PASS, Tempo | Preserve as provenance only; never use as current UX, visual, or runtime requirement. |
 | CONFLICT_FIXED | Notion Home, Visual Bible, and Flow Map contained present-tense references to unmerged PR #24, no image slots, Shared Turn Timer, and ordered-phase UX. | Current-truth correction blocks and targeted text corrections were written and read back in Notion. |
@@ -49,6 +50,18 @@ The differentiated hook is not “Tetris plus combat.” It is the tension betwe
 | Protected strengths | CURRENT | One large readable puzzle surface; two non-substitutable resources; threat hierarchy; explicit-use pause; visual clarity over spectacle. |
 | Riskiest Vertical Slice hypothesis | NOT_RUN | New players can understand switching, two resources, pause/USE, and threat priority quickly enough for the loop to feel tense rather than overloaded. |
 
+## User-approved first-session correction · Issue #54
+
+The prior state had planned title/briefing/manual surfaces but no accepted first-session learning order. The user approved a small world explanation and tutorial. `TETRIS-ONBOARDING-037` therefore fixes the intended entry as `TITLE → BATTLE_BRIEFING → CONTINUOUS_BATTLE → RESULT/RETRY` and restricts its world text to the verified Vanguard / Frontier Gate / Gatebreaker / immediate-threat relationship. The tutorial occurs in actual CORE-029 battle: Telegraph/ETA → LINE/Energy → CHAIN/Stock/Tier → full Skill pause and explicit USE → one unforced response.
+
+This correction does not add a scene, a runtime asset, a separate turn mode, or Human/player proof. It also does not impose the later full route/setup/meta path on the current direct-entry slice.
+
+### Incident / Solution / Lesson
+
+- **Incident:** the screen inventory named Briefing and Manual surfaces, but no accepted first-session order connected the world/threat explanation to the existing CORE-029 learning loop. Direct-entry runtime proof could therefore be mistaken for a complete player entry.
+- **Solution:** `TETRIS-ONBOARDING-037` makes the minimal briefing/Deploy and embedded tutorial sequence explicit, marks it planned, and preserves all realtime supersession boundaries.
+- **Lesson:** a planned explanatory screen is not onboarding until its player question, live-system handoff, unforced application step, and Human evidence gate are recorded together. `NO_BASE_PROMOTION`: this is one project-specific reconciliation result, not yet reusable cross-project evidence.
+
 ## Evidence-based SWOT
 
 | Class | Statement | Evidence | Confidence | Player / production impact | Disposition | Next validation |
@@ -80,10 +93,10 @@ This is a planning/understanding pack, not a list of runtime assets or a usabili
 1. **Intent / core direction:** CURRENT and approved (CORE-029, VISUAL-028).
 2. **Representative runtime slice:** IMPLEMENTED with automated-contract evidence; player-evidence ceiling remains `NOT_RUN`.
 3. **Human usability / player experience validation:** next required gate.
-4. **First-session and meta-loop completion:** blocked behind validated core-loop learning; title/route/briefing/result references are planning-only.
+4. **First-session and meta-loop completion:** first-session design is now user-approved and documented; its runtime implementation remains gated behind Phase 2 review and first-exposure evidence. Title/route/result/meta screens remain planning-only.
 5. **Production expansion / polish:** defer until the first-exposure findings choose the smallest corrective slice.
 
-Priority order: (1) obtain a target-resolution runtime capture and real first-exposure receipts; (2) correct any demonstrated comprehension/readability failure; (3) lock the smallest first-session entry/result loop; (4) only then expand planned screen implementation or production-asset batches.
+Priority order: (1) obtain a target-resolution runtime capture and real first-exposure receipts; (2) correct any demonstrated comprehension/readability failure; (3) Phase 2-review the approved briefing/embedded-tutorial implementation contract; (4) only then expand planned screen implementation or production-asset batches.
 
 ## Notion destination readback
 
