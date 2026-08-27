@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "docs" / "assets" / "reference" / "approved" / "APPROVED_REFERENCE_MANIFEST.json"
 SCENE_PATH = ROOT / "scenes" / "production" / "battle.tscn"
 UI_SCRIPT_PATH = ROOT / "src" / "production" / "ui" / "production_battle.gd"
+RENDER_PROBE_PATH = ROOT / "tests" / "tooling" / "combat_vfx_layout_probe.gd"
 
 EXPECTED_VFX = {
     "TETRIS-IMG-035": {
@@ -121,6 +122,14 @@ class RuntimeCombatVfxAssetTests(unittest.TestCase):
         self.assertIn('result.get("committed", false)', script)
         self.assertIn("_refresh_stage_vfx", script)
         self.assertIn("enemy_eta_seconds", script)
+
+    def test_render_probe_fails_cleanly_when_a_headless_viewport_cannot_capture(self) -> None:
+        probe = RENDER_PROBE_PATH.read_text(encoding="utf-8")
+        self.assertIn('DisplayServer.get_name() == "headless"', probe)
+        self.assertIn("viewport_texture == null", probe)
+        self.assertIn("viewport_image == null", probe)
+        self.assertIn("display-capable renderer", probe)
+        self.assertIn("quit(2)", probe)
 
 
 if __name__ == "__main__":

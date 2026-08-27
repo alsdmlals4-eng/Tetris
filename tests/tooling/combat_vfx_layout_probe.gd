@@ -15,6 +15,22 @@ func _init() -> void:
 	var gatebreaker := battle.get_node("MainRow/CombatColumn/CombatStage/GatebreakerReference") as TextureRect
 	print("stage_rect=%s slash_rect=%s telegraph_rect=%s vanguard_rect=%s gatebreaker_rect=%s" % [stage.get_global_rect(), slash.get_global_rect(), telegraph.get_global_rect(), vanguard.get_global_rect(), gatebreaker.get_global_rect()])
 	print("telegraph_visible=%s slash_visible=%s" % [telegraph.visible, slash.visible])
+	# 표시 가능한 렌더러에서는 PNG를 남기고, headless에서는 명확한 실패 코드로 끝낸다.
+	if DisplayServer.get_name() == "headless":
+		push_error("combat_vfx_layout_probe requires a display-capable renderer to capture a viewport PNG")
+		quit(2)
+		return
+	var viewport_texture := root.get_viewport().get_texture()
+	if viewport_texture == null:
+		push_error("combat_vfx_layout_probe requires a display-capable renderer to capture a viewport PNG")
+		quit(2)
+		return
+	var viewport_image := viewport_texture.get_image()
+	if viewport_image == null:
+		push_error("combat_vfx_layout_probe could not obtain a viewport image")
+		quit(2)
+		return
 	var output_path := "user://combat_vfx_layout_probe.png"
-	print("render_path=%s save_error=%s" % [ProjectSettings.globalize_path(output_path), root.get_viewport().get_texture().get_image().save_png(output_path)])
-	quit()
+	var save_error := viewport_image.save_png(output_path)
+	print("render_path=%s save_error=%s" % [ProjectSettings.globalize_path(output_path), save_error])
+	quit(save_error)
