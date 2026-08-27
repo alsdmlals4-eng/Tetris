@@ -169,6 +169,9 @@
     "runtime_image_consumers": "IMPLEMENTED_ON_MERGED_MAIN",
     "production_human_playtest": "NOT_RUN",
     "merged_main_runtime": "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
-    "current_branch_evidence": "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE"
+    "runtime_evidence_identity": "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
+    "runtime_baseline_main_sha": "1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a",
+    "runtime_evidence_source_head_sha": "92b59bccd2ea45f772003b4abac2d9aa84672307",
+    "documentation_reconciliation_base_sha": "fb55b96f2612497f356bae6586429b944d35d7a8"
   }
 }
