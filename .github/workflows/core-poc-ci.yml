@@ -32,7 +32,9 @@ jobs:
 
       - name: Verify launcher syntax and vendor digest with PowerShell
         shell: pwsh
-        run: ./tools/windows/start_tetris_local_executor.ps1 -StaticSelfTest
+        run: |
+          ./tools/windows/start_tetris_local_executor.ps1 -StaticSelfTest
+          ./tools/windows/start_tetris_local_executor.ps1 -PortPreflightSelfTest
 
       - name: Install pinned Godot
         shell: bash
@@ -108,4 +110,6 @@ jobs:
 
       - name: Verify launcher in Windows PowerShell 5.1
         shell: powershell
-        run: .\tools\windows\start_tetris_local_executor.ps1 -StaticSelfTest
+        run: |
+          .\tools\windows\start_tetris_local_executor.ps1 -StaticSelfTest
+          .\tools\windows\start_tetris_local_executor.ps1 -PortPreflightSelfTest
