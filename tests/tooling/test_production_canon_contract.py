@@ -133,6 +133,34 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("concept sheet", text)
         self.assertIn("new image generation remains **PAUSED**", text)
 
+    def test_current_main_reality_does_not_describe_core_029_as_unimplemented(self) -> None:
+        data = self._index()
+        reality = data["implementation_reality"]
+        readme = README_PATH.read_text(encoding="utf-8")
+        image_contract = IMAGE_CONTRACT_PATH.read_text(encoding="utf-8")
+
+        for key in (
+            "core_029_runtime",
+            "production_line_workspace",
+            "production_chain_workspace",
+            "simulation_pause_controller",
+            "enemy_realtime_scheduler",
+            "skill_tactical_pause_runtime",
+            "production_60_40_ui",
+            "runtime_image_consumers",
+        ):
+            self.assertEqual(reality[key], "IMPLEMENTED_ON_MERGED_MAIN")
+        self.assertEqual(
+            reality["merged_main_runtime"],
+            "MERGED_AUTOMATED_VERTICAL_SLICE_READY",
+        )
+        self.assertIn("CORE-029 Production runtime: **main에 구현됨**", readme)
+        self.assertNotIn("CORE-029 Production runtime: **아직 NOT_PRESENT**", readme)
+        self.assertIn("TETRIS-IMG-031", image_contract)
+        self.assertIn(
+            "MainRow/CombatColumn/CombatStage/StageBackdrop", image_contract
+        )
+
     def test_human_entrypoints_route_to_realtime_canon_and_plan(self) -> None:
         self.assertTrue(PLAN_PATH.is_file(), "CORE-029 implementation plan must exist")
         agents = AGENTS_PATH.read_text(encoding="utf-8")

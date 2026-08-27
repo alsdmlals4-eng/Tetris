@@ -73,17 +73,16 @@ Godot import / use mode
 
 따라서 Battle UI concept sheet, character master/pose explanation sheet, combined UI sheet, generic mood/reference sheet는 runtime이 그 파일 자체를 직접 소비하지 않는 한 production backlog가 아닙니다. Sprite atlas도 실제 runtime이 해당 atlas를 소비할 때만 허용합니다.
 
-현재 CORE-029 runtime consumer가 아직 구현 중이므로 신규 이미지 생성은 **PAUSED**입니다. 이미지 작업 재개 시 한 번의 명시적 생성 승인마다 정확히 한 이미지 결과만 생성하고 검수 후 멈춥니다.
+CORE-029 baseline에는 `TETRIS-IMG-031` StageBackdrop이라는 실제 runtime consumer가 main에 구현되어 있습니다. 신규 이미지 생성은 별도 승인 범위가 구체적인 consumer gap을 지정할 때까지 **PAUSED**이며, 기존 승인 reference는 자동으로 runtime asset이 되지 않습니다.
 
 ## 현재 구현 경계
 
 - Core Combat Foundation / Engineering Harness: **main에 존재**.
-- CORE-029 written canon/spec/implementation plan: **branch에서 진행 중**.
-- CORE-029 Production runtime: **아직 NOT_PRESENT**.
+- CORE-029 written canon/spec/implementation plan: **main 구현과 함께 유지**.
+- CORE-029 Production runtime: **main에 구현됨**; 자동 검증은 `AUTOMATED_VERTICAL_SLICE_READY`까지 확보됐습니다.
 - Draft PR #19 ordered-turn implementation: **READ_ONLY source snapshot**, wholesale merge/cherry-pick 금지.
-- Production Line/Chain reusable deterministic components: Task-by-task로 선별 port 예정.
-- full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 60/40 production scene: 아직 구현 전.
-- CORE-029 runtime-consumed final image assets: 아직 구현 전.
+- Production Line/Chain reusable deterministic components, full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 60/40 production scene: **main에 구현됨**.
+- CORE-029 runtime-consumed image assets: `TETRIS-IMG-031` StageBackdrop이 main에서 소비됩니다. Draft PR #33의 Gatebreaker composition은 branch-only evidence이며 병합 전 main 사실을 바꾸지 않습니다.
 - 사용자 Windows Production runtime / first-exposure Human playtest: **NOT_RUN**.
 
 ## Human evidence

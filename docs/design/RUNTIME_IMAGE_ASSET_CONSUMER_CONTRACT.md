@@ -123,13 +123,13 @@ Puzzle/HUD readability remains higher priority than decorative texture and spect
 
 ## 8. CORE-029 current state
 
-At the time this contract is adopted, CORE-029 production runtime consumers for the new 60/40 battle composition are still being implemented.
+The merged CORE-029 baseline has a real consumer: `TETRIS-IMG-031` is consumed by `MainRow/CombatColumn/CombatStage/StageBackdrop` in the main 60/40 Battle scene. This proves the consumer-first path is live; it does not promote reference sheets or approve a new image request by itself.
 
 Therefore:
 
-- new image generation remains **PAUSED**;
+- new image generation remains **PAUSED** until a separately approved scope names a concrete consumer gap;
 - the previous `Battle Screen UI final concept`, character master/pose sheet, and generic environment concept backlog is **HISTORICAL / REFERENCE ONLY**;
-- image production resumes only after the relevant runtime consumer has an explicit contract.
+- image production resumes only after the relevant runtime consumer has an explicit contract. A later Draft PR may provide branch-only consumer evidence; it does not rewrite merged-main status.
 
 ## 9. Evidence ceiling
 
