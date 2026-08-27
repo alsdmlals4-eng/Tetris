@@ -1,6 +1,6 @@
 # TETRIS-IMG-032 · Gatebreaker Stage Cutout
 
-- Status: `LOCAL_RUNTIME_RENDER_VERIFIED / USER_APPROVED_REFERENCE_REUSE`
+- Status: `RUNTIME_CONSUMER_WIRED / USER_APPROVED_REFERENCE_REUSE`
 - Purpose: give the realtime threat area a recognizable Gatebreaker silhouette while preserving combat, puzzle, and input behavior.
 - Source asset ID: `IMG-P0-003`.
 - Source path: `res://docs/assets/reference/approved/TETRIS-IMG-P0-003-asymmetric-breach-colossus-master.png`.
@@ -15,4 +15,4 @@
 
 ## Evidence ceiling
 
-The scene reference proves runtime wiring. A local Godot runtime screenshot of the exact implementation head is required before calling it rendered. Human readability, appeal, and play validation remain `NOT_RUN`.
+The scene reference proves runtime wiring. Development-time Godot previews were inspected, but no immutable exact-head capture is stored in this repository; a local Godot runtime screenshot of the exact implementation head is still required before calling the asset rendered. Human readability, appeal, and play validation remain `NOT_RUN`.

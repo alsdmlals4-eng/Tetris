@@ -45,8 +45,8 @@
       "approval_status": "APPROVED_REFERENCE",
       "reference_scope": "Gatebreaker identity, asymmetric ram-arm, Rift Core, and intent poses",
       "runtime_consumer": "MainRow/CombatColumn/CombatStage/BossReference via TETRIS-IMG-032 AtlasTexture",
-      "runtime_integration": "IMPLEMENTED_LOCAL_RUNTIME_EVIDENCE",
-      "runtime_verification": "LOCAL_GODOT_SCREENSHOT_VERIFIED_HUMAN_NOT_RUN"
+      "runtime_integration": "IMPLEMENTED_PENDING_EXACT_HEAD_RUNTIME_EVIDENCE",
+      "runtime_verification": "NOT_RUN"
     }
   ]
 }
