@@ -51,9 +51,9 @@
   "static_contract_status": "PASS",
   "last_verified_at": "2026-08-26T14:45:00Z",
   "verification_evidence": [
-    "Official v3.2.0 release archive SHA-256, tag commit, and addon tree were read from hi-godot/godot-ai. The project vendor intentionally adds only runtime/game_helper_impl.gd and its UID; the full local vendor digest locks the resulting byte set.",
+    "Official v3.2.0 release archive SHA-256, tag commit, and addon tree were read from hi-godot/godot-ai. The project vendor intentionally adds only runtime/game_helper_impl.gd and its UID; the digest locks declared textual files by canonical CRLF/LF content and all other vendor files by exact bytes.",
     "Repository tooling contract verifies vendor digest, official Godot distribution hashes, slot 8 paths, loopback ports, launcher safety, live status identity gating, and CI consumption (5/5 tests passed).",
-    "Portable PowerShell 7.6.5 parsed the launcher and its StaticSelfTest reproduced the exact vendored-addon digest; Windows PowerShell 5.1 validation is configured in CI but is not promoted before the exact-head workflow result.",
+    "2026-08-27 reconciliation proved the v3.2.0 pin is the canonical LF-byte digest. The Python and PowerShell digest algorithms normalize only the addon's documented text formats before hashing so a local editor's CRLF rewrite cannot make an unchanged tracked source tree fail the preflight; Windows PowerShell 5.1 validation remains required before promotion.",
     "Isolated Godot 4.7.1 Linux headless import and parse passed; Godot AI reported its expected headless-only server disablement.",
     "Existing GUT regression suite passed 50/50 tests with 355 assertions, including the strict log guard."
   ],

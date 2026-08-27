@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [switch]$SkipCodex,
-    [switch]$StaticSelfTest
+    [switch]$StaticSelfTest,
+    [switch]$PortPreflightSelfTest
 )
 
 Set-StrictMode -Version Latest
@@ -73,6 +74,29 @@ function Write-BigEndianUInt64([System.IO.Stream]$Stream, [uint64]$Value) {
     $Stream.Write($bytes, 0, $bytes.Length)
 }
 
+function ConvertTo-CanonicalGodotAiVendorBytes([string]$RelativePath, [byte[]]$Bytes) {
+    $extension = [System.IO.Path]::GetExtension($RelativePath).ToLowerInvariant()
+    $fileName = [System.IO.Path]::GetFileName($RelativePath)
+    $isDeclaredText = @('.cfg', '.gd', '.md', '.uid') -contains $extension -or $fileName -eq 'LICENSE'
+    if (-not $isDeclaredText) { return $Bytes }
+
+    $canonical = New-Object System.IO.MemoryStream
+    try {
+        for ($index = 0; $index -lt $Bytes.Length; $index++) {
+            if ($Bytes[$index] -eq 13) {
+                if ($index + 1 -lt $Bytes.Length -and $Bytes[$index + 1] -eq 10) { continue }
+                $canonical.WriteByte(13)
+                continue
+            }
+            $canonical.WriteByte($Bytes[$index])
+        }
+        return $canonical.ToArray()
+    }
+    finally {
+        $canonical.Dispose()
+    }
+}
+
 function Get-GodotAiVendorDigest([string]$AddonRoot) {
     $root = (Resolve-Path -LiteralPath $AddonRoot).Path.TrimEnd([char[]]@('\', '/'))
     $pathMap = @{}
@@ -87,7 +111,7 @@ function Get-GodotAiVendorDigest([string]$AddonRoot) {
     try {
         foreach ($relative in $orderedPaths) {
             $relativeBytes = [System.Text.Encoding]::UTF8.GetBytes($relative)
-            $fileBytes = [System.IO.File]::ReadAllBytes([string]$pathMap[$relative])
+            [byte[]]$fileBytes = ConvertTo-CanonicalGodotAiVendorBytes $relative ([System.IO.File]::ReadAllBytes([string]$pathMap[$relative]))
             Write-BigEndianUInt32 $payload ([uint32]$relativeBytes.Length)
             $payload.Write($relativeBytes, 0, $relativeBytes.Length)
             Write-BigEndianUInt64 $payload ([uint64]$fileBytes.Length)
@@ -237,7 +261,7 @@ function Test-ExactGodotAiListener($Row) {
 }
 
 function Assert-PortState($ExactEditor) {
-    $occupied = @((Get-PortDiagnostics $HttpPort) + (Get-PortDiagnostics $WsPort))
+    $occupied = @(@(Get-PortDiagnostics $HttpPort) + @(Get-PortDiagnostics $WsPort))
     if ($occupied.Count -eq 0) { return }
 
     if ($null -ne $ExactEditor) {
@@ -255,6 +279,34 @@ function Assert-PortState($ExactEditor) {
         Write-Host ("Port {0} Address={1} PID {2} Name={3}`n  Executable={4}`n  CommandLine={5}" -f $row.Port, $row.LocalAddress, $row.PID, $row.Name, $row.ExecutablePath, $row.CommandLine)
     }
     Fail-Bootstrap 'HTTP 8008 or WS 9508 has an unknown, partial, or foreign owner. No process was terminated and no alternate port was selected.'
+}
+
+function Invoke-PortPreflightSelfTest {
+    function script:Get-PortDiagnostics([int]$Port) {
+        return @()
+    }
+    Assert-PortState $null
+
+    function script:Get-PortDiagnostics([int]$Port) {
+        if ($Port -ne $HttpPort) { return @() }
+        return [pscustomobject]@{
+            Port = $Port
+            PID = 4242
+            LocalAddress = '127.0.0.1'
+            Name = 'foreign-owner.exe'
+            ExecutablePath = 'C:\\foreign-owner.exe'
+            CommandLine = 'foreign-owner --port 8008'
+        }
+    }
+    try {
+        Assert-PortState $null
+    }
+    catch {
+        if ($_.Exception.Message -notmatch 'unknown, partial, or foreign owner') { throw }
+        Write-Host 'TETRIS_LAUNCHER_PORT_PREFLIGHT_SELF_TEST_PASS'
+        return
+    }
+    Fail-Bootstrap 'PORT_PREFLIGHT_SELF_TEST_EXPECTED_FAIL_CLOSED_CONFLICT'
 }
 
 function Assert-ProjectIdentity {
@@ -608,6 +660,11 @@ if ($StaticSelfTest) {
         Fail-Bootstrap "STATIC_SELF_TEST_VENDOR_MISMATCH expected=$ExpectedGodotAiVendorSha256 observed=$observedVendorDigest"
     }
     Write-Host "TETRIS_LAUNCHER_STATIC_SELF_TEST_PASS vendor_sha256=$observedVendorDigest"
+    exit 0
+}
+
+if ($PortPreflightSelfTest) {
+    Invoke-PortPreflightSelfTest
     exit 0
 }
 

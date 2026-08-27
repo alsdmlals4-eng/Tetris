@@ -15,10 +15,18 @@ LAUNCHER = ROOT / "tools" / "windows" / "start_tetris_local_executor.ps1"
 ENTRYPOINT = ROOT / "RUN_TETRIS_LOCAL.cmd"
 PROJECT = ROOT / "project.godot"
 WORKFLOW = ROOT / ".github" / "workflows" / "core-poc-ci.yml"
+TEXT_VENDOR_EXTENSIONS = {".cfg", ".gd", ".md", ".uid"}
+TEXT_VENDOR_FILENAMES = {"LICENSE"}
 
 
 def _text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
+
+
+def _canonical_vendor_payload(path: Path, payload: bytes) -> bytes:
+    if path.suffix.lower() in TEXT_VENDOR_EXTENSIONS or path.name in TEXT_VENDOR_FILENAMES:
+        return payload.replace(b"\r\n", b"\n")
+    return payload
 
 
 def _vendor_digest() -> str:
@@ -31,11 +39,34 @@ def _vendor_digest() -> str:
         relative = path.relative_to(ADDON).as_posix().encode("utf-8")
         digest.update(len(relative).to_bytes(4, "big"))
         digest.update(relative)
-        payload = path.read_bytes()
+        payload = _canonical_vendor_payload(path, path.read_bytes())
         digest.update(len(payload).to_bytes(8, "big"))
         digest.update(payload)
     return digest.hexdigest()
+
+
+EXPECTED_VENDOR_DIGEST = "df3856abf8ea3fd948dae66176f67cfe5e7cdd139a0815b253d640f405c0a3f6"
+
+
 class TetrisHiGodotBindingTests(unittest.TestCase):
+    def test_vendor_digest_canonicalizes_declared_text_line_endings_only(self) -> None:
+        self.assertEqual(
+            _canonical_vendor_payload(Path("plugin.gd"), b"extends EditorPlugin\r\n"),
+            b"extends EditorPlugin\n",
+        )
+        self.assertEqual(
+            _canonical_vendor_payload(Path("LICENSE"), b"MIT\r\n"),
+            b"MIT\n",
+        )
+        self.assertEqual(
+            _canonical_vendor_payload(Path("plugin.gd"), b"legacy\rline"),
+            b"legacy\rline",
+        )
+        self.assertEqual(
+            _canonical_vendor_payload(Path("asset.png"), b"\x89PNG\r\n\x1a\n"),
+            b"\x89PNG\r\n\x1a\n",
+        )
+
     def test_exact_upstream_vendor_is_present_and_integrity_locked(self) -> None:
         self.assertTrue((ADDON / "plugin.cfg").is_file())
         plugin_cfg = _text(ADDON / "plugin.cfg")
@@ -60,6 +91,7 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
             record["vendor_local_extension_files"],
             ["runtime/game_helper_impl.gd", "runtime/game_helper_impl.gd.uid"],
         )
+        self.assertEqual(record["vendor_content_sha256"], EXPECTED_VENDOR_DIGEST)
         self.assertEqual(record["vendor_content_sha256"], _vendor_digest())
         self.assertEqual(record["license"], "MIT")
         self.assertEqual(
@@ -105,6 +137,8 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
             "$ExpectedGodotAiVersion = '3.2.0'",
             "$ExpectedGodotAiVendorSha256 = 'df3856abf8ea3fd948dae66176f67cfe5e7cdd139a0815b253d640f405c0a3f6'",
             "Get-GodotAiVendorDigest",
+            "ConvertTo-CanonicalGodotAiVendorBytes",
+            "$occupied = @(@(Get-PortDiagnostics $HttpPort) + @(Get-PortDiagnostics $WsPort))",
             ".Replace('\\', '/')",
             r"C:\Users\user\.codex-tetris",
             "$HttpPort = 8008",
@@ -121,6 +155,8 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
             "Wait-ForExactHiGodotStatus",
             "HIGODOT_STATUS_IDENTITY_MISMATCH",
             "[switch]$StaticSelfTest",
+            "[switch]$PortPreflightSelfTest",
+            "TETRIS_LAUNCHER_PORT_PREFLIGHT_SELF_TEST_PASS",
             "UV_OR_GODOT_AI_NOT_FOUND",
             "CONCURRENT_BOOTSTRAP_FAIL_CLOSED",
             "FRESH_HIGODOT_READINESS_REQUIRED_BEFORE_MUTATION",
@@ -161,6 +197,7 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
         self.assertIn("windows-powershell-contract", workflow)
         self.assertIn("shell: powershell", workflow)
         self.assertIn("-StaticSelfTest", workflow)
+        self.assertIn("-PortPreflightSelfTest", workflow)
 
 
 if __name__ == "__main__":
