@@ -141,7 +141,12 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 self.assertEqual(asset["approval_status"], "SOURCE_ASSET_CANDIDATE")
                 self.assertEqual(asset["runtime_integration"], "IMPLEMENTED_ON_BRANCH")
                 self.assertEqual(asset["runtime_verification"], "SCENE_TREE_EQUIVALENT_RENDER_VERIFIED")
+                self.assertIn("aspect-centered stage slot", asset["geometry_contract"])
+                self.assertNotIn("bottom anchor", asset["geometry_contract"])
                 self.assertIn("StageBackdrop and both cutouts visible", asset["runtime_render_evidence"])
+                self.assertIn("non-retained local test result", asset["runtime_render_evidence"])
+                self.assertNotIn("direct branch render", asset["runtime_render_evidence"])
+                self.assertNotIn("screenshot SHA-256", asset["runtime_render_evidence"])
                 self.assertIn(asset_id, contract)
                 self.assertIn(expected["consumer"], contract)
 
@@ -159,6 +164,9 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     png_has_transparent_rgba_pixel(image_path),
                     "PNG must contain at least one actually transparent pixel",
                 )
+
+        self.assertIn("full-height, aspect-centered stage slot", contract)
+        self.assertNotIn("centered bottom", contract)
 
     def test_cutouts_are_bound_inside_the_production_combat_stage(self) -> None:
         scene = BATTLE_SCENE_PATH.read_text(encoding="utf-8")

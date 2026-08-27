@@ -12,8 +12,8 @@ The production 60/40 battle scene needs readable player and boss silhouettes tha
 
 | Derived ID | Approved source | Exact local target | Planned consumer | Geometry / import |
 | --- | --- | --- | --- | --- |
-| `TETRIS-IMG-033` | `IMG-P0-002` / Frontier Shield Vanguard Master | `assets/production/characters/vanguard_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/VanguardReference` | Transparent PNG, vertical full-body crop, 1536 px maximum source dimension, lossless UI/cutout import, centered bottom anchor |
-| `TETRIS-IMG-034` | `IMG-P0-003` / Asymmetric Breach Colossus Master | `assets/production/bosses/gatebreaker_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | Transparent PNG, rift-core and ram-arm safe area, 1536 px maximum source dimension, lossless UI/cutout import, centered bottom anchor |
+| `TETRIS-IMG-033` | `IMG-P0-002` / Frontier Shield Vanguard Master | `assets/production/characters/vanguard_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/VanguardReference` | Transparent PNG, vertical full-body crop, 1536 px maximum source dimension, lossless UI/cutout import, full-height aspect-centered stage slot |
+| `TETRIS-IMG-034` | `IMG-P0-003` / Asymmetric Breach Colossus Master | `assets/production/bosses/gatebreaker_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | Transparent PNG, rift-core and ram-arm safe area, 1536 px maximum source dimension, lossless UI/cutout import, full-height aspect-centered stage slot |
 
 ## Visual constraints
 
