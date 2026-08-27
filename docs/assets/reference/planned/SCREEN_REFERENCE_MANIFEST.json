@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "classification": "PLANNED_GAME_SURFACE_SCREEN_DESIGN_REFERENCE",
+  "issue": 49,
+  "status": "USER_APPROVED_PLANNING_REFERENCES_NOT_RUNTIME_ASSETS",
+  "style_anchor": ["IMG-P0-001", "IMG-P0-002", "IMG-P0-003"],
+  "references": [
+    {
+      "asset_id": "TETRIS-SREF-001",
+      "screen_id": "TETRIS-SCREEN-002",
+      "name": "Title Main Menu Screen Reference v1",
+      "local_path": "docs/assets/reference/planned/tetris-title-main-menu-screen-reference-v1.png",
+      "dimensions_px": [1672, 941],
+      "sha256": "6984a2833dd01d008a7dfd2e8e90d776bd0fadcfe999b0155f4c82efec1985de",
+      "consumer_kind": "PLANNED_GAME_SURFACE",
+      "consumer_surface": "Future Title scene",
+      "primary_use": "screen-level composition reference",
+      "notion_destination": "Tetris · Screen Surface Inventory",
+      "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
+    },
+    {
+      "asset_id": "TETRIS-SREF-002",
+      "screen_id": "TETRIS-SCREEN-005",
+      "name": "Frontier Route Map Screen Reference v1",
+      "local_path": "docs/assets/reference/planned/tetris-frontier-route-map-screen-reference-v1.png",
+      "dimensions_px": [1672, 941],
+      "sha256": "7d028d57382509e73a3a8696f5e3da6618ced080633db87c64b7b0e45d412f14",
+      "consumer_kind": "PLANNED_GAME_SURFACE",
+      "consumer_surface": "Future RouteMap scene",
+      "primary_use": "screen-level composition reference",
+      "notion_destination": "Tetris · Screen Surface Inventory",
+      "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
+    },
+    {
+      "asset_id": "TETRIS-SREF-003",
+      "screen_id": "TETRIS-SCREEN-006",
+      "name": "Battle Briefing Screen Reference v1",
+      "local_path": "docs/assets/reference/planned/tetris-battle-briefing-screen-reference-v1.png",
+      "dimensions_px": [1672, 941],
+      "sha256": "7d36d1f19c3eae6a49b260246b0254f701ae2485dd9255d9bdea42567bf2d87c",
+      "consumer_kind": "PLANNED_GAME_SURFACE",
+      "consumer_surface": "Future BattleBriefing scene",
+      "primary_use": "screen-level composition reference",
+      "notion_destination": "Tetris · Screen Surface Inventory",
+      "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
+    },
+    {
+      "asset_id": "TETRIS-SREF-004",
+      "screen_id": "TETRIS-SCREEN-010",
+      "name": "Result Reward Screen Reference v1",
+      "local_path": "docs/assets/reference/planned/tetris-result-reward-screen-reference-v1.png",
+      "dimensions_px": [1672, 941],
+      "sha256": "ec0d81d4b7901365c38b672814e6bab525a39b154b4099416b76fa373995618b",
+      "consumer_kind": "PLANNED_GAME_SURFACE",
+      "consumer_surface": "Future Result scene",
+      "primary_use": "screen-level composition reference",
+      "notion_destination": "Tetris · Screen Surface Inventory",
+      "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
+    },
+    {
+      "asset_id": "TETRIS-SREF-005",
+      "screen_id": "TETRIS-SCREEN-012",
+      "name": "Codex Manual Screen Reference v1",
+      "local_path": "docs/assets/reference/planned/tetris-codex-manual-screen-reference-v1.png",
+      "dimensions_px": [1672, 941],
+      "sha256": "326789fa3ceb7b51a2fb64da0bbc0002a4c95371bba00994c7d34f3aada73e67",
+      "consumer_kind": "PLAYER_FACING_EXPLANATORY",
+      "consumer_surface": "Future Codex/Manual scene",
+      "primary_use": "screen-level composition reference",
+      "notion_destination": "Tetris · Screen Surface Inventory",
+      "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
+    }
+  ]
+}
