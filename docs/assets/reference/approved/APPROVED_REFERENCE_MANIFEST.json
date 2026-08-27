@@ -47,6 +47,46 @@
       "runtime_consumer": "NOT_PRESENT",
       "runtime_integration": "NOT_IMPLEMENTED",
       "runtime_verification": "NOT_RUN"
+    },
+    {
+      "asset_id": "TETRIS-IMG-033",
+      "name": "Frontier Shield Vanguard Combat Cutout v1",
+      "local_path": "assets/production/characters/vanguard_combat_cutout_v1.png",
+      "derived_from": "IMG-P0-002",
+      "derivation_type": "APPROVED_MASTER_TO_TRANSPARENT_RUNTIME_CUTOUT",
+      "sha256": "b4e6fe89e2b4cd96d878dda220f474e6ba4b64affce0080cbc43b1c3448e7ecd",
+      "dimensions_px": [1024, 1536],
+      "approval_status": "SOURCE_ASSET_CANDIDATE",
+      "reference_scope": "full-body Vanguard combat silhouette with sword and shield; direct approved-master derivative",
+      "planned_consumer_scene": "scenes/production/battle.tscn",
+      "planned_consumer_node": "MainRow/CombatColumn/CombatStage/VanguardReference",
+      "consumer_type": "Texture2D on a future TextureRect",
+      "geometry_contract": "transparent alpha, vertical full-body crop, maximum source dimension 1536 px, centered bottom anchor",
+      "import_contract": "lossless cutout/UI import; Godot default filter remains implementation-owned",
+      "runtime_consumer": "PLANNED_NOT_BOUND",
+      "runtime_integration": "NOT_IMPLEMENTED",
+      "runtime_verification": "NOT_RUN",
+      "rollback": "Delete this versioned derived file and this manifest entry only; preserve IMG-P0-002."
+    },
+    {
+      "asset_id": "TETRIS-IMG-034",
+      "name": "Asymmetric Breach Colossus Combat Cutout v1",
+      "local_path": "assets/production/bosses/gatebreaker_combat_cutout_v1.png",
+      "derived_from": "IMG-P0-003",
+      "derivation_type": "APPROVED_MASTER_TO_TRANSPARENT_RUNTIME_CUTOUT",
+      "sha256": "a1353515c12ac672bfdab8ccccc94d26591cc1fd48953c6c5e2d969a99f407fa",
+      "dimensions_px": [1024, 1536],
+      "approval_status": "SOURCE_ASSET_CANDIDATE",
+      "reference_scope": "full-body Gatebreaker combat silhouette with asymmetric ram-arm and visible Rift Core; direct approved-master derivative",
+      "planned_consumer_scene": "scenes/production/battle.tscn",
+      "planned_consumer_node": "MainRow/CombatColumn/CombatStage/GatebreakerReference",
+      "consumer_type": "Texture2D on a future TextureRect",
+      "geometry_contract": "transparent alpha, ram-arm and Rift Core safe area, maximum source dimension 1536 px, centered bottom anchor",
+      "import_contract": "lossless cutout/UI import; Godot default filter remains implementation-owned",
+      "runtime_consumer": "PLANNED_NOT_BOUND",
+      "runtime_integration": "NOT_IMPLEMENTED",
+      "runtime_verification": "NOT_RUN",
+      "rollback": "Delete this versioned derived file and this manifest entry only; preserve IMG-P0-003."
     }
   ]
 }

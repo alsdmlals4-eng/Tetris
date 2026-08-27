@@ -140,3 +140,14 @@ Therefore:
 - Human evidence → required for readability, comprehension, appeal, and experience claims.
 
 Never promote a concept/reference sheet into runtime proof merely because it visually resembles the target game screen.
+
+## 10. Approved-source character cutout preparation · Issue #38
+
+The user has approved bounded derivation of two runtime source-asset candidates from existing P0 masters. This is not a new character-design request and does not alter the approved originals.
+
+| Derived asset | Approved source | Exact target | Planned scene consumer | Consumer type | Geometry / anchor | Current evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| `TETRIS-IMG-033` · Vanguard Combat Cutout v1 | `IMG-P0-002` | `res://assets/production/characters/vanguard_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/VanguardReference` | future `TextureRect.texture: Texture2D` | transparent alpha; vertical full body, sword and shield retained; max source dimension 1536 px; centered bottom | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: NOT_IMPLEMENTED` · `RUNTIME_VERIFICATION: NOT_RUN` |
+| `TETRIS-IMG-034` · Gatebreaker Combat Cutout v1 | `IMG-P0-003` | `res://assets/production/bosses/gatebreaker_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | future `TextureRect.texture: Texture2D` | transparent alpha; full body with asymmetric ram-arm and visible Rift Core; max source dimension 1536 px; centered bottom | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: NOT_IMPLEMENTED` · `RUNTIME_VERIFICATION: NOT_RUN` |
+
+The subsequent scene-binding task must start from the then-latest completed `main`, re-read this contract, and produce exact-head Godot render evidence. It must not treat this section or the asset files as proof of runtime use.
