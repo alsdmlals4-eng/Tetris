@@ -13,7 +13,7 @@
 | What game are we making, what is approved, what conflicts, and what is next? | [`PROJECT_MASTER_GDD.md`](PROJECT_MASTER_GDD.md) |
 | What is actually running now? | `scenes/production/battle.tscn`, `src/production/**`, `data/production/**`, tests, exact-head CI and runtime receipts |
 | What are the active combat rules? | [`PRODUCTION_REALTIME_COMBAT_CANON.md`](PRODUCTION_REALTIME_COMBAT_CANON.md), [`CHAIN_COMBO_MP_CONTRACT.md`](CHAIN_COMBO_MP_CONTRACT.md) |
-| How do LINE, Combo and category-resolved Skill fit together? | [`COMBO_RESOLVED_SKILL_CONTRACT.md`](COMBO_RESOLVED_SKILL_CONTRACT.md), [`CHAIN_COMBO_MP_CONTRACT.md`](CHAIN_COMBO_MP_CONTRACT.md) |
+| How do LINE, Combo and category-resolved Skill fit together? | [`COMBO_RESOLVED_SKILL_CONTRACT.md`](COMBO_RESOLVED_SKILL_CONTRACT.md), [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md), [`CHAIN_COMBO_MP_CONTRACT.md`](CHAIN_COMBO_MP_CONTRACT.md) |
 | What must the first session teach? | [`FIRST_SESSION_ONBOARDING_CONTRACT.md`](FIRST_SESSION_ONBOARDING_CONTRACT.md), [`FULL_GAME_SCREEN_SURFACE_INVENTORY.md`](FULL_GAME_SCREEN_SURFACE_INVENTORY.md) |
 | What should the project look and feel like? | [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md), planned/approved asset manifests |
 | Which planned screens exist only as references? | `SCREEN_SURFACE_INVENTORY.json`, `FULL_GAME_SCREEN_SURFACE_INVENTORY.md`, `SCREEN_REFERENCE_MANIFEST.json` |
@@ -40,8 +40,8 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 The current work order is:
 
-1. Author the missing Stage 7–10 lane descriptions/effect data. `TETRIS-VIS-BOARD-002` is already user-locked as a planning-only reference, not a runtime asset.
-2. Produce one bounded Phase 2 implementation contract for CHAIN-038, SKILL-039/BALANCE-040, VISUAL-041 runtime consumers and first-session handoff; no broad asset batch.
+1. Apply the user-approved C1–C10 content and target-separated time semantics from [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md) only through its Phase 2 implementation contract. `TETRIS-VIS-BOARD-002` is already user-locked as a planning-only reference, not a runtime asset.
+2. Produce one bounded Phase 2 implementation contract for CHAIN-038, SKILL-039/BALANCE-040/SKILL-042, VISUAL-041 runtime consumers and first-session handoff; no broad asset batch.
 3. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill → briefing/rules/Deploy and safe live practice, reusing the same encounter.
 4. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
 

@@ -2,6 +2,7 @@
 
 - Decision: `TETRIS-SKILL-039 · Category Choice → Combo-Resolved Technique → Explicit Confirm`
 - Balance amendment: `TETRIS-BALANCE-040 · Bounded Combo-to-MP Fallback`
+- Content amendment: [`TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`](COMBO_STAGE_SKILL_CONTENT_GDD.md)
 - Status: `USER_DIRECTED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
 - Date: 2026-08-28
 - Scope: one tactical-pause skill decision inside `TETRIS-CORE-029`; it does not alter continuous combat, LINE/CHAIN ownership, the 1-MP CHAIN setup lock, or the Combo cap.
@@ -36,14 +37,14 @@ The three category buttons are a player-facing tactical vocabulary, not three se
 | --- | --- |
 | `ATK` | Damage, breach and decisive-pressure answers. |
 | `DEF` | Mitigation, counter, lethal safety and current-threat protection. |
-| `SUP` | Recovery, setup, self-buff and visible-future utility control. |
+| `SUP` | Recovery, setup, player board-play opportunity, and visible-current-Telegraph ETA utility. |
 
 ## 3. Combo Stage resolver
 
 - Combo cap is **10**. A viable current Combo state is `C ∈ [1, 10]`.
 - Each lane owns authored **Stage 1–10 content**: `LaneStage[ATK|DEF|SUP][1..10]`. Stage is a resolved Combo state, not a separately selected player tier.
 - `LaneStage[C]` is the normal preview. It spends `C` Combo and its authored MP cost `MP(lane, C)`.
-- `T1–T6` may reuse the non-turn-bound purpose of the older matrix, but must be presented as one resolved preview rather than selectable cards. `T7–T10` require authored descriptions/effect data before implementation; no runtime code, seed data or balance claim exists for them yet.
+- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content, target-separated time-control semantics and Phase 2 content gates. Existing seed data remains legacy manual Tier 1–6 and does not yet implement that content.
 - Stage content must remain data-driven effect composition. This contract does not authorize thirty bespoke scripts, a new currency, cooldown system or a new enemy roster.
 
 ## 4. MP-insufficient bounded fallback

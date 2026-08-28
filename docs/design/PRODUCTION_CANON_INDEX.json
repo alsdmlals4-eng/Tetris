@@ -4,6 +4,7 @@
   "status": "CURRENT_PRODUCTION_CANON",
   "current_core_decision": "TETRIS-CORE-029",
   "current_skill_decision": "TETRIS-SKILL-039",
+  "current_skill_content_decision": "TETRIS-SKILL-042",
   "current_balance_decision": "TETRIS-BALANCE-040",
   "current_visual_decision": "TETRIS-VISUAL-041",
   "current_image_decision": "TETRIS-IMAGE-030",
@@ -49,6 +50,7 @@
     "TETRIS-SKILL-022",
     "TETRIS-SKILL-026",
     "TETRIS-SKILL-039",
+    "TETRIS-SKILL-042",
     "TETRIS-BALANCE-027",
     "TETRIS-BALANCE-040",
     "TETRIS-UX-023",
@@ -177,7 +179,9 @@
     "automatic_resolution_after_confirm": true,
     "unattended_autocast": false,
     "fallback_model": "HIGHEST_FEASIBLE_LOWER_STAGE_AFTER_BOUNDED_COMBO_TO_MP_CONVERSION",
-    "stage_7_to_10_content": "REQUIRED_BEFORE_IMPLEMENTATION",
+    "content_gdd": "docs/design/COMBO_STAGE_SKILL_CONTENT_GDD.md",
+    "stage_1_to_10_content": "USER_APPROVED_CONTENT_CANON_DOCUMENTED_NOT_IMPLEMENTED",
+    "deliberate_lower_combo_cast": "STOP_CHAIN_AT_DESIRED_CURRENT_COMBO_NO_MANUAL_DOWNSELECT",
     "implementation_model": "DATA_DRIVEN_EFFECT_PRIMITIVES",
     "skill_open_pause": "FULL_TACTICAL_PAUSE",
     "turn_bound_semantics_status": "REALTIME_MIGRATION_REQUIRED",
@@ -187,6 +191,16 @@
       "TURN_ONLY_STATUS_DURATION",
       "TEMPO_SCALING"
     ],
+    "target_separated_time_control": {
+      "player_domain": "BOARD_PLAY_OPPORTUNITY",
+      "enemy_domain": "VISIBLE_CURRENT_PATTERN_ETA",
+      "player_acceleration": "INCREASES_BOARD_PLAY_OPPORTUNITY_ONLY",
+      "player_deceleration": "DECREASES_BOARD_PLAY_OPPORTUNITY_ONLY",
+      "enemy_acceleration": "SHORTENS_CURRENT_PATTERN_ETA_ONLY",
+      "enemy_deceleration": "LENGTHENS_CURRENT_PATTERN_ETA_ONLY",
+      "global_engine_time_scale": "FORBIDDEN",
+      "implementation_status": "DOCUMENTED_NOT_IMPLEMENTED"
+    },
     "forecast_control": {
       "future_control_requires_visible_forecast": true,
       "future_control_binds_exact_action_id": true,
