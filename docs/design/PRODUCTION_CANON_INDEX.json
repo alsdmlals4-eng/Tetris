@@ -137,6 +137,10 @@
     ],
     "battle_tutorial_role": "PRACTICE_AND_VERIFY_PRE_DEPLOY_RULES",
     "post_deploy_tutorial_handoff": "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
+    "tutorial_pressure_mode": "SAFE_LIVE_AUTHORED_OPENING",
+    "tutorial_clock_behavior": "CONTINUOUS_FROM_DEPLOY",
+    "tutorial_opening_guardrail": "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_USE",
+    "tutorial_handoff_pressure": "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
     "implementation_status": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED"
   },
   "production_skill": {
