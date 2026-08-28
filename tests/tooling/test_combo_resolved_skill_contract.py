@@ -74,6 +74,9 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             "resource_restored",
             '"reason": "ROLLBACK_FAILED"',
             "test_time_owner_restore_rejects_invalid_or_advanced_state_without_mutation",
+            "remaining_after_advance",
+            "committed_after_advance",
+            "reserve.restore_state({})",
             "git fetch origin main",
         ):
             self.assertIn(required, text)

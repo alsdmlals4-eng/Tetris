@@ -464,16 +464,22 @@ func test_time_owner_snapshots_restore_only_the_same_current_action_state() -> v
 func test_time_owner_restore_rejects_invalid_or_advanced_state_without_mutation() -> void:
     var reserve := PlayerBoardOpportunityState.new()
     reserve.grant(3.0)
+    assert_false(reserve.restore_state({}))
+    assert_almost_eq(reserve.remaining_seconds(), 3.0, 0.001)
     assert_false(reserve.restore_state({"remaining_seconds": 13.0}))
     assert_almost_eq(reserve.remaining_seconds(), 3.0, 0.001)
     var scheduler_before := scheduler.snapshot_current_action_state()
     scheduler.tick_simulation(99.0, _context())
     var current_after_advance := scheduler.current_action_id()
     var next_after_advance := scheduler.next_action_id()
+    var remaining_after_advance := scheduler.remaining_seconds()
+    var committed_after_advance := scheduler.is_action_committed()
     assert_ne(current_after_advance, scheduler_before["current_action_id"])
     assert_false(scheduler.restore_current_action_state(scheduler_before))
     assert_eq(scheduler.current_action_id(), current_after_advance)
     assert_eq(scheduler.next_action_id(), next_after_advance)
+    assert_almost_eq(scheduler.remaining_seconds(), remaining_after_advance, 0.001)
+    assert_eq(scheduler.is_action_committed(), committed_after_advance)
 ```
 
 - [ ] **Step 2: Run timing tests and confirm no local time-domain primitives exist.**
@@ -499,7 +505,7 @@ func _tick_active_puzzle(delta: float) -> void:
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
-Expected: PASS; the reserve caps at 12 seconds, handles a partial-frame expiry without losing ordinary LINE delta, preserves LINE input while it holds gravity/lock, consumes neither in CHAIN nor pause, player timing does not change enemy ETA, enemy timing does not change line opportunity, and a current ETA never changes a Next Forecast ID.
+Expected: PASS; the reserve caps at 12 seconds, handles a partial-frame expiry without losing ordinary LINE delta, preserves LINE input while it holds gravity/lock, consumes neither in CHAIN nor pause, rejects malformed and out-of-cap snapshots without mutation, player timing does not change enemy ETA, enemy timing does not change line opportunity, and a current ETA never changes a Next Forecast ID.
 
 - [ ] **Step 5: Commit local time primitives.**
 
