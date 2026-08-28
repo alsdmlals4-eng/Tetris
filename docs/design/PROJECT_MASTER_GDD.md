@@ -1,7 +1,7 @@
 # Tetris · Master GDD
 
 - Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72
-- Fresh gameplay source snapshot: `origin/main` `dec60706ab8fcec3986b01f279d9d60080a309f8`, read 2026-08-28; repository-only owner migration snapshot: `origin/main` `59c537f29ed0bebed8d40be5cecfd6ff5b89318b`.
+- Fresh source snapshot: `origin/main` `a217db433413d5c0be8dee4308432cd37a09f9e9`, read 2026-08-28. It retains the prior gameplay snapshot `dec60706ab8fcec3986b01f279d9d60080a309f8` and the Master-GDD/visual-workflow snapshot `59c537f29ed0bebed8d40be5cecfd6ff5b89318b` as provenance.
 - Purpose: make the currently approved game intelligible in one place without replacing the documents and runtime evidence that own individual facts.
 - Reader rule: a rule may be **approved** yet not be **implemented**; an implemented system may be automated-tested yet not be **Human/player validated**. This document preserves those distinctions.
 - Current owner rule: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the sole current project owners. Notion is `HISTORICAL_EXTERNAL_PROVENANCE_ONLY`; do not read, write, sync, or require it for current work.

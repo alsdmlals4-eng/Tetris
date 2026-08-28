@@ -42,15 +42,16 @@ BATTLE_START
 
 GitHub repository documents, GitHub issue/PR history, and runtime evidence are the only current project owners. External workspaces are historical provenance only and are not read, written, or synchronized for current work.
 
-1. `docs/design/PROJECT_MASTER_GDD.md` — current human-readable GDD, conflict register, evidence ceiling and work order.
-2. `docs/design/VISUAL_BIBLE.md` — current visual direction, planning-board legend and visual lock workflow.
-3. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — CORE-029 current combat authority.
-4. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained SKILL-026 Technique identity, subject to realtime migration boundaries.
-5. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 MP/Combo/Tier structure.
-6. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
-7. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
-8. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
-9. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
+1. `docs/design/PROJECT_WORKSPACE_INDEX.md` — repository-owned project-home structure and current handoff routing.
+2. `docs/design/PROJECT_MASTER_GDD.md` — current human-readable GDD, conflict register, evidence ceiling and work order.
+3. `docs/design/VISUAL_BIBLE.md` — current visual direction, planning-board legend and visual lock workflow.
+4. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — CORE-029 current combat authority.
+5. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained SKILL-026 Technique identity, subject to realtime migration boundaries.
+6. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 MP/Combo/Tier structure.
+7. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
+8. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
+9. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
+10. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
 
 Historical provenance:
 

@@ -9,7 +9,7 @@ Read current production gameplay in this order:
 3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained Line MP / Chain Combo opportunity cost and Tier commitment structure (`TETRIS-BALANCE-027`).
 4. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar and optional MP lock (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
 5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
-6. `docs/design/PROJECT_MASTER_GDD.md` and `docs/design/VISUAL_BIBLE.md` — repository-owned human-readable current project picture and visual direction.
+6. `docs/design/PROJECT_WORKSPACE_INDEX.md`, `PROJECT_MASTER_GDD.md`, and `VISUAL_BIBLE.md` — repository-owned project-home structure, current picture, and visual direction.
 7. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
 8. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
 9. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
