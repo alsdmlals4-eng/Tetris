@@ -66,6 +66,8 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             "leaves LINE input enabled",
             "preflight_effects",
             "restore_effect_checkpoint",
+            'request_switch("CHAIN")',
+            "FORCED_EXECUTION_FAILURE",
             "git fetch origin main",
         ):
             self.assertIn(required, text)

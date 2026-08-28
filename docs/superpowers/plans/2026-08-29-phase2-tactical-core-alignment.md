@@ -431,7 +431,8 @@ func test_line_input_stays_enabled_while_reserve_holds_gravity_and_lock() -> voi
 
 func test_reserve_does_not_consume_while_chain_or_paused() -> void:
     runtime.grant_player_board_opportunity(2.0)
-    workspace.request_workspace("CHAIN")
+    assert_true(workspace.request_switch("CHAIN")["accepted"])
+    assert_true(workspace.process_safe_handoff()["switched"])
     runtime.tick(0.5)
     assert_almost_eq(runtime.snapshot()["player_board_opportunity_seconds"], 2.0, 0.001)
     runtime.toggle_system_pause()
@@ -489,8 +490,8 @@ git commit -m "feat: add target separated board and eta timing"
 **Interfaces:**
 - `ProductionSkillSession.select_category(category: String, context: Dictionary) -> Dictionary` returns its resolved preview; it has no `select_technique` path.
 - `ProductionSkillSession.selected_preview() -> Dictionary` includes `opening_combo`, `resolved_stage`, `converted_combo`, `mp_cost`, `preview_lines`, `effects`, and `ready`.
-- `ProductionTechniqueResolver.preflight_effects(effects: Array, context: Dictionary) -> Dictionary` validates every effect and action variant without mutation and returns one deterministic executable plan or a failure reason.
-- `ProductionTechniqueResolver.capture_effect_checkpoint(context: Dictionary) -> Dictionary` / `restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> void` cover every mutable effect owner touched by a confirmed technique: player, enemy, response state, board opportunity and scheduler.
+- `ProductionTechniqueResolver.preflight_effects(effects: Array, context: Dictionary) -> Dictionary` validates every effect and action variant without mutation and returns one deterministic executable plan or a failure reason. A preflight failure must occur before resource commit; an executor/runtime failure after a successful preflight is still recoverable through the checkpoint below.
+- `ProductionTechniqueResolver.capture_effect_checkpoint(context: Dictionary) -> Dictionary` / `restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> void` snapshot and restore every mutable effect owner touched by a confirmed technique: player HP/resources/status, enemy HP/status, response action state, board-opportunity reserve, and current scheduler action/ETA state.
 - `ProductionCombatRuntime.select_skill_category(category: String) -> Dictionary` builds context from player, enemy, response state, scheduler, board opportunity, current action ID, and current action kind.
 - `ProductionCombatRuntime.open_skill()` returns `ENEMY_ACTION_COMMITTED` and does not acquire a pause token when the scheduler is committed.
 
@@ -516,19 +517,38 @@ func test_previewed_shortage_fallback_uses_highest_feasible_lower_stage_on_confi
     assert_eq(player.stock, 0)
     assert_eq(player.energy, 0)
 
-func test_later_invalid_effect_keeps_resources_and_earlier_effect_owners_unchanged() -> void:
+func test_post_preflight_execution_failure_restores_resources_and_every_mutable_effect_owner() -> void:
     player.stock = 2
     player.energy = 20
     player.hp = 50
+    enemy.hp = 100
+    response_state.configure_direct_mitigation(telegraph_action_id, 10)
+    board_opportunity.grant(3.0)
+    var eta_before := scheduler.remaining_seconds()
     _seed_selected_preview_with_effects([
-        {"kind": "HEAL", "amount": 15},
-        {"kind": "UNKNOWN_EFFECT"},
+        {"op": "HEAL_SELF", "magnitude": 15},
+        {"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 20},
+        {"op": "GRANT_PLAYER_BOARD_OPPORTUNITY", "magnitude": 2},
+        {"op": "ADJUST_CURRENT_ENEMY_ETA", "magnitude": 2},
+        {"op": "DAMAGE_SINGLE", "magnitude": 10},
     ])
+    # The injected fake executor preflights all five legal effects, applies the
+    # first four, then returns FORCED_EXECUTION_FAILURE on the fifth execution.
+    # This is a test seam for the post-preflight path, not a production-only opcode.
+    session = ProductionSkillSession.new(
+        pause_controller, player, catalog, _resolver_that_fails_on_execution(5)
+    )
+    assert_true(session.open())
     var result: Dictionary = session.commit_selected(_direct_context())
     assert_false(result["committed"])
+    assert_eq(result["reason"], "FORCED_EXECUTION_FAILURE")
     assert_eq(player.hp, 50)
     assert_eq(player.energy, 20)
     assert_eq(player.stock, 2)
+    assert_eq(enemy.hp, 100)
+    assert_eq(response_state.direct_mitigation_for(telegraph_action_id), 10)
+    assert_almost_eq(board_opportunity.remaining_seconds(), 3.0, 0.001)
+    assert_almost_eq(scheduler.remaining_seconds(), eta_before, 0.001)
 ```
 
 - [ ] **Step 2: Run Skill/runtime tests and confirm the legacy manual selection API fails the new contract.**
@@ -572,7 +592,7 @@ Add `resource_snapshot()` / `restore_resource_snapshot(snapshot)` to `Production
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
-Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, fallback is non-voluntary and highest-feasible, every effect preflights before resource spend, a later invalid effect restores every mutable owner and both resources, cancel restores exact paused state, confirm applies exactly once, and committed enemy actions cannot be retroactively paused.
+Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, fallback is non-voluntary and highest-feasible, every effect preflights before resource spend, a controlled post-preflight execution failure restores every mutable owner and both resources, cancel restores exact paused state, confirm applies exactly once, and committed enemy actions cannot be retroactively paused.
 
 - [ ] **Step 5: Commit the current-Combo Skill flow.**
 
