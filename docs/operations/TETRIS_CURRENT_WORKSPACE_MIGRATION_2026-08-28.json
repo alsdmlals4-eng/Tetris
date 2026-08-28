@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "status": "CURRENT_STRUCTURE_AND_ARTIFACTS_PRESERVED_IN_REPOSITORY",
+  "source_system": "NOTION_READ_ONLY_ONE_TIME_MIGRATION",
+  "source_snapshot_date": "2026-08-28",
+  "repository_baseline": "a217db433413d5c0be8dee4308432cd37a09f9e9",
+  "current_owner_after_migration": "REPOSITORY_ONLY",
+  "policy": {
+    "external_pages_modified": false,
+    "external_pages_required_for_future_work": false,
+    "legacy_or_superseded_content_copied_into_current_canon": false,
+    "project_local_current_structure_page_count": 18,
+    "excluded_non_project_owners": [
+      "PROJECT REGISTRY · Master",
+      "90 · SYSTEM MASTERS"
+    ]
+  },
+  "migration_records": [
+    {
+      "source_page_id": "3c11b237-eb1c-8187-a81d-fcdeb8d0ef36",
+      "source_title": "Tetris",
+      "source_role": "PROJECT_ROOT",
+      "disposition": "CURRENT_STRUCTURE_MIGRATED",
+      "repository_destinations": ["docs/design/PROJECT_WORKSPACE_INDEX.md", "docs/design/PROJECT_MASTER_GDD.md"]
+    },
+    {
+      "source_page_id": "3c41b237-eb1c-8199-85b3-e798e938c80b",
+      "source_title": "Tetris · Home",
+      "source_role": "PROJECT_HOME",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/PROJECT_WORKSPACE_INDEX.md", "docs/design/PROJECT_MASTER_GDD.md"]
+    },
+    {
+      "source_page_id": "3c51b237-eb1c-81f6-9339-c6c85916e960",
+      "source_title": "01 · Direction · Planning",
+      "source_role": "DIRECTION_DOMAIN",
+      "disposition": "CURRENT_STRUCTURE_MIGRATED",
+      "repository_destinations": ["docs/design/PROJECT_WORKSPACE_INDEX.md", "docs/design/PROJECT_MASTER_GDD.md"]
+    },
+    {
+      "source_page_id": "3c51b237-eb1c-81d8-817e-e86d1abc4f67",
+      "source_title": "02 · Combat Design · Data",
+      "source_role": "COMBAT_DATA_DOMAIN",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md", "docs/design/CHAIN_COMBO_MP_CONTRACT.md", "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"]
+    },
+    {
+      "source_page_id": "3c51b237-eb1c-81da-8f88-e724c681bf9b",
+      "source_title": "03 · Visual · UX · Assets",
+      "source_role": "VISUAL_UX_ASSET_DOMAIN",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/VISUAL_BIBLE.md", "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md", "docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json"]
+    },
+    {
+      "source_page_id": "3c51b237-eb1c-8162-a528-d7e47b3d14cc",
+      "source_title": "04 · Production · Validation",
+      "source_role": "VALIDATION_DOMAIN",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/validation/PRODUCTION_HUMAN_EVIDENCE_INDEX.json", "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md", "docs/operations/TETRIS_PHASE1_CANON_RECONCILIATION_2026-08-28.md"]
+    },
+    {
+      "source_page_id": "3c51b237-eb1c-813e-a715-e8d6f5bb529f",
+      "source_title": "05 · Reference · Benchmark",
+      "source_role": "REFERENCE_DOMAIN",
+      "disposition": "HISTORICAL_OR_PROVENANCE_ONLY_NOT_MIGRATED_AS_CURRENT",
+      "repository_destinations": ["docs/design/AI_INDIE_PATTERN_ADOPTION_2026-08-24.md"]
+    },
+    {
+      "source_page_id": "3c61b237-eb1c-81c9-a460-f17b429c657a",
+      "source_title": "15 · Vanguard 스킬 · Tactical Tier Matrix",
+      "source_role": "TACTICAL_SKILL_DETAIL",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md"]
+    },
+    {
+      "source_page_id": "3c61b237-eb1c-8125-bad7-e9d0d5e3a0d0",
+      "source_title": "16 · Resource Economy · Tier Exposure Contract",
+      "source_role": "RESOURCE_ECONOMY_DETAIL",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md", "docs/design/CHAIN_COMBO_MP_CONTRACT.md"]
+    },
+    {
+      "source_page_id": "3c11b237-eb1c-8150-8ebe-d297639a021a",
+      "source_title": "02 · 비주얼 바이블",
+      "source_role": "VISUAL_BIBLE",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/VISUAL_BIBLE.md", "docs/assets/reference/planned/PROJECT_UNDERSTANDING_VISUAL_MANIFEST.json"]
+    },
+    {
+      "source_page_id": "3c71b237-eb1c-8104-937c-e6c6f42b8e47",
+      "source_title": "17 · 이미지 작업 인수인계 · 2026-08-25",
+      "source_role": "IMAGE_HANDOFF",
+      "disposition": "CURRENT_ARTIFACTS_MIGRATED",
+      "repository_destinations": ["docs/assets/reference/approved/APPROVED_REFERENCE_MANIFEST.json", "docs/assets/reference/planned/PROJECT_UNDERSTANDING_VISUAL_MANIFEST.json", "docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json", "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"]
+    },
+    {
+      "source_page_id": "3c11b237-eb1c-819d-bad7-d0227473fd73",
+      "source_title": "03 · UI · 퍼즐 전투 Flow Map",
+      "source_role": "PLAYER_FLOW",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md", "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md", "docs/design/SCREEN_SURFACE_INVENTORY.json"]
+    },
+    {
+      "source_page_id": "3c91b237-eb1c-811c-be94-d9c7af6c34ce",
+      "source_title": "Tetris · Screen Surface Inventory",
+      "source_role": "SCREEN_SURFACE_DETAIL",
+      "disposition": "CURRENT_CONTENT_AND_ARTIFACTS_MIGRATED",
+      "repository_destinations": ["docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md", "docs/design/SCREEN_SURFACE_INVENTORY.json", "docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json"]
+    },
+    {
+      "source_page_id": "3c21b237-eb1c-817f-849d-e9dc99235869",
+      "source_title": "14 · P0 이미지 제작 패키지",
+      "source_role": "P0_IMAGE_PACKAGE",
+      "disposition": "CURRENT_ARTIFACTS_MIGRATED",
+      "repository_destinations": ["docs/assets/reference/approved/APPROVED_REFERENCE_MANIFEST.json", "docs/assets/production/TETRIS-IMG-031-FRACTURE-FRONTIER-STAGE.md", "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"]
+    },
+    {
+      "source_page_id": "3c61b237-eb1c-81e3-adbf-dfcb8ffb1e2e",
+      "source_title": "Vertical Slice · Human Evidence Gate",
+      "source_role": "HUMAN_EVIDENCE_GATE",
+      "disposition": "CURRENT_CONTENT_MIGRATED",
+      "repository_destinations": ["docs/validation/PRODUCTION_HUMAN_EVIDENCE_INDEX.json", "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"]
+    },
+    {
+      "source_page_id": "3c11b237-eb1c-8160-a1dc-cf2ba119cfab",
+      "source_title": "06 · Production · Handoff",
+      "source_role": "PRODUCTION_HANDOFF",
+      "disposition": "CURRENT_HANDOFF_ROUTING_MIGRATED",
+      "repository_destinations": ["docs/design/PROJECT_WORKSPACE_INDEX.md", "docs/design/PROJECT_MASTER_GDD.md", "docs/design/PRODUCTION_CANON_INDEX.json"]
+    },
+    {
+      "source_page_id": "3c81b237-eb1c-81b8-98be-d8acdc57e85d",
+      "source_title": "GPT Work · Current Handoff · 2026-08-26",
+      "source_role": "AI_WORK_HANDOFF",
+      "disposition": "CURRENT_HANDOFF_ROUTING_MIGRATED",
+      "repository_destinations": ["docs/design/PROJECT_WORKSPACE_INDEX.md", "docs/design/PROJECT_MASTER_GDD.md", "AGENTS.md"]
+    },
+    {
+      "source_page_id": "3c21b237-eb1c-814a-b70c-c04ff6cd09e9",
+      "source_title": "12 · Vertical Slice · Production Content Lock",
+      "source_role": "VERTICAL_SLICE_SCOPE",
+      "disposition": "HISTORICAL_OR_SUPERSEDED_SCOPE_NOT_MIGRATED_AS_CURRENT",
+      "repository_destinations": ["docs/design/PROJECT_MASTER_GDD.md", "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md"]
+    }
+  ],
+  "artifact_continuity": {
+    "planned_core_scene_board": "docs/assets/reference/planned/PROJECT_UNDERSTANDING_VISUAL_MANIFEST.json",
+    "planned_screen_reference_package": "docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json",
+    "approved_reference_package": "docs/assets/reference/approved/APPROVED_REFERENCE_MANIFEST.json",
+    "runtime_image_contract": "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
+  },
+  "base_promotion": "NO_BASE_PROMOTION: one project owner migration is not cross-project evidence."
+}
