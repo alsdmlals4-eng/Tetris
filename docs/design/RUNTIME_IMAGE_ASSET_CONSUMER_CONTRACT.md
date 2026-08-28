@@ -7,7 +7,7 @@
 
 ## 1. Core rule
 
-Tetris does not produce images merely to explain a design.
+Tetris does not treat images made merely to explain a design as **production images**.
 
 A production image is valid only when it has a concrete game consumer.
 
@@ -96,18 +96,25 @@ Production image work follows this sequence:
 2. wire a placeholder or deterministic temporary asset where practical;
 3. record the exact consumer contract;
 4. derive the image Brief from that consumer rather than from a generic concept request;
-5. show the text Brief and stop;
-6. wait for explicit user image-generation approval;
-7. generate exactly one requested artifact;
-8. inspect the result against the consumer geometry and style contract;
-9. import/bind the approved artifact into the intended Godot consumer;
+5. show the text Brief only when it improves a material design decision; otherwise proceed with the bounded work item;
+6. generate the candidate automatically under the approved project workflow;
+7. inspect the result against the consumer geometry and style contract;
+8. ask the user only whether to **lock** the inspected candidate;
+9. after user lock confirmation, import/bind the approved artifact into the intended Godot consumer;
 10. verify the scene references the asset and produce runtime/render evidence before calling it a production-integrated asset.
 
 If steps 9–10 have not happened, classify the result as `SOURCE_ASSET_CANDIDATE` or `REFERENCE`, not `RUNTIME_INTEGRATED`.
 
-## 6. Cardinality
+## 6. Generation and lock workflow amendment · 2026-08-28
 
-One explicit image-generation approval produces exactly one image result and then stops for review.
+User direction: **do not request approval before generating an image; generate first, then request confirmation only to lock the selected result.**
+
+`AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION` applies to bounded planning visualizations and to runtime image work that already has an exact Godot runtime consumer. It changes the approval timing; it does **not** remove the consumer-first gate, expand a work item into a batch, or promote an image merely because it was generated.
+
+- A planning board or concept comparison is `GENERATED_EXPLORATION`: it has no runtime consumer and does not become a runtime asset.
+- A runtime candidate still requires an exact target `res://` path, scene, node/slot, geometry, import/use mode, and user lock confirmation before it is classified as a Project Asset.
+- Before that lock, an image remains `SOURCE_ASSET_CANDIDATE` or `REFERENCE`; it does not become a runtime asset, UI implementation, scene implementation, or Human/player usability PASS.
+- One bounded consumer/work-item may generate one candidate at a time. A later variation requires a new bounded reason; do not silently build an unrelated image batch.
 
 One image may contain multiple regions only when the **runtime consumer itself** requires a single atlas/sprite sheet texture. In that case the Brief must define exact region/frame layout before generation.
 
@@ -127,7 +134,7 @@ The merged CORE-029 baseline has a real consumer: `TETRIS-IMG-031` is consumed b
 
 Therefore:
 
-- new image generation remains **PAUSED** until a separately approved scope names a concrete consumer gap;
+- runtime image generation is blocked until a concrete consumer gap has an exact contract; planning exploration may proceed under `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`;
 - the previous `Battle Screen UI final concept`, character master/pose sheet, and generic environment concept backlog is **HISTORICAL / REFERENCE ONLY**;
 - image production resumes only after the relevant runtime consumer has an explicit contract. A later Draft PR may provide branch-only consumer evidence; it does not rewrite merged-main status.
 

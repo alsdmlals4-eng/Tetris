@@ -282,7 +282,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("Shared Turn Timer", onboarding)
         self.assertIn("3×6", onboarding)
 
-    def test_image_production_requires_a_runtime_consumer_contract(self) -> None:
+    def test_image_production_requires_a_runtime_consumer_contract_and_user_lock(self) -> None:
         data = self._index()
         image_production = data["image_production"]
         self.assertEqual(
@@ -291,8 +291,17 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             image_production["generation_status"],
-            "PAUSED_PENDING_APPROVED_CONSUMER_GAP",
+            "CONSUMER_GAP_BLOCKS_RUNTIME_GENERATION_PLANNING_EXPLORATION_ALLOWED",
         )
+        self.assertEqual(
+            image_production["planning_generation_policy"],
+            "AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+        )
+        self.assertEqual(
+            image_production["runtime_generation_policy"],
+            "EXACT_CONSUMER_REQUIRED_AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+        )
+        self.assertFalse(image_production["one_explicit_approval_one_image"])
         self.assertTrue(IMAGE_CONTRACT_PATH.is_file())
         text = IMAGE_CONTRACT_PATH.read_text(encoding="utf-8")
         self.assertIn("TETRIS-IMAGE-030", text)
@@ -300,7 +309,9 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("consumer scene path", text)
         self.assertIn("consumer node / material / UI slot", text)
         self.assertIn("concept sheet", text)
-        self.assertIn("new image generation remains **PAUSED**", text)
+        self.assertIn("AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION", text)
+        self.assertIn("exact Godot runtime consumer", text)
+        self.assertIn("does not become a runtime asset", text)
 
     def test_current_main_reality_does_not_describe_core_029_as_unimplemented(self) -> None:
         data = self._index()

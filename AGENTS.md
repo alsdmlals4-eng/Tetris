@@ -98,7 +98,7 @@ No consumer = no production generation.
 
 Concept sheets, master sheets, pose explanation sheets, combined UI sheets, and mock screenshots are reference-only unless the runtime directly consumes that exact file. Atlas/sprite sheets are allowed only when the runtime consumes the exact atlas with a defined region/frame contract.
 
-Current image generation remains paused until the relevant CORE-029 runtime consumer exists. One explicit image approval produces exactly one image result, then stops for review.
+Planning visualizations may be generated first under `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`; ask the user only whether to lock the inspected result. A planning visualization remains `GENERATED_EXPLORATION`, not a runtime asset. Runtime image generation still requires the relevant CORE-029 exact Godot consumer, target path and geometry/import contract before generation; user lock plus runtime evidence are required before promotion.
 
 ## Human evidence
 
