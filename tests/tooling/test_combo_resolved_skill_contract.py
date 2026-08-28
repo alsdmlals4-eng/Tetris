@@ -10,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "docs/design/PRODUCTION_CANON_INDEX.json"
 CONTRACT = ROOT / "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md"
+CONTENT_GDD = ROOT / "docs/design/COMBO_STAGE_SKILL_CONTENT_GDD.md"
 VISUAL_BIBLE = ROOT / "docs/design/VISUAL_BIBLE.md"
 MASTER_GDD = ROOT / "docs/design/PROJECT_MASTER_GDD.md"
 WORKSPACE_INDEX = ROOT / "docs/design/PROJECT_WORKSPACE_INDEX.md"
@@ -42,6 +43,17 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             "automatic resolution after CONFIRM",
             "not unattended auto-cast",
             "Stage 1–10 content",
+        ):
+            self.assertIn(required, text)
+
+    def test_user_approved_board_opportunity_mechanism_is_not_misdescribed_as_global_time(self) -> None:
+        text = CONTENT_GDD.read_text(encoding="utf-8")
+        for required in (
+            "`12.0`-second maximum reserve",
+            "LINE gravity/lock advancement",
+            "LINE input stays enabled",
+            "does not change the scheduler's full real delta",
+            "USER_APPROVED / PHASE 2 MECHANISM LOCK / NOT IMPLEMENTED",
         ):
             self.assertIn(required, text)
 

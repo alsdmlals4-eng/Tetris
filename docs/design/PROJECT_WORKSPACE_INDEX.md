@@ -40,10 +40,9 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 The current work order is:
 
-1. Apply the user-approved C1–C10 content and target-separated time semantics from [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md) only through its Phase 2 implementation contract. `TETRIS-VIS-BOARD-002` is already user-locked as a planning-only reference, not a runtime asset.
-2. Produce one bounded Phase 2 implementation contract for CHAIN-038, SKILL-039/BALANCE-040/SKILL-042, VISUAL-041 runtime consumers and first-session handoff; no broad asset batch.
-3. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill → briefing/rules/Deploy and safe live practice, reusing the same encounter.
-4. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
+1. Apply the user-approved Phase 2 contract: [`2026-08-29-phase2-tactical-core-alignment.md`](../superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md) locks the C1–C10 content, target-separated time semantics and the capped stored board-opportunity reserve. `TETRIS-VIS-BOARD-002` remains a planning-only reference, not a runtime asset.
+2. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill and target-separated timing → briefing/rules/Deploy and safe live practice, reusing the same encounter.
+3. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
 
 For live operational truth, read the latest completed `main`, all open/draft PRs as read-only parallel work, the relevant GitHub issue/PR, and the actual repository evidence. This index deliberately does not freeze transient PR, CI or runtime claims.
 

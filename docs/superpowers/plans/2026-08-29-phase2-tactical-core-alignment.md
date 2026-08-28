@@ -12,7 +12,7 @@
 
 ## Global Constraints
 
-- Issue: [#82](https://github.com/alsdmlals4-eng/Tetris/issues/82). This plan is `USER_REVIEW_REQUIRED`; do not start any Godot implementation until the user explicitly approves this contract.
+- Issue: [#82](https://github.com/alsdmlals4-eng/Tetris/issues/82). Status: `USER_APPROVED_FOR_IMPLEMENTATION`. The user approved the capped stored board-opportunity reserve on 2026-08-29. Start only the first bounded implementation PR after its exact Issue/Goal, RED tests and isolation gate are in place.
 - Work from a fresh isolated `codex/` worktree created from the latest completed `main`; all other open/draft PRs remain read-only.
 - Preserve continuous CORE-029 combat, one active 60/40 Puzzle/Combat surface, persistent LINE↔CHAIN state, full tokenized Skill/manual pause, and explicit scheduler commit boundaries.
 - Use `energy` and `stock` as internal field names in this delivery. Player-facing labels are `MP` and `COMBO`; no broad field-name migration is permitted.
@@ -825,4 +825,4 @@ The plan specifies owners, paths, method names, return shapes, test cases, value
 
 ## Approval gate
 
-This contract intentionally sets numeric seeds, the LINE-only board-opportunity mechanism, a 45-second first safe ETA, exact new data fields, and three implementation PR boundaries. User approval of this plan authorizes implementation planning only until each PR’s exact issue/goal and review gate are created; it does not turn current docs or automated checks into Human usability/pass evidence.
+This contract intentionally sets numeric seeds, the LINE-only board-opportunity mechanism, a 45-second first safe ETA, exact new data fields, and three implementation PR boundaries. On 2026-08-29 the user approved the recommended capped stored-reserve mechanism; this contract is therefore `USER_APPROVED_FOR_IMPLEMENTATION`. Each PR still requires its own exact Issue/Goal, RED tests, isolation and review gate. Neither approval nor automated checks turn current docs into Human usability/pass evidence.
