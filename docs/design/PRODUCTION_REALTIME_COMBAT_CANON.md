@@ -126,13 +126,13 @@ Only one is visible and input-active at a time inside the large Puzzle Surface.
 
 ### CHAIN
 
-- production grammar: orthogonally adjacent swap → straight horizontal/vertical/diagonal 3+ match → clear → gravity/refill → cascade → stable board;
-- a no-match restores the pre-swap board unless the player spends configured MP to keep that swap as a later Combo setup; that kept swap gives no immediate clear or Combo;
-- Chain performance remains the primary source of Combo/Tier opportunity (current internal runtime field: `stock` / historical `Chain Stock`);
+- production grammar: orthogonally adjacent swap → straight horizontal/vertical/diagonal 3+ match → clear → gravity/refill → cascade → stable board; every resolved wave gives Combo +1, then CHAIN MP recovery from `(sum maximal qualified line lengths − 3) + post-wave Combo`;
+- a no-match restores the pre-swap board unless the player spends fixed **1 MP** to keep that swap as a later Combo setup; either outcome resets Combo, and a kept swap gives no immediate clear, cascade, Combo, or MP recovery;
+- Chain performance remains the primary source of the single shared Combo resource / Tier opportunity (current internal runtime field: `stock` / historical `Chain Stock`); Combo is capped at 10 and spending it on a Technique deliberately lowers later CHAIN MP recovery;
 - board, refill/randomizer state, selection/history required for legal continuation, and pending deterministic resolution persist when leaving CHAIN;
 - switching away does not grant free progress or reroll state.
 
-`TETRIS-CHAIN-038` is current approved design, not a claim that its whole grammar is in the merged runtime: current code detects only horizontal/vertical runs and has no MP-lock path. Exact implementation alignment is `PARTIAL_HV_ONLY_NO_MP_LOCK` until its Phase 2 review and exact-head verification complete.
+`TETRIS-CHAIN-038` is current approved design, not a claim that its whole grammar is in the merged runtime: current code detects only horizontal/vertical runs, has no MP-lock path, and retains a legacy cap-6 cascade-depth Combo reward without CHAIN MP recovery. Exact implementation alignment is `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD` until its Phase 2 review and exact-head verification complete.
 
 Required return invariant:
 
@@ -228,20 +228,21 @@ Cancel resumes combat with no spend.
 Retained structural identity:
 
 - **MP** is primarily earned through LINE;
-- **Combo** is primarily earned through CHAIN performance;
+- **Combo** is primarily earned through CHAIN performance and is the shared Tier/CHAIN-MP resource;
 - the resources are not interchangeable;
-- Combo cap baseline is 6;
+- Combo is hard-capped at **10**;
 - MP is hard-capped at **60**; MP overflow does not create a combat resource and must be visible before a further LINE reward;
 - approved initial LINE gains are Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**, making a competent first Single enough for the initial 10-MP T1 opportunity;
+- every resolved CHAIN wave gives Combo +1, then recovers MP by `(sum of maximal qualified line lengths − 3) + post-wave Combo`; crossing qualified groups count independently, the `−3` applies once per wave, and a later successful manual swap continues the same stored Combo;
 - Tier N baseline spends N Combo;
-- MP cost remains Technique-specific and data-driven; a failed-swap MP lock is an additional optional CHAIN board-shaping spend with a fixed **1 MP** cost;
+- MP cost remains Technique-specific and data-driven; a failed/reverted CHAIN swap or fixed-**1 MP** MP lock resets Combo, and spending Combo on a Tier intentionally lowers later CHAIN MP recovery;
 - Tier is a tactical commitment band, not a linear instruction to choose the highest available Tier.
 
 The opportunity-cost question is now real-time:
 
 > While the enemy clock keeps moving, how long can I safely stay in LINE or CHAIN before I pause and spend resources?
 
-Technique MP costs, enemy cadence, cooldowns, and magnitudes remain `TUNE_REQUIRED` / `TUNING_SEED_NOT_FINAL` until supported by runtime and Human evidence. The initial 10/22/36/52 LINE gains, fixed 1-MP failed-swap lock, and 60-MP hard cap are approved player-facing rules, while still subject to a later data-only balance revision after evidence.
+Technique MP costs, enemy cadence, cooldowns, and magnitudes remain `TUNE_REQUIRED` / `TUNING_SEED_NOT_FINAL` until supported by runtime and Human evidence. The initial 10/22/36/52 LINE gains, fixed 1-MP failed-swap lock, 60-MP hard cap, and structured Combo/CHAIN-MP rule are approved player-facing rules, while still subject to a later data-only balance revision after evidence.
 
 ## 11. SKILL-026 migration boundary
 

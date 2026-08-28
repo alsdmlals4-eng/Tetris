@@ -14,6 +14,7 @@ BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CON
 ONBOARDING_CONTRACT_PATH = ROOT / "docs" / "design" / "FIRST_SESSION_ONBOARDING_CONTRACT.md"
 CHAIN_CONTRACT_PATH = ROOT / "docs" / "design" / "CHAIN_COMBO_MP_CONTRACT.md"
 LINE_REWARD_PATH = ROOT / "data" / "production" / "line_reward_seed.json"
+CHAIN_REWARD_PATH = ROOT / "data" / "production" / "chain_runtime_seed.json"
 PLAN_PATH = (
     ROOT
     / "docs"
@@ -137,9 +138,11 @@ class ProductionCanonContractTests(unittest.TestCase):
         data = self._index()
         chain = data["production_chain"]
         economy = data["resource_economy"]
+        reality = data["implementation_reality"]
         resources = data["resource_economy"]["player_facing_resources"]
         text = CHAIN_CONTRACT_PATH.read_text(encoding="utf-8")
         line_reward_data = json.loads(LINE_REWARD_PATH.read_text(encoding="utf-8"))
+        chain_reward_data = json.loads(CHAIN_REWARD_PATH.read_text(encoding="utf-8"))
 
         self.assertTrue(CHAIN_CONTRACT_PATH.is_file())
         self.assertEqual(chain["swap_adjacency"], "ORTHOGONAL_ONLY")
@@ -149,9 +152,35 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(chain["invalid_swap_default"], "RESTORE_PRE_SWAP_STATE")
         self.assertEqual(chain["mp_lock_cost"], 1)
+        self.assertEqual(chain["combo_award_basis"], "EACH_RESOLUTION_WAVE_PLUS_ONE")
+        self.assertEqual(chain["combo_gain_per_resolution_wave"], 1)
+        self.assertEqual(chain["combo_award_timing"], "BEFORE_SAME_WAVE_MP_RECOVERY")
+        self.assertEqual(chain["chain_mp_recovery_timing"], "EACH_RESOLUTION_WAVE")
+        self.assertEqual(
+            chain["chain_mp_recovery_formula"],
+            "SUM_MAXIMAL_QUALIFIED_LINE_LENGTHS_MINUS_3_PLUS_POST_WAVE_COMBO",
+        )
+        self.assertEqual(chain["overlapping_axis_groups"], "COUNT_EACH_DISTINCT_GROUP")
+        self.assertTrue(chain["manual_success_continues_combo"])
+        self.assertEqual(chain["combo_reset_triggers"], ["NO_MATCH_REVERT", "MP_LOCK"])
+        self.assertEqual(chain["combo_cap"], 10)
+        self.assertEqual(
+            chain["actual_merged_runtime_combo_model"],
+            "LEGACY_CASCADE_DEPTH_MAPPING_CAP_6_NOT_ALIGNED",
+        )
+        self.assertEqual(
+            reality["chain_038_runtime_alignment"],
+            "PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD",
+        )
+        self.assertEqual(
+            chain_reward_data["stock_by_chain_depth"],
+            {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6},
+        )
         self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
         self.assertEqual(economy["mp_cap"], 60)
         self.assertEqual(economy["mp_cap_status"], "USER_APPROVED_FIXED_60_MP_HARD_CAP")
+        self.assertEqual(economy["combo_cap"], 10)
+        self.assertTrue(economy["combo_spend_reduces_future_chain_mp_recovery"])
         self.assertEqual(
             economy["line_mp_initial_rewards"],
             {"NONE": 0, "SINGLE": 10, "DOUBLE": 22, "TRIPLE": 36, "FOUR": 52},
@@ -174,6 +203,8 @@ class ProductionCanonContractTests(unittest.TestCase):
             "DIAGONAL_DOWN_LEFT",
             "fixed **1 MP**",
             "hard cap of **60 MP**",
+            "**10**",
+            "SUM_MAXIMAL_QUALIFIED_LINE_LENGTHS_MINUS_3_PLUS_POST_WAVE_COMBO",
             "TUNE_REQUIRED",
         ):
             self.assertIn(token, text)

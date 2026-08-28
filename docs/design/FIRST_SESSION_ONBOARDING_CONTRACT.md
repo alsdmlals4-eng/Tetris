@@ -40,8 +40,8 @@ It reserves the existing `TETRIS-SREF-003` briefing reference's threat and launc
 | --- | --- | --- | --- |
 | 1. Read threat | “What is about to happen, and how long do I have?” | Current Telegraph and ETA remain visible while the player can still act. | Explain live pressure without a Shared Turn Timer or phase rail. |
 | 2. Recover MP | “What does LINE prepare?” | A Single LINE grants the initial **10 MP**, enabling the initial T1 opportunity; Double/Triple/Four grant 22/36/52 MP. At 60 MP, show that MP is full before another LINE reward can overflow. | Do not use hidden grants or imply LINE is the only correct workspace. |
-| 3. Earn Combo | “What does CHAIN prepare that LINE cannot?” | A straight horizontal, vertical, or diagonal 3+ CHAIN match visibly changes Combo and the reachable Technique Tier. A failed swap visibly reverts. | Keep LINE and CHAIN non-interchangeable; do not force an old Line→Chain order. |
-| 3b. Optional setup | “Can I keep a useful failed swap?” | When affordable, explain that spending fixed **1 MP** may keep a no-match swap for a later Combo setup, with no immediate clear or Combo. | Do not require this transaction in the first tutorial or imply it is a third resource. |
+| 3. Earn or save Combo | “What does CHAIN prepare that LINE cannot?” | Every resolved CHAIN wave visibly gives Combo +1, then displays `line total − 3 + current Combo = MP recovery`. The same Combo can be spent on a stronger Technique or saved to improve a later CHAIN MP recovery, up to 10. A failed swap visibly reverts and resets Combo. | Keep LINE and CHAIN non-interchangeable; explain the formula with structured feedback, not image-only labels; do not force an old Line→Chain order. |
+| 3b. Optional setup | “Can I keep a useful failed swap?” | When affordable, explain that spending fixed **1 MP** may keep a no-match swap for a later setup, but resets Combo and gives no immediate clear, cascade, Combo, or MP recovery. | Do not require this transaction in the first tutorial or imply it is a third resource. |
 | 4. Commit deliberately | “When should I stop time and which Technique is worth the cost?” | Skill opening visibly freezes the same threat/puzzle state; category → selected lane → T1–T6 → detail → explicit **USE** makes the commit and result legible. | Cancel returns to the exact paused state. Do not show an always-visible 3×6 matrix or auto-commit on selection. |
 | 5. Apply learning | “What do I prepare or commit before this next threat?” | The player makes one unforced response using the visible ETA, MP, Combo/Tier, and Technique result. | The encounter may be forgiving, but it must not be a non-interactive demonstration. |
 
@@ -58,7 +58,7 @@ Before the tutorial can be marked effective, first-exposure receipts must show t
 
 1. state the immediate threat and why Deploy starts it;
 2. identify the Current Telegraph/ETA before acting;
-3. distinguish LINE → MP from CHAIN → Combo/Tier access, including why MP can optionally preserve a failed CHAIN setup without awarding Combo;
+3. distinguish LINE → MP from CHAIN → shared Combo/Tier access, including why spending Combo trades a stronger Technique against later CHAIN MP recovery, and why a failed CHAIN swap/MP lock resets Combo without a reward;
 4. explain that Skill pauses the simulation and that **USE**, not row selection, commits; and
 5. make and explain one resource/Technique response to a visible threat.
 

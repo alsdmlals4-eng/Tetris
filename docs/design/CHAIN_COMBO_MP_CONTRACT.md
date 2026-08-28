@@ -5,6 +5,7 @@
 - Issue: #56
 - Cost approval: fixed **1 MP** failed-swap lock, Issue #58
 - MP-cap approval: hard cap of **60 MP**, Issue #60
+- Combo / CHAIN MP recovery approval: Issue #64
 - Date: 2026-08-28
 - Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-027`, and `PRODUCTION_CANON_INDEX.json`.
 - Scope: player-facing resource language and CHAIN interaction grammar. This is not a Godot implementation, balance lock, runtime capture, or Human/player-experience result.
@@ -21,8 +22,9 @@ CHAIN / Swap-Match board   → earn Combo
 `MP` is the player-facing name for the current runtime field `energy`. `Combo` is the player-facing name for the current runtime field `stock` / historical `Chain Stock`. They are **not** a third resource and must not be treated as interchangeable.
 
 - MP remains the flexible spendable resource. It is earned by LINE and may pay an optional CHAIN board-shaping choice as well as Technique costs.
-- Combo remains the CHAIN-earned commitment resource that exposes/spends Tier opportunity under `TETRIS-BALANCE-027`.
-- A player who spends MP to preserve a failed CHAIN swap receives no immediate Combo, clear, cascade, or Technique effect.
+- Combo is one shared CHAIN-earned resource: it exposes/spends Tier opportunity under `TETRIS-BALANCE-027` **and** its current unspent amount raises CHAIN MP recovery. It is not a hidden second streak counter.
+- Combo has a hard cap of **10**. Spending Combo on a Technique immediately lowers both available Tier access and later CHAIN MP recovery; this is an intentional player choice, not a penalty layered on a separate resource.
+- A player who declines a no-match swap or spends MP to preserve that failed swap resets Combo to **0**. MP lock still gives no immediate clear, cascade, Combo, or Technique effect.
 
 ## 2. CHAIN match grammar
 
@@ -43,21 +45,40 @@ Connected blobs, L-shapes, or a merely adjacent pair are not matches. If runs ov
 
 | Outcome | Board result | Reward / cost | Next state |
 | --- | --- | --- | --- |
-| A valid straight 3+ match | Keep the swap; clear → gravity/refill → cascade until stable. | Earn Combo only through the ordinary resolved CHAIN result; no MP payment. | Normal stable CHAIN board. |
-| No valid match, player declines lock | Restore the exact pre-swap board. | No MP or Combo change. | Normal stable CHAIN board. |
-| No valid match, player selects MP lock | Keep the swapped board in place. | Spend fixed **1 MP**; no immediate clear, cascade, or Combo. | Normal stable CHAIN board, ready for a later setup swap. |
+| A valid straight 3+ match | Keep the swap; clear → gravity/refill → cascade until stable. | Each resolved wave gives Combo +1, then its CHAIN MP recovery. No MP payment. | Normal stable CHAIN board. |
+| No valid match, player declines lock | Restore the exact pre-swap board. | Combo resets to 0; no MP recovery. | Normal stable CHAIN board. |
+| No valid match, player selects MP lock | Keep the swapped board in place. | Spend fixed **1 MP**, reset Combo to 0; no immediate clear, cascade, Combo, or MP recovery. | Normal stable CHAIN board, ready for a later setup swap. |
 
 `MP lock` is an optional response to an otherwise-invalid swap. It must not be offered for non-adjacent input, during an already-committed resolution, or as a way to keep an already-valid match from resolving.
 
-## 4. Tuning and implementation boundary
+## 4. Per-wave Combo and MP recovery
 
-- The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. Initial LINE recovery is fixed to the existing data seed: no clear/Single/Double/Triple/Four = **0 / 10 / 22 / 36 / 52 MP**. The Combo gain curve remains `TUNE_REQUIRED`; LINE values are an approved initial implementation seed, not final Human-validated balance.
+Each resolved wave — the initial valid swap result and every later gravity/refill cascade — resolves in this order:
+
+1. Identify every **maximal** qualified straight group in that wave. A 5-cell line is one length-5 group, never several overlapping length-3 groups.
+2. Add **Combo +1**, capped at **10**.
+3. Recover MP for that same wave with the following structured rule:
+
+```text
+SUM_MAXIMAL_QUALIFIED_LINE_LENGTHS_MINUS_3_PLUS_POST_WAVE_COMBO
+MP recovery = (sum of all qualified maximal group lengths − 3) + Combo after this wave's +1
+```
+
+- Distinct horizontal, vertical, and diagonal groups count independently even when they cross on a cell. For a horizontal 5 and vertical 5 in one wave, the line term is `5 + 5 − 3 = 7 MP`.
+- The `−3` is applied **once per resolved wave**, not once per group.
+- The post-wave Combo value is the actual stored value after its +1 and the 10-cap. Thus a player who spends Combo on a Technique deliberately receives less MP from later successful CHAIN waves.
+- A later manual swap that creates a valid match continues the current Combo rather than starting a separate streak. A failed/reverted swap or MP lock resets it, as stated above.
+- Each additional cascade wave receives its own Combo +1 and its own MP recovery; the full cascade is not collapsed into one end-of-resolution reward.
+
+## 5. Tuning and implementation boundary
+
+- The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. Initial LINE recovery is fixed to the existing data seed: no clear/Single/Double/Triple/Four = **0 / 10 / 22 / 36 / 52 MP**. The Combo/CHAIN-MP rule is structurally approved; its numerical balance remains `TUNE_REQUIRED` until Human evidence exists.
 - MP overflow creates no combat resource. The UI must expose a full MP state before another LINE reward, and explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert`, `Spend 1 MP to keep this swap for a later Combo`, and `MP full — spend MP before the next LINE reward`.
-- Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, and does not cap energy. It has no MP-lock path. Its alignment with this contract is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP`.
-- Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must not claim balance or Human/player validation before runtime evidence exists.
+- Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, does not cap energy, and has no MP-lock path. Its legacy CHAIN reward data maps total cascade depth 1–6 to Combo 1–6 with a cap of 6, and grants no CHAIN MP. Its alignment is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`.
+- Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must expose each wave's `line term + post-wave Combo = MP recovery`, raise the stored Combo cap to 10 without changing the Tier 1–6 range, and must not claim balance or Human/player validation before runtime evidence exists.
 
-## 5. Tutorial and visual rule
+## 6. Tutorial and visual rule
 
-The first-session tutorial teaches the readable base rule first: a straight horizontal, vertical, or diagonal run of three equal symbols earns Combo. A failed swap visibly reverts. MP lock is introduced as an optional planning tool, never as a required first-tutorial transaction.
+The first-session tutorial teaches the readable base rule first: a straight horizontal, vertical, or diagonal run of three equal symbols gives Combo +1 and MP recovery; saving the same Combo grows a later recovery, while spending it enables a stronger Technique. A failed swap visibly reverts and resets Combo. MP lock is introduced as an optional planning tool, never as a required first-tutorial transaction.
 
 Planning boards and visual references may illustrate the rule, but their images are not the source of truth. The exact rule belongs to this text contract and its linked repository/Notion decision records.

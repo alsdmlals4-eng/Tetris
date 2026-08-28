@@ -157,9 +157,11 @@ Check whether the dual-resource distinction is understood:
 
 - LINE produces **MP**;
 - MP is visibly hard-capped at **60** and a full state does not create an invisible combat overflow reward;
-- CHAIN produces **Combo** / Tier access;
+- CHAIN produces the single shared **Combo** resource / Tier access; Combo is visibly capped at **10**;
+- every resolved CHAIN wave gives Combo +1, then visibly explains its MP recovery as `(sum of maximal qualified line lengths − 3) + post-wave Combo`; distinct crossing lines count separately while a 5-line is not split into several 3-lines;
+- the player can explain the choice between spending Combo on a stronger Technique now and saving it for later CHAIN MP recovery;
 - MP and Combo are not interchangeable;
-- a no-match CHAIN swap reverts by default; fixed **1 MP** may instead preserve that swapped setup without immediate Combo;
+- a no-match CHAIN swap reverts by default and resets Combo; fixed **1 MP** may instead preserve that swapped setup, but also resets Combo and grants neither immediate Combo nor MP recovery;
 - the player can describe a real reason to stay in one workspace longer or switch to the other.
 
 ### F. TECHNIQUE_DECISION_QUALITY

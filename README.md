@@ -23,9 +23,9 @@ BATTLE_START
 - 플레이어는 `LINE ↔ CHAIN`을 자유롭게 전환합니다.
 - LINE과 CHAIN은 서로 독립적인 persistent workspace입니다. 전환해도 보드/queue/randomizer/진행상태를 새로 만들지 않습니다.
 - LINE은 **MP** 회복을 담당합니다. 현재 구현 내부 필드명은 `energy`입니다.
-- CHAIN은 상하좌우 인접 교환 뒤 가로·세로·양쪽 대각선의 직선 3칸 이상을 판정하며, 성공 Chain으로 **Combo / Tier opportunity**를 준비합니다. 현재 구현 내부 필드명은 `stock`입니다.
-- 매치가 없는 교환은 원상복귀합니다. 플레이어는 MP를 써서 그 배치를 다음 Combo 설계용으로 고정할 수 있으나, 이 선택은 즉시 Combo를 주지 않습니다.
-- MP와 Combo는 서로 대체되지 않습니다. Combo cap baseline은 6이고 Tier N은 Combo N을 소비하는 구조를 유지합니다.
+- CHAIN은 상하좌우 인접 교환 뒤 가로·세로·양쪽 대각선의 직선 3칸 이상을 판정합니다. 해소 단계마다 **Combo +1** 뒤 `(최대 직선 길이 합 − 3) + 현재 Combo`만큼 MP를 회복하며, Combo는 Tier와 CHAIN MP 회복이 공유하는 자원입니다. 현재 구현 내부 필드명은 `stock`입니다.
+- 매치가 없는 교환은 원상복귀하고 Combo를 0으로 만듭니다. 플레이어는 고정 **1 MP**를 써서 그 배치를 다음 설계용으로 남길 수 있으나, 이 선택도 Combo를 0으로 만들며 즉시 Combo/MP 보상을 주지 않습니다.
+- MP와 Combo는 서로 대체되지 않습니다. Combo 상한은 **10**이며 Tier N은 Combo N을 소비해 이후 CHAIN MP 회복도 낮아지는 구조를 유지합니다.
 - 위 CHAIN 대각선/MP-lock 규칙은 사용자 승인 정본이며, 현재 merged runtime은 가로·세로 판정과 기본 원상복귀만 구현했습니다. Phase 2 구현 검토 전에는 runtime 완료로 해석하지 않습니다.
 - `ATK / DEF / SUP × T1–T6` Technique identity는 유지하지만 Tier는 단순한 강함 순서가 아니라 tactical commitment band입니다.
 - 적의 Current Telegraph + ETA는 LINE/CHAIN 플레이 중 실시간으로 진행됩니다. 알려진 Next Forecast는 더 낮은 우선순위로 표시합니다.
@@ -35,7 +35,7 @@ BATTLE_START
 - 취소 또는 USE 후에는 정확히 멈춘 combat time과 이전 active puzzle workspace로 복귀합니다.
 - 수동 Pause도 full simulation pause이지만 Skill tactical pause와 player-facing state/telemetry reason은 구분합니다.
 - Haste, Battle Trance, turn-only status duration, Tempo scaling은 `REALTIME_MIGRATION_REQUIRED`이며 임의로 seconds 의미로 번역하지 않습니다.
-- 정확한 MP 회복/비용, MP-lock 비용, Chain→Combo mapping, 적 cadence, effect magnitude는 `TUNE_REQUIRED / TUNING_SEED_NOT_FINAL`입니다.
+- CHAIN MP/Combo 구조와 MP-lock 비용은 승인됐지만, 정확한 밸런스 곡선, 적 cadence, effect magnitude는 `TUNE_REQUIRED / TUNING_SEED_NOT_FINAL`입니다.
 - 자동 테스트는 deterministic legality/regression을 증명할 수 있지만 재미·가독성·처음 이해도·최종 밸런스는 Human evidence가 필요합니다.
 
 ## 현재 Production 정본
