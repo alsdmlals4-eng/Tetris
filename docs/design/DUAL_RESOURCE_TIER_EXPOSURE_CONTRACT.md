@@ -8,7 +8,7 @@
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
 
-> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend fixed **1 MP** to stay in place for later Combo setup, with no immediate Combo reward. MP cap, LINE recovery, and Combo gain remain `TUNE_REQUIRED`.
+> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend fixed **1 MP** to stay in place for later Combo setup, with no immediate Combo reward. MP has a hard cap of **60**; LINE recovery and Combo gain remain `TUNE_REQUIRED`.
 
 ## 1. Product thesis
 
@@ -51,6 +51,7 @@ MP and Combo remain deliberately non-interchangeable so both puzzle phases keep 
 
 - Primary source: production Line.
 - Persists across turns until spent or explicitly modified.
+- Hard cap: **60 MP**. Excess Line reward has no combat conversion and must be visibly signaled before a further Line reward.
 - Represents flexible ability throughput, technique-specific utility price, and the optional failed-swap CHAIN lock price.
 - No passive `+1 MP/sec` production recovery in the first production baseline.
 - Lower tiers generally retain strong MP efficiency, but utility Techniques may price differently from same-Tier raw damage.
@@ -117,7 +118,7 @@ Rules:
 - higher Tier must not automatically improve MP efficiency;
 - a utility-heavy Technique may exchange immediate output for control/setup value;
 - a high-Tier specialized action may be deliberately inefficient outside its condition;
-- exact MP gain/cost, failed-swap lock cost, and effect magnitude remain runtime/human-evidence tuning.
+- exact MP gain/cost and effect magnitude remain runtime/human-evidence tuning; failed-swap lock cost is fixed at **1 MP** and MP is hard-capped at **60**.
 
 ## 6. Anti-hoarding / anti-spam pressure
 

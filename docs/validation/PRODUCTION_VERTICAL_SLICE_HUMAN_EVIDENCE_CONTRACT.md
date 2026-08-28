@@ -156,6 +156,7 @@ Check:
 Check whether the dual-resource distinction is understood:
 
 - LINE produces **MP**;
+- MP is visibly hard-capped at **60** and a full state does not create an invisible combat overflow reward;
 - CHAIN produces **Combo** / Tier access;
 - MP and Combo are not interchangeable;
 - a no-match CHAIN swap reverts by default; fixed **1 MP** may instead preserve that swapped setup without immediate Combo;
