@@ -14,7 +14,7 @@ IMAGE_CONTRACT_PATH = ROOT / "docs" / "design" / "RUNTIME_IMAGE_ASSET_CONSUMER_C
 CANON_INDEX_PATH = ROOT / "docs" / "design" / "PRODUCTION_CANON_INDEX.json"
 AGENTS_PATH = ROOT / "AGENTS.md"
 VISUAL_MANIFEST_PATH = ROOT / "docs" / "assets" / "reference" / "planned" / "PROJECT_UNDERSTANDING_VISUAL_MANIFEST.json"
-BOARD_PATH = ROOT / "docs" / "assets" / "reference" / "planned" / "tetris-project-core-scene-visual-board-v1.png"
+BOARD_PATH = ROOT / "docs" / "assets" / "reference" / "planned" / "tetris-project-core-scene-visual-board-v2.png"
 
 
 class ProjectMasterGddContractTests(unittest.TestCase):
@@ -64,13 +64,14 @@ class ProjectMasterGddContractTests(unittest.TestCase):
         self.assertTrue(BOARD_PATH.is_file())
         manifest = json.loads(VISUAL_MANIFEST_PATH.read_text(encoding="utf-8"))
         visuals = {item["asset_id"]: item for item in manifest["visuals"]}
-        board = visuals["TETRIS-VIS-BOARD-001"]
+        board = visuals["TETRIS-VIS-BOARD-002"]
 
-        self.assertEqual(board["local_path"], "docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png")
+        self.assertEqual(board["local_path"], "docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png")
         self.assertEqual(board["classification"], "GENERATED_EXPLORATION")
         self.assertEqual(board["runtime_consumer"], "NONE")
         self.assertEqual(board["status"], "AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME")
         self.assertEqual(board["sha256"], hashlib.sha256(BOARD_PATH.read_bytes()).hexdigest())
+        self.assertEqual(visuals["TETRIS-VIS-BOARD-001"]["status"], "SUPERSEDED_BY_TETRIS-VIS-BOARD-002")
 
 
 if __name__ == "__main__":

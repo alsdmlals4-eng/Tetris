@@ -1,7 +1,7 @@
 # Tetris · Master GDD
 
-- Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72
-- Fresh source snapshot: `origin/main` `a217db433413d5c0be8dee4308432cd37a09f9e9`, read 2026-08-28. It retains the prior gameplay snapshot `dec60706ab8fcec3986b01f279d9d60080a309f8` and the Master-GDD/visual-workflow snapshot `59c537f29ed0bebed8d40be5cecfd6ff5b89318b` as provenance.
+- Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72; current correction tracked in Issue #76
+- Fresh source snapshot: `origin/main` `da1ced01ecaacf6fb39a50641d4813d7965827fc`, read 2026-08-28. It retains the prior gameplay snapshot `dec60706ab8fcec3986b01f279d9d60080a309f8` and the Master-GDD/visual-workflow snapshot `59c537f29ed0bebed8d40be5cecfd6ff5b89318b` as provenance.
 - Purpose: make the currently approved game intelligible in one place without replacing the documents and runtime evidence that own individual facts.
 - Reader rule: a rule may be **approved** yet not be **implemented**; an implemented system may be automated-tested yet not be **Human/player validated**. This document preserves those distinctions.
 - Current owner rule: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the sole current project owners. Notion is `HISTORICAL_EXTERNAL_PROVENANCE_ONLY`; do not read, write, sync, or require it for current work.
@@ -15,7 +15,8 @@
 | `docs/design/PRODUCTION_CANON_INDEX.json` | Current decision IDs, authority order, machine-readable current/actual boundary | `CURRENT` |
 | `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` | `TETRIS-CORE-029`: continuous battle, workspace and pause grammar | `CURRENT` |
 | `docs/design/CHAIN_COMBO_MP_CONTRACT.md` | `TETRIS-CHAIN-038`: CHAIN match, MP lock, Combo and recovery formula | `CURRENT` |
-| `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` and `DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` | Technique and dual-resource meaning | `CURRENT` |
+| `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` | `TETRIS-SKILL-039` / `TETRIS-BALANCE-040`: category-only preview/confirm and bounded fallback | `CURRENT / DOCUMENTED_NOT_IMPLEMENTED` |
+| `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` and `DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` | Older manual Tier matrix and its cost grammar | `SUPERSEDED_FOR_CURRENT_SELECTION_FLOW / HISTORICAL_EFFECT_PROVENANCE` |
 | `docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md` | `TETRIS-ONBOARDING-037`: briefing and safe live tutorial intention | `CURRENT / DOCUMENTED_NOT_IMPLEMENTED` |
 | `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` | Runtime consumer and image-generation/lock workflow | `CURRENT` |
 | `docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md` | Current and planned screen coverage | `CURRENT` |
@@ -45,6 +46,8 @@
 | `SUPERSEDED` | Ordered LINE→CHAIN→enemy turns, shared player-turn budget, READY/pass flow, timeout and Tempo language | `TETRIS-CORE-024` / `TETRIS-TIME-025` are provenance only. CORE-029 continuous realtime replaces them. |
 | `HISTORICAL` | `CORE_GAMEPLAY_GDD.md` describes earlier Energy/Stock and board concepts | Foundation reference only; it cannot define current player-facing rules. |
 | `CONFLICT` | Approved CHAIN requires both diagonals, 1-MP lock, 60 MP cap, 10 Combo cap and per-wave formula; current code has `STOCK_CAP = 6`, H/V-only matching, forced no-match restore and legacy depth rewards | `TETRIS-CHAIN-038` is `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`; Phase 2 review is required before Godot implementation. |
+| `CONFLICT` | Old current documents and merged UI/data expose manual `ATK/DEF/SUP × T1–T6`; the user-directed flow is category-only, current-Combo preview, explicit confirm and a bounded 5-MP fallback. | `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` supersede selection/cost grammar. Actual runtime remains `LEGACY_MANUAL_TIER_1_TO_6`; no new system is implemented yet. |
+| `CONFLICT` | Current runtime backgrounds/cutouts use a dark pixel-rendered combat treatment, while the current user reference requires a parchment field-manual presentation. | `TETRIS-VISUAL-041` supersedes the global planning direction. Existing image consumers remain preserved until a separately contracted runtime art pass. |
 | `PARTIAL` | Battle runtime enters directly into continuous battle, while the approved first session requires briefing → Deploy → short guided live practice → same encounter | First-session contract is `USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED`. |
 | `UNKNOWN_UNVERIFIED` | Dedicated repository Audio Contract file | `VISUAL_BIBLE.md` is the repository visual owner. Audio has only pause-bridge support; a player-facing audio plan and evidence remain unknown. |
 | `UNKNOWN_UNVERIFIED` | User-Windows play, target-resolution composite readability, first-exposure comprehension, tension, balance, accessibility and player appeal | **Human/player evidence: NOT_RUN**. Automated/scene-equivalent checks do not prove any of these. |
@@ -61,16 +64,16 @@ Combat time is `CONTINUOUS_REALTIME`: the live clock begins at Deploy, and no or
 Live Telegraph + ETA
 → choose a persistent puzzle workspace
 → LINE clear earns MP / CHAIN resolution earns shared Combo and MP recovery
-→ decide: spend Combo on an urgent Technique or preserve it for Tier access and later CHAIN MP recovery
-→ open Skill to fully pause, inspect ATK / DEF / SUP and Tier 1–6
-→ explicit USE commits, feedback changes the battle, realtime resumes
+→ decide: spend Combo on an urgent category response or preserve it for later CHAIN MP recovery and a higher resolved Stage
+→ open Skill to fully pause, choose ATK / DEF / SUP and inspect one Combo-Resolved preview
+→ explicit CONFIRM commits, feedback changes the battle, realtime resumes
 → read the next threat and revise the next preparation
 ```
 
 | Link in the experience | Current intended meaning |
 | --- | --- |
 | Representative action | Switch freely between one large LINE or CHAIN workspace, manipulate it under pressure, then make an explicit Skill use. |
-| Meaningful choice | Immediate MP versus future Combo; solve the current threat versus set up the next; spend Combo now versus preserve stronger Tier and future CHAIN recovery; restore a failed swap versus spend fixed 1 MP to lock its setup. |
+| Meaningful choice | Immediate MP versus future Combo; solve the current threat versus set up the next; pick attack, defense or support now versus preserve Combo for later CHAIN recovery and a higher resolved Stage; restore a failed swap versus spend fixed 1 MP to lock its setup. |
 | Observable result | Clear/recovery, Combo change, telegraph/ETA, Technique outcome and the next enemy action are visible in the same battle context. |
 | Reward and failure learning | Valid CHAINs grow the one shared Combo resource; a no-match restores by default and resets Combo, while MP lock deliberately keeps the board but also resets Combo with no immediate reward. Defeat/retry exists; causal learning quality is not yet Human-validated. |
 | Target emotion and memory | “I spotted the threat, built the right resource and chose exactly when a strong move was worth it.” Pressure should feel readable, not like hidden turns or speed-only execution. |
@@ -81,7 +84,7 @@ Live Telegraph + ETA
 
 | Work stage | Status | Evidence ceiling and next gate |
 | --- | --- | --- |
-| 1. Core promise, economy and visual direction | `CURRENT / USER_APPROVED` | CORE-029, CHAIN-038, VISUAL-028 and ONBOARDING-037 are defined. |
+| 1. Core promise, economy and visual direction | `CURRENT / USER_APPROVED` | CORE-029, CHAIN-038, SKILL-039/BALANCE-040, VISUAL-041 and ONBOARDING-037 are defined. |
 | 2. Representative continuous-battle slice | `IMPLEMENTED / PARTIAL` | 60/40 battle, persistent workspaces, scheduler, pause, skill and named art consumers exist. CHAIN-038 and onboarding remain incomplete. |
 | 3. Human usability / player experience | `NOT_RUN` | The immediate required validation gate: target-resolution capture and first-exposure observation. |
 | 4. First-session and session-completion loop | `DESIGNED / NOT_IMPLEMENTED` | Briefing/tutorial is approved; result/reward/route/meta remain planned. |
@@ -108,7 +111,7 @@ Live Telegraph + ETA
 | `SYS-LINE-MP` | LINE no clear/Single/Double/Triple/Four gains `0/10/22/36/52 MP`; cap 60. | Rules current; reward seed exists; MP hard cap still not actual runtime proof. | `data/production/line_reward_seed.json`, line session/state. |
 | `SYS-CHAIN-038` | Orthogonal adjacent swap; straight 3+ horizontal/vertical/diagonal matching. Failed swap restores, or fixed 1 MP locks a setup. | `CURRENT DESIGN / PARTIAL RUNTIME`. Current code only proves H/V and restore. | `chain_board.gd`, `chain_resolver.gd`, `production_chain_session.gd`. |
 | `SYS-COMBO-MP` | Each resolution wave grants Combo +1 (cap 10), then MP = `(sum maximal qualified line lengths − 3) + post-wave Combo`. | `CURRENT DESIGN / NOT IMPLEMENTED`. Current depth-to-stock map and cap 6 conflict. | CHAIN contract and `ProductionCombatState`. |
-| `SYS-SKILL-026` | Skill fully pauses simulation; choose ATK/DEF/SUP and Tier 1–6; only explicit USE commits. Tier N costs N shared Combo plus configured MP. | Core pause/selection/USE is implemented; realtime-incompatible technique semantics remain disabled until migrated. | `production_skill_session.gd`, `production_technique_resolver.gd`, skill seed. |
+| `SYS-SKILL-039` | Skill fully pauses; choose ATK/DEF/SUP only, inspect the current Combo-resolved Stage, then explicitly CONFIRM. If MP is short, convert surplus Combo at 5 MP each and preview the highest feasible lower Stage. | `CURRENT DESIGN / DOCUMENTED_NOT_IMPLEMENTED`; merged runtime still has manual Tier 1–6 selection/USE and no fallback. | Later replacement of `production_skill_session.gd`, `production_skill_catalog.gd`, `production_battle.gd` and skill seed. |
 | `SYS-ENEMY` | Gatebreaker telegraph and ETA tell the player what is imminent. | `IMPLEMENTED` scheduling/preview; readability and tuning unknown. | `gatebreaker_*`, realtime timing/action/sequence seed. |
 | `SYS-ONBOARDING-037` | Full rules before first Deploy; then short safe live practice in the actual encounter. | `CURRENT DESIGN / NOT IMPLEMENTED`. | Future BattleBriefing/tutorial extension; no current scene. |
 | `SYS-RESULT-RETRY` | Terminal outcome gives a visible retry path. | Retry exists; reward and explanatory result flow are planned. | battle UI / future Result surface. |
@@ -122,7 +125,7 @@ The rules are deliberately one shared Combo resource—not an additional currenc
 Valid wave: two qualifying lines of length 5, current Combo 4
 → Combo becomes 5 first
 → MP recovery = (5 + 5 − 3) + 5 = 12 MP
-→ player may spend Combo later on a Tier-5 Technique, or retain it to improve a later CHAIN recovery.
+→ player may later choose ATK/DEF/SUP; Combo 5 resolves that category’s Stage 5 unless an MP-shortage fallback shows a lower Stage, or retain Combo to improve a later CHAIN recovery.
 ```
 
 This example describes approved CHAIN-038 intent, not current runtime behavior. At 60 MP, excess recovery has no conversion; at 10 Combo, excess Combo does not exceed the cap. Exact combat/MP technique tuning remains `TUNING_SEED_NOT_FINAL`.
@@ -135,7 +138,7 @@ This example describes approved CHAIN-038 intent, not current runtime behavior. 
 | `CNT-FRONTIER-GATE` | Immediate battleground and deployment context. | Current world-facing first-session fact; stage consumer is implemented. |
 | `CNT-GATEBREAKER` | Enemy with readable forecast and combat phases. | Action/sequence seeds and runtime cutout/telegraph consumer exist. |
 | `CNT-FRONTIER-GATEBREAKER-01` | The active vertical-slice encounter. | Direct-entry runtime slice; first-session framing is planned. |
-| `CNT-TECHNIQUE-MATRIX` | ATK/DEF/SUP × T1–T6 tactical commitment bands. | Data/selection UI exists; complete player teaching and realtime migration boundaries remain partial. |
+| `CNT-COMBO-RESOLVED-TECHNIQUES` | ATK/DEF/SUP resolved from the player’s current Combo Stage 1–10. | Category/preview/confirm and bounded fallback are current design. Existing 18-entry manual Tier 1–6 seed is legacy; Stage 7–10 content is required before implementation. |
 
 ## 4. UX, screen flow and first-time player learning
 
@@ -159,7 +162,7 @@ The merged-main runtime presently starts at **F**, not at A–E. This is an inte
 | Title/Main Menu | Planned `TETRIS-SREF-001`, future Title scene | Start with a clear promise. | Vanguard/Gatebreaker tension, one primary start action. |
 | Battle Briefing | Planned `TETRIS-SREF-003`, future BattleBriefing | Understand where/why and what Deploy means. | Only Vanguard, Frontier Gate, Gatebreaker and immediate threat; separate complete rule review. |
 | Continuous Battle | `scenes/production/battle.tscn` | Select the right preparation under pressure. | Current Telegraph, next forecast, ETA, health, MP, Combo, active workspace and visible response. |
-| Tactical Skill | Battle-owned `SkillFrame` | Compare commitment versus saving for later. | Same frozen threat/puzzle state, category→tier→detail→USE, cancel returns to paused state. |
+| Tactical Skill | Battle-owned `SkillFrame` | Compare category response versus saving Combo for later. | Same frozen threat/puzzle state, category→resolved Stage preview→CONFIRM; cancel returns to paused state. |
 | Result/Retry | Existing retry plus planned `TETRIS-SREF-004` Result | Learn cause and choose a next action. | Outcome, causal feedback, retry; rewards/persistence unknown. |
 | Codex/Manual | Planned `TETRIS-SREF-005` | Revisit a rule without loading battle with text. | Text/diagram explanation; no actual scene or content contract yet. |
 
@@ -167,38 +170,39 @@ The merged-main runtime presently starts at **F**, not at A–E. This is an inte
 
 The world explanation is intentionally minimal: **a Frontier Gate faces an immediate Gatebreaker threat; the Vanguard chooses to Deploy.** It must not invent factions, history, geography, named heroes or a larger narrative to make a short tutorial feel substantial.
 
-Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CHAIN’s all-axis 3+ match, Combo/shared Tier spend/cap, per-wave recovery, failed-swap restore or 1-MP lock/reset, and tactical pause/explicit USE. In the live safe opening, the player then practices read threat → LINE reward → horizontal three-symbol CHAIN success → optional lock inspection → explicit USE → one unforced response. The first live ETA runs from Deploy but cannot terminally fail before the first explicit USE.
+Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CHAIN’s all-axis 3+ match, Combo/shared resolved-Stage spend/cap, per-wave recovery, failed-swap restore or 1-MP lock/reset, the skill-only 5-MP-per-Combo shortage fallback, and tactical pause/explicit CONFIRM. In the live safe opening, the player then practices read threat → LINE reward → horizontal three-symbol CHAIN success → optional lock inspection → category preview → explicit CONFIRM → one unforced response. The first live ETA runs from Deploy but cannot terminally fail before the first explicit CONFIRM.
 
 ## 5. Visual direction and the Project Understanding Visual Pack
 
 ### Approved visual anchor
 
-`TETRIS-VISUAL-028 · Hand-Drawn Mystic Fantasy + Clean Puzzle UI` is current. `VISUAL_BIBLE.md` owns the detailed repository visual contract. Its active runtime style evidence includes `TETRIS-IMG-031` stage backdrop, `TETRIS-IMG-033` Vanguard cutout, `TETRIS-IMG-034` Gatebreaker cutout, and two named combat VFX consumers in the battle scene.
+`TETRIS-VISUAL-041 · Parchment Field Manual + Readable Puzzle Tactics` is current. `VISUAL_BIBLE.md` owns the detailed repository visual contract. The user-provided comparison established warm ivory parchment, sepia ink and watercolor violet rift as the planning style; its pictured old UI rules are not canon. Current runtime visual evidence (`TETRIS-IMG-031`, `033`, `034`, `035`, `036`) remains preserved dark/pixel consumer evidence only, not proof that the new presentation is implemented.
 
 | Layer | Keep | Avoid / Do Not Drift |
 | --- | --- | --- |
-| Global | Hand-drawn mystic-fantasy material language; readable charcoal/navy field, restrained violet rift and ember-crimson accents | Pixel/CRT treatment; generic sci-fi HUD; decorative density that competes with puzzle reading. |
+| Global | Warm ivory parchment, sepia ink, field-note construction marks and watercolor violet rift; the board/ETA/resource state remains clearest | Dark metal-card density, pixel/CRT treatment, generic sci-fi HUD or decoration that competes with puzzle reading. |
 | Character / environment | Frontier Vanguard silhouette, asymmetric Gatebreaker mass, central rift/stone frontier | Different-game character proportions, unrelated faction motifs, or lore not approved by the project. |
-| UI / icon / VFX | Clean puzzle hierarchy; puzzle and ETA outrank backdrop; containment and feedback are legible at gameplay size | Dual-board sidecar, permanently expanded 3×6 skills, image-only economy explanations, old turn rails. |
+| UI / icon / VFX | Clean puzzle hierarchy; category seals reveal one resolved Combo-Stage preview; puzzle and ETA outrank backdrop | Dual-board sidecar, permanently expanded 3×6 skills/manual Tier buttons, image-only economy explanations, old turn rails or unconfirmed auto-cast. |
 | Variation | Local threat/status/region differences may alter restrained rift, value and accent choices | Uniform sameness that erases functional region/status differences. |
 
 ### `PROJECT_CORE_SCENE_VISUAL_BOARD` — text legend owns exact meaning
 
-![Project Core Scene Visual Board](/C:/Users/user/Documents/GitHub/Ninza/Tetris/docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png)
+![Project Core Scene Visual Board](/C:/Users/user/Documents/GitHub/Ninza/Tetris/docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png)
 
-`TETRIS-VIS-BOARD-001` is a **`GENERATED_EXPLORATION`**. It was generated on 2026-08-28 from the current visual anchor to test AI project understanding. It has `runtime_consumer: NONE`, is not a project runtime asset, and has no Human/player UX PASS. The image intentionally avoids relying on pseudo-text; the table below, not pixels, owns the exact rule meaning.
+`TETRIS-VIS-BOARD-002` is a **`GENERATED_EXPLORATION`**. It is generated from `TETRIS-VISUAL-041` to test whether the category-resolved Skill flow is understandable. It has `runtime_consumer: NONE`, is not a project runtime asset, and has no Human/player UX PASS. The image intentionally avoids relying on pseudo-text; the table below, not pixels, owns the exact rule meaning. `TETRIS-VIS-BOARD-001` is superseded because it did not make the right style or the new flow legible.
 
 | Panel | Scene / screen | Player goal and action | Choice, feedback and flow | Fixed / unknown |
 | --- | --- | --- | --- | --- |
-| 1 | Frontier Gate / Deploy context | Recognize Vanguard, Gatebreaker and imminent rift threat. | Deployment begins a real encounter; panel leads to the board. | Immediate relationship is approved; wider lore is unknown. |
-| 2 | LINE workspace | Place a falling tetromino and recover MP through a line clear. | Choose whether MP preparation is more urgent than CHAIN; a completed row gives its disclosed MP result. | 0/10/22/36/52 and MP cap 60 are approved; cap presentation is not implemented. |
-| 3 | CHAIN workspace | Swap two orthogonally adjacent symbols. | The shown exchange produces exactly one horizontal same-symbol line of 3, causing a resolution; Combo and per-wave MP feedback follow. | Board shows approved grammar. Diagonals, 1-MP lock, cap/reset and formula are not runtime-complete. |
-| 4 | Tactical Skill | Pause, choose a defensive response and explicitly confirm it. | Spend/saving Combo changes later value; only USE commits, then the same live battle resumes. | Full pause/explicit USE exists; player comprehension and tuning are unknown. |
-| 5 | Persistent threat loop | Return to the live board and read the next ETA. | Continue LINE/CHAIN preparation or open Skill again; visual arrow closes the loop. | Current battle runtime exists; first-session tutorial handoff is planned. |
+| 1 | Frontier Gate / live combat context | Read Gatebreaker threat and ETA in the same field-manual composition as the board. | Context leads to current resource/board decision. | Wider lore is unknown. |
+| 2 | CHAIN workspace | Swap two orthogonally adjacent symbols to make a straight line of three or more. | Combo and per-wave MP feedback establish a current Combo state. | All-axis/MP-lock/cap/formula are approved but runtime partial. |
+| 3 | Tactical Skill | Pause, choose only ATK, DEF or SUP. | The chosen category opens one resolved current-Combo preview; selection is free. | `TETRIS-SKILL-039` documented, not implemented. |
+| 4 | Resolved preview / confirm | Inspect one purpose, effect, target and resource result. | Explicit CONFIRM commits; no manual tier/card browse. | Legacy runtime still uses manual Tier 1–6. |
+| 5 | MP-shortage fallback | Understand the lower stage before committing. | Surplus Combo converts at 5 MP each only to show the highest legal lower Stage. | Current design only; no runtime/data proof. |
+| 6 | Return to threat | See impact and changed state before the live battle resumes. | The next telegraph starts the next Line/Chain/Skill decision. | Human learning, balance and fun unknown. |
 
 ### Generated visual workflow
 
-Current user direction is `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`: do not pause to ask whether a bounded visual should be generated; generate it, inspect it against the current anchor and consumer (where applicable), then ask only whether to lock it. This board is currently `AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME`.
+Current user direction is `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`: do not pause to ask whether a bounded visual should be generated; generate it, inspect it against the current anchor and consumer (where applicable), then ask only whether to lock it. `TETRIS-VIS-BOARD-002` is currently `AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME`.
 
 Locking a planning board means **approved project planning reference**, not runtime asset, scene/UI implementation or human-readability proof. A runtime asset still requires its exact target `res://` path, scene/node consumer, geometry and import/use contract before generation, then user lock and runtime verification before promotion.
 
@@ -243,7 +247,8 @@ These prove scene binding, not composition readability or art approval at a play
 | Statement | Class | Evidence | Confidence | Player impact | Production impact | Disposition | Next validation |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | The live telegraph + persistent two-workspace + full tactical-pause structure is specific and readable as a design contract. | `STRENGTH` | CORE-029, scene/code path and automated contracts. | `VERIFIED` for structure; not fun. | Gives a memorable decision vocabulary. | Focuses the slice. | `PROTECT` | Observe an uncoached first player. |
-| The visual grammar separates puzzle/HUD hierarchy from stage/character spectacle. | `STRENGTH` | VISUAL-028, approved anchors and named scene consumers. | `PARTIAL` | Preserves potential readability. | Limits decorative asset drift/cost. | `PROTECT` | Target-resolution composite inspection. |
+| The project now has a user-supplied parchment/ink/watercolor reference and a concrete rule for what stays readable. | `STRENGTH` | `TETRIS-VISUAL-041`, two user-provided comparison images and Visual Bible. | `PARTIAL` | Makes the intended mood and UI hierarchy easier to distinguish. | Gives later art/UI work a narrower style target. | `PROTECT` | Inspect the new planning board, then target-resolution runtime composite after a consumer-specific art pass. |
+| The manual Tier wall and dark runtime presentation conflict with current approved flow/direction. | `WEAKNESS` | Fresh merged `production_battle.gd`, skill catalog/seed, actual runtime image files versus SKILL-039/VISUAL-041. | `VERIFIED` | Current player cannot yet experience or read the approved choice grammar. | Replacement touches UI/session/catalog/data and later art consumers. | `IMPROVE` | One bounded Phase 2 implementation contract with visual target-resolution capture. |
 | The approved CHAIN economy and actual runtime are materially divergent. | `WEAKNESS` | CHAIN-038 versus current H/V resolver, legacy depth reward and `STOCK_CAP = 6`. | `VERIFIED` | Players cannot yet receive the promised all-axis/setup/combo strategy. | Requires bounded Phase 2 implementation/review. | `IMPROVE` | Phase 2 contract and GDScript test-first implementation. |
 | Human/player evidence is absent. | `WEAKNESS` | Human evidence index and reconciliation record. | `VERIFIED` | No reliable claim about comprehension, tension or balance. | Blocks safe polish prioritization. | `TEST` | Three first-exposure receipts at target resolution. |
 | A concise explanation plus safe live practice can make the unusual economy marketable without a long lore layer. | `OPPORTUNITY` | Approved onboarding logic; inference, not market research. | `INFERENCE` | Could make the hook understandable in one session. | Reuses existing battle rather than creating a tutorial mode. | `TEST` | Compare comprehension after real onboarding runtime exists. |
@@ -256,8 +261,8 @@ No market/competitor claim is made here: no material current market decision req
 
 ### Protected strengths and scope boundaries
 
-- Protect the single large puzzle surface, free persistent LINE↔CHAIN switching, non-interchangeable resources, readable ETA/telegraph, full tactical pause and explicit USE.
-- Do not revive ordered turn rails, shared turn budgets, READY/timeout/PASS/Tempo, a dual-board sidecar, pixel/CRT style, auto-commit, or a permanently expanded skill matrix.
+- Protect the single large puzzle surface, free persistent LINE↔CHAIN switching, LINE-owned MP / CHAIN-owned Combo, readable ETA/telegraph, full tactical pause and explicit CONFIRM.
+- Do not revive ordered turn rails, shared turn budgets, READY/timeout/PASS/Tempo, a dual-board sidecar, dark metal-card/pixel/CRT style, unconfirmed auto-cast, manual Tier buttons or a permanently expanded skill matrix.
 - Do not add route maps, save/profile, workshop/meta, broader lore, production image batches or CHAIN implementation under this documentation issue.
 
 ### Remaining required work, in dependency order
@@ -289,6 +294,8 @@ No market/competitor claim is made here: no material current market decision req
 | 2026-08-28 | Added this reader-oriented Master GDD from fresh current sources. | `CURRENT SYNTHESIS` |
 | 2026-08-28 | Stored `TETRIS-VIS-BOARD-001` with visual text legend and provenance. | `GENERATED_EXPLORATION / AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME` |
 | 2026-08-28 | Reconciled image workflow to generate first and ask only for user lock confirmation, preserving exact runtime consumer requirements. | `CURRENT USER WORKFLOW` |
+| 2026-08-28 | Corrected current Skill grammar to `ATK/DEF/SUP → Combo-Resolved preview → explicit CONFIRM`; added a 5-MP-per-Combo bounded shortage fallback and recorded the legacy runtime/data conflict. | `TETRIS-SKILL-039 / TETRIS-BALANCE-040 / DOCUMENTED_NOT_IMPLEMENTED` |
+| 2026-08-28 | Replaced the global planning visual direction with parchment field-manual, sepia ink and watercolor violet rift; old generated board superseded by v2 pending user lock. | `TETRIS-VISUAL-041 / GENERATED_EXPLORATION_NOT_RUNTIME` |
 
 ### Rollback
 

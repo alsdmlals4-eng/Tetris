@@ -7,7 +7,7 @@
 - MP-cap approval: hard cap of **60 MP**, Issue #60
 - Combo / CHAIN MP recovery approval: Issue #64
 - Date: 2026-08-28
-- Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-027`, and `PRODUCTION_CANON_INDEX.json`.
+- Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-040`, `TETRIS-SKILL-039`, and `PRODUCTION_CANON_INDEX.json`.
 - Scope: player-facing resource language and CHAIN interaction grammar. This is not a Godot implementation, balance lock, runtime capture, or Human/player-experience result.
 
 ## 1. Resource ownership
@@ -22,8 +22,8 @@ CHAIN / Swap-Match board   → earn Combo
 `MP` is the player-facing name for the current runtime field `energy`. `Combo` is the player-facing name for the current runtime field `stock` / historical `Chain Stock`. They are **not** a third resource and must not be treated as interchangeable.
 
 - MP remains the flexible spendable resource. It is earned by LINE and may pay an optional CHAIN board-shaping choice as well as Technique costs.
-- Combo is one shared CHAIN-earned resource: it exposes/spends Tier opportunity under `TETRIS-BALANCE-027` **and** its current unspent amount raises CHAIN MP recovery. It is not a hidden second streak counter.
-- Combo has a hard cap of **10**. Spending Combo on a Technique immediately lowers both available Tier access and later CHAIN MP recovery; this is an intentional player choice, not a penalty layered on a separate resource.
+- Combo is one shared CHAIN-earned resource: it resolves the selected ATK/DEF/SUP Stage under `TETRIS-SKILL-039` **and** its current unspent amount raises CHAIN MP recovery. It is not a hidden second streak counter.
+- Combo has a hard cap of **10**. Spending Combo on a category-resolved Technique immediately lowers later CHAIN MP recovery; when MP is short, only surplus Combo may convert at 5 MP each to reach the highest feasible lower Stage. This is an intentional skill-only trade, not a general second MP faucet.
 - A player who declines a no-match swap or spends MP to preserve that failed swap resets Combo to **0**. MP lock still gives no immediate clear, cascade, Combo, or Technique effect.
 
 ## 2. CHAIN match grammar
@@ -75,7 +75,7 @@ MP recovery = (sum of all qualified maximal group lengths − 3) + Combo after t
 - The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. Initial LINE recovery is fixed to the existing data seed: no clear/Single/Double/Triple/Four = **0 / 10 / 22 / 36 / 52 MP**. The Combo/CHAIN-MP rule is structurally approved; its numerical balance remains `TUNE_REQUIRED` until Human evidence exists.
 - MP overflow creates no combat resource. The UI must expose a full MP state before another LINE reward, and explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert`, `Spend 1 MP to keep this swap for a later Combo`, and `MP full — spend MP before the next LINE reward`.
 - Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, does not cap energy, and has no MP-lock path. Its legacy CHAIN reward data maps total cascade depth 1–6 to Combo 1–6 with a cap of 6, and grants no CHAIN MP. Its alignment is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`.
-- Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must expose each wave's `line term + post-wave Combo = MP recovery`, raise the stored Combo cap to 10 without changing the Tier 1–6 range, and must not claim balance or Human/player validation before runtime evidence exists.
+- Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must expose each wave's `line term + post-wave Combo = MP recovery`, raise the stored Combo cap to 10, and replace the legacy manual Tier 1–6 path with the `TETRIS-SKILL-039` category-resolved Stage 1–10 path. It must not claim balance or Human/player validation before runtime evidence exists.
 
 ## 6. Tutorial and visual rule
 

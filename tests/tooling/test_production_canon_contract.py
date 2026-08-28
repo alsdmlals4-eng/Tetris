@@ -11,6 +11,7 @@ TURN_CANON_PATH = "docs/design/PRODUCTION_TURN_COMBAT_CANON.md"
 TIME_CANON_PATH = "docs/design/PRODUCTION_TURN_TIME_CANON.md"
 SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md"
 BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
+COMBO_SKILL_CONTRACT_PATH = ROOT / "docs" / "design" / "COMBO_RESOLVED_SKILL_CONTRACT.md"
 ONBOARDING_CONTRACT_PATH = ROOT / "docs" / "design" / "FIRST_SESSION_ONBOARDING_CONTRACT.md"
 CHAIN_CONTRACT_PATH = ROOT / "docs" / "design" / "CHAIN_COMBO_MP_CONTRACT.md"
 LINE_REWARD_PATH = ROOT / "data" / "production" / "line_reward_seed.json"
@@ -46,17 +47,18 @@ class ProductionCanonContractTests(unittest.TestCase):
             data["implementation_plan"],
             "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
         )
-        self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-026")
-        self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-027")
+        self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-039")
+        self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-040")
+        self.assertEqual(data["current_visual_decision"], "TETRIS-VISUAL-041")
         self.assertEqual(data["current_onboarding_decision"], "TETRIS-ONBOARDING-037")
         self.assertEqual(data["current_chain_decision"], "TETRIS-CHAIN-038")
         self.assertEqual(
             data["skill_canon"],
-            "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md",
+            "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md",
         )
         self.assertEqual(
             data["balance_canon"],
-            "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
+            "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md",
         )
         self.assertEqual(
             data["onboarding_contract"],
@@ -120,19 +122,27 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("HISTORICAL", realtime)
         self.assertIn("SUPERSEDED", realtime)
 
-    def test_retained_skill_and_balance_authorities_are_not_silently_rewritten(self) -> None:
+    def test_current_skill_authority_supersedes_selection_grammar_but_preserves_effect_provenance(self) -> None:
         data = self._index()
         retained = data["retained_decisions"]
 
         self.assertIn("TETRIS-SKILL-026", retained)
+        self.assertIn("TETRIS-SKILL-039", retained)
         self.assertIn("TETRIS-BALANCE-027", retained)
+        self.assertIn("TETRIS-BALANCE-040", retained)
         self.assertIn("TETRIS-VISUAL-028", retained)
+        self.assertIn("TETRIS-VISUAL-041", retained)
         self.assertIn("TETRIS-ONBOARDING-037", retained)
         self.assertIn("TETRIS-CHAIN-038", retained)
         self.assertTrue(SKILL_CANON_PATH.is_file())
         self.assertTrue(BALANCE_CANON_PATH.is_file())
+        self.assertTrue(COMBO_SKILL_CONTRACT_PATH.is_file())
         self.assertIn("TETRIS-SKILL-026", SKILL_CANON_PATH.read_text(encoding="utf-8"))
         self.assertIn("TETRIS-BALANCE-027", BALANCE_CANON_PATH.read_text(encoding="utf-8"))
+        combo = COMBO_SKILL_CONTRACT_PATH.read_text(encoding="utf-8")
+        self.assertIn("TETRIS-SKILL-039", combo)
+        self.assertIn("TETRIS-BALANCE-040", combo)
+        self.assertIn("5 MP per converted Combo", combo)
 
     def test_chain_contract_keeps_line_mp_and_chain_combo_distinct(self) -> None:
         data = self._index()
@@ -243,7 +253,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             onboarding_index["tutorial_opening_guardrail"],
-            "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_USE",
+            "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
         )
         self.assertEqual(
             onboarding_index["tutorial_handoff_pressure"],
@@ -254,10 +264,11 @@ class ProductionCanonContractTests(unittest.TestCase):
             [
                 "LINE_MP_CAP_AND_INITIAL_REWARDS",
                 "CHAIN_ORTHOGONAL_SWAP_STRAIGHT_3PLUS_ALL_AXES",
-                "COMBO_CAP_AND_SHARED_TIER_SPEND",
+                "COMBO_CAP_AND_CATEGORY_RESOLVED_STAGE_SPEND",
+                "BOUNDED_5_MP_PER_COMBO_SKILL_FALLBACK",
                 "PER_WAVE_CHAIN_MP_FORMULA",
                 "NO_MATCH_REVERT_OR_FIXED_1_MP_LOCK_COMBO_RESET",
-                "TACTICAL_PAUSE_EXPLICIT_USE",
+                "TACTICAL_PAUSE_CATEGORY_PREVIEW_EXPLICIT_CONFIRM",
             ],
         )
         for token in (
@@ -267,7 +278,7 @@ class ProductionCanonContractTests(unittest.TestCase):
             "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
             "SAFE_LIVE_AUTHORED_OPENING",
             "CONTINUOUS_FROM_DEPLOY",
-            "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_USE",
+            "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
             "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
             "first intended session only",
             "same encounter",

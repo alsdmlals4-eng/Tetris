@@ -1,9 +1,9 @@
 # Vanguard Tactical Skill Matrix
 
-- Status: **RETAINED PRODUCTION SKILL CANON / CORE-029 REALTIME MIGRATION BOUNDARY**
+- Status: **HISTORICAL EFFECT-IDENTITY PROVENANCE / SUPERSEDED FOR CURRENT SKILL SELECTION FLOW**
 - Decision: `TETRIS-SKILL-026 · Situational Tactical Tier Matrix`
 - Date: 2026-08-24
-- Current combat canon: `TETRIS-CORE-029`
+- Current replacement: `TETRIS-SKILL-039` / `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md`; this document retains only reusable lane/effect intent and realtime-migration provenance.
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable repository owner: `docs/design/PROJECT_MASTER_GDD.md` and this contract.
 
@@ -19,7 +19,7 @@ Current lanes remain:
 - **DEF** — protection, mitigation, counter, resource ward.
 - **SUP** — recovery, self-buff, timing utility, non-damage disruption.
 
-`Tier 1–6` remains the player-facing grid and Stock cost grammar, but **Tier is a commitment/cost band, not a linear quality ladder**.
+`Tier 1–6` was the player-facing grid and Stock cost grammar. It is no longer current selection authority: the player now selects only `ATK / DEF / SUP`, sees one Combo-Resolved Stage preview and explicitly confirms it. The lane/effect intent below remains reference material until Stage 1–10 data is authored.
 
 ## 2. What SKILL-026 supersedes
 

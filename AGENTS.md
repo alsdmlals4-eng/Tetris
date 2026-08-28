@@ -5,9 +5,8 @@
 Read current production gameplay in this order:
 
 1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 60:40 battle composition authority (`TETRIS-CORE-029`).
-2. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained Vanguard `ATK / DEF / SUP × Tier 1–6` Technique identity and tactical commitment authority where not turn-bound (`TETRIS-SKILL-026`).
-3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained Line MP / Chain Combo opportunity cost and Tier commitment structure (`TETRIS-BALANCE-027`).
-4. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar and optional MP lock (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
+2. `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` — current `ATK / DEF / SUP` category-only, Combo-Resolved preview/explicit CONFIRM and bounded 5-MP fallback authority (`TETRIS-SKILL-039` / `TETRIS-BALANCE-040`).
+3. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar, optional MP lock, Combo recovery and preserved opportunity cost (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
 5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
 6. `docs/design/PROJECT_WORKSPACE_INDEX.md`, `PROJECT_MASTER_GDD.md`, and `VISUAL_BIBLE.md` — repository-owned project-home structure, current picture, and visual direction.
 7. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
@@ -16,7 +15,7 @@ Read current production gameplay in this order:
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
-`docs/design/PRODUCTION_TURN_COMBAT_CANON.md` (`TETRIS-CORE-024`) and `docs/design/PRODUCTION_TURN_TIME_CANON.md` (`TETRIS-TIME-025`) remain historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo. Preserve their bodies; do not use them as current gameplay authority.
+`docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` (`TETRIS-SKILL-026`) and `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` (`TETRIS-BALANCE-027`) remain historical provenance for manual Tier 1–6 choice/cost grammar and selected effect-purpose ideas. Preserve their bodies; do not use them as current Skill selection authority. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` (`TETRIS-CORE-024`) and `docs/design/PRODUCTION_TURN_TIME_CANON.md` (`TETRIS-TIME-025`) remain historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
 
 ## DOMAIN_SPLIT_CANON
 
@@ -61,13 +60,13 @@ They do not override CORE-029.
 - LINE remains the primary MP source (current internal field: `energy`).
 - CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; every resolved wave adds Combo +1 and then recovers MP from `(sum maximal qualified line lengths − 3) + post-wave Combo`. Combo is the shared Tier/CHAIN-MP resource (current internal field: `stock`).
 - A no-match restores by default and resets Combo; fixed **1 MP** may keep that swapped board for later setup, but also resets Combo and grants no immediate clear, Combo, or CHAIN MP recovery.
-- Combo cap is **10**. Tier N spends Combo N under retained BALANCE-027 structure, intentionally lowering later CHAIN MP recovery. Current merged runtime remains legacy cap-6/no-CHAIN-MP until Phase 2 implementation.
+- Combo cap is **10**. Selecting a Skill category resolves the current Combo Stage; when current-stage MP is insufficient, surplus Combo converts at **5 MP each** only to reach the highest feasible lower Stage. This intentionally lowers later CHAIN MP recovery. Current merged runtime remains legacy cap-6/no-CHAIN-MP/manual-Tier-1–6 until Phase 2 implementation.
 - Enemy Current Telegraph + ETA continues while the player solves LINE/CHAIN.
 - Visible Next Forecast remains lower priority than Current.
 - Opening SKILL enters `TACTICAL_PAUSE_SKILL` and fully stops combat simulation.
 - During tactical pause: enemy ETA/resolution, puzzle simulation, status ticks, real-time cooldowns, simulation VFX/animation/audio progression stop. Only Skill/UI navigation/confirm/cancel remains active.
-- Skill flow is `ATK / DEF / SUP → selected lane T1–T6 → detail → explicit USE`.
-- Selecting a Technique row never spends resources. Only USE commits.
+- Skill flow is `ATK / DEF / SUP → one current-Combo-resolved preview → explicit CONFIRM`.
+- Selecting a category never spends resources. Only CONFIRM commits; the pre-confirm preview must state any 5-MP-per-Combo fallback.
 - Cancel or successful USE resumes the exact paused combat time and restores the previously active puzzle workspace unchanged by reading the Skill UI.
 - Manual Pause is also full simulation pause but remains a distinct state/reason.
 - Same-frame Skill-open vs enemy deadline uses an explicit scheduler commit point. Skill-open may freeze an uncommitted action; it cannot retroactively cancel a committed one.
@@ -79,8 +78,8 @@ They do not override CORE-029.
 - Target desktop composition: approximately `60% large Puzzle Surface / 40% persistent Combat-Threat-Resource-Skill surface`.
 - The ratio is a readability target, not a fixed pixel law.
 - Right-side surface keeps enemy HP/phase, Current Telegraph + ETA, lower-priority Next Forecast when known, player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
-- Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context.
-- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, Shared Turn Timer, READY, turn timeout/PASS, or Tempo UI as current production behavior.
+- Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context and a category-resolved preview.
+- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, Shared Turn Timer, READY, turn timeout/PASS, Tempo UI, manual Tier buttons or an unconfirmed skill auto-cast as current production behavior.
 - Puzzle/HUD readability outranks decorative character, environment, and VFX detail.
 
 ## Image production contract
