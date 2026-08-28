@@ -64,8 +64,17 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
             "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
             inventory["first_session_onboarding"]["post_deploy_tutorial_handoff"],
         )
+        self.assertEqual(
+            "SAFE_LIVE_AUTHORED_OPENING",
+            inventory["first_session_onboarding"]["tutorial_pressure_mode"],
+        )
+        self.assertEqual(
+            "CONTINUOUS_FROM_DEPLOY",
+            inventory["first_session_onboarding"]["tutorial_clock_behavior"],
+        )
         self.assertIn("first intended session only", rows["TETRIS-SCREEN-006"]["player_goal"])
         self.assertIn("same encounter", rows["TETRIS-SCREEN-007"]["player_goal"])
+        self.assertIn("safe live opening", rows["TETRIS-SCREEN-007"]["player_goal"])
         self.assertIn("TETRIS-ONBOARDING-037", GUIDE.read_text(encoding="utf-8"))
         self.assertIn("TETRIS-CHAIN-038", GUIDE.read_text(encoding="utf-8"))
         self.assertIn("CHAIN_COMBO_MP_CONTRACT", rows["TETRIS-SCREEN-007"]["screen_design_reference"])

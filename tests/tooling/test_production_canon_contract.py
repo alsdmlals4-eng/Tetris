@@ -234,6 +234,22 @@ class ProductionCanonContractTests(unittest.TestCase):
             "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
         )
         self.assertEqual(
+            onboarding_index["tutorial_pressure_mode"],
+            "SAFE_LIVE_AUTHORED_OPENING",
+        )
+        self.assertEqual(
+            onboarding_index["tutorial_clock_behavior"],
+            "CONTINUOUS_FROM_DEPLOY",
+        )
+        self.assertEqual(
+            onboarding_index["tutorial_opening_guardrail"],
+            "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_USE",
+        )
+        self.assertEqual(
+            onboarding_index["tutorial_handoff_pressure"],
+            "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
+        )
+        self.assertEqual(
             onboarding_index["pre_deploy_rule_scope"],
             [
                 "LINE_MP_CAP_AND_INITIAL_REWARDS",
@@ -249,6 +265,10 @@ class ProductionCanonContractTests(unittest.TestCase):
             "FULL_PRE_DEPLOY_BRIEFING",
             "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
             "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
+            "SAFE_LIVE_AUTHORED_OPENING",
+            "CONTINUOUS_FROM_DEPLOY",
+            "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_USE",
+            "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
             "first intended session only",
             "same encounter",
             "Full rules before Deploy",

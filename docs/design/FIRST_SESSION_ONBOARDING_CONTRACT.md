@@ -7,6 +7,9 @@
 - Rule-delivery mode: `FULL_PRE_DEPLOY_BRIEFING`
 - First-visit Deploy gate: `RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT`, Issue #68
 - Post-Deploy handoff: `SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER`, Issue #68
+- Tutorial pressure mode: `SAFE_LIVE_AUTHORED_OPENING`, Issue #70
+- Tutorial clock: `CONTINUOUS_FROM_DEPLOY`; opening guardrail: `SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_USE`, Issue #70
+- Post-tutorial pressure: `NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF`, Issue #70
 - Authority: `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, the current Screen Surface Inventory, and the user's 2026-08-28 approvals.
 - Scope boundary: this is the intended first-session learning contract. It does not claim a Godot scene, runtime asset, localized final copy, Human/player validation, or a broader world-history canon.
 
@@ -56,9 +59,13 @@ This is complete for the current vertical slice, not a full catalog explanation:
 
 After Deploy, the tutorial is a **short guided practice inside the actual continuous encounter**. It does not use a fake board, a separate economy, or an old ordered-turn rail. The guided portion ends after the player has read the live threat, seen one disclosed LINE reward, verified one disclosed valid CHAIN reward, and committed one explicit USE; optional MP-lock inspection is never mandatory. Prompting then ends and the same encounter continues as normal CORE-029 play, beginning with the existing unforced-response step rather than a terminal tutorial result.
 
+### Safe live authored opening
+
+Deploy starts the real continuous combat clock. Tutorial prompts must not silently freeze the enemy; only the already-approved Skill/manual pause may stop the simulation. The first authored Telegraph/ETA supplies enough real-time room for the required guided actions, and its outcome may communicate light pressure but cannot cause a terminal or forced-failure result before the first explicit USE. After that guided handoff, the same encounter uses its normal authored pressure with no separate tutorial ruleset or invulnerability mode.
+
 | Step | Player question | Required feedback | Guardrail |
 | --- | --- | --- | --- |
-| 1. Read threat | “What is about to happen, and how long do I have?” | Current Telegraph and ETA remain visible while the player can still act. | Explain live pressure without a Shared Turn Timer or phase rail. |
+| 1. Read threat | “What is about to happen, and how long do I have?” | Current Telegraph and ETA remain visible while the player can still act. | The ETA is genuinely counting down from Deploy; do not freeze it for a prompt or use a Shared Turn Timer/phase rail. |
 | 2. Practice MP | “Can I see the disclosed LINE reward happen?” | A Single LINE visibly grants the pre-briefed **10 MP**; Double/Triple/Four grant 22/36/52 MP. At 60 MP, show the full state before another LINE reward could overflow. | Do not use hidden grants or imply LINE is the only correct workspace. |
 | 3. Practice Combo | “Can I verify the disclosed CHAIN rule and reward?” | A valid straight 3+ CHAIN visibly uses horizontal, vertical, or either diagonal alignment, gives Combo +1, then displays `line total − 3 + current Combo = MP recovery`. The same Combo can be spent on a stronger Technique or saved to improve a later CHAIN MP recovery, up to 10. | Keep LINE and CHAIN non-interchangeable; reinforce the pre-Deploy rule with structured feedback, not image-only labels; do not force an old Line→Chain order. |
 | 3b. Verify optional setup | “When would I use the pre-briefed MP lock?” | When affordable, the player can inspect that fixed **1 MP** keeps a no-match swap for a later setup, resets Combo, and gives no immediate clear, cascade, Combo, or MP recovery. | Do not require this transaction in the first tutorial or imply it is a third resource. The later Manual may repeat it. |
@@ -69,6 +76,7 @@ After Deploy, the tutorial is a **short guided practice inside the actual contin
 
 - Keep the world explanation short. The separate rules section is intentionally complete for economy-critical first-slice rules and revisit-able through the planned Codex/Manual surface; do not front-load all 18 Technique identities.
 - The first-visit gate guarantees one complete rule review before Deploy without requiring a quiz. Later visits may Deploy immediately, while retaining a re-openable rule summary. The short guided battle tutorial must hand off to free play in the **same encounter**; it must not restart, terminate, or introduce a separate tutorial ruleset.
+- Use a **safe live authored opening**: continuous time begins at Deploy, the first authored ETA is sufficient for the guided actions, and its pre-first-USE result is nonterminal. This does not authorize tutorial-time auto-pause, a separate board/economy, or permanent safety; normal authored pressure resumes after the guided handoff.
 - Preserve `CORE-029`: continuous real-time battle after Deploy, free persistent `LINE ↔ CHAIN`, full tactical pause only through Skill/manual pause, and explicit `USE` commit.
 - This decision creates no runtime image need. `TETRIS-SREF-003` and `TETRIS-SREF-005` remain approved planning references, not implementation or Human-readability evidence.
 - Phase 2 may create the BattleBriefing scene/data contract and the minimum battle tutorial triggers only after its implementation review. It must not silently add a route, save, progression, production-asset batch, or broader narrative system.
@@ -82,5 +90,6 @@ Before the tutorial can be marked effective, first-exposure receipts must show t
 3. distinguish LINE → MP from CHAIN → shared Combo/Tier access, including why spending Combo trades a stronger Technique against later CHAIN MP recovery, and why a failed CHAIN swap/MP lock resets Combo without a reward;
 4. explain that Skill pauses the simulation and that **USE**, not row selection, commits; and
 5. make and explain one resource/Technique response to a visible threat.
+6. recognize that the ETA was live from Deploy, while explaining why the first opening gave enough room to learn without a forced loss.
 
 Failure evidence must be recorded as a tutorial/readability finding, not masked by more lore, an unapproved timer, or a false runtime-PASS claim.
