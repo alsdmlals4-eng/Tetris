@@ -49,6 +49,18 @@ They do not override CORE-029.
 - Unexpected failures use systematic debugging before proposing fixes.
 - Foundation tests and CORE-029 Production tests remain distinguishable.
 
+## MANDATORY_CURRENT_TASK_EVIDENCE_GATE
+
+For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, data or Godot implementation change), complete and record this gate before claiming that the next action is safe:
+
+1. `FRESH_SOURCE_AND_IMPLEMENTATION_READ`: read the latest completed `main`, every open/draft PR as read-only parallel work, current detailed canon, approved Decisions, and the affected actual code, data, Scene, Resource, asset, test, CI/runtime and Human evidence.
+2. `TARGETED_CURRENT_INTERNET_RESEARCH`: perform fresh, decision-relevant Internet research from the appropriate current primary/official source (Godot, platform, policy, dependency or rights owner) before a material decision or implementation. External research informs feasibility; it never replaces project canon or runtime truth.
+3. `PREIMPLEMENTATION_FEASIBILITY_CLASSIFICATION`: record `FEASIBLE`, `PARTIAL`, or `BLOCKED_UNVERIFIED` with affected consumers, data/Scene/code boundaries, dependencies, compatibility/performance risk, rollback boundary and evidence ceiling. A planning document or automated test alone never proves runtime or player value.
+4. `FIVE_FULL_ADVERSARIAL_LOOPS_MINIMUM`: run five complete current-state attack/recheck loops covering canon drift, actual implementation/data contradiction, user-flow failure, visual/consumer evidence confusion, and validation/merge evidence. Correct each material finding before progressing, or keep it explicitly blocked.
+5. `EXACT_DESTINATION_AND_HEAD_READBACK`: after a permitted write, reread its exact destination; before a completion/merge claim, test the exact head and read back the remote result.
+
+`MECHANICAL_NO_EXTERNAL_DEPENDENCY` is permitted only for a purely mechanical non-product change where external information cannot alter the result; record the scope and reason instead of pretending Internet research occurred. This exception never applies to new gameplay, player-facing UX, runtime asset, dependency, platform, security, rights or implementation-direction work.
+
 ## Current CORE-029 gameplay invariants
 
 - Combat runs from `BATTLE_START` until `VICTORY` or `DEFEAT` on one continuous combat timeline.

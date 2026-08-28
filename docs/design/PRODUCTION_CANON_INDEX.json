@@ -14,6 +14,15 @@
   "project_master_gdd": "docs/design/PROJECT_MASTER_GDD.md",
   "visual_bible": "docs/design/VISUAL_BIBLE.md",
   "external_workspace_migration_record": "docs/operations/TETRIS_CURRENT_WORKSPACE_MIGRATION_2026-08-28.json",
+  "mandatory_current_task_evidence_gate": {
+    "owner": "AGENTS.md#MANDATORY_CURRENT_TASK_EVIDENCE_GATE",
+    "fresh_source_and_implementation_read": true,
+    "targeted_current_internet_research": "REQUIRED_FOR_MATERIAL_WORK",
+    "mechanical_no_external_dependency_exception": "EXPLICIT_SCOPE_AND_REASON_REQUIRED",
+    "preimplementation_feasibility_classification": ["FEASIBLE", "PARTIAL", "BLOCKED_UNVERIFIED"],
+    "full_adversarial_loops_minimum": 5,
+    "exact_destination_and_head_readback": true
+  },
   "historical_core_decision": "TETRIS-CORE-024",
   "historical_time_decision": "TETRIS-TIME-025",
   "primary_canon": "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",

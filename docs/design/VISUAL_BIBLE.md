@@ -71,8 +71,8 @@ Region, threat state, time of day and faction/state may vary wash intensity, pap
 | `TETRIS-IMG-031` | Runtime-bound production asset | `CombatStage/StageBackdrop` | Current dark stage consumer binding, subject to runtime/render evidence ceiling. |
 | `TETRIS-IMG-033/034` | Runtime-bound source candidates | `VanguardReference` / `GatebreakerReference` | Current pixel-rendered cutout bindings and identity provenance. |
 | `TETRIS-IMG-035/036` | Runtime-bound VFX candidates | Attack accent / active telegraph texture nodes | Bounded combat feedback binding. |
-| `TETRIS-VIS-BOARD-001` | `SUPERSEDED_GENERATED_EXPLORATION` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png` | Replaced because it did not make the current category-resolved skill flow or the intended parchment style intelligible. Not a runtime asset. |
-| `TETRIS-VIS-BOARD-002` | `GENERATED_EXPLORATION` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png` | Current AI-understanding/planning review board; `runtime_consumer: NONE`. |
+| `TETRIS-VIS-BOARD-001` | `SUPERSEDED_BY_TETRIS-VIS-BOARD-002` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png` | Replaced because it did not make the current category-resolved skill flow or the intended parchment style intelligible. Not a runtime asset. |
+| `TETRIS-VIS-BOARD-002` | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png` | User-locked AI-understanding/planning review board; `runtime_consumer: NONE`. It is still not a runtime asset. |
 
 ## 6. `PROJECT_CORE_SCENE_VISUAL_BOARD` v2 exact legend
 
@@ -87,7 +87,7 @@ The board is a planning visualization. It deliberately uses symbols, seals, arro
 | 5 | MP-insufficient fallback | Understand a lower-stage result before committing. | If the current stage lacks MP, surplus Combo converts at 5 MP each only to reach the highest feasible lower stage; then CONFIRM spends the displayed total. | Formula is current Phase 1 canon; runtime/data/test proof is pending Phase 2. |
 | 6 | Outcome and return to threat | See the action stamp/impact, changed resource state and same frozen context resume. | The result answers or alters the threat, prompting the next LINE/CHAIN/Skill preparation. | Player comprehension, balance and fun remain `NOT_RUN`. |
 
-`TETRIS-VIS-BOARD-002` is `AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME`. Locking it approves a planning reference only; it does not create a Godot runtime asset, UI/scene implementation or Human/player UX PASS.
+The user locked `TETRIS-VIS-BOARD-002` as `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` on 2026-08-28. The lock approves only this planning reference; it does not create a Godot runtime asset, UI/scene implementation, runtime render or Human/player UX PASS.
 
 ## 7. Generate-first and lock-after-inspection workflow
 

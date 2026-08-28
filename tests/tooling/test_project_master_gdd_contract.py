@@ -69,7 +69,7 @@ class ProjectMasterGddContractTests(unittest.TestCase):
         self.assertEqual(board["local_path"], "docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png")
         self.assertEqual(board["classification"], "GENERATED_EXPLORATION")
         self.assertEqual(board["runtime_consumer"], "NONE")
-        self.assertEqual(board["status"], "AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME")
+        self.assertEqual(board["status"], "USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME")
         self.assertEqual(board["sha256"], hashlib.sha256(BOARD_PATH.read_bytes()).hexdigest())
         self.assertEqual(visuals["TETRIS-VIS-BOARD-001"]["status"], "SUPERSEDED_BY_TETRIS-VIS-BOARD-002")
 
