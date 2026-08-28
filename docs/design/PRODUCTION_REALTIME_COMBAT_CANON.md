@@ -232,7 +232,7 @@ Retained structural identity:
 - the resources are not interchangeable;
 - Combo cap baseline is 6;
 - Tier N baseline spends N Combo;
-- MP cost remains Technique-specific and data-driven; a failed-swap MP lock is an additional optional CHAIN board-shaping spend with amount `TUNE_REQUIRED`;
+- MP cost remains Technique-specific and data-driven; a failed-swap MP lock is an additional optional CHAIN board-shaping spend with a fixed **1 MP** cost;
 - Tier is a tactical commitment band, not a linear instruction to choose the highest available Tier.
 
 The opportunity-cost question is now real-time:

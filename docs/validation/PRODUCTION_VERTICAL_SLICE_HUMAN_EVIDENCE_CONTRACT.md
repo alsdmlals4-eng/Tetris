@@ -50,7 +50,7 @@ Minimum representative scope:
 - one large left Puzzle Surface switching between persistent LINE and CHAIN states;
 - persistent right Combat/Threat/Resource/Skill surface;
 - real-time enemy threat with current Telegraph + ETA and lower-priority Next Forecast where authored;
-- Line MP and Chain Combo as non-interchangeable resources, including optional MP lock after a failed CHAIN swap;
+- Line MP and Chain Combo as non-interchangeable resources, including optional fixed-**1 MP** lock after a failed CHAIN swap;
 - ATK / DEF / SUP → T1–T6 → detail → explicit USE;
 - Skill opens `TACTICAL_PAUSE_SKILL` and fully pauses simulation;
 - manual pause is distinct from Skill tactical pause;
@@ -158,7 +158,7 @@ Check whether the dual-resource distinction is understood:
 - LINE produces **MP**;
 - CHAIN produces **Combo** / Tier access;
 - MP and Combo are not interchangeable;
-- a no-match CHAIN swap reverts by default; MP may instead preserve that swapped setup without immediate Combo;
+- a no-match CHAIN swap reverts by default; fixed **1 MP** may instead preserve that swapped setup without immediate Combo;
 - the player can describe a real reason to stay in one workspace longer or switch to the other.
 
 ### F. TECHNIQUE_DECISION_QUALITY

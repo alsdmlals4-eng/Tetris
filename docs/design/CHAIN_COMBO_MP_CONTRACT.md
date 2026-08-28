@@ -3,6 +3,7 @@
 - Decision: `TETRIS-CHAIN-038`
 - Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
 - Issue: #56
+- Cost approval: fixed **1 MP** failed-swap lock, Issue #58
 - Date: 2026-08-28
 - Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-027`, and `PRODUCTION_CANON_INDEX.json`.
 - Scope: player-facing resource language and CHAIN interaction grammar. This is not a Godot implementation, balance lock, runtime capture, or Human/player-experience result.
@@ -43,14 +44,14 @@ Connected blobs, L-shapes, or a merely adjacent pair are not matches. If runs ov
 | --- | --- | --- | --- |
 | A valid straight 3+ match | Keep the swap; clear → gravity/refill → cascade until stable. | Earn Combo only through the ordinary resolved CHAIN result; no MP payment. | Normal stable CHAIN board. |
 | No valid match, player declines lock | Restore the exact pre-swap board. | No MP or Combo change. | Normal stable CHAIN board. |
-| No valid match, player selects MP lock | Keep the swapped board in place. | Spend the configured MP lock cost; no immediate clear, cascade, or Combo. | Normal stable CHAIN board, ready for a later setup swap. |
+| No valid match, player selects MP lock | Keep the swapped board in place. | Spend fixed **1 MP**; no immediate clear, cascade, or Combo. | Normal stable CHAIN board, ready for a later setup swap. |
 
 `MP lock` is an optional response to an otherwise-invalid swap. It must not be offered for non-adjacent input, during an already-committed resolution, or as a way to keep an already-valid match from resolving.
 
 ## 4. Tuning and implementation boundary
 
-- The MP lock amount, MP cap, LINE-to-MP recovery values, and Combo gain curve are `TUNE_REQUIRED`; this decision deliberately does not invent a number.
-- The UI must explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert` and, when affordable, `Spend MP to keep this swap for a later Combo`.
+- The failed-swap MP lock cost is fixed at **1 MP** for the vertical slice. MP cap, LINE-to-MP recovery values, and the Combo gain curve remain `TUNE_REQUIRED`; this decision deliberately does not invent those numbers.
+- The UI must explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert` and, when affordable, `Spend 1 MP to keep this swap for a later Combo`.
 - Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, and always restores a non-match. It has no MP-lock path. Its alignment with this contract is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK`.
 - Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must not claim balance or Human/player validation before runtime evidence exists.
 

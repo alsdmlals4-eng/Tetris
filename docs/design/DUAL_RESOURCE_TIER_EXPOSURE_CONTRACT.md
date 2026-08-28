@@ -8,7 +8,7 @@
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
 
-> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend configured MP to stay in place for later Combo setup, with no immediate Combo reward. Exact lock cost remains `TUNE_REQUIRED`.
+> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend fixed **1 MP** to stay in place for later Combo setup, with no immediate Combo reward. MP cap, LINE recovery, and Combo gain remain `TUNE_REQUIRED`.
 
 ## 1. Product thesis
 

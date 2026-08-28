@@ -135,6 +135,7 @@ class ProductionCanonContractTests(unittest.TestCase):
     def test_chain_contract_keeps_line_mp_and_chain_combo_distinct(self) -> None:
         data = self._index()
         chain = data["production_chain"]
+        economy = data["resource_economy"]
         resources = data["resource_economy"]["player_facing_resources"]
         text = CHAIN_CONTRACT_PATH.read_text(encoding="utf-8")
 
@@ -145,11 +146,19 @@ class ProductionCanonContractTests(unittest.TestCase):
             ["HORIZONTAL", "VERTICAL", "DIAGONAL_DOWN_RIGHT", "DIAGONAL_DOWN_LEFT"],
         )
         self.assertEqual(chain["invalid_swap_default"], "RESTORE_PRE_SWAP_STATE")
+        self.assertEqual(chain["mp_lock_cost"], 1)
+        self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
         self.assertEqual(resources["mp"]["owner"], "LINE")
         self.assertEqual(resources["mp"]["runtime_field"], "energy")
         self.assertEqual(resources["combo"]["owner"], "CHAIN")
         self.assertEqual(resources["combo"]["runtime_field"], "stock")
-        for token in ("TETRIS-CHAIN-038", "DIAGONAL_DOWN_RIGHT", "DIAGONAL_DOWN_LEFT", "TUNE_REQUIRED"):
+        for token in (
+            "TETRIS-CHAIN-038",
+            "DIAGONAL_DOWN_RIGHT",
+            "DIAGONAL_DOWN_LEFT",
+            "fixed **1 MP**",
+            "TUNE_REQUIRED",
+        ):
             self.assertIn(token, text)
 
     def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
