@@ -460,6 +460,20 @@ func test_time_owner_snapshots_restore_only_the_same_current_action_state() -> v
     assert_eq(scheduler.current_action_id(), scheduler_before["current_action_id"])
     assert_eq(scheduler.next_action_id(), scheduler_before["next_action_id"])
     assert_almost_eq(scheduler.remaining_seconds(), scheduler_before["remaining_seconds"], 0.001)
+
+func test_time_owner_restore_rejects_invalid_or_advanced_state_without_mutation() -> void:
+    var reserve := PlayerBoardOpportunityState.new()
+    reserve.grant(3.0)
+    assert_false(reserve.restore_state({"remaining_seconds": 13.0}))
+    assert_almost_eq(reserve.remaining_seconds(), 3.0, 0.001)
+    var scheduler_before := scheduler.snapshot_current_action_state()
+    scheduler.tick_simulation(99.0, _context())
+    var current_after_advance := scheduler.current_action_id()
+    var next_after_advance := scheduler.next_action_id()
+    assert_ne(current_after_advance, scheduler_before["current_action_id"])
+    assert_false(scheduler.restore_current_action_state(scheduler_before))
+    assert_eq(scheduler.current_action_id(), current_after_advance)
+    assert_eq(scheduler.next_action_id(), next_after_advance)
 ```
 
 - [ ] **Step 2: Run timing tests and confirm no local time-domain primitives exist.**
@@ -509,7 +523,7 @@ git commit -m "feat: add target separated board and eta timing"
 - `ProductionSkillSession.select_category(category: String, context: Dictionary) -> Dictionary` returns its resolved preview; it has no `select_technique` path.
 - `ProductionSkillSession.selected_preview() -> Dictionary` includes `opening_combo`, `resolved_stage`, `converted_combo`, `mp_cost`, `preview_lines`, `effects`, and `ready`.
 - `ProductionTechniqueResolver.preflight_effects(effects: Array, context: Dictionary) -> Dictionary` validates every effect and action variant without mutation and returns one deterministic executable plan or a failure reason. A preflight failure must occur before resource commit; an executor/runtime failure after a successful preflight is still recoverable through the checkpoint below.
-- `ProductionCombatState.snapshot_state() -> Dictionary` / `restore_state(snapshot: Dictionary) -> bool` own player/enemy HP, MP, and Combo rollback. `resource_snapshot()` / `restore_resource_snapshot(snapshot)` use that same checked state representation for the commit transaction.
+- `ProductionCombatState.snapshot_state() -> Dictionary` / `restore_state(snapshot: Dictionary) -> bool` own player/enemy HP, MP, and Combo rollback. `resource_snapshot() -> Dictionary` / `restore_resource_snapshot(snapshot: Dictionary) -> bool` use that same checked state representation for the commit transaction.
 - `ProductionResponseState.snapshot_action_state() -> Dictionary` / `restore_action_state(snapshot: Dictionary) -> bool` own current action-bound mitigation, counter, resource ward, and lethal-safety rollback.
 - `ProductionTechniqueResolver.capture_effect_checkpoint(context: Dictionary) -> Dictionary` / `restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> bool` call the owner-level APIs from Tasks 5–6 and restore every mutable effect owner touched by a confirmed technique: player HP/MP/Combo, enemy HP, response action state, board-opportunity reserve, and current scheduler action/ETA state. A failed owner restore is `ROLLBACK_FAILED`; it must not be reported as a successful cancellation.
 - `ProductionCombatRuntime.select_skill_category(category: String) -> Dictionary` builds context from player, enemy, response state, scheduler, board opportunity, current action ID, and current action kind.
@@ -572,6 +586,23 @@ func test_post_preflight_execution_failure_restores_resources_and_every_mutable_
     assert_eq(response_state.modifiers_for_action(telegraph_action_id), response_before)
     assert_almost_eq(board_opportunity.remaining_seconds(), 3.0, 0.001)
     assert_almost_eq(scheduler.remaining_seconds(), eta_before, 0.001)
+
+func test_restore_failure_is_fail_closed_and_keeps_tactical_pause_open() -> void:
+    var rejecting_reserve := _reserve_that_rejects_restore()
+    var rollback_catalog := _catalog_with_current_stage_effects("SUPPORT", 2, [
+        {"op": "GRANT_PLAYER_BOARD_OPPORTUNITY", "magnitude": 2},
+        {"op": "HEAL_SELF", "magnitude": 1},
+    ])
+    session = ProductionSkillSession.new(
+        pause_controller, player, rollback_catalog, _resolver_that_fails_on_execution(2)
+    )
+    assert_true(session.open())
+    assert_true(session.select_category("SUPPORT", _context_with_reserve(rejecting_reserve))["ready"])
+    var result: Dictionary = session.commit_selected(_context_with_reserve(rejecting_reserve))
+    assert_false(result["committed"])
+    assert_eq(result["reason"], "ROLLBACK_FAILED")
+    assert_true(session.is_open())
+    assert_true(pause_controller.is_paused())
 ```
 
 - [ ] **Step 2: Run Skill/runtime tests and confirm the legacy manual selection API fails the new contract.**
@@ -602,8 +633,14 @@ func commit_selected(context: Dictionary) -> Dictionary:
         return transaction
     var resolution := _technique_resolver.resolve_preflighted_effects(preflight, context)
     if not bool(resolution.get("ok", false)):
-        _combat_state.restore_resource_snapshot(_selected_preview["resource_snapshot"])
-        _technique_resolver.restore_effect_checkpoint(effect_checkpoint, context)
+        var resource_restored := _combat_state.restore_resource_snapshot(_selected_preview["resource_snapshot"])
+        var effects_restored := _technique_resolver.restore_effect_checkpoint(effect_checkpoint, context)
+        if not resource_restored or not effects_restored:
+            return {
+                "committed": false,
+                "reason": "ROLLBACK_FAILED",
+                "resolution_reason": resolution.get("reason", "EFFECT_FAILED"),
+            }
         return {"committed": false, "reason": resolution.get("reason", "EFFECT_FAILED")}
     cancel()
     return {"committed": true, "preview": _selected_preview.duplicate(true), "results": resolution["results"]}
@@ -611,13 +648,13 @@ func commit_selected(context: Dictionary) -> Dictionary:
 
 Implement `_catalog_with_current_stage_effects()` as a test-only catalog fixture that returns the supplied valid Stage-2 `SUPPORT` definition through the same `definition_for_lane_stage()` / `resolve_effects()` interface as the runtime catalog. Implement `_resolver_that_fails_on_execution(6)` as a test-only wrapper around the real executor: preflight accepts all six legal effects without mutation, executions 1–5 delegate to the real executor, and execution 6 returns `FORCED_EXECUTION_FAILURE` before mutation. It must never add a production-only effect opcode or bypass `select_category()`.
 
-Add the checked state snapshot/restore APIs described above. `commit_selected()` captures the combat resource snapshot and the full effect checkpoint only after all preflight checks pass; if resolution fails, it restores both and returns `ROLLBACK_FAILED` if either restoration fails.
+Add the checked state snapshot/restore APIs described above. `ProductionCombatState.restore_resource_snapshot(snapshot) -> bool` returns its checked restore result. `commit_selected()` captures the combat resource snapshot and the full effect checkpoint only after all preflight checks pass; if resolution fails, it captures both restore results and returns `ROLLBACK_FAILED` when either is false. In that fail-closed case it does **not** call `cancel()`: the tactical pause remains open for a deterministic caller-visible recovery path.
 
 - [ ] **Step 4: Run focused Skill, scheduler, and integration tests.**
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
-Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, fallback is non-voluntary and highest-feasible, every effect preflights before resource spend, a controlled post-preflight execution failure restores every mutable owner and both resources, cancel restores exact paused state, confirm applies exactly once, and committed enemy actions cannot be retroactively paused.
+Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, fallback is non-voluntary and highest-feasible, every effect preflights before resource spend, a controlled post-preflight execution failure restores every mutable owner and both resources, a rejected restore returns `ROLLBACK_FAILED` while tactical pause stays open, owner snapshots reject malformed/out-of-cap or action-advanced state without mutation, cancel restores exact paused state, confirm applies exactly once, and committed enemy actions cannot be retroactively paused.
 
 - [ ] **Step 5: Commit the current-Combo Skill flow.**
 

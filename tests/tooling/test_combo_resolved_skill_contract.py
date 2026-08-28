@@ -71,6 +71,9 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             "modifiers_for_action",
             "snapshot_current_action_state",
             "_catalog_with_current_stage_effects",
+            "resource_restored",
+            '"reason": "ROLLBACK_FAILED"',
+            "test_time_owner_restore_rejects_invalid_or_advanced_state_without_mutation",
             "git fetch origin main",
         ):
             self.assertIn(required, text)
