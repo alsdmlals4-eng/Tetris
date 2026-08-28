@@ -56,6 +56,16 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
         self.assertEqual("GAP_BLOCKING_FOR_INTENDED_FIRST_SESSION", rows["TETRIS-SCREEN-006"]["coverage_status"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
         self.assertEqual("COVERED_EXISTING_FOR_CORE_RUNTIME", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertEqual(
+            "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
+            inventory["first_session_onboarding"]["first_visit_deploy_gate"],
+        )
+        self.assertEqual(
+            "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
+            inventory["first_session_onboarding"]["post_deploy_tutorial_handoff"],
+        )
+        self.assertIn("first intended session only", rows["TETRIS-SCREEN-006"]["player_goal"])
+        self.assertIn("same encounter", rows["TETRIS-SCREEN-007"]["player_goal"])
         self.assertIn("TETRIS-ONBOARDING-037", GUIDE.read_text(encoding="utf-8"))
         self.assertIn("TETRIS-CHAIN-038", GUIDE.read_text(encoding="utf-8"))
         self.assertIn("CHAIN_COMBO_MP_CONTRACT", rows["TETRIS-SCREEN-007"]["screen_design_reference"])

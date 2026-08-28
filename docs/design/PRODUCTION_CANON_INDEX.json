@@ -125,6 +125,8 @@
   },
   "onboarding": {
     "rule_delivery": "FULL_PRE_DEPLOY_BRIEFING",
+    "first_visit_deploy_gate": "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
+    "later_visit_deploy_behavior": "IMMEDIATELY_ENABLED_WITH_REOPENABLE_RULE_SUMMARY",
     "pre_deploy_rule_scope": [
       "LINE_MP_CAP_AND_INITIAL_REWARDS",
       "CHAIN_ORTHOGONAL_SWAP_STRAIGHT_3PLUS_ALL_AXES",
@@ -134,6 +136,7 @@
       "TACTICAL_PAUSE_EXPLICIT_USE"
     ],
     "battle_tutorial_role": "PRACTICE_AND_VERIFY_PRE_DEPLOY_RULES",
+    "post_deploy_tutorial_handoff": "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
     "implementation_status": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED"
   },
   "production_skill": {
