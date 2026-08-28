@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "classification": "PROJECT_UNDERSTANDING_PLANNING_VISUALIZATION",
+  "issue": 72,
+  "status": "GENERATED_EXPLORATION_AWAITING_USER_LOCK_NOT_RUNTIME",
+  "visuals": [
+    {
+      "asset_id": "TETRIS-VIS-BOARD-001",
+      "name": "Project Core Scene Visual Board v1",
+      "local_path": "docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png",
+      "dimensions_px": [1672, 941],
+      "sha256": "1d68d56fa46b0e5929d82dc2e9479944403f88fc16773e7809c96d620839dd1e",
+      "classification": "GENERATED_EXPLORATION",
+      "consumer_kind": "PLANNING_VISUALIZATION",
+      "consumer_surface": "PROJECT_MASTER_GDD.md visual legend",
+      "runtime_consumer": "NONE",
+      "primary_use": "AI project-understanding and planning review visual board",
+      "style_anchor": "TETRIS-VISUAL-028",
+      "generation_provenance": "Built-in Image Gen, 2026-08-28; original composition created for this project",
+      "notion_destination": "Tetris · Visual Bible",
+      "status": "AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME"
+    }
+  ]
+}

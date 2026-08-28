@@ -191,7 +191,7 @@
   },
   "image_production": {
     "model": "RUNTIME_CONSUMER_FIRST",
-    "generation_status": "PAUSED_PENDING_APPROVED_CONSUMER_GAP",
+    "generation_status": "CONSUMER_GAP_BLOCKS_RUNTIME_GENERATION_PLANNING_EXPLORATION_ALLOWED",
     "concept_sheet_is_production_asset": false,
     "required_consumer_fields": [
       "target_res_path",
@@ -201,7 +201,9 @@
       "alpha_crop_anchor",
       "import_or_use_mode"
     ],
-    "one_explicit_approval_one_image": true,
+    "planning_generation_policy": "AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+    "runtime_generation_policy": "EXACT_CONSUMER_REQUIRED_AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+    "one_explicit_approval_one_image": false,
     "atlas_allowed_only_when_runtime_consumes_exact_sheet": true
   },
   "implementation_reality": {
