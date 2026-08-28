@@ -231,6 +231,7 @@ Retained structural identity:
 - **Combo** is primarily earned through CHAIN performance;
 - the resources are not interchangeable;
 - Combo cap baseline is 6;
+- MP is hard-capped at **60**; MP overflow does not create a combat resource and must be visible before a further LINE reward;
 - Tier N baseline spends N Combo;
 - MP cost remains Technique-specific and data-driven; a failed-swap MP lock is an additional optional CHAIN board-shaping spend with a fixed **1 MP** cost;
 - Tier is a tactical commitment band, not a linear instruction to choose the highest available Tier.
@@ -239,7 +240,7 @@ The opportunity-cost question is now real-time:
 
 > While the enemy clock keeps moving, how long can I safely stay in LINE or CHAIN before I pause and spend resources?
 
-Exact gains, costs, enemy cadence, cooldowns, and magnitudes remain `TUNE_REQUIRED` / `TUNING_SEED_NOT_FINAL` until supported by runtime and Human evidence.
+Exact LINE gains, Technique MP costs, enemy cadence, cooldowns, and magnitudes remain `TUNE_REQUIRED` / `TUNING_SEED_NOT_FINAL` until supported by runtime and Human evidence. The fixed 1-MP failed-swap lock and 60-MP hard cap are already approved player-facing rules.
 
 ## 11. SKILL-026 migration boundary
 

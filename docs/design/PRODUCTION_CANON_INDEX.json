@@ -109,6 +109,7 @@
     "invalid_swap_default": "RESTORE_PRE_SWAP_STATE",
     "invalid_swap_optional_mp_lock": "KEEP_SWAPPED_BOARD_WITHOUT_IMMEDIATE_CLEAR_OR_COMBO",
     "mp_lock_cost": 1,
+    "mp_cap": 60,
     "already_committed_cascade_settles_to_stable_before_switch": true,
     "workspace_state_persists_when_inactive": true,
     "combo_cap": 6
@@ -149,6 +150,8 @@
     "combo_cost_equals_tier": true,
     "mp_cost_status": "TUNING_SEED_NOT_FINAL",
     "mp_lock_cost_status": "USER_APPROVED_FIXED_1_MP",
+    "mp_cap": 60,
+    "mp_cap_status": "USER_APPROVED_FIXED_60_MP_HARD_CAP",
     "tier_exposure_model": "CONTEXTUAL_PROGRESSIVE_EXPOSURE",
     "technique_specific_first_slice_currency": false,
     "technique_specific_first_slice_cooldown": false,

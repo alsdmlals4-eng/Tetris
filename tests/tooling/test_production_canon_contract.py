@@ -148,6 +148,8 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(chain["invalid_swap_default"], "RESTORE_PRE_SWAP_STATE")
         self.assertEqual(chain["mp_lock_cost"], 1)
         self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
+        self.assertEqual(economy["mp_cap"], 60)
+        self.assertEqual(economy["mp_cap_status"], "USER_APPROVED_FIXED_60_MP_HARD_CAP")
         self.assertEqual(resources["mp"]["owner"], "LINE")
         self.assertEqual(resources["mp"]["runtime_field"], "energy")
         self.assertEqual(resources["combo"]["owner"], "CHAIN")
@@ -157,6 +159,7 @@ class ProductionCanonContractTests(unittest.TestCase):
             "DIAGONAL_DOWN_RIGHT",
             "DIAGONAL_DOWN_LEFT",
             "fixed **1 MP**",
+            "hard cap of **60 MP**",
             "TUNE_REQUIRED",
         ):
             self.assertIn(token, text)

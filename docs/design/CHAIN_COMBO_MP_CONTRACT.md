@@ -4,6 +4,7 @@
 - Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
 - Issue: #56
 - Cost approval: fixed **1 MP** failed-swap lock, Issue #58
+- MP-cap approval: hard cap of **60 MP**, Issue #60
 - Date: 2026-08-28
 - Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-027`, and `PRODUCTION_CANON_INDEX.json`.
 - Scope: player-facing resource language and CHAIN interaction grammar. This is not a Godot implementation, balance lock, runtime capture, or Human/player-experience result.
@@ -50,9 +51,9 @@ Connected blobs, L-shapes, or a merely adjacent pair are not matches. If runs ov
 
 ## 4. Tuning and implementation boundary
 
-- The failed-swap MP lock cost is fixed at **1 MP** for the vertical slice. MP cap, LINE-to-MP recovery values, and the Combo gain curve remain `TUNE_REQUIRED`; this decision deliberately does not invent those numbers.
-- The UI must explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert` and, when affordable, `Spend 1 MP to keep this swap for a later Combo`.
-- Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, and always restores a non-match. It has no MP-lock path. Its alignment with this contract is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK`.
+- The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. LINE-to-MP recovery values and the Combo gain curve remain `TUNE_REQUIRED`; this decision deliberately does not invent those numbers.
+- MP overflow creates no combat resource. The UI must expose a full MP state before another LINE reward, and explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert`, `Spend 1 MP to keep this swap for a later Combo`, and `MP full — spend MP before the next LINE reward`.
+- Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, and does not cap energy. It has no MP-lock path. Its alignment with this contract is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP`.
 - Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must not claim balance or Human/player validation before runtime evidence exists.
 
 ## 5. Tutorial and visual rule
