@@ -399,7 +399,9 @@ git commit -m "feat: define combo-resolved skill stages"
 **Interfaces:**
 - `PlayerBoardOpportunityState.grant(seconds: float) -> Dictionary` caps stored seconds at `12.0`.
 - `PlayerBoardOpportunityState.consume_line_delta(delta: float) -> Dictionary` returns `{ "line_delta", "consumed_seconds", "remaining_seconds" }`: it consumes `min(delta, remaining_seconds)`, returns the unheld remainder as `line_delta`, and never consumes on CHAIN/pause because runtime calls it only before an active LINE tick.
+- `PlayerBoardOpportunityState.snapshot_state() -> Dictionary` / `restore_state(snapshot: Dictionary) -> bool` own exact reserve rollback; restoration rejects malformed/out-of-cap state.
 - `EnemyActionScheduler.adjust_current_eta(action_id: String, delta_seconds: float) -> Dictionary` checks exact current ID and `not is_action_committed()`, clamps the new ETA to at least `commit_lead_seconds`, and returns `{ "adjusted", "before_seconds", "after_seconds", "action_id" }`.
+- `EnemyActionScheduler.snapshot_current_action_state() -> Dictionary` / `restore_current_action_state(snapshot: Dictionary) -> bool` own the current-action ETA rollback. The snapshot includes current and next action IDs, remaining seconds, and committed/resolution state; restore fails closed if either ID changed and never rewrites Telegraph/current/next authored sequence data.
 - Runtime constructor receives `board_opportunity`; `snapshot()` adds `player_board_opportunity_seconds` and `last_time_feedback`.
 
 - [ ] **Step 1: Add failing independence, reserve-edge and commit-boundary tests.**
@@ -444,6 +446,20 @@ func test_current_eta_adjustment_rejects_next_action_and_committed_action() -> v
     assert_false(scheduler.adjust_current_eta(next_id, 2.0)["adjusted"])
     scheduler.tick_simulation(8.0, _context())
     assert_false(scheduler.adjust_current_eta(scheduler.current_action_id(), 2.0)["adjusted"])
+
+func test_time_owner_snapshots_restore_only_the_same_current_action_state() -> void:
+    var reserve := PlayerBoardOpportunityState.new()
+    reserve.grant(3.0)
+    var reserve_before := reserve.snapshot_state()
+    reserve.grant(2.0)
+    assert_true(reserve.restore_state(reserve_before))
+    assert_almost_eq(reserve.remaining_seconds(), 3.0, 0.001)
+    var scheduler_before := scheduler.snapshot_current_action_state()
+    assert_true(scheduler.adjust_current_eta(scheduler.current_action_id(), 2.0)["adjusted"])
+    assert_true(scheduler.restore_current_action_state(scheduler_before))
+    assert_eq(scheduler.current_action_id(), scheduler_before["current_action_id"])
+    assert_eq(scheduler.next_action_id(), scheduler_before["next_action_id"])
+    assert_almost_eq(scheduler.remaining_seconds(), scheduler_before["remaining_seconds"], 0.001)
 ```
 
 - [ ] **Step 2: Run timing tests and confirm no local time-domain primitives exist.**
@@ -483,6 +499,8 @@ git commit -m "feat: add target separated board and eta timing"
 **Files:**
 - Modify: `src/production/skill/production_skill_session.gd:14-77`
 - Modify: `src/production/skill/production_technique_resolver.gd:10-48`
+- Modify: `src/production/combat/production_combat_state.gd:5-64`
+- Modify: `src/production/combat/production_response_state.gd:5-57`
 - Modify: `src/production/runtime/production_combat_runtime.gd:87-151`
 - Modify: `tests/production/runtime/test_tactical_skill_session.gd`
 - Modify: `tests/production/integration/test_realtime_combat_runtime.gd`
@@ -491,7 +509,9 @@ git commit -m "feat: add target separated board and eta timing"
 - `ProductionSkillSession.select_category(category: String, context: Dictionary) -> Dictionary` returns its resolved preview; it has no `select_technique` path.
 - `ProductionSkillSession.selected_preview() -> Dictionary` includes `opening_combo`, `resolved_stage`, `converted_combo`, `mp_cost`, `preview_lines`, `effects`, and `ready`.
 - `ProductionTechniqueResolver.preflight_effects(effects: Array, context: Dictionary) -> Dictionary` validates every effect and action variant without mutation and returns one deterministic executable plan or a failure reason. A preflight failure must occur before resource commit; an executor/runtime failure after a successful preflight is still recoverable through the checkpoint below.
-- `ProductionTechniqueResolver.capture_effect_checkpoint(context: Dictionary) -> Dictionary` / `restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> void` snapshot and restore every mutable effect owner touched by a confirmed technique: player HP/resources/status, enemy HP/status, response action state, board-opportunity reserve, and current scheduler action/ETA state.
+- `ProductionCombatState.snapshot_state() -> Dictionary` / `restore_state(snapshot: Dictionary) -> bool` own player/enemy HP, MP, and Combo rollback. `resource_snapshot()` / `restore_resource_snapshot(snapshot)` use that same checked state representation for the commit transaction.
+- `ProductionResponseState.snapshot_action_state() -> Dictionary` / `restore_action_state(snapshot: Dictionary) -> bool` own current action-bound mitigation, counter, resource ward, and lethal-safety rollback.
+- `ProductionTechniqueResolver.capture_effect_checkpoint(context: Dictionary) -> Dictionary` / `restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> bool` call the owner-level APIs from Tasks 5–6 and restore every mutable effect owner touched by a confirmed technique: player HP/MP/Combo, enemy HP, response action state, board-opportunity reserve, and current scheduler action/ETA state. A failed owner restore is `ROLLBACK_FAILED`; it must not be reported as a successful cancellation.
 - `ProductionCombatRuntime.select_skill_category(category: String) -> Dictionary` builds context from player, enemy, response state, scheduler, board opportunity, current action ID, and current action kind.
 - `ProductionCombatRuntime.open_skill()` returns `ENEMY_ACTION_COMMITTED` and does not acquire a pause token when the scheduler is committed.
 
@@ -523,22 +543,25 @@ func test_post_preflight_execution_failure_restores_resources_and_every_mutable_
     player.hp = 50
     enemy.hp = 100
     response_state.configure_direct_mitigation(telegraph_action_id, 10)
+    var response_before: Dictionary = response_state.modifiers_for_action(telegraph_action_id)
     board_opportunity.grant(3.0)
     var eta_before := scheduler.remaining_seconds()
-    _seed_selected_preview_with_effects([
+    var rollback_catalog := _catalog_with_current_stage_effects("SUPPORT", 2, [
+        {"op": "DAMAGE_SINGLE", "magnitude": 10},
         {"op": "HEAL_SELF", "magnitude": 15},
         {"op": "MITIGATE_CURRENT_DIRECT", "magnitude": 20},
         {"op": "GRANT_PLAYER_BOARD_OPPORTUNITY", "magnitude": 2},
         {"op": "ADJUST_CURRENT_ENEMY_ETA", "magnitude": 2},
-        {"op": "DAMAGE_SINGLE", "magnitude": 10},
+        {"op": "HEAL_SELF", "magnitude": 1},
     ])
-    # The injected fake executor preflights all five legal effects, applies the
-    # first four, then returns FORCED_EXECUTION_FAILURE on the fifth execution.
+    # The injected fake executor preflights all six legal effects, applies the
+    # first five, then returns FORCED_EXECUTION_FAILURE on the sixth execution.
     # This is a test seam for the post-preflight path, not a production-only opcode.
     session = ProductionSkillSession.new(
-        pause_controller, player, catalog, _resolver_that_fails_on_execution(5)
+        pause_controller, player, rollback_catalog, _resolver_that_fails_on_execution(6)
     )
     assert_true(session.open())
+    assert_true(session.select_category("SUPPORT", _direct_context())["ready"])
     var result: Dictionary = session.commit_selected(_direct_context())
     assert_false(result["committed"])
     assert_eq(result["reason"], "FORCED_EXECUTION_FAILURE")
@@ -546,7 +569,7 @@ func test_post_preflight_execution_failure_restores_resources_and_every_mutable_
     assert_eq(player.energy, 20)
     assert_eq(player.stock, 2)
     assert_eq(enemy.hp, 100)
-    assert_eq(response_state.direct_mitigation_for(telegraph_action_id), 10)
+    assert_eq(response_state.modifiers_for_action(telegraph_action_id), response_before)
     assert_almost_eq(board_opportunity.remaining_seconds(), 3.0, 0.001)
     assert_almost_eq(scheduler.remaining_seconds(), eta_before, 0.001)
 ```
@@ -586,7 +609,9 @@ func commit_selected(context: Dictionary) -> Dictionary:
     return {"committed": true, "preview": _selected_preview.duplicate(true), "results": resolution["results"]}
 ```
 
-Add `resource_snapshot()` / `restore_resource_snapshot(snapshot)` to `ProductionCombatState` in the same task so rollback restores both MP and Combo if any effect fails.
+Implement `_catalog_with_current_stage_effects()` as a test-only catalog fixture that returns the supplied valid Stage-2 `SUPPORT` definition through the same `definition_for_lane_stage()` / `resolve_effects()` interface as the runtime catalog. Implement `_resolver_that_fails_on_execution(6)` as a test-only wrapper around the real executor: preflight accepts all six legal effects without mutation, executions 1–5 delegate to the real executor, and execution 6 returns `FORCED_EXECUTION_FAILURE` before mutation. It must never add a production-only effect opcode or bypass `select_category()`.
+
+Add the checked state snapshot/restore APIs described above. `commit_selected()` captures the combat resource snapshot and the full effect checkpoint only after all preflight checks pass; if resolution fails, it restores both and returns `ROLLBACK_FAILED` if either restoration fails.
 
 - [ ] **Step 4: Run focused Skill, scheduler, and integration tests.**
 
@@ -597,7 +622,7 @@ Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, 
 - [ ] **Step 5: Commit the current-Combo Skill flow.**
 
 ```bash
-git add src/production/combat/production_combat_state.gd src/production/skill src/production/runtime/production_combat_runtime.gd tests/production/runtime tests/production/integration
+git add src/production/combat/production_combat_state.gd src/production/combat/production_response_state.gd src/production/skill src/production/runtime/production_combat_runtime.gd tests/production/runtime tests/production/integration
 git commit -m "feat: resolve skills from current combo on confirm"
 ```
 
@@ -896,7 +921,7 @@ The plan specifies owners, paths, method names, return shapes, test cases, value
 | 1 — canon drift | A high Combo might browse down to C5 manually, restoring the rejected Tier wall. | Task 6 has no technique-selection API; C5 is tested only as the actual opening Combo. The fallback is the sole lower-stage resolver path. |
 | 2 — reward math | A crossing or a 5-line might double-clear, split, or apply `−3` per group. | Tasks 1–3 preserve unique board clear cells, report distinct maximal group lengths, and call `apply_chain_wave` once per resolution wave. |
 | 3 — time bleed | A player time effect might slow enemy ETA, or an ETA effect might touch Next Forecast. | Task 5 uses separate objects, full scheduler delta, exact current action ID, commit rejection, and an explicit ban on `Engine.time_scale`. |
-| 4 — false content claim | An adaptive DEF effect or legacy multiplier might preview an effect that cannot resolve. | Task 4 selects one variant by exact current action kind and removes `CONDITIONAL_MULTIPLIER` from approved Stage data; Task 6 rolls back the resource snapshot on resolver failure. |
+| 4 — false content claim | An adaptive DEF effect or legacy multiplier might preview an effect that cannot resolve, or a late legal execution failure might leave one owner mutated. | Task 4 selects one variant by exact current action kind and removes `CONDITIONAL_MULTIPLIER` from approved Stage data; Tasks 5–6 snapshot/restore the owner APIs and force a sixth-operation execution failure only after player, enemy, response, reserve, and ETA effects have all run. |
 | 5 — evidence inflation | A scene test, generated reference, or CI pass might be described as Human or runtime validation. | Task 10 separates automated exact-head checks, target-device runtime receipt, and A/B/C Human receipts; no production asset batch or user-experience PASS is permitted before its evidence. |
 
 ## Approval gate

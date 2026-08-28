@@ -68,6 +68,9 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             "restore_effect_checkpoint",
             'request_switch("CHAIN")',
             "FORCED_EXECUTION_FAILURE",
+            "modifiers_for_action",
+            "snapshot_current_action_state",
+            "_catalog_with_current_stage_effects",
             "git fetch origin main",
         ):
             self.assertIn(required, text)
