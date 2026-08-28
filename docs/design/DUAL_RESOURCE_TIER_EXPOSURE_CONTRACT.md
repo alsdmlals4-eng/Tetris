@@ -8,7 +8,7 @@
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
 
-> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend fixed **1 MP** to stay in place for later Combo setup, with no immediate Combo reward. MP has a hard cap of **60**; LINE recovery and Combo gain remain `TUNE_REQUIRED`.
+> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend fixed **1 MP** to stay in place for later Combo setup, with no immediate Combo reward. MP has a hard cap of **60**. Approved initial LINE recovery is Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**; Combo gain remains `TUNE_REQUIRED`.
 
 ## 1. Product thesis
 
@@ -52,6 +52,7 @@ MP and Combo remain deliberately non-interchangeable so both puzzle phases keep 
 - Primary source: production Line.
 - Persists across turns until spent or explicitly modified.
 - Hard cap: **60 MP**. Excess Line reward has no combat conversion and must be visibly signaled before a further Line reward.
+- Approved initial implementation seed: no clear **0**, Single **10**, Double **22**, Triple **36**, Four **52 MP**. These values match `data/production/line_reward_seed.json`; they are not final Human-validated balance.
 - Represents flexible ability throughput, technique-specific utility price, and the optional failed-swap CHAIN lock price.
 - No passive `+1 MP/sec` production recovery in the first production baseline.
 - Lower tiers generally retain strong MP efficiency, but utility Techniques may price differently from same-Tier raw damage.
@@ -105,7 +106,7 @@ Tier:       1  2  3  4  5  6
 Combo cost: 1  2  3  4  5  6
 ```
 
-MP values are **TUNE_REQUIRED**. A first comparison seed may use T1-relative factors around:
+Technique MP values remain **TUNE_REQUIRED**. The approved initial LINE gain seed is fixed at 10 / 22 / 36 / 52 MP; a first comparison may use T1-relative Technique-cost factors around:
 
 ```text
 1.00 / 1.25 / 1.55 / 1.90 / 2.20 / 2.55
@@ -118,7 +119,7 @@ Rules:
 - higher Tier must not automatically improve MP efficiency;
 - a utility-heavy Technique may exchange immediate output for control/setup value;
 - a high-Tier specialized action may be deliberately inefficient outside its condition;
-- exact MP gain/cost and effect magnitude remain runtime/human-evidence tuning; failed-swap lock cost is fixed at **1 MP** and MP is hard-capped at **60**.
+- exact Technique MP cost and effect magnitude remain runtime/human-evidence tuning; initial LINE gains are 10 / 22 / 36 / 52 MP, failed-swap lock cost is fixed at **1 MP**, and MP is hard-capped at **60**.
 
 ## 6. Anti-hoarding / anti-spam pressure
 
