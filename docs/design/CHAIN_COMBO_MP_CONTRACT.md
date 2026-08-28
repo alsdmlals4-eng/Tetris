@@ -51,7 +51,7 @@ Connected blobs, L-shapes, or a merely adjacent pair are not matches. If runs ov
 
 ## 4. Tuning and implementation boundary
 
-- The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. LINE-to-MP recovery values and the Combo gain curve remain `TUNE_REQUIRED`; this decision deliberately does not invent those numbers.
+- The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. Initial LINE recovery is fixed to the existing data seed: no clear/Single/Double/Triple/Four = **0 / 10 / 22 / 36 / 52 MP**. The Combo gain curve remains `TUNE_REQUIRED`; LINE values are an approved initial implementation seed, not final Human-validated balance.
 - MP overflow creates no combat resource. The UI must expose a full MP state before another LINE reward, and explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert`, `Spend 1 MP to keep this swap for a later Combo`, and `MP full — spend MP before the next LINE reward`.
 - Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, and does not cap energy. It has no MP-lock path. Its alignment with this contract is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP`.
 - Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must not claim balance or Human/player validation before runtime evidence exists.

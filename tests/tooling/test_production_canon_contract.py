@@ -13,6 +13,7 @@ SKILL_CANON_PATH = ROOT / "docs" / "design" / "VANGUARD_TACTICAL_SKILL_MATRIX.md
 BALANCE_CANON_PATH = ROOT / "docs" / "design" / "DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md"
 ONBOARDING_CONTRACT_PATH = ROOT / "docs" / "design" / "FIRST_SESSION_ONBOARDING_CONTRACT.md"
 CHAIN_CONTRACT_PATH = ROOT / "docs" / "design" / "CHAIN_COMBO_MP_CONTRACT.md"
+LINE_REWARD_PATH = ROOT / "data" / "production" / "line_reward_seed.json"
 PLAN_PATH = (
     ROOT
     / "docs"
@@ -138,6 +139,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         economy = data["resource_economy"]
         resources = data["resource_economy"]["player_facing_resources"]
         text = CHAIN_CONTRACT_PATH.read_text(encoding="utf-8")
+        line_reward_data = json.loads(LINE_REWARD_PATH.read_text(encoding="utf-8"))
 
         self.assertTrue(CHAIN_CONTRACT_PATH.is_file())
         self.assertEqual(chain["swap_adjacency"], "ORTHOGONAL_ONLY")
@@ -150,6 +152,18 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
         self.assertEqual(economy["mp_cap"], 60)
         self.assertEqual(economy["mp_cap_status"], "USER_APPROVED_FIXED_60_MP_HARD_CAP")
+        self.assertEqual(
+            economy["line_mp_initial_rewards"],
+            {"NONE": 0, "SINGLE": 10, "DOUBLE": 22, "TRIPLE": 36, "FOUR": 52},
+        )
+        self.assertEqual(
+            line_reward_data["energy_by_clear_kind"],
+            economy["line_mp_initial_rewards"],
+        )
+        self.assertEqual(
+            economy["line_mp_initial_reward_status"],
+            "USER_APPROVED_INITIAL_IMPLEMENTATION_SEED_NOT_FINAL",
+        )
         self.assertEqual(resources["mp"]["owner"], "LINE")
         self.assertEqual(resources["mp"]["runtime_field"], "energy")
         self.assertEqual(resources["combo"]["owner"], "CHAIN")

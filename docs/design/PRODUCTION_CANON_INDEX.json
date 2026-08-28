@@ -152,6 +152,8 @@
     "mp_lock_cost_status": "USER_APPROVED_FIXED_1_MP",
     "mp_cap": 60,
     "mp_cap_status": "USER_APPROVED_FIXED_60_MP_HARD_CAP",
+    "line_mp_initial_rewards": {"NONE": 0, "SINGLE": 10, "DOUBLE": 22, "TRIPLE": 36, "FOUR": 52},
+    "line_mp_initial_reward_status": "USER_APPROVED_INITIAL_IMPLEMENTATION_SEED_NOT_FINAL",
     "tier_exposure_model": "CONTEXTUAL_PROGRESSIVE_EXPOSURE",
     "technique_specific_first_slice_currency": false,
     "technique_specific_first_slice_cooldown": false,
