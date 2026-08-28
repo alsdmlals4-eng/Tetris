@@ -11,10 +11,13 @@ ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "docs/design/PRODUCTION_CANON_INDEX.json"
 CONTRACT = ROOT / "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md"
 VISUAL_BIBLE = ROOT / "docs/design/VISUAL_BIBLE.md"
+MASTER_GDD = ROOT / "docs/design/PROJECT_MASTER_GDD.md"
+WORKSPACE_INDEX = ROOT / "docs/design/PROJECT_WORKSPACE_INDEX.md"
 MANIFEST = ROOT / "docs/assets/reference/planned/PROJECT_UNDERSTANDING_VISUAL_MANIFEST.json"
 SKILL_SESSION = ROOT / "src/production/skill/production_skill_session.gd"
 BATTLE_UI = ROOT / "src/production/ui/production_battle.gd"
 CATALOG = ROOT / "src/production/skill/production_skill_catalog.gd"
+AGENTS = ROOT / "AGENTS.md"
 
 
 class ComboResolvedSkillContractTests(unittest.TestCase):
@@ -62,7 +65,7 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, bible)
 
-    def test_new_visual_board_is_a_planning_reference_not_a_runtime_asset(self) -> None:
+    def test_user_locked_visual_board_remains_a_planning_reference_not_a_runtime_asset(self) -> None:
         manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
         visuals = {visual["asset_id"]: visual for visual in manifest["visuals"]}
 
@@ -71,7 +74,32 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         self.assertEqual("GENERATED_EXPLORATION", board["classification"])
         self.assertEqual("PLANNING_VISUALIZATION", board["consumer_kind"])
         self.assertEqual("NONE", board["runtime_consumer"])
-        self.assertEqual("AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME", board["status"])
+        self.assertEqual("USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME", board["status"])
+        self.assertEqual("2026-08-28", board["user_lock"]["date"])
+        self.assertEqual(
+            {
+                "runtime_asset",
+                "Godot_scene_or_UI_implementation",
+                "runtime_render",
+                "Human_or_player_experience_PASS",
+            },
+            set(board["user_lock"]["does_not_approve"]),
+        )
+        for document in (VISUAL_BIBLE, MASTER_GDD, WORKSPACE_INDEX):
+            text = document.read_text(encoding="utf-8")
+            self.assertIn("USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME", text)
+            self.assertIn("runtime asset", text)
+
+    def test_material_work_requires_fresh_research_feasibility_and_five_adversarial_loops(self) -> None:
+        agents = AGENTS.read_text(encoding="utf-8")
+        for required in (
+            "MANDATORY_CURRENT_TASK_EVIDENCE_GATE",
+            "TARGETED_CURRENT_INTERNET_RESEARCH",
+            "PREIMPLEMENTATION_FEASIBILITY_CLASSIFICATION",
+            "FIVE_FULL_ADVERSARIAL_LOOPS_MINIMUM",
+            "MECHANICAL_NO_EXTERNAL_DEPENDENCY",
+        ):
+            self.assertIn(required, agents)
 
 
 if __name__ == "__main__":

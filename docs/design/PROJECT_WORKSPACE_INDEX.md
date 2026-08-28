@@ -40,7 +40,7 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 The current work order is:
 
-1. Lock the v2 planning visual and author the missing Stage 7–10 lane descriptions/effect data.
+1. Author the missing Stage 7–10 lane descriptions/effect data. `TETRIS-VIS-BOARD-002` is already user-locked as a planning-only reference, not a runtime asset.
 2. Produce one bounded Phase 2 implementation contract for CHAIN-038, SKILL-039/BALANCE-040, VISUAL-041 runtime consumers and first-session handoff; no broad asset batch.
 3. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill → briefing/rules/Deploy and safe live practice, reusing the same encounter.
 4. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
@@ -50,7 +50,7 @@ For live operational truth, read the latest completed `main`, all open/draft PRs
 ## 4. Visual and artifact continuity
 
 - `TETRIS-VISUAL-041` owns the warm parchment / sepia ink / watercolor-violet-rift grammar in [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md); `TETRIS-VISUAL-028` is superseded for global presentation language.
-- `TETRIS-VIS-BOARD-002` is a generated planning exploration, awaiting only a user lock decision; it is not a runtime asset or implementation. `TETRIS-VIS-BOARD-001` is superseded.
+- `TETRIS-VIS-BOARD-002` is a `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`: it fixes the planning visual grammar and flow-review reference only. It is not a runtime asset, implementation, runtime render or Human/player UX PASS. `TETRIS-VIS-BOARD-001` is superseded.
 - `TETRIS-SREF-001` through `TETRIS-SREF-005` are retained locally with hash, dimensions, source classification and named planned screen in `docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json`.
 - Runtime asset candidates and their Godot consumers remain in the approved/production manifests and [`RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md`](RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md).
 

@@ -2,8 +2,8 @@
   "schema_version": 1,
   "project": "TETRIS",
   "classification": "PROJECT_UNDERSTANDING_PLANNING_VISUALIZATION",
-  "issue": 76,
-  "status": "GENERATED_EXPLORATION_AWAITING_USER_LOCK_NOT_RUNTIME",
+  "issue": 78,
+  "status": "USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME",
   "visuals": [
     {
       "asset_id": "TETRIS-VIS-BOARD-001",
@@ -35,7 +35,17 @@
       "style_anchor": "TETRIS-VISUAL-041",
       "generation_provenance": "Built-in Image Gen, 2026-08-28; original composition generated from the user-provided parchment field-manual direction; no runtime consumer",
       "repository_owner": "docs/design/VISUAL_BIBLE.md",
-      "status": "AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME"
+      "status": "USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME",
+      "user_lock": {
+        "date": "2026-08-28",
+        "scope": "Planning-reference visual grammar and core-flow comprehension review only",
+        "does_not_approve": [
+          "runtime_asset",
+          "Godot_scene_or_UI_implementation",
+          "runtime_render",
+          "Human_or_player_experience_PASS"
+        ]
+      }
     }
   ]
 }

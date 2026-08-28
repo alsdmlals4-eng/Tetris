@@ -1,7 +1,7 @@
 # Tetris · Master GDD
 
-- Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72; current correction tracked in Issue #76
-- Fresh source snapshot: `origin/main` `da1ced01ecaacf6fb39a50641d4813d7965827fc`, read 2026-08-28. It retains the prior gameplay snapshot `dec60706ab8fcec3986b01f279d9d60080a309f8` and the Master-GDD/visual-workflow snapshot `59c537f29ed0bebed8d40be5cecfd6ff5b89318b` as provenance.
+- Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72; current visual-lock/evidence-gate correction tracked in Issue #78
+- Fresh source snapshot: `origin/main` `51dce4e67c2a33d05486312f109ec27661138f6e`, read 2026-08-28. It retains the prior gameplay snapshot `dec60706ab8fcec3986b01f279d9d60080a309f8` and the Master-GDD/visual-workflow snapshot `59c537f29ed0bebed8d40be5cecfd6ff5b89318b` as provenance.
 - Purpose: make the currently approved game intelligible in one place without replacing the documents and runtime evidence that own individual facts.
 - Reader rule: a rule may be **approved** yet not be **implemented**; an implemented system may be automated-tested yet not be **Human/player validated**. This document preserves those distinctions.
 - Current owner rule: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the sole current project owners. Notion is `HISTORICAL_EXTERNAL_PROVENANCE_ONLY`; do not read, write, sync, or require it for current work.
@@ -19,6 +19,7 @@
 | `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` and `DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` | Older manual Tier matrix and its cost grammar | `SUPERSEDED_FOR_CURRENT_SELECTION_FLOW / HISTORICAL_EFFECT_PROVENANCE` |
 | `docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md` | `TETRIS-ONBOARDING-037`: briefing and safe live tutorial intention | `CURRENT / DOCUMENTED_NOT_IMPLEMENTED` |
 | `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` | Runtime consumer and image-generation/lock workflow | `CURRENT` |
+| `AGENTS.md` § `MANDATORY_CURRENT_TASK_EVIDENCE_GATE` | Fresh source read, targeted official research, feasibility classification, five adversarial loops and exact-head/destination readback | `CURRENT / PROCESS AUTHORITY` |
 | `docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md` | Current and planned screen coverage | `CURRENT` |
 | `scenes/production/battle.tscn`, `src/production/**`, `data/production/**` | Actual merged-main Godot scene, code and seed data | `CURRENT IMPLEMENTATION EVIDENCE` |
 | `tests/production/**`, `tests/tooling/**`, exact-head CI/runtime receipts | Automated evidence only | `CURRENT / EVIDENCE-BOUNDED` |
@@ -189,7 +190,7 @@ Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CH
 
 ![Project Core Scene Visual Board](/C:/Users/user/Documents/GitHub/Ninza/Tetris/docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png)
 
-`TETRIS-VIS-BOARD-002` is a **`GENERATED_EXPLORATION`**. It is generated from `TETRIS-VISUAL-041` to test whether the category-resolved Skill flow is understandable. It has `runtime_consumer: NONE`, is not a project runtime asset, and has no Human/player UX PASS. The image intentionally avoids relying on pseudo-text; the table below, not pixels, owns the exact rule meaning. `TETRIS-VIS-BOARD-001` is superseded because it did not make the right style or the new flow legible.
+`TETRIS-VIS-BOARD-002` is a **`USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`**. It is generated from `TETRIS-VISUAL-041` to test whether the category-resolved Skill flow is understandable. It has `runtime_consumer: NONE`, is not a project runtime asset, and has no Human/player UX PASS. The image intentionally avoids relying on pseudo-text; the table below, not pixels, owns the exact rule meaning. `TETRIS-VIS-BOARD-001` is superseded because it did not make the right style or the new flow legible.
 
 | Panel | Scene / screen | Player goal and action | Choice, feedback and flow | Fixed / unknown |
 | --- | --- | --- | --- | --- |
@@ -202,7 +203,7 @@ Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CH
 
 ### Generated visual workflow
 
-Current user direction is `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`: do not pause to ask whether a bounded visual should be generated; generate it, inspect it against the current anchor and consumer (where applicable), then ask only whether to lock it. `TETRIS-VIS-BOARD-002` is currently `AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME`.
+Current user direction is `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`: do not pause to ask whether a bounded visual should be generated; generate it, inspect it against the current anchor and consumer (where applicable), then ask only whether to lock it. `TETRIS-VIS-BOARD-002` is now `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`.
 
 Locking a planning board means **approved project planning reference**, not runtime asset, scene/UI implementation or human-readability proof. A runtime asset still requires its exact target `res://` path, scene/node consumer, geometry and import/use contract before generation, then user lock and runtime verification before promotion.
 
@@ -273,6 +274,17 @@ No market/competitor claim is made here: no material current market decision req
 4. **Correct evidence-backed UX problems:** prioritize by player value/risk, not by a generic feature list.
 5. **Then evaluate session closure/meta:** result reward, route, loadout, save/profile and Codex/Manual only if core-loop evidence supports expansion.
 
+### Fresh technical feasibility preflight — 2026-08-28
+
+| Question | Fresh evidence | Result and required boundary |
+| --- | --- | --- |
+| Can category-only selection and explicit confirmation fit the current UI architecture? | `production_battle.gd` already connects three category Buttons and a Use Button through Godot signals; the current [Godot Signals documentation](https://docs.godotengine.org/en/stable/getting_started/step_by_step/signals.html) describes that event model. | `FEASIBLE`. Remove the legacy TierGrid path only inside the later approved Phase 2 contract; it is not changed by this documentation issue. |
+| Can the current tactical-pause session preserve preview-before-spend and atomic confirm? | `ProductionSkillSession` already separates category selection, selected detail, readiness and `commit_selected`, with a rollback path when resolution fails. | `PARTIAL`. The later resolver must make conversion + spend one derived transaction and prove that MP cap clipping/rollback cannot mutate preview or cancel. |
+| Does the authored skill data support the current Combo Stage 1–10 promise? | `vanguard_skill_seed.json` has 18 legacy lane × Tier 1–6 entries; `ProductionSkillCatalog` rejects `tier > 6`. Godot [Resources documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/resources.html) confirms project-owned data can remain validated data containers, but it does not create missing content. | `BLOCKED_UNVERIFIED` for implementation readiness until the user-approved Stage 7–10 effects/costs are authored and a data validator accepts them. No engine/add-on purchase or external service is required. |
+| Does the current CHAIN resource implementation already support the Stage promise? | Fresh code/canon comparison: merged runtime still has Combo/Stock cap 6 and the legacy CHAIN reward model while the current promise requires cap 10, diagonal matching, MP lock and per-wave recovery. | `PARTIAL`. CHAIN-038 alignment is a prerequisite for a truthful integrated Stage 1–10 experience; do not call the Skill flow complete before that Phase 2 sequence passes exact-head tests and target-device runtime validation. |
+
+The preflight is implementation-feasibility evidence, not a runtime/UX pass. The required ongoing process is `MANDATORY_CURRENT_TASK_EVIDENCE_GATE`: fresh project truth, targeted current official research, feasibility classification, five full adversarial loops and exact destination/head readback for every material task.
+
 ### Incident / Solution / Lesson
 
 - **Incident:** the previous image contract asked for pre-generation approval, while the user’s current workflow direction is generate-first and lock-after-inspection. That timing conflict would slow visual review and leave future agents uncertain.
@@ -292,10 +304,11 @@ No market/competitor claim is made here: no material current market decision req
 | Date | Change | Classification |
 | --- | --- | --- |
 | 2026-08-28 | Added this reader-oriented Master GDD from fresh current sources. | `CURRENT SYNTHESIS` |
-| 2026-08-28 | Stored `TETRIS-VIS-BOARD-001` with visual text legend and provenance. | `GENERATED_EXPLORATION / AWAITING_USER_LOCK_CONFIRMATION_NOT_RUNTIME` |
+| 2026-08-28 | Stored `TETRIS-VIS-BOARD-001` with visual text legend and provenance. | `GENERATED_EXPLORATION / SUPERSEDED_BY_TETRIS-VIS-BOARD-002` |
 | 2026-08-28 | Reconciled image workflow to generate first and ask only for user lock confirmation, preserving exact runtime consumer requirements. | `CURRENT USER WORKFLOW` |
 | 2026-08-28 | Corrected current Skill grammar to `ATK/DEF/SUP → Combo-Resolved preview → explicit CONFIRM`; added a 5-MP-per-Combo bounded shortage fallback and recorded the legacy runtime/data conflict. | `TETRIS-SKILL-039 / TETRIS-BALANCE-040 / DOCUMENTED_NOT_IMPLEMENTED` |
 | 2026-08-28 | Replaced the global planning visual direction with parchment field-manual, sepia ink and watercolor violet rift; old generated board superseded by v2 pending user lock. | `TETRIS-VISUAL-041 / GENERATED_EXPLORATION_NOT_RUNTIME` |
+| 2026-08-28 | User locked v2 as a planning-only visual reference and added the mandatory fresh-read/research/feasibility/five-loop evidence gate. | `TETRIS-VIS-BOARD-002 / USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME / ISSUE-78` |
 
 ### Rollback
 
