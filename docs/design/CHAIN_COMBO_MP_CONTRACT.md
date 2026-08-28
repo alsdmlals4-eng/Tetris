@@ -79,6 +79,6 @@ MP recovery = (sum of all qualified maximal group lengths − 3) + Combo after t
 
 ## 6. Tutorial and visual rule
 
-The first-session tutorial teaches the readable base rule first: a straight horizontal, vertical, or diagonal run of three equal symbols gives Combo +1 and MP recovery; saving the same Combo grows a later recovery, while spending it enables a stronger Technique. A failed swap visibly reverts and resets Combo. MP lock is introduced as an optional planning tool, never as a required first-tutorial transaction.
+`TETRIS-ONBOARDING-037` now uses **FULL_PRE_DEPLOY_BRIEFING**. Before Deploy starts real-time combat, its readable rules section presents the complete first-slice CHAIN grammar: orthogonal swap; straight horizontal, vertical, or either-diagonal 3+ match; Combo +1 per resolved wave to cap 10; `(sum maximal qualified line lengths − 3) + post-wave Combo` MP recovery; default no-match revert and Combo reset; and the fixed-1-MP optional lock that keeps the swap but resets Combo and grants no immediate reward. It also states that Tier N spends N shared Combo plus configured Technique MP, so saving Combo preserves later CHAIN MP recovery.
 
-Planning boards and visual references may illustrate the rule, but their images are not the source of truth. The exact rule belongs to this text contract and its linked repository/Notion decision records.
+The embedded battle tutorial practices and verifies those disclosed rules with structured feedback. MP lock remains an optional planning tool, never a required first-tutorial transaction. Planning boards and visual references may illustrate the rule, but their images are not the source of truth. The exact rule belongs to this text contract and its linked repository/Notion decision records.

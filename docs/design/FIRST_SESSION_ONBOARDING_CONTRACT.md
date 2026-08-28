@@ -3,6 +3,8 @@
 - Decision: `TETRIS-ONBOARDING-037`
 - Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
 - Issue: #54
+- Rule-delivery amendment: **Full rules before Deploy**, Issue #66
+- Rule-delivery mode: `FULL_PRE_DEPLOY_BRIEFING`
 - Authority: `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, the current Screen Surface Inventory, and the user's 2026-08-28 approvals.
 - Scope boundary: this is the intended first-session learning contract. It does not claim a Godot scene, runtime asset, localized final copy, Human/player validation, or a broader world-history canon.
 
@@ -16,7 +18,7 @@ The only approved world-facing facts for this first explanation are the existing
 
 ```text
 Start
-→ Battle Briefing (short world/threat explanation; simulation is not running)
+→ Battle Briefing (short world/threat explanation + full first-slice rules; simulation is not running)
 → explicit Deploy
 → Continuous Battle (CORE-029; embedded contextual tutorial)
 → Result / Retry
@@ -26,7 +28,7 @@ The present direct-entry runtime slice still begins at `CONTINUOUS_BATTLE`; that
 
 ## Briefing contract
 
-The briefing answers three questions in one concise, skippable/re-readable presentation:
+The briefing answers three world/threat questions, then a separate full-rules section, in one skippable/re-readable presentation:
 
 1. **Where and why?** A Frontier Gate is under immediate Gatebreaker threat; the Vanguard is deploying to answer it.
 2. **What will happen next?** The encounter begins only when the player chooses **Deploy**; the enemy threat starts after that explicit action.
@@ -34,20 +36,33 @@ The briefing answers three questions in one concise, skippable/re-readable prese
 
 It reserves the existing `TETRIS-SREF-003` briefing reference's threat and launch space. It is not a cinematic, a lore database, a route-map substitute, or a second combat ruleset.
 
+### Full rules before Deploy
+
+Before Deploy becomes the explicit start action, the player may read every economy-critical first-slice rule in structured text. The battle tutorial practices these disclosed rules; it does not conceal an economic penalty or formula for discovery after combat has already begun.
+
+1. **LINE / MP:** no clear / Single / Double / Triple / Four recovers `0 / 10 / 22 / 36 / 52 MP`; MP has a hard cap of 60 and excess recovery has no conversion.
+2. **CHAIN match:** swap only orthogonally adjacent symbols. A valid match is a contiguous straight same-symbol line of 3+ horizontally, vertically, diagonally down-right, or diagonally down-left.
+3. **Valid CHAIN reward:** each resolved wave gives Combo +1, capped at 10, then recovers MP by `(sum of maximal qualified line lengths − 3) + post-wave Combo`.
+4. **Failed CHAIN outcome:** no-match normally restores the board and resets Combo. The player may instead spend fixed 1 MP to keep the swapped board for a later setup; this MP lock also resets Combo and grants no immediate clear, cascade, Combo, or MP recovery.
+5. **Spend-or-save choice:** Tier N spends N shared Combo plus the selected Technique's configured MP cost. Spending Combo can solve the current threat but lowers later CHAIN MP recovery; saving it preserves future recovery and Tier access.
+6. **Tactical commitment:** opening Skill fully pauses simulation. Only the explicit USE action commits the selected Technique; cancel returns to the same paused state.
+
+This is complete for the current vertical slice, not a full catalog explanation: the briefing names the resource rules and commitment grammar but does not front-load all 18 Technique identities, final MP costs, effect magnitudes, route/progression, or future content.
+
 ## Embedded tutorial sequence
 
 | Step | Player question | Required feedback | Guardrail |
 | --- | --- | --- | --- |
 | 1. Read threat | “What is about to happen, and how long do I have?” | Current Telegraph and ETA remain visible while the player can still act. | Explain live pressure without a Shared Turn Timer or phase rail. |
-| 2. Recover MP | “What does LINE prepare?” | A Single LINE grants the initial **10 MP**, enabling the initial T1 opportunity; Double/Triple/Four grant 22/36/52 MP. At 60 MP, show that MP is full before another LINE reward can overflow. | Do not use hidden grants or imply LINE is the only correct workspace. |
-| 3. Earn or save Combo | “What does CHAIN prepare that LINE cannot?” | Every resolved CHAIN wave visibly gives Combo +1, then displays `line total − 3 + current Combo = MP recovery`. The same Combo can be spent on a stronger Technique or saved to improve a later CHAIN MP recovery, up to 10. A failed swap visibly reverts and resets Combo. | Keep LINE and CHAIN non-interchangeable; explain the formula with structured feedback, not image-only labels; do not force an old Line→Chain order. |
-| 3b. Optional setup | “Can I keep a useful failed swap?” | When affordable, explain that spending fixed **1 MP** may keep a no-match swap for a later setup, but resets Combo and gives no immediate clear, cascade, Combo, or MP recovery. | Do not require this transaction in the first tutorial or imply it is a third resource. |
+| 2. Practice MP | “Can I see the disclosed LINE reward happen?” | A Single LINE visibly grants the pre-briefed **10 MP**; Double/Triple/Four grant 22/36/52 MP. At 60 MP, show the full state before another LINE reward could overflow. | Do not use hidden grants or imply LINE is the only correct workspace. |
+| 3. Practice Combo | “Can I verify the disclosed CHAIN rule and reward?” | A valid straight 3+ CHAIN visibly uses horizontal, vertical, or either diagonal alignment, gives Combo +1, then displays `line total − 3 + current Combo = MP recovery`. The same Combo can be spent on a stronger Technique or saved to improve a later CHAIN MP recovery, up to 10. | Keep LINE and CHAIN non-interchangeable; reinforce the pre-Deploy rule with structured feedback, not image-only labels; do not force an old Line→Chain order. |
+| 3b. Verify optional setup | “When would I use the pre-briefed MP lock?” | When affordable, the player can inspect that fixed **1 MP** keeps a no-match swap for a later setup, resets Combo, and gives no immediate clear, cascade, Combo, or MP recovery. | Do not require this transaction in the first tutorial or imply it is a third resource. The later Manual may repeat it. |
 | 4. Commit deliberately | “When should I stop time and which Technique is worth the cost?” | Skill opening visibly freezes the same threat/puzzle state; category → selected lane → T1–T6 → detail → explicit **USE** makes the commit and result legible. | Cancel returns to the exact paused state. Do not show an always-visible 3×6 matrix or auto-commit on selection. |
 | 5. Apply learning | “What do I prepare or commit before this next threat?” | The player makes one unforced response using the visible ETA, MP, Combo/Tier, and Technique result. | The encounter may be forgiving, but it must not be a non-interactive demonstration. |
 
 ## Scope and production gates
 
-- Keep the explanation short, contextual, and revisit-able through the planned Codex/Manual surface; do not front-load all 18 Technique identities.
+- Keep the world explanation short. The separate rules section is intentionally complete for economy-critical first-slice rules and revisit-able through the planned Codex/Manual surface; do not front-load all 18 Technique identities.
 - Preserve `CORE-029`: continuous real-time battle after Deploy, free persistent `LINE ↔ CHAIN`, full tactical pause only through Skill/manual pause, and explicit `USE` commit.
 - This decision creates no runtime image need. `TETRIS-SREF-003` and `TETRIS-SREF-005` remain approved planning references, not implementation or Human-readability evidence.
 - Phase 2 may create the BattleBriefing scene/data contract and the minimum battle tutorial triggers only after its implementation review. It must not silently add a route, save, progression, production-asset batch, or broader narrative system.
