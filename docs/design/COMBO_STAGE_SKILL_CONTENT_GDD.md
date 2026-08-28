@@ -1,7 +1,7 @@
 # Combo Stage Skill Content GDD
 
 - Decision: `TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`
-- Status: `USER_APPROVED_DIRECTION / PHASE 1 CONTENT DRAFT / USER_REVIEW_REQUIRED / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / PHASE 1 CONTENT CANON / DOCUMENTED_NOT_IMPLEMENTED`
 - Issue: [#80](https://github.com/alsdmlals4-eng/Tetris/issues/80)
 - Date: 2026-08-28
 - Extends: `TETRIS-SKILL-039`, `TETRIS-BALANCE-040`, `TETRIS-CHAIN-038`, and `TETRIS-CORE-029`.
@@ -60,9 +60,9 @@ Target: Enemy   | Current pattern ETA: +N seconds    | Player board time unchang
 
 This explicitly replaces the unsafe historical interpretation of `Haste`, `Battle Trance`, turn-only duration and Tempo. They remain `REALTIME_MIGRATION_REQUIRED` and are not silently re-enabled.
 
-## 4. Proposed content matrix for user review
+## 4. Locked content matrix
 
-The user-approved direction is that lower Combo stages must retain independently useful effects. The following names and stage placement are the GPT-recommended first content matrix; they do not become an approved runtime/data content lock until the user reviews this written GDD. Later stages may combine more than one effect, but a higher Combo number must not make every lower contextual response irrelevant.
+The user-approved direction is that lower Combo stages must retain independently useful effects. The following names and stage placement are the current content lock. Later stages may combine more than one effect, but a higher Combo number must not make every lower contextual response irrelevant.
 
 | Combo | ATK — pressure / breach | DEF — current-threat protection | SUP — recovery / setup | Intentional stop decision |
 | --- | --- | --- | --- | --- |
@@ -157,4 +157,4 @@ Document-only evidence was rerun on the GDD branch: canonical-reference scan (Lo
 | --- | --- | --- |
 | 2026-08-28 | User approved intentional early Combo spend: prepare and resolve at the desired current Combo rather than manually down-select from a higher Combo. | `USER_APPROVED` |
 | 2026-08-28 | User defined acceleration/deceleration by target: player affects board-play opportunity; enemy affects the visible next-pattern action timer. | `USER_APPROVED` |
-| 2026-08-28 | Recorded the approved direction, plus a proposed content matrix, target-separated preview language, feasibility limits and Phase 2 gates. | `USER_REVIEW_REQUIRED / DOCUMENTED_NOT_IMPLEMENTED` |
+| 2026-08-28 | User approved the C1–C10 matrix, target-separated preview language, feasibility limits and Phase 2 gates. | `USER_APPROVED / DOCUMENTED_NOT_IMPLEMENTED` |

@@ -180,7 +180,7 @@
     "unattended_autocast": false,
     "fallback_model": "HIGHEST_FEASIBLE_LOWER_STAGE_AFTER_BOUNDED_COMBO_TO_MP_CONVERSION",
     "content_gdd": "docs/design/COMBO_STAGE_SKILL_CONTENT_GDD.md",
-    "stage_1_to_10_content": "USER_APPROVED_DIRECTION_MATRIX_USER_REVIEW_REQUIRED_DOCUMENTED_NOT_IMPLEMENTED",
+    "stage_1_to_10_content": "USER_APPROVED_CONTENT_CANON_DOCUMENTED_NOT_IMPLEMENTED",
     "deliberate_lower_combo_cast": "STOP_CHAIN_AT_DESIRED_CURRENT_COMBO_NO_MANUAL_DOWNSELECT",
     "implementation_model": "DATA_DRIVEN_EFFECT_PRIMITIVES",
     "skill_open_pause": "FULL_TACTICAL_PAUSE",

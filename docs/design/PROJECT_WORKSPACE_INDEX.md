@@ -40,7 +40,7 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 The current work order is:
 
-1. Review the user-approved C1–C10 content direction and target-separated time semantics in [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md). `TETRIS-VIS-BOARD-002` is already user-locked as a planning-only reference, not a runtime asset.
+1. Apply the user-approved C1–C10 content and target-separated time semantics from [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md) only through its Phase 2 implementation contract. `TETRIS-VIS-BOARD-002` is already user-locked as a planning-only reference, not a runtime asset.
 2. Produce one bounded Phase 2 implementation contract for CHAIN-038, SKILL-039/BALANCE-040/SKILL-042, VISUAL-041 runtime consumers and first-session handoff; no broad asset batch.
 3. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill → briefing/rules/Deploy and safe live practice, reusing the same encounter.
 4. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.

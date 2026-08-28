@@ -44,7 +44,7 @@ The three category buttons are a player-facing tactical vocabulary, not three se
 - Combo cap is **10**. A viable current Combo state is `C ∈ [1, 10]`.
 - Each lane owns authored **Stage 1–10 content**: `LaneStage[ATK|DEF|SUP][1..10]`. Stage is a resolved Combo state, not a separately selected player tier.
 - `LaneStage[C]` is the normal preview. It spends `C` Combo and its authored MP cost `MP(lane, C)`.
-- The user-approved direction is that C1–C10 must retain contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved direction, target-separated time-control semantics and the proposed content matrix awaiting user review. Existing seed data remains legacy manual Tier 1–6 and does not yet implement that content.
+- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content, target-separated time-control semantics and Phase 2 content gates. Existing seed data remains legacy manual Tier 1–6 and does not yet implement that content.
 - Stage content must remain data-driven effect composition. This contract does not authorize thirty bespoke scripts, a new currency, cooldown system or a new enemy roster.
 
 ## 4. MP-insufficient bounded fallback
