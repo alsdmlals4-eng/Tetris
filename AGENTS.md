@@ -9,9 +9,10 @@ Read current production gameplay in this order:
 3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained Line MP / Chain Combo opportunity cost and Tier commitment structure (`TETRIS-BALANCE-027`).
 4. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar and optional MP lock (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
 5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
-6. Latest USER_APPROVED project Decisions and synced Notion owner pages.
-7. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
-8. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
+6. `docs/design/PROJECT_MASTER_GDD.md` and `docs/design/VISUAL_BIBLE.md` — repository-owned human-readable current project picture and visual direction.
+7. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
+8. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
+9. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
@@ -19,12 +20,13 @@ Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
 ## DOMAIN_SPLIT_CANON
 
-- `NOTION_HUMAN_FACING_CANON`: readable current project picture, Flow/Storyboard, visual/reference surface, player-facing tables.
+- `REPOSITORY_HUMAN_FACING_CANON`: `PROJECT_MASTER_GDD.md`, `VISUAL_BIBLE.md`, Flow/Storyboard, visual/reference manifests, and player-facing tables.
 - `REPOSITORY_STRUCTURED_CANON`: machine index, production canon, data/code/scenes/resources/config/tests.
 - `REPOSITORY_RUNTIME_TRUTH`: actual Godot build/runtime/test/log/screenshot-video evidence.
-- Historical Sheets content is migration-only compatibility material, not a default workspace or runtime authority.
+- `REPOSITORY_ONLY_CURRENT_OWNER`: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the only current owners. Do not read, write, sync, or require Notion for current project work.
+- Historical Sheets and Notion content are external provenance only, not a default workspace or runtime authority.
 
-Never promote a Notion mockup, generated image, branch implementation, automated test, or historical receipt beyond its actual evidence class.
+Never promote a historical external mockup, generated image, branch implementation, automated test, or historical receipt beyond its actual evidence class.
 
 ## Historical Core Foundation
 

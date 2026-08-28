@@ -1,9 +1,10 @@
 # Tetris · Master GDD
 
 - Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72
-- Fresh source snapshot: `origin/main` `dec60706ab8fcec3986b01f279d9d60080a309f8`, read 2026-08-28
+- Fresh gameplay source snapshot: `origin/main` `dec60706ab8fcec3986b01f279d9d60080a309f8`, read 2026-08-28; repository-only owner migration snapshot: `origin/main` `59c537f29ed0bebed8d40be5cecfd6ff5b89318b`.
 - Purpose: make the currently approved game intelligible in one place without replacing the documents and runtime evidence that own individual facts.
 - Reader rule: a rule may be **approved** yet not be **implemented**; an implemented system may be automated-tested yet not be **Human/player validated**. This document preserves those distinctions.
+- Current owner rule: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the sole current project owners. Notion is `HISTORICAL_EXTERNAL_PROVENANCE_ONLY`; do not read, write, sync, or require it for current work.
 
 > This is a navigation and synthesis owner, not a license to overwrite detailed owners. When a detailed source and this GDD disagree, resolve it at the detailed owner, correct this synthesis, and record the conflict.
 
@@ -20,7 +21,8 @@
 | `docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md` | Current and planned screen coverage | `CURRENT` |
 | `scenes/production/battle.tscn`, `src/production/**`, `data/production/**` | Actual merged-main Godot scene, code and seed data | `CURRENT IMPLEMENTATION EVIDENCE` |
 | `tests/production/**`, `tests/tooling/**`, exact-head CI/runtime receipts | Automated evidence only | `CURRENT / EVIDENCE-BOUNDED` |
-| Notion `Tetris · Project Home`, `Direction`, `Flow`, `Visual Bible`, `Asset`, `Production` | Human-facing project organization and design readback | `CURRENT HUMAN-FACING MIRROR` |
+| `docs/design/PROJECT_MASTER_GDD.md`, `VISUAL_BIBLE.md`, screen/asset manifests and GitHub issue/PR history | Human-facing project organization, visual direction and decision readback | `CURRENT REPOSITORY OWNER` |
+| Previous Notion pages | External historical context only | `HISTORICAL_EXTERNAL_PROVENANCE_ONLY / DO_NOT_SYNC` |
 | Open/draft PRs #19, #23, #33, #46 | Parallel historical/proposed workstreams | `READ_ONLY / NOT CURRENT TRUTH` |
 | `CORE_GAMEPLAY_GDD.md`, POC rules and prior turn-time docs | Provenance only | `HISTORICAL` or `SUPERSEDED` as indexed |
 
@@ -44,7 +46,7 @@
 | `HISTORICAL` | `CORE_GAMEPLAY_GDD.md` describes earlier Energy/Stock and board concepts | Foundation reference only; it cannot define current player-facing rules. |
 | `CONFLICT` | Approved CHAIN requires both diagonals, 1-MP lock, 60 MP cap, 10 Combo cap and per-wave formula; current code has `STOCK_CAP = 6`, H/V-only matching, forced no-match restore and legacy depth rewards | `TETRIS-CHAIN-038` is `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`; Phase 2 review is required before Godot implementation. |
 | `PARTIAL` | Battle runtime enters directly into continuous battle, while the approved first session requires briefing → Deploy → short guided live practice → same encounter | First-session contract is `USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED`. |
-| `UNKNOWN_UNVERIFIED` | Dedicated repository Visual Bible and Audio Contract files | Visual authority exists in Notion and approved manifests; no dedicated repository Visual Bible was found. Audio has only pause-bridge support; a player-facing audio plan and evidence remain unknown. |
+| `UNKNOWN_UNVERIFIED` | Dedicated repository Audio Contract file | `VISUAL_BIBLE.md` is the repository visual owner. Audio has only pause-bridge support; a player-facing audio plan and evidence remain unknown. |
 | `UNKNOWN_UNVERIFIED` | User-Windows play, target-resolution composite readability, first-exposure comprehension, tension, balance, accessibility and player appeal | **Human/player evidence: NOT_RUN**. Automated/scene-equivalent checks do not prove any of these. |
 
 ## 2. One-page game promise
@@ -171,7 +173,7 @@ Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CH
 
 ### Approved visual anchor
 
-`TETRIS-VISUAL-028 · Hand-Drawn Mystic Fantasy + Clean Puzzle UI` is current. Its active runtime style evidence includes `TETRIS-IMG-031` stage backdrop, `TETRIS-IMG-033` Vanguard cutout, `TETRIS-IMG-034` Gatebreaker cutout, and two named combat VFX consumers in the battle scene.
+`TETRIS-VISUAL-028 · Hand-Drawn Mystic Fantasy + Clean Puzzle UI` is current. `VISUAL_BIBLE.md` owns the detailed repository visual contract. Its active runtime style evidence includes `TETRIS-IMG-031` stage backdrop, `TETRIS-IMG-033` Vanguard cutout, `TETRIS-IMG-034` Gatebreaker cutout, and two named combat VFX consumers in the battle scene.
 
 | Layer | Keep | Avoid / Do Not Drift |
 | --- | --- | --- |
@@ -278,7 +280,7 @@ No market/competitor claim is made here: no material current market decision req
 
 - Parse/read the canonical JSON and planned screen-reference manifest.
 - Run focused Master GDD, production-canon, screen inventory and runtime-image contract checks on the exact PR head.
-- Read back the GitHub commit/PR and Notion Visual Bible destination after the documentation is merged.
+- Read back the GitHub commit/PR, the repository Visual Bible, and the visual manifest after the documentation is merged.
 
 ### Current change log
 

@@ -68,7 +68,7 @@ The intended first session is `TITLE → BATTLE_BRIEFING → SHORT_GUIDED_LIVE_P
 
 ## Required record fields and destinations
 
-The machine-readable rows live in `SCREEN_SURFACE_INVENTORY.json`. Human-facing records belong in the Notion **Tetris · Screen Surface Inventory** page, linked from the Project Home and Current Handoff. Runtime facts remain in scene/code/tests; this inventory never upgrades a planned surface to runtime proof.
+The machine-readable rows live in `SCREEN_SURFACE_INVENTORY.json`. Human-facing records belong in this repository's `PROJECT_MASTER_GDD.md`, `VISUAL_BIBLE.md`, and screen-reference manifests. Runtime facts remain in scene/code/tests; this inventory never upgrades a planned surface to runtime proof.
 
 ## Generated planning-reference package · Issue #49
 
@@ -82,7 +82,7 @@ The following five textless 16:9 images are **user-approved planning references*
 | `TETRIS-SREF-004` | `TETRIS-SCREEN-010` Result | `docs/assets/reference/planned/tetris-result-reward-screen-reference-v1.png` | `PROJECT_SCREEN_REFERENCE_APPROVED`; outcome, reward and next-action hierarchy are separate editable regions. |
 | `TETRIS-SREF-005` | `TETRIS-SCREEN-012` Manual | `docs/assets/reference/planned/tetris-codex-manual-screen-reference-v1.png` | `PROJECT_SCREEN_REFERENCE_APPROVED`; topic navigation, instructional diagrams and input legend have isolated zones. |
 
-Each file is 1672×941 PNG and is attached to the corresponding Notion Screen Surface Inventory record. They must be recreated or replaced through a new candidate/version rather than overwritten.
+Each file is 1672×941 PNG and is registered in `SCREEN_REFERENCE_MANIFEST.json`. They must be recreated or replaced through a new candidate/version rather than overwritten.
 
 ## Immediate next production order
 

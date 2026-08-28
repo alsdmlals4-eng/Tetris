@@ -16,7 +16,7 @@
       "consumer_kind": "PLANNED_GAME_SURFACE",
       "consumer_surface": "Future Title scene",
       "primary_use": "screen-level composition reference",
-      "notion_destination": "Tetris · Screen Surface Inventory",
+      "repository_owner": "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md",
       "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
     },
     {
@@ -29,7 +29,7 @@
       "consumer_kind": "PLANNED_GAME_SURFACE",
       "consumer_surface": "Future RouteMap scene",
       "primary_use": "screen-level composition reference",
-      "notion_destination": "Tetris · Screen Surface Inventory",
+      "repository_owner": "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md",
       "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
     },
     {
@@ -42,7 +42,7 @@
       "consumer_kind": "PLANNED_GAME_SURFACE",
       "consumer_surface": "Future BattleBriefing scene",
       "primary_use": "screen-level composition reference",
-      "notion_destination": "Tetris · Screen Surface Inventory",
+      "repository_owner": "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md",
       "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
     },
     {
@@ -55,7 +55,7 @@
       "consumer_kind": "PLANNED_GAME_SURFACE",
       "consumer_surface": "Future Result scene",
       "primary_use": "screen-level composition reference",
-      "notion_destination": "Tetris · Screen Surface Inventory",
+      "repository_owner": "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md",
       "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
     },
     {
@@ -68,7 +68,7 @@
       "consumer_kind": "PLAYER_FACING_EXPLANATORY",
       "consumer_surface": "Future Codex/Manual scene",
       "primary_use": "screen-level composition reference",
-      "notion_destination": "Tetris · Screen Surface Inventory",
+      "repository_owner": "docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md",
       "status": "PROJECT_SCREEN_REFERENCE_APPROVED_NOT_RUNTIME"
     }
   ]

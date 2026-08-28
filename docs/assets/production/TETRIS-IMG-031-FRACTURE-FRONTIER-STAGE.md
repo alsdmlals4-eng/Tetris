@@ -19,4 +19,4 @@ Keep the approved hand-drawn mystic-fantasy Tetris reference language: a dark ch
 1. The exact texture path is loaded by `StageBackdrop` in the production battle scene.
 2. It remains non-interactive and never changes runtime rules or layout.
 3. Runtime screenshot shows the asset without clipping or new Godot diagnostics.
-4. The source image is stored at the project path and recorded in Notion before it is called runtime-integrated.
+4. The source image is stored at the project path and recorded in the repository asset manifest before it is called runtime-integrated.

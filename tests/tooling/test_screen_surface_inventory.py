@@ -16,7 +16,7 @@ REQUIRED_FIELDS = {
     "screen_id", "screen_family", "screen_name", "project_stage", "priority",
     "flow_entry", "flow_exit", "player_goal", "player_question", "consumer_kind",
     "consumer_surface", "screen_design_reference", "runtime_consumer", "existing_evidence",
-    "coverage_status", "notion_destination", "repository_destination", "blockers",
+    "coverage_status", "repository_owner", "repository_destination", "blockers",
 }
 
 
@@ -24,6 +24,7 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
     def test_every_required_family_and_field_is_recorded(self) -> None:
         inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
         rows = inventory["screens"]
+        self.assertEqual("REPOSITORY_ONLY", inventory["project_human_facing_owner"])
         self.assertEqual(16, len(rows))
         self.assertEqual(len(rows), len({row["screen_id"] for row in rows}))
         for row in rows:

@@ -40,13 +40,17 @@ BATTLE_START
 
 ## 현재 Production 정본
 
-1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — CORE-029 current combat authority.
-2. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained SKILL-026 Technique identity, subject to realtime migration boundaries.
-3. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 MP/Combo/Tier structure.
-4. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
-5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
-6. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
-7. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
+GitHub repository documents, GitHub issue/PR history, and runtime evidence are the only current project owners. External workspaces are historical provenance only and are not read, written, or synchronized for current work.
+
+1. `docs/design/PROJECT_MASTER_GDD.md` — current human-readable GDD, conflict register, evidence ceiling and work order.
+2. `docs/design/VISUAL_BIBLE.md` — current visual direction, planning-board legend and visual lock workflow.
+3. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — CORE-029 current combat authority.
+4. `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` — retained SKILL-026 Technique identity, subject to realtime migration boundaries.
+5. `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` — retained BALANCE-027 MP/Combo/Tier structure.
+6. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
+7. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
+8. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
+9. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
 
 Historical provenance:
 
@@ -75,7 +79,7 @@ Godot import / use mode
 
 따라서 Battle UI concept sheet, character master/pose explanation sheet, combined UI sheet, generic mood/reference sheet는 runtime이 그 파일 자체를 직접 소비하지 않는 한 production backlog가 아닙니다. Sprite atlas도 실제 runtime이 해당 atlas를 소비할 때만 허용합니다.
 
-CORE-029 baseline에는 `TETRIS-IMG-031` StageBackdrop이라는 실제 runtime consumer가 main에 구현되어 있습니다. 신규 이미지 생성은 별도 승인 범위가 구체적인 consumer gap을 지정할 때까지 **PAUSED**이며, 기존 승인 reference는 자동으로 runtime asset이 되지 않습니다.
+CORE-029 baseline에는 `TETRIS-IMG-031` StageBackdrop이라는 실제 runtime consumer가 main에 구현되어 있습니다. Planning visualization은 `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`으로 생성 후 lock 여부만 확인합니다. Runtime image는 여전히 구체적인 consumer gap과 exact consumer contract가 있어야 생성할 수 있으며, 기존 승인 reference는 자동으로 runtime asset이 되지 않습니다.
 
 ## 현재 구현 경계
 

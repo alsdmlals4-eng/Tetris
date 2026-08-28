@@ -9,6 +9,9 @@
   "current_image_decision": "TETRIS-IMAGE-030",
   "current_onboarding_decision": "TETRIS-ONBOARDING-037",
   "current_chain_decision": "TETRIS-CHAIN-038",
+  "project_human_facing_owner": "REPOSITORY_ONLY",
+  "project_master_gdd": "docs/design/PROJECT_MASTER_GDD.md",
+  "visual_bible": "docs/design/VISUAL_BIBLE.md",
   "historical_core_decision": "TETRIS-CORE-024",
   "historical_time_decision": "TETRIS-TIME-025",
   "primary_canon": "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
@@ -24,7 +27,7 @@
     "docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md and docs/design/CHAIN_COMBO_MP_CONTRACT.md for the MP/Combo opportunity cost, CHAIN grammar, and Tier commitment subject to CORE-029 realtime migration boundaries",
     "docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md for the approved first-session briefing and embedded tutorial boundary",
     "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md for runtime-consumer-first production image requirements",
-    "latest USER_APPROVED project Decisions and synced Notion Human-facing owner pages",
+    "latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents",
     "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md for implementation sequencing",
     "actual code, data, scenes, tests, exact-head CI, runtime receipts, and Human evidence"
   ],

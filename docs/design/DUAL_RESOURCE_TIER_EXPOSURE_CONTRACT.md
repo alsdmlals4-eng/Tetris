@@ -6,7 +6,7 @@
 - Parent skill decision: `TETRIS-SKILL-026`
 - Current combat authority: `TETRIS-CORE-029`
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
-- Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
+- Human-readable repository owner: `docs/design/PROJECT_MASTER_GDD.md` and this contract.
 
 > `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns the single shared Combo resource. Each CHAIN wave gives Combo +1 then recovers MP from its maximal-line total and current Combo. A failed CHAIN swap restores or may spend fixed **1 MP** to stay in place; either outcome resets Combo without an immediate reward. MP has a hard cap of **60** and Combo has a hard cap of **10**. Approved initial LINE recovery is Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**; CHAIN numerical balance remains `TUNE_REQUIRED`.
 

@@ -5,7 +5,7 @@
 - Date: 2026-08-24
 - Current combat canon: `TETRIS-CORE-029`
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
-- Human-readable Notion owner: `15 · Vanguard 스킬 · Tactical Tier Matrix`
+- Human-readable repository owner: `docs/design/PROJECT_MASTER_GDD.md` and this contract.
 
 ## 1. Product thesis
 
@@ -342,7 +342,7 @@ The game frames combat around every action counting, attack timing, upgrades and
 Current claims allowed:
 
 - `TETRIS-SKILL-026` tactical Tier architecture is documented and user-directed/approved at the design level.
-- Notion owner + GitHub Issue #10 ledger contain the same direction.
+- This contract and the GitHub Issue #10 ledger contain the retained direction.
 - Effect primitive, forecast-control ownership, dominance, and telemetry contracts are specified.
 
 Current claims forbidden:

@@ -3,7 +3,7 @@
   "policy": {
     "approved_image_storage": [
       "project_local_file",
-      "notion_asset_library"
+      "repository_asset_manifest"
     ],
     "runtime_consumer_required_for_promotion": true,
     "default_classification_without_consumer": "APPROVED_REFERENCE"
