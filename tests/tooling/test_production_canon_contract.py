@@ -222,6 +222,18 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(onboarding_index["rule_delivery"], "FULL_PRE_DEPLOY_BRIEFING")
         self.assertEqual(
+            onboarding_index["first_visit_deploy_gate"],
+            "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
+        )
+        self.assertEqual(
+            onboarding_index["later_visit_deploy_behavior"],
+            "IMMEDIATELY_ENABLED_WITH_REOPENABLE_RULE_SUMMARY",
+        )
+        self.assertEqual(
+            onboarding_index["post_deploy_tutorial_handoff"],
+            "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
+        )
+        self.assertEqual(
             onboarding_index["pre_deploy_rule_scope"],
             [
                 "LINE_MP_CAP_AND_INITIAL_REWARDS",
@@ -235,6 +247,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         for token in (
             "TETRIS-ONBOARDING-037",
             "FULL_PRE_DEPLOY_BRIEFING",
+            "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
+            "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
+            "first intended session only",
+            "same encounter",
             "Full rules before Deploy",
             "Vanguard",
             "Frontier Gate",

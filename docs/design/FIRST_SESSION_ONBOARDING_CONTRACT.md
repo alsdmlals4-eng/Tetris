@@ -5,6 +5,8 @@
 - Issue: #54
 - Rule-delivery amendment: **Full rules before Deploy**, Issue #66
 - Rule-delivery mode: `FULL_PRE_DEPLOY_BRIEFING`
+- First-visit Deploy gate: `RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT`, Issue #68
+- Post-Deploy handoff: `SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER`, Issue #68
 - Authority: `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, the current Screen Surface Inventory, and the user's 2026-08-28 approvals.
 - Scope boundary: this is the intended first-session learning contract. It does not claim a Godot scene, runtime asset, localized final copy, Human/player validation, or a broader world-history canon.
 
@@ -18,9 +20,10 @@ The only approved world-facing facts for this first explanation are the existing
 
 ```text
 Start
-→ Battle Briefing (short world/threat explanation + full first-slice rules; simulation is not running)
+→ Battle Briefing (short world/threat explanation + full first-slice rules; first-visit read gate; simulation is not running)
 → explicit Deploy
-→ Continuous Battle (CORE-029; embedded contextual tutorial)
+→ short guided live practice in the actual CORE-029 battle
+→ seamless Continuous Battle in the same encounter
 → Result / Retry
 ```
 
@@ -28,7 +31,7 @@ The present direct-entry runtime slice still begins at `CONTINUOUS_BATTLE`; that
 
 ## Briefing contract
 
-The briefing answers three world/threat questions, then a separate full-rules section, in one skippable/re-readable presentation:
+The briefing answers three world/threat questions, then a separate full-rules section, in one re-readable presentation. On the **first intended session only**, the full-rule region is not skippable as a route to live combat: Deploy remains disabled until the player reaches the end of that region or completes an equivalent accessible review action. This is a single readable boundary, not six checkboxes or a quiz. On later entries, Deploy is immediately enabled and the same rule summary remains re-openable.
 
 1. **Where and why?** A Frontier Gate is under immediate Gatebreaker threat; the Vanguard is deploying to answer it.
 2. **What will happen next?** The encounter begins only when the player chooses **Deploy**; the enemy threat starts after that explicit action.
@@ -38,7 +41,7 @@ It reserves the existing `TETRIS-SREF-003` briefing reference's threat and launc
 
 ### Full rules before Deploy
 
-Before Deploy becomes the explicit start action, the player may read every economy-critical first-slice rule in structured text. The battle tutorial practices these disclosed rules; it does not conceal an economic penalty or formula for discovery after combat has already begun.
+Before Deploy becomes the available explicit start action on the first intended session, the player completes the full structured-text review of every economy-critical first-slice rule. The battle tutorial practices these disclosed rules; it does not conceal an economic penalty or formula for discovery after combat has already begun.
 
 1. **LINE / MP:** no clear / Single / Double / Triple / Four recovers `0 / 10 / 22 / 36 / 52 MP`; MP has a hard cap of 60 and excess recovery has no conversion.
 2. **CHAIN match:** swap only orthogonally adjacent symbols. A valid match is a contiguous straight same-symbol line of 3+ horizontally, vertically, diagonally down-right, or diagonally down-left.
@@ -50,6 +53,8 @@ Before Deploy becomes the explicit start action, the player may read every econo
 This is complete for the current vertical slice, not a full catalog explanation: the briefing names the resource rules and commitment grammar but does not front-load all 18 Technique identities, final MP costs, effect magnitudes, route/progression, or future content.
 
 ## Embedded tutorial sequence
+
+After Deploy, the tutorial is a **short guided practice inside the actual continuous encounter**. It does not use a fake board, a separate economy, or an old ordered-turn rail. The guided portion ends after the player has read the live threat, seen one disclosed LINE reward, verified one disclosed valid CHAIN reward, and committed one explicit USE; optional MP-lock inspection is never mandatory. Prompting then ends and the same encounter continues as normal CORE-029 play, beginning with the existing unforced-response step rather than a terminal tutorial result.
 
 | Step | Player question | Required feedback | Guardrail |
 | --- | --- | --- | --- |
@@ -63,6 +68,7 @@ This is complete for the current vertical slice, not a full catalog explanation:
 ## Scope and production gates
 
 - Keep the world explanation short. The separate rules section is intentionally complete for economy-critical first-slice rules and revisit-able through the planned Codex/Manual surface; do not front-load all 18 Technique identities.
+- The first-visit gate guarantees one complete rule review before Deploy without requiring a quiz. Later visits may Deploy immediately, while retaining a re-openable rule summary. The short guided battle tutorial must hand off to free play in the **same encounter**; it must not restart, terminate, or introduce a separate tutorial ruleset.
 - Preserve `CORE-029`: continuous real-time battle after Deploy, free persistent `LINE ↔ CHAIN`, full tactical pause only through Skill/manual pause, and explicit `USE` commit.
 - This decision creates no runtime image need. `TETRIS-SREF-003` and `TETRIS-SREF-005` remain approved planning references, not implementation or Human-readability evidence.
 - Phase 2 may create the BattleBriefing scene/data contract and the minimum battle tutorial triggers only after its implementation review. It must not silently add a route, save, progression, production-asset batch, or broader narrative system.
