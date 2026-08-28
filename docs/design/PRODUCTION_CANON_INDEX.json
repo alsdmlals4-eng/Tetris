@@ -123,6 +123,19 @@
     "workspace_state_persists_when_inactive": true,
     "combo_cap": 10
   },
+  "onboarding": {
+    "rule_delivery": "FULL_PRE_DEPLOY_BRIEFING",
+    "pre_deploy_rule_scope": [
+      "LINE_MP_CAP_AND_INITIAL_REWARDS",
+      "CHAIN_ORTHOGONAL_SWAP_STRAIGHT_3PLUS_ALL_AXES",
+      "COMBO_CAP_AND_SHARED_TIER_SPEND",
+      "PER_WAVE_CHAIN_MP_FORMULA",
+      "NO_MATCH_REVERT_OR_FIXED_1_MP_LOCK_COMBO_RESET",
+      "TACTICAL_PAUSE_EXPLICIT_USE"
+    ],
+    "battle_tutorial_role": "PRACTICE_AND_VERIFY_PRE_DEPLOY_RULES",
+    "implementation_status": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED"
+  },
   "production_skill": {
     "lanes": ["ATTACK", "DEFENSE", "SUPPORT"],
     "tier_min": 1,

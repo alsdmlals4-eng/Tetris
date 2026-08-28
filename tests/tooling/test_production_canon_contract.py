@@ -212,6 +212,7 @@ class ProductionCanonContractTests(unittest.TestCase):
     def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
         data = self._index()
         reality = data["implementation_reality"]
+        onboarding_index = data["onboarding"]
         onboarding = ONBOARDING_CONTRACT_PATH.read_text(encoding="utf-8")
 
         self.assertTrue(ONBOARDING_CONTRACT_PATH.is_file())
@@ -219,8 +220,22 @@ class ProductionCanonContractTests(unittest.TestCase):
             reality["first_session_briefing_and_tutorial"],
             "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
         )
+        self.assertEqual(onboarding_index["rule_delivery"], "FULL_PRE_DEPLOY_BRIEFING")
+        self.assertEqual(
+            onboarding_index["pre_deploy_rule_scope"],
+            [
+                "LINE_MP_CAP_AND_INITIAL_REWARDS",
+                "CHAIN_ORTHOGONAL_SWAP_STRAIGHT_3PLUS_ALL_AXES",
+                "COMBO_CAP_AND_SHARED_TIER_SPEND",
+                "PER_WAVE_CHAIN_MP_FORMULA",
+                "NO_MATCH_REVERT_OR_FIXED_1_MP_LOCK_COMBO_RESET",
+                "TACTICAL_PAUSE_EXPLICIT_USE",
+            ],
+        )
         for token in (
             "TETRIS-ONBOARDING-037",
+            "FULL_PRE_DEPLOY_BRIEFING",
+            "Full rules before Deploy",
             "Vanguard",
             "Frontier Gate",
             "Gatebreaker",
