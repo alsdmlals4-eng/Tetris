@@ -37,7 +37,7 @@ The three category buttons are a player-facing tactical vocabulary, not three se
 | --- | --- |
 | `ATK` | Damage, breach and decisive-pressure answers. |
 | `DEF` | Mitigation, counter, lethal safety and current-threat protection. |
-| `SUP` | Recovery, setup, self-buff and visible-future utility control. |
+| `SUP` | Recovery, setup, player board-play opportunity, and visible-current-Telegraph ETA utility. |
 
 ## 3. Combo Stage resolver
 
