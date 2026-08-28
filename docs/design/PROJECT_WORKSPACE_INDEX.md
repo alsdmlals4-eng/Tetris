@@ -13,7 +13,7 @@
 | What game are we making, what is approved, what conflicts, and what is next? | [`PROJECT_MASTER_GDD.md`](PROJECT_MASTER_GDD.md) |
 | What is actually running now? | `scenes/production/battle.tscn`, `src/production/**`, `data/production/**`, tests, exact-head CI and runtime receipts |
 | What are the active combat rules? | [`PRODUCTION_REALTIME_COMBAT_CANON.md`](PRODUCTION_REALTIME_COMBAT_CANON.md), [`CHAIN_COMBO_MP_CONTRACT.md`](CHAIN_COMBO_MP_CONTRACT.md) |
-| How do LINE, Combo/Tier, and Skill fit together? | [`DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md`](DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md), [`VANGUARD_TACTICAL_SKILL_MATRIX.md`](VANGUARD_TACTICAL_SKILL_MATRIX.md) |
+| How do LINE, Combo and category-resolved Skill fit together? | [`COMBO_RESOLVED_SKILL_CONTRACT.md`](COMBO_RESOLVED_SKILL_CONTRACT.md), [`CHAIN_COMBO_MP_CONTRACT.md`](CHAIN_COMBO_MP_CONTRACT.md) |
 | What must the first session teach? | [`FIRST_SESSION_ONBOARDING_CONTRACT.md`](FIRST_SESSION_ONBOARDING_CONTRACT.md), [`FULL_GAME_SCREEN_SURFACE_INVENTORY.md`](FULL_GAME_SCREEN_SURFACE_INVENTORY.md) |
 | What should the project look and feel like? | [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md), planned/approved asset manifests |
 | Which planned screens exist only as references? | `SCREEN_SURFACE_INVENTORY.json`, `FULL_GAME_SCREEN_SURFACE_INVENTORY.md`, `SCREEN_REFERENCE_MANIFEST.json` |
@@ -34,23 +34,23 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 ## 3. Current handoff
 
-`TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `USE`. The merged runtime entry is `scenes/production/battle.tscn`.
+`TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `CONFIRM`. `TETRIS-SKILL-039` now defines the intended category-only / Combo-resolved Skill flow. The merged runtime entry is `scenes/production/battle.tscn`, but it is still a legacy manual Tier 1–6 implementation.
 
 `TETRIS-CHAIN-038` and `TETRIS-ONBOARDING-037` are approved but only partially represented by the present runtime. Do not promote diagonal CHAIN matching, 1-MP failed-swap lock, MP/Combo caps and CHAIN MP recovery, or the BattleBriefing/embedded tutorial as implemented. Human/player evidence is `NOT_RUN`.
 
 The current work order is:
 
-1. Capture Human first-exposure evidence for the existing runtime and resolve the highest-risk comprehension findings.
-2. Complete the Phase 2 review before implementing the approved CHAIN and first-session gaps.
-3. Implement the smallest first-session boundary (briefing/rules/Deploy, then safe live practice) while reusing the same encounter.
-4. Expand route, result, Codex, progression, assets or audio only after the representative experience has evidence.
+1. Lock the v2 planning visual and author the missing Stage 7–10 lane descriptions/effect data.
+2. Produce one bounded Phase 2 implementation contract for CHAIN-038, SKILL-039/BALANCE-040, VISUAL-041 runtime consumers and first-session handoff; no broad asset batch.
+3. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill → briefing/rules/Deploy and safe live practice, reusing the same encounter.
+4. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
 
 For live operational truth, read the latest completed `main`, all open/draft PRs as read-only parallel work, the relevant GitHub issue/PR, and the actual repository evidence. This index deliberately does not freeze transient PR, CI or runtime claims.
 
 ## 4. Visual and artifact continuity
 
-- `TETRIS-VISUAL-028` owns the hand-drawn mystic fantasy plus clean puzzle-UI grammar in [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md).
-- `TETRIS-VIS-BOARD-001` is a generated planning exploration, awaiting only a user lock decision; it is not a runtime asset or implementation.
+- `TETRIS-VISUAL-041` owns the warm parchment / sepia ink / watercolor-violet-rift grammar in [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md); `TETRIS-VISUAL-028` is superseded for global presentation language.
+- `TETRIS-VIS-BOARD-002` is a generated planning exploration, awaiting only a user lock decision; it is not a runtime asset or implementation. `TETRIS-VIS-BOARD-001` is superseded.
 - `TETRIS-SREF-001` through `TETRIS-SREF-005` are retained locally with hash, dimensions, source classification and named planned screen in `docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json`.
 - Runtime asset candidates and their Godot consumers remain in the approved/production manifests and [`RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md`](RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md).
 

@@ -21,9 +21,8 @@ Retained authorities:
 
 - `TETRIS-CORE-021` where it defines production Swap-Match Chain grammar;
 - `TETRIS-CHAIN-038` for the current orthogonal-swap, straight-3+ horizontal/vertical/diagonal match grammar and optional MP lock;
-- `TETRIS-SKILL-026` for Vanguard `ATK / DEF / SUP × Tier 1–6` Technique identity, tactical commitment, and non-turn-bound effect intent;
-- `TETRIS-BALANCE-027` for the Line MP / Chain Combo dual-resource opportunity cost and Tier commitment;
-- `TETRIS-VISUAL-028` for Hand-Drawn Mystic Fantasy + Clean Puzzle UI direction;
+- `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` for Vanguard category-only Combo-Resolved Technique preview/confirm and bounded skill-only Combo-to-MP fallback;
+- `TETRIS-VISUAL-041` for Parchment Field Manual + Readable Puzzle Tactics direction;
 - authored Telegraph / visible Next Forecast principles where compatible with continuous combat.
 
 Machine routing authority is `docs/design/PRODUCTION_CANON_INDEX.json`.
@@ -36,7 +35,7 @@ The player continuously decides where attention is most valuable:
 
 ```text
 LINE workspace  → recover MP
-CHAIN workspace → earn Combo and Tier access
+CHAIN workspace → earn Combo, later CHAIN MP recovery and a higher resolved Stage
 SKILL workspace → FULL_TACTICAL_PAUSE, inspect and commit a Technique
 ```
 
@@ -54,7 +53,7 @@ BATTLE_START
    ├─ active workspace = LINE
    ├─ active workspace = CHAIN
    └─ open SKILL → TACTICAL_PAUSE_SKILL
-                    → inspect / select / explicit USE
+                    → inspect resolved preview / explicit CONFIRM
                     → COMBAT_RUNNING
 → VICTORY | DEFEAT
 ```
@@ -98,7 +97,7 @@ During this state simulation is fully stopped:
 - combat status ticks and real-time cooldowns stop;
 - simulation-driven animation/VFX stop;
 - simulation audio is paused/held consistently;
-- only Skill/UI navigation, selection, cancel, and explicit USE confirmation remain active.
+- only Skill/UI navigation, preview, cancel, and explicit CONFIRM remain active.
 
 The player may spend unlimited wall-clock time reading the Skill surface in the first Slice.
 
@@ -202,20 +201,19 @@ Entry flow:
 COMBAT_RUNNING
 → open SKILL
 → TACTICAL_PAUSE_SKILL
-→ ATK / DEF / SUP
-→ selected lane T1–T6
-→ select Technique
-→ inspect detail / cost / condition / target
-→ explicit USE
+→ ATK / DEF / SUP only
+→ one Combo-Resolved Stage preview
+→ inspect detail / cost / fallback / condition / target
+→ explicit CONFIRM
 → resolve atomically
 → COMBAT_RUNNING at exact paused simulation time
 ```
 
-Selecting a row never spends resources. Only explicit USE commits.
+Selecting a category never spends resources. Only explicit CONFIRM commits.
 
-On successful USE:
+On successful CONFIRM:
 
-- configured MP and Combo costs are spent atomically (current internal fields: `energy` and `stock`);
+- previewed MP and Combo costs, including a needed 5-MP-per-Combo fallback conversion, are spent atomically (current internal fields: `energy` and `stock`);
 - Technique effects resolve through approved data-driven primitives;
 - Skill closes unless the Technique owns a bounded explicit resolution state;
 - combat resumes at the exact paused simulation time;
@@ -232,11 +230,11 @@ Retained structural identity:
 - the resources are not interchangeable;
 - Combo is hard-capped at **10**;
 - MP is hard-capped at **60**; MP overflow does not create a combat resource and must be visible before a further LINE reward;
-- approved initial LINE gains are Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**, making a competent first Single enough for the initial 10-MP T1 opportunity;
+- approved initial LINE gains are Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**, making a competent first Single enough for the initial 10-MP Stage-1 opportunity;
 - every resolved CHAIN wave gives Combo +1, then recovers MP by `(sum of maximal qualified line lengths − 3) + post-wave Combo`; crossing qualified groups count independently, the `−3` applies once per wave, and a later successful manual swap continues the same stored Combo;
-- Tier N baseline spends N Combo;
-- MP cost remains Technique-specific and data-driven; a failed/reverted CHAIN swap or fixed-**1 MP** MP lock resets Combo, and spending Combo on a Tier intentionally lowers later CHAIN MP recovery;
-- Tier is a tactical commitment band, not a linear instruction to choose the highest available Tier.
+- current Combo resolves one authored Stage in the selected ATK/DEF/SUP lane; no manual Tier selection exists in the approved flow;
+- MP cost remains Technique-specific and data-driven. If the current Combo Stage lacks MP, only surplus Combo may convert at **5 MP each** to reach the highest feasible lower Stage; a failed/reverted CHAIN swap or fixed-**1 MP** MP lock still resets Combo;
+- the category decision is a tactical commitment, not a linear instruction to choose a highest manual Tier. Saving Combo remains valuable because it improves later CHAIN MP recovery and preserves a higher resolved Stage.
 
 The opportunity-cost question is now real-time:
 
@@ -244,7 +242,7 @@ The opportunity-cost question is now real-time:
 
 Technique MP costs, enemy cadence, cooldowns, and magnitudes remain `TUNE_REQUIRED` / `TUNING_SEED_NOT_FINAL` until supported by runtime and Human evidence. The initial 10/22/36/52 LINE gains, fixed 1-MP failed-swap lock, 60-MP hard cap, and structured Combo/CHAIN-MP rule are approved player-facing rules, while still subject to a later data-only balance revision after evidence.
 
-## 11. SKILL-026 migration boundary
+## 11. Legacy SKILL-026 semantic migration boundary
 
 Do not silently translate turn-bound effects into seconds.
 
@@ -285,7 +283,7 @@ The right surface keeps at least:
 - player HP / MP / Combo;
 - mode controls `LINE / CHAIN / SKILL`.
 
-Skill-open state visibly communicates `TACTICAL PAUSE`, preserves the frozen puzzle as context, and prioritizes `ATK / DEF / SUP → T1–T6 → detail → USE` while keeping the motivating enemy threat readable.
+Skill-open state visibly communicates `TACTICAL PAUSE`, preserves the frozen puzzle as context, and prioritizes `ATK / DEF / SUP → one Combo-Resolved preview → explicit CONFIRM` while keeping the motivating enemy threat readable.
 
 Do not show obsolete ordered stage rails, stage-advance READY UI, turn-timeout PASS UI, or the superseded turn-speed reward UI as current production controls.
 
@@ -312,7 +310,7 @@ Owns HP/MP/Combo semantics and atomic gain/spend events; the current implementat
 Owns paused browse/selection/eligibility/detail/confirm state. It does not advance combat time.
 
 ### `TechniqueResolver`
-Owns atomic spend + effect execution after explicit USE.
+Owns atomic spend + effect execution after explicit CONFIRM of the resolved preview.
 
 ### UI presenter/view
 Reads authoritative state and renders it; UI does not become gameplay authority.

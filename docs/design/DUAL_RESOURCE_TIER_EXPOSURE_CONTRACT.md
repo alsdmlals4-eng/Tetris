@@ -1,9 +1,9 @@
 # Dual-Resource Tier Exposure Contract
 
-- Status: **RETAINED PRODUCTION BALANCE STRUCTURE / CORE-029 REALTIME MIGRATION BOUNDARY**
+- Status: **HISTORICAL BALANCE PROVENANCE / SUPERSEDED FOR MANUAL TIER COST GRAMMAR**
 - Decision: `TETRIS-BALANCE-027 · Dual-Resource Opportunity Cost + Tier Exposure`
 - Date: 2026-08-24
-- Parent skill decision: `TETRIS-SKILL-026`
+- Current replacement: `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` in `COMBO_RESOLVED_SKILL_CONTRACT.md`; this document retains only useful dual-resource/effect-economy provenance.
 - Current combat authority: `TETRIS-CORE-029`
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable repository owner: `docs/design/PROJECT_MASTER_GDD.md` and this contract.
