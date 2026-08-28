@@ -156,5 +156,5 @@ Document-only evidence was rerun on the GDD branch: canonical-reference scan (Lo
 | Date | Change | Status |
 | --- | --- | --- |
 | 2026-08-28 | User approved intentional early Combo spend: prepare and resolve at the desired current Combo rather than manually down-select from a higher Combo. | `USER_APPROVED` |
-| 2026-08-28 | User defined acceleration/deceleration by target: player affects board-play opportunity; enemy affects the visible next-pattern action timer. | `USER_APPROVED` |
+| 2026-08-28 | User defined acceleration/deceleration by target: player affects board-play opportunity; enemy affects the visible current Telegraph action ETA. | `USER_APPROVED` |
 | 2026-08-28 | User approved the C1–C10 matrix, target-separated preview language, feasibility limits and Phase 2 gates. | `USER_APPROVED / DOCUMENTED_NOT_IMPLEMENTED` |
