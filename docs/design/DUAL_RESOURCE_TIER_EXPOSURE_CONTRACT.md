@@ -8,7 +8,7 @@
 - Historical turn/timing provenance: `TETRIS-CORE-024` / `TETRIS-TIME-025`
 - Human-readable Notion owner: `16 · Resource Economy · Tier Exposure Contract`
 
-> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns Combo. A failed CHAIN swap may spend fixed **1 MP** to stay in place for later Combo setup, with no immediate Combo reward. MP has a hard cap of **60**. Approved initial LINE recovery is Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**; Combo gain remains `TUNE_REQUIRED`.
+> `TETRIS-CHAIN-038` terminology bridge: player-facing **MP** is the current runtime field `energy`; player-facing **Combo** is the current runtime field `stock` / historical `Chain Stock`. This is a naming and ownership correction, not a third currency. LINE recovers MP; CHAIN earns the single shared Combo resource. Each CHAIN wave gives Combo +1 then recovers MP from its maximal-line total and current Combo. A failed CHAIN swap restores or may spend fixed **1 MP** to stay in place; either outcome resets Combo without an immediate reward. MP has a hard cap of **60** and Combo has a hard cap of **10**. Approved initial LINE recovery is Single/Double/Triple/Four = **10 / 22 / 36 / 52 MP**; CHAIN numerical balance remains `TUNE_REQUIRED`.
 
 ## 1. Product thesis
 
@@ -60,11 +60,13 @@ MP and Combo remain deliberately non-interchangeable so both puzzle phases keep 
 ### Combo
 
 - Primary source: production Swap-Match Chain.
-- Persists across turns until spent or explicitly modified.
-- Production cap: **6**, aligned with current Tier range.
+- Persists across workspace switches and tactical pause until spent, reset by a failed CHAIN swap/MP lock, or explicitly modified.
+- Award basis: **each resolved CHAIN wave gives Combo +1**; the initial valid 3+ result and every later gravity/refill wave each add one, capped at 10. A later successful manual CHAIN swap continues this same stored resource.
+- The same post-wave stored Combo adds to that wave's CHAIN MP recovery. Spending Combo on Tier access therefore lowers the later recovery available from a successful CHAIN wave.
+- Production target cap: **10**. The current merged runtime cap remains 6 until Phase 2 implementation.
 - Tier N action spends exactly N Combo.
-- Tier 6 therefore consumes the entire full-cap commitment budget from a fresh cap state and must create a real next-turn opportunity cost.
-- Combo gain at cap may be wasted; indefinite hoarding therefore has a visible lost-opportunity edge instead of being free.
+- Tier 6 spends 6 of the 10-cap resource. The player can retain some Combo to grow later CHAIN MP recovery, or spend it to answer the current threat; this is the intended strategic tension.
+- Combo gain at cap may be wasted, while a failed/reverted CHAIN swap or MP lock resets the stored Combo. Indefinite hoarding is therefore neither free nor automatically optimal.
 
 Neither resource may silently substitute for the other in first-Slice Skill legality. The MP lock is a deliberate cross-workspace spend, not a Combo grant or a substitute for a Tier cost.
 
@@ -125,7 +127,7 @@ Rules:
 
 Five independent mechanisms prevent one-direction play:
 
-1. **Combo cap 6:** saving forever can waste future CHAIN gain.
+1. **Combo cap 10 + reset risk:** saving forever can waste future CHAIN gain and puts the stored MP-recovery multiplier at risk on a failed/reverted swap or MP lock.
 2. **Rift Siphon / Chain Fracture:** the current threatened resource can be protected with DEF T5 `Rift Ward` or pre-spent; a visible **future** Rift utility Forecast can instead be prepared against with SUP T5 `Rift Seal`.
 3. **Rift Repair / heavy/lethal pressure:** some turns create a reason to commit resources now.
 4. **Setup Techniques:** low immediate output can improve future opportunity, creating the opposite choice from raw spend-now burst.

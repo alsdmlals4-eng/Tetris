@@ -57,9 +57,9 @@ They do not override CORE-029.
 - LINE and CHAIN are independent persistent workspaces. Switching does not rebuild/reroll/reset the inactive workspace.
 - Inactive workspace does not simulate except completion of an already-committed deterministic safe-switch boundary.
 - LINE remains the primary MP source (current internal field: `energy`).
-- CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; it remains the primary Combo/Tier opportunity source (current internal field: `stock`).
-- A no-match restores by default; optional MP may keep that swapped board for later Combo setup without immediate clear or Combo. MP lock cost is `TUNE_REQUIRED`.
-- Combo cap baseline is 6. Tier N spends Combo N under retained BALANCE-027 structure.
+- CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; every resolved wave adds Combo +1 and then recovers MP from `(sum maximal qualified line lengths − 3) + post-wave Combo`. Combo is the shared Tier/CHAIN-MP resource (current internal field: `stock`).
+- A no-match restores by default and resets Combo; fixed **1 MP** may keep that swapped board for later setup, but also resets Combo and grants no immediate clear, Combo, or CHAIN MP recovery.
+- Combo cap is **10**. Tier N spends Combo N under retained BALANCE-027 structure, intentionally lowering later CHAIN MP recovery. Current merged runtime remains legacy cap-6/no-CHAIN-MP until Phase 2 implementation.
 - Enemy Current Telegraph + ETA continues while the player solves LINE/CHAIN.
 - Visible Next Forecast remains lower priority than Current.
 - Opening SKILL enters `TACTICAL_PAUSE_SKILL` and fully stops combat simulation.
