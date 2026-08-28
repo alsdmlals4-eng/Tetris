@@ -17,10 +17,10 @@ This contract defines how a representative 6–10 minute CORE-029 Vertical Slice
 Current authorities:
 
 1. `TETRIS-CORE-029` — continuous real-time combat, persistent LINE↔CHAIN switching, full Skill tactical pause, enemy ETA/commit scheduling, 60/40 battle composition.
-2. `TETRIS-SKILL-026` — retained ATK / DEF / SUP × Tier 1–6 Technique identity where not turn-bound.
-3. `TETRIS-BALANCE-027` — retained Line MP / Chain Combo opportunity cost and Tier commitment.
+2. `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` — ATK / DEF / SUP category-only, current-Combo-resolved preview/CONFIRM and bounded fallback.
+3. `TETRIS-SKILL-042` — deliberate lower-Combo resolution and target-separated player board-play / visible-current-Telegraph ETA semantics.
 4. `TETRIS-CHAIN-038` — straight-3+ horizontal/vertical/diagonal CHAIN rule and optional MP lock.
-5. `TETRIS-VISUAL-028` — Hand-Drawn Mystic Fantasy + Clean Puzzle UI.
+5. `TETRIS-VISUAL-041` — Parchment Field Manual + Readable Puzzle Tactics.
 6. `TETRIS-IMAGE-030` — production images require a real runtime consumer.
 
 `TETRIS-CORE-024` and `TETRIS-TIME-025` are historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
@@ -32,8 +32,8 @@ Target total session: **6–10 minutes**.
 The tested Slice must contain the actual production interaction, not an explanatory sheet or isolated subsystem demo:
 
 ```text
-Title / entry
-→ Frontier Gate encounter starts
+Battle Briefing
+→ explicit Deploy starts the Frontier Gate encounter
 → COMBAT_RUNNING
    ↔ LINE
    ↔ CHAIN
@@ -51,7 +51,7 @@ Minimum representative scope:
 - persistent right Combat/Threat/Resource/Skill surface;
 - real-time enemy threat with current Telegraph + ETA and lower-priority Next Forecast where authored;
 - Line MP and Chain Combo as non-interchangeable resources, including optional fixed-**1 MP** lock after a failed CHAIN swap;
-- ATK / DEF / SUP → T1–T6 → detail → explicit USE;
+- ATK / DEF / SUP → one current-Combo-resolved C1–C10 preview → detail → explicit CONFIRM;
 - Skill opens `TACTICAL_PAUSE_SKILL` and fully pauses simulation;
 - manual pause is distinct from Skill tactical pause;
 - actual gameplay-consumed visual assets where available, never explanation-only sheets presented as runtime proof.
@@ -92,7 +92,7 @@ After a decision or the first attempt, use non-leading questions such as:
 3. “다시 돌아왔을 때 보드가 어떻게 될 거라고 예상했나요?”
 4. “Skill 화면을 열었을 때 전투 시간이 어떻게 된다고 생각했나요?”
 5. “MP와 Combo를 각각 어디서 얻는다고 생각했나요? 매치가 안 난 교환은 어떻게 될까요?”
-6. “왜 그 Technique와 Tier를 골랐나요?”
+6. “왜 그 category와 현재 Combo 단계의 Technique를 골랐나요?”
 7. “가장 늦게 찾았거나 헷갈린 정보는 무엇이었나요?”
 8. “가장 기억에 남는 순간은 무엇이었나요? 왜 그랬나요?”
 9. “다시 한다면 무엇을 다르게 하겠나요?”
@@ -149,7 +149,8 @@ Check:
 - the player understands that enemy ETA stops while Skill is open;
 - frozen puzzle/combat context remains legible;
 - they are willing to read Technique details rather than rushing because they think combat is still advancing;
-- cancel and USE resume the exact paused combat situation without hidden time progress.
+- cancel and CONFIRM resume the exact paused combat situation without hidden time progress.
+- they distinguish player board-play opportunity from the exact visible current Telegraph ETA when either time-control result is shown.
 
 ### E. LINE_MP_VS_CHAIN_COMBO_AND_MP_LOCK
 
@@ -169,16 +170,16 @@ Check whether the dual-resource distinction is understood:
 Check:
 
 - ATK / DEF / SUP categories are understandable;
-- T1–T6 reads as tactical commitment, not simply “highest number wins”;
-- row selection/detail inspection does not feel like immediate resource spend;
-- explicit USE is understood as the commit point;
-- lower Tier remains a plausible choice in at least some contexts.
+- the current C1–C10 stage reads as a tactical commitment, not simply “highest number wins”;
+- category selection/detail inspection does not feel like immediate resource spend;
+- explicit CONFIRM is understood as the commit point;
+- a lower current Combo reached by deliberately stopping CHAIN remains plausible in at least some contexts; a manual lower-stage browser is not expected.
 
-Turn-bound Techniques such as Haste/Battle Trance remain outside a positive Human claim until their CORE-029 realtime semantics are separately approved and implemented.
+No Human claim may treat player board-play opportunity and visible-current-Telegraph ETA as one generic speed stat; each must be understood as changing only its named target/time domain.
 
 ### G. SIXTY_FORTY_LAYOUT_READABILITY
 
-`TETRIS-VISUAL-028` is evaluated as gameplay readability, not taste polling.
+`TETRIS-VISUAL-041` is evaluated as gameplay readability, not taste polling.
 
 Target hierarchy:
 
@@ -187,7 +188,7 @@ Target hierarchy:
 3. Current Telegraph + ETA is high priority;
 4. HP / MP / Combo remain findable;
 5. LINE / CHAIN / SKILL controls remain obvious;
-6. Skill-open state prioritizes ATK / DEF / SUP → T1–T6 → detail → USE while frozen puzzle/threat context remains visible;
+6. Skill-open state prioritizes ATK / DEF / SUP → one current-Combo-resolved preview → explicit CONFIRM while frozen puzzle/threat context remains visible;
 7. decorative character, boss, VFX, and background never obscure critical puzzle or threat information.
 
 Target desktop composition is approximately **60/40**. This is a readability target, not a fixed pixel law.
@@ -203,7 +204,7 @@ Look for at least one observable sequence of:
 Record:
 
 - what pressure caused the plan change;
-- whether the choice was LINE, CHAIN, Skill, Technique, or Tier;
+- whether the choice was LINE, CHAIN, Skill, category, current Combo stage, or Technique;
 - what result the player attributed to that choice;
 - what moment they recall without being told what the intended highlight was;
 - whether failure produces an understandable “next time I would…” thought.
@@ -230,7 +231,7 @@ Each session receipt records when available:
 - evidence that both workspace states persisted across return;
 - first Skill-open moment and whether the player understood full pause;
 - key MP / Combo states and any MP-lock decision;
-- selected lane / Tier / Technique / USE outcome;
+- selected category / current Combo stage / Technique / CONFIRM outcome;
 - wall-clock, active combat simulation time, tactical-pause duration if telemetry exists;
 - first major confusion and consequence;
 - `MEMORABLE_MOMENT` candidate and player explanation;

@@ -45,7 +45,11 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             data["implementation_plan"],
-            "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
+            "docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md",
+        )
+        self.assertTrue(
+            (ROOT / data["implementation_plan"]).is_file(),
+            "current implementation plan must exist",
         )
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-039")
         self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-040")

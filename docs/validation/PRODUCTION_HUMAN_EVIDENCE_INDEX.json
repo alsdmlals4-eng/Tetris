@@ -18,11 +18,12 @@
     "SIXTY_FORTY_LAYOUT_READABILITY",
     "PLAYER_EXPERIENCE_SIGNAL"
   ],
-  "visual_authority": "TETRIS-VISUAL-028",
+  "visual_authority": "TETRIS-VISUAL-041",
   "gameplay_authorities": [
     "TETRIS-CORE-029",
-    "TETRIS-SKILL-026",
-    "TETRIS-BALANCE-027",
+    "TETRIS-SKILL-039",
+    "TETRIS-SKILL-042",
+    "TETRIS-BALANCE-040",
     "TETRIS-CHAIN-038",
     "TETRIS-IMAGE-030"
   ],

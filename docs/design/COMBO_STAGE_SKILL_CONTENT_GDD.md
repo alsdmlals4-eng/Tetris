@@ -1,9 +1,9 @@
 # Combo Stage Skill Content GDD
 
 - Decision: `TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`
-- Status: `USER_APPROVED / PHASE 1 CONTENT CANON / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / PHASE 2 MECHANISM LOCK / DOCUMENTED_NOT_IMPLEMENTED`
 - Issue: [#80](https://github.com/alsdmlals4-eng/Tetris/issues/80)
-- Date: 2026-08-28
+- Date: 2026-08-29
 - Extends: `TETRIS-SKILL-039`, `TETRIS-BALANCE-040`, `TETRIS-CHAIN-038`, and `TETRIS-CORE-029`.
 - Does not supersede: category-only selection, full tactical pause, explicit `CONFIRM`, the 5-MP bounded shortage fallback, or the shared Combo cap of 10.
 
@@ -56,7 +56,7 @@ Target: Enemy   | Current pattern ETA: +N seconds    | Player board time unchang
 - A decelerated enemy ETA cannot cross into an already-resolved action; an accelerated enemy ETA cannot retroactively resolve an action inside tactical pause. The scheduler's commit boundary remains authoritative.
 - Tactical pause freezes both domains. A preview never advances, shortens or restores any clock. The approved effect begins only after `CONFIRM` and battle resume.
 - Player board-play opportunity is a player-side effect, not a global `Engine.time_scale` change. It must not slow or speed enemy ETA, status ticking, VFX, audio or the inactive workspace.
-- The active runtime has no player board-time controller. The Phase 2 contract must define its exact delivery mechanism and duration ownership before implementation. The player-facing semantic above is locked; the mechanism is `PARTIAL / NOT IMPLEMENTED`, not an existing Haste translation.
+- The active runtime has no player board-time controller. The user-approved Phase 2 mechanism is a **bounded stored opportunity reserve**: confirmed player-target effects add their displayed seconds to a `12.0`-second maximum reserve; while continuous simulation is running and `LINE` is the active workspace, the reserve supplies `0.0` only to LINE gravity/lock advancement while LINE input stays enabled. It consumes no reserve in `CHAIN`, during Skill/manual pause, or after terminal state; it does not change the scheduler's full real delta. This is `APPROVED / NOT IMPLEMENTED`, not an existing Haste translation.
 
 This explicitly replaces the unsafe historical interpretation of `Haste`, `Battle Trance`, turn-only duration and Tempo. They remain `REALTIME_MIGRATION_REQUIRED` and are not silently re-enabled.
 
@@ -115,7 +115,7 @@ The first-session briefing teaches this in one contrast: **"Slow the Gatebreaker
 | --- | --- | --- | --- |
 | Category → resolved preview → explicit confirm | Existing pause token, category selection, preview/commit split and rollback in `ProductionSkillSession`. | `PARTIAL` | Replace manual technique-id/Tier-grid selection with the deterministic C1–C10 lane resolver and bounded fallback transaction. |
 | Enemy current-ETA acceleration/deceleration | `EnemyActionScheduler` owns `_remaining_seconds`, current action id and a commit boundary. | `FEASIBLE_WITH_NEW_EFFECT_PRIMITIVE` | Add an exact-action-id ETA adjustment primitive; clamp safely at the scheduler commit boundary and log before/after ETA. |
-| Player board-play acceleration/deceleration | Current runtime ticks the active workspace but owns no player-side board-time window or duration state. | `PARTIAL` | Create a bounded player board-time controller; its state must persist through workspace switching, pause exactly with simulation, and never mutate enemy ETA. |
+| Player board-play acceleration/deceleration | Current runtime ticks the active workspace but owns no player-side board-time window or duration state. | `APPROVED_MECHANISM_NOT_IMPLEMENTED` | Create the user-approved bounded stored-opportunity controller: cap `12.0`, consume only while active LINE gravity/lock is held at `0.0` with input enabled, persist through workspace switching, pause exactly with simulation, and never mutate enemy ETA. |
 | Existing data-driven effects | JSON definitions already use effect arrays; the catalog and executor validate a finite effect vocabulary. | `PARTIAL` | Add only the required target/time-domain primitives and data validation. Do not create per-skill scripts. |
 | Existing `CONDITIONAL_MULTIPLIER` claim | The catalog accepts it, but `ProductionTechniqueResolver` skips it during resolution. | `CONFLICT` | Do not author a Stage effect that depends on it until it is either implemented with tests or removed from authored content. |
 | Current Stage 1–10 player promise | Runtime catalog, combat state and CHAIN config still cap Tier/Stock at 6; data is legacy manual Tier 1–6. | `BLOCKED_UNVERIFIED` for runtime | Align CHAIN-038 and SKILL-039 first; this document does not promote content into data or runtime. |
@@ -158,3 +158,4 @@ Document-only evidence was rerun on the GDD branch: canonical-reference scan (Lo
 | 2026-08-28 | User approved intentional early Combo spend: prepare and resolve at the desired current Combo rather than manually down-select from a higher Combo. | `USER_APPROVED` |
 | 2026-08-28 | User defined acceleration/deceleration by target: player affects board-play opportunity; enemy affects the visible current Telegraph action ETA. | `USER_APPROVED` |
 | 2026-08-28 | User approved the C1–C10 matrix, target-separated preview language, feasibility limits and Phase 2 gates. | `USER_APPROVED / DOCUMENTED_NOT_IMPLEMENTED` |
+| 2026-08-29 | User approved the recommended player-side mechanism: a capped 12-second stored board-opportunity reserve that holds active LINE gravity/lock only, preserves LINE input, and leaves the visible current Telegraph ETA on full real time. | `USER_APPROVED / PHASE 2 MECHANISM LOCK / NOT IMPLEMENTED` |

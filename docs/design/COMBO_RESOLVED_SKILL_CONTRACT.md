@@ -101,7 +101,7 @@ This is `DOCUMENTED_NOT_IMPLEMENTED`. Fresh merged-main evidence still has the l
 - `src/production/ui/production_battle.gd` binds `TierGrid/Tier1..Tier6` and maps a manually selected lane/tier to an id.
 - `src/production/skill/production_skill_catalog.gd` rejects stages above 6.
 - `src/production/skill/production_skill_session.gd` requires a manually selected technique id and spends its configured `energy`/`stock` cost.
-- `data/production/vanguard_skill_seed.json` contains 18 legacy `ATK/DEF/SUP × T1–T6` entries, no Stage 7–10 content and no fallback conversion data.
+- `data/production/vanguard_skill_seed.json` contains 18 legacy `ATK/DEF/SUP × T1–T6` entries, no integrated C1–C10 Stage data and no fallback conversion data.
 
 No Godot code, scene, resource, runtime asset or Human/player evidence is promoted by this contract. Phase 2 implementation must replace the manual-grid data/UI/session path with a deterministic resolver, use RED→GREEN tests for the formula above, and obtain target-resolution plus first-exposure evidence before a usability/pass claim.
 

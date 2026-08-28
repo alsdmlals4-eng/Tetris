@@ -53,7 +53,7 @@ Before Deploy becomes the available explicit start action on the first intended 
 5. **Spend-or-save choice:** choose ATK/DEF/SUP, then current Combo resolves one Stage in that category. If its MP is insufficient, only surplus Combo may convert at **5 MP per Combo** to preview the highest feasible lower Stage. Spending Combo can solve the current threat but lowers later CHAIN MP recovery; saving it preserves future recovery and a higher resolved Stage.
 6. **Tactical commitment:** opening Skill fully pauses simulation. Category selection previews without cost; only explicit CONFIRM commits the displayed technique/conversion. Cancel returns to the same paused state.
 
-This is complete for the current vertical slice, not a full catalog explanation: the briefing names the resource rules and commitment grammar but does not front-load all 18 Technique identities, final MP costs, effect magnitudes, route/progression, or future content.
+This is complete for the current vertical slice, not a full catalog explanation: the briefing names the resource rules and commitment grammar but does not front-load all 30 Combo-Stage Technique identities, final MP costs, effect magnitudes, route/progression, or future content.
 
 ## Embedded tutorial sequence
 
@@ -74,7 +74,7 @@ Deploy starts the real continuous combat clock. Tutorial prompts must not silent
 
 ## Scope and production gates
 
-- Keep the world explanation short. The separate rules section is intentionally complete for economy-critical first-slice rules and revisit-able through the planned Codex/Manual surface; do not front-load all 18 Technique identities.
+- Keep the world explanation short. The separate rules section is intentionally complete for economy-critical first-slice rules and revisit-able through the planned Codex/Manual surface; do not front-load all 30 Combo-Stage Technique identities.
 - The first-visit gate guarantees one complete rule review before Deploy without requiring a quiz. Later visits may Deploy immediately, while retaining a re-openable rule summary. The short guided battle tutorial must hand off to free play in the **same encounter**; it must not restart, terminate, or introduce a separate tutorial ruleset.
 - Use a **safe live authored opening**: continuous time begins at Deploy, the first authored ETA is sufficient for the guided actions, and its pre-first-CONFIRM result is nonterminal. This does not authorize tutorial-time auto-pause, a separate board/economy, or permanent safety; normal authored pressure resumes after the guided handoff.
 - Preserve `CORE-029`: continuous real-time battle after Deploy, free persistent `LINE ↔ CHAIN`, full tactical pause only through Skill/manual pause, and explicit `CONFIRM` commit.

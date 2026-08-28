@@ -122,7 +122,7 @@ Do not combine unrelated consumers merely to reduce generation count.
 
 ## 7. Style authority
 
-`TETRIS-VISUAL-028 · Hand-Drawn Mystic Fantasy + Clean Puzzle UI` remains the current visual style authority.
+`TETRIS-VISUAL-041 · Parchment Field Manual + Readable Puzzle Tactics` is the current visual style authority. `TETRIS-VISUAL-028` remains superseded provenance for retained one-active-board and readable threat/resource hierarchy only.
 
 The style anchor informs rendering language, but a style-anchor image is not automatically a production asset. Runtime consumption and visual direction are separate approvals.
 
