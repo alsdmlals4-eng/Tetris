@@ -108,6 +108,15 @@ func test_chain_wave_awards_combo_before_formula_and_caps_mp_and_combo() -> void
     assert_eq(state.energy, 60)
     assert_eq(event["mp_lost_at_cap"], 15)
 
+func test_crossing_five_and_five_at_combo_four_awards_twelve_mp_before_cap() -> void:
+    var state = load(COMBAT_STATE_PATH).new(100)
+    state.energy = 0
+    state.stock = 4
+    var event: Dictionary = state.apply_chain_wave([5, 5])
+    assert_eq(event["combo_after"], 5)
+    assert_eq(event["mp_requested"], 12) # (5 + 5 - 3) + post-wave Combo 5
+    assert_eq(state.energy, 12)
+
 func test_shortage_fallback_converts_only_surplus_combo_and_spends_opening_combo_once() -> void:
     var state = load(COMBAT_STATE_PATH).new(100)
     state.energy = 8
@@ -158,7 +167,7 @@ func try_commit_combo_skill(mp_cost: int, opening_combo: int, resolved_stage: in
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit -ginclude_subdirs -gexit`
 
-Expected: PASS; negative MP deltas, unqualified line lengths, a 60-MP overflow, Combo 10, and failed shortage transactions are deterministic.
+Expected: PASS; negative MP deltas, unqualified line lengths, a 60-MP overflow, Combo 10, a crossing 5+5 at Combo 4 producing 12 MP before cap, and failed shortage transactions are deterministic.
 
 - [ ] **Step 5: Commit the atomic resource boundary.**
 
@@ -389,11 +398,11 @@ git commit -m "feat: define combo-resolved skill stages"
 
 **Interfaces:**
 - `PlayerBoardOpportunityState.grant(seconds: float) -> Dictionary` caps stored seconds at `12.0`.
-- `PlayerBoardOpportunityState.consume_line_delta(delta: float) -> Dictionary` returns `{ "line_delta", "consumed_seconds", "remaining_seconds" }` and never consumes on CHAIN/pause because runtime calls it only before an active LINE tick.
+- `PlayerBoardOpportunityState.consume_line_delta(delta: float) -> Dictionary` returns `{ "line_delta", "consumed_seconds", "remaining_seconds" }`: it consumes `min(delta, remaining_seconds)`, returns the unheld remainder as `line_delta`, and never consumes on CHAIN/pause because runtime calls it only before an active LINE tick.
 - `EnemyActionScheduler.adjust_current_eta(action_id: String, delta_seconds: float) -> Dictionary` checks exact current ID and `not is_action_committed()`, clamps the new ETA to at least `commit_lead_seconds`, and returns `{ "adjusted", "before_seconds", "after_seconds", "action_id" }`.
 - Runtime constructor receives `board_opportunity`; `snapshot()` adds `player_board_opportunity_seconds` and `last_time_feedback`.
 
-- [ ] **Step 1: Add failing independence and commit-boundary tests.**
+- [ ] **Step 1: Add failing independence, reserve-edge and commit-boundary tests.**
 
 ```gdscript
 func test_player_board_opportunity_freezes_only_line_gravity_while_enemy_eta_uses_full_delta() -> void:
@@ -402,6 +411,32 @@ func test_player_board_opportunity_freezes_only_line_gravity_while_enemy_eta_use
     runtime.tick(1.0)
     assert_eq(fake_line.last_delta, 0.0)
     assert_almost_eq(scheduler.remaining_seconds(), eta_before - 1.0, 0.001)
+
+func test_board_opportunity_caps_at_twelve_and_partial_expiry_forwards_only_unheld_line_delta() -> void:
+    var opportunity := PlayerBoardOpportunityState.new()
+    opportunity.grant(11.0)
+    var grant: Dictionary = opportunity.grant(5.0)
+    assert_almost_eq(grant["remaining_seconds"], 12.0, 0.001)
+    var short_window := PlayerBoardOpportunityState.new()
+    short_window.grant(0.25)
+    var budget: Dictionary = short_window.consume_line_delta(1.0)
+    assert_almost_eq(budget["line_delta"], 0.75, 0.001)
+    assert_almost_eq(budget["remaining_seconds"], 0.0, 0.001)
+
+func test_line_input_stays_enabled_while_reserve_holds_gravity_and_lock() -> void:
+    runtime.grant_player_board_opportunity(1.0)
+    runtime.tick(0.5)
+    assert_true(workspace.line_input_enabled())
+    assert_eq(fake_line.last_delta, 0.0)
+
+func test_reserve_does_not_consume_while_chain_or_paused() -> void:
+    runtime.grant_player_board_opportunity(2.0)
+    workspace.request_workspace("CHAIN")
+    runtime.tick(0.5)
+    assert_almost_eq(runtime.snapshot()["player_board_opportunity_seconds"], 2.0, 0.001)
+    runtime.toggle_system_pause()
+    runtime.tick(0.5)
+    assert_almost_eq(runtime.snapshot()["player_board_opportunity_seconds"], 2.0, 0.001)
 
 func test_current_eta_adjustment_rejects_next_action_and_committed_action() -> void:
     var next_id := scheduler.next_action_id()
@@ -433,7 +468,7 @@ func _tick_active_puzzle(delta: float) -> void:
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
-Expected: PASS; player timing does not change enemy ETA, enemy timing does not change line opportunity, paused time consumes neither, and a current ETA never changes a Next Forecast ID.
+Expected: PASS; the reserve caps at 12 seconds, handles a partial-frame expiry without losing ordinary LINE delta, preserves LINE input while it holds gravity/lock, consumes neither in CHAIN nor pause, player timing does not change enemy ETA, enemy timing does not change line opportunity, and a current ETA never changes a Next Forecast ID.
 
 - [ ] **Step 5: Commit local time primitives.**
 
@@ -454,10 +489,12 @@ git commit -m "feat: add target separated board and eta timing"
 **Interfaces:**
 - `ProductionSkillSession.select_category(category: String, context: Dictionary) -> Dictionary` returns its resolved preview; it has no `select_technique` path.
 - `ProductionSkillSession.selected_preview() -> Dictionary` includes `opening_combo`, `resolved_stage`, `converted_combo`, `mp_cost`, `preview_lines`, `effects`, and `ready`.
+- `ProductionTechniqueResolver.preflight_effects(effects: Array, context: Dictionary) -> Dictionary` validates every effect and action variant without mutation and returns one deterministic executable plan or a failure reason.
+- `ProductionTechniqueResolver.capture_effect_checkpoint(context: Dictionary) -> Dictionary` / `restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> void` cover every mutable effect owner touched by a confirmed technique: player, enemy, response state, board opportunity and scheduler.
 - `ProductionCombatRuntime.select_skill_category(category: String) -> Dictionary` builds context from player, enemy, response state, scheduler, board opportunity, current action ID, and current action kind.
 - `ProductionCombatRuntime.open_skill()` returns `ENEMY_ACTION_COMMITTED` and does not acquire a pause token when the scheduler is committed.
 
-- [ ] **Step 1: Add failing current-stage, deliberate-C5, fallback, cancel, and commit-once tests.**
+- [ ] **Step 1: Add failing current-stage, deliberate-C5, fallback, cancel, commit-once, and atomic-effect tests.**
 
 ```gdscript
 func test_category_preview_resolves_current_c5_without_manual_lower_stage_selection() -> void:
@@ -478,6 +515,20 @@ func test_previewed_shortage_fallback_uses_highest_feasible_lower_stage_on_confi
     assert_true(session.commit_selected(_direct_context())["committed"])
     assert_eq(player.stock, 0)
     assert_eq(player.energy, 0)
+
+func test_later_invalid_effect_keeps_resources_and_earlier_effect_owners_unchanged() -> void:
+    player.stock = 2
+    player.energy = 20
+    player.hp = 50
+    _seed_selected_preview_with_effects([
+        {"kind": "HEAL", "amount": 15},
+        {"kind": "UNKNOWN_EFFECT"},
+    ])
+    var result: Dictionary = session.commit_selected(_direct_context())
+    assert_false(result["committed"])
+    assert_eq(player.hp, 50)
+    assert_eq(player.energy, 20)
+    assert_eq(player.stock, 2)
 ```
 
 - [ ] **Step 2: Run Skill/runtime tests and confirm the legacy manual selection API fails the new contract.**
@@ -499,12 +550,17 @@ func select_category(category: String, context: Dictionary) -> Dictionary:
 func commit_selected(context: Dictionary) -> Dictionary:
     if _pause_token == 0 or _selected_preview.is_empty() or not bool(_selected_preview.get("ready", false)):
         return {"committed": false, "reason": "NO_READY_PREVIEW"}
+    var preflight: Dictionary = _technique_resolver.preflight_effects(Array(_selected_preview["effects"]), context)
+    if not bool(preflight.get("ok", false)):
+        return {"committed": false, "reason": preflight.get("reason", "EFFECT_PREFLIGHT_FAILED")}
+    var effect_checkpoint: Dictionary = _technique_resolver.capture_effect_checkpoint(context)
     var transaction := _combat_state.try_commit_combo_skill(int(_selected_preview["mp_cost"]), int(_selected_preview["opening_combo"]), int(_selected_preview["resolved_stage"]))
     if not bool(transaction.get("committed", false)):
         return transaction
-    var resolution := _technique_resolver.resolve_effects(Array(_selected_preview["effects"]), context)
+    var resolution := _technique_resolver.resolve_preflighted_effects(preflight, context)
     if not bool(resolution.get("ok", false)):
         _combat_state.restore_resource_snapshot(_selected_preview["resource_snapshot"])
+        _technique_resolver.restore_effect_checkpoint(effect_checkpoint, context)
         return {"committed": false, "reason": resolution.get("reason", "EFFECT_FAILED")}
     cancel()
     return {"committed": true, "preview": _selected_preview.duplicate(true), "results": resolution["results"]}
@@ -516,7 +572,7 @@ Add `resource_snapshot()` / `restore_resource_snapshot(snapshot)` to `Production
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
-Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, fallback is non-voluntary and highest-feasible, cancel restores exact paused state, confirm applies exactly once, and committed enemy actions cannot be retroactively paused.
+Expected: PASS; category preview spends nothing, C5 remains C5 when affordable, fallback is non-voluntary and highest-feasible, every effect preflights before resource spend, a later invalid effect restores every mutable owner and both resources, cancel restores exact paused state, confirm applies exactly once, and committed enemy actions cannot be retroactively paused.
 
 - [ ] **Step 5: Commit the current-Combo Skill flow.**
 
@@ -789,7 +845,7 @@ git commit -m "docs: record phase two verification evidence"
 git push origin <current-task-branch>
 ```
 
-Use the exact reviewed HEAD for CI/readback, then squash merge only the current-task PR after required checks, unresolved review threads, and runtime evidence are clear. Post-merge, fetch `origin/main`, read the documented destination, and keep Human evidence `NOT_RUN` unless the required real receipts were recorded.
+Use the exact reviewed HEAD for CI/readback, then squash merge only the current-task PR after required checks, unresolved review threads, and runtime evidence are clear. Post-merge, run `git fetch origin main`, read the documented destination, and keep Human evidence `NOT_RUN` unless the required real receipts were recorded.
 
 ## Plan self-review
 

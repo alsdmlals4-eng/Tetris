@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 INDEX = ROOT / "docs/design/PRODUCTION_CANON_INDEX.json"
 CONTRACT = ROOT / "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md"
 CONTENT_GDD = ROOT / "docs/design/COMBO_STAGE_SKILL_CONTENT_GDD.md"
+PHASE2_PLAN = ROOT / "docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md"
 VISUAL_BIBLE = ROOT / "docs/design/VISUAL_BIBLE.md"
 MASTER_GDD = ROOT / "docs/design/PROJECT_MASTER_GDD.md"
 WORKSPACE_INDEX = ROOT / "docs/design/PROJECT_WORKSPACE_INDEX.md"
@@ -54,6 +55,18 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             "LINE input stays enabled",
             "does not change the scheduler's full real delta",
             "USER_APPROVED / PHASE 2 MECHANISM LOCK / NOT IMPLEMENTED",
+        ):
+            self.assertIn(required, text)
+
+    def test_phase_two_plan_preserves_formula_reserve_edges_and_atomic_effect_commit(self) -> None:
+        text = PHASE2_PLAN.read_text(encoding="utf-8")
+        for required in (
+            "(5 + 5 - 3) + post-wave Combo 5",
+            "partial-frame expiry",
+            "leaves LINE input enabled",
+            "preflight_effects",
+            "restore_effect_checkpoint",
+            "git fetch origin main",
         ):
             self.assertIn(required, text)
 
