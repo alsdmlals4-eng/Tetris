@@ -81,11 +81,11 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
-    def test_actual_runtime_is_not_misreported_as_the_new_skill_flow(self) -> None:
+    def test_partial_catalog_adoption_keeps_unfinished_selection_flow_honest(self) -> None:
         contract = CONTRACT.read_text(encoding="utf-8")
-        self.assertIn("DOCUMENTED_NOT_IMPLEMENTED", contract)
-        self.assertIn("legacy manual Tier 1–6", contract)
-        self.assertIn("tier < 1 or tier > 6", CATALOG.read_text(encoding="utf-8"))
+        self.assertIn("PARTIAL_IMPLEMENTATION_NOT_RUNTIME_VERIFIED", contract)
+        self.assertIn("stage < 1 or stage > 10", CATALOG.read_text(encoding="utf-8"))
+        self.assertIn("combo_cost", CATALOG.read_text(encoding="utf-8"))
         self.assertIn("TierGrid", BATTLE_UI.read_text(encoding="utf-8"))
         self.assertIn("select_technique", SKILL_SESSION.read_text(encoding="utf-8"))
 

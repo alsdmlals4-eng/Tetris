@@ -44,7 +44,7 @@ The three category buttons are a player-facing tactical vocabulary, not three se
 - Combo cap is **10**. A viable current Combo state is `C ∈ [1, 10]`.
 - Each lane owns authored **Stage 1–10 content**: `LaneStage[ATK|DEF|SUP][1..10]`. Stage is a resolved Combo state, not a separately selected player tier.
 - `LaneStage[C]` is the normal preview. It spends `C` Combo and its authored MP cost `MP(lane, C)`.
-- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content, target-separated time-control semantics and Phase 2 content gates. Existing seed data remains legacy manual Tier 1–6 and does not yet implement that content.
+- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content, target-separated time-control semantics and Phase 2 content gates. The exact Phase 2 worktree now validates the 30-entry C1–C10 seed; category-only selection, fallback and the final battle presentation remain later implementation tasks.
 - Stage content must remain data-driven effect composition. This contract does not authorize thirty bespoke scripts, a new currency, cooldown system or a new enemy roster.
 
 ## 4. MP-insufficient bounded fallback
@@ -96,14 +96,14 @@ This preserves the user-approved tension: spend the shared Combo now for a timel
 
 ## 6. Actual implementation boundary
 
-This is `DOCUMENTED_NOT_IMPLEMENTED`. Fresh merged-main evidence still has the legacy manual Tier 1–6 flow:
+Fresh merged-main evidence began with the legacy manual Tier 1–6 flow. The exact Phase 2 implementation worktree is now `PARTIAL_IMPLEMENTATION_NOT_RUNTIME_VERIFIED`:
 
 - `src/production/ui/production_battle.gd` binds `TierGrid/Tier1..Tier6` and maps a manually selected lane/tier to an id.
-- `src/production/skill/production_skill_catalog.gd` rejects stages above 6.
-- `src/production/skill/production_skill_session.gd` requires a manually selected technique id and spends its configured `energy`/`stock` cost.
-- `data/production/vanguard_skill_seed.json` contains 18 legacy `ATK/DEF/SUP × T1–T6` entries, no integrated C1–C10 Stage data and no fallback conversion data.
+- `src/production/skill/production_skill_catalog.gd` and `data/production/vanguard_skill_seed.json` now validate one data-driven C1–C10 definition for each `ATK/DEF/SUP` lane/stage pair, including current-action packages without an unimplemented multiplier.
+- `src/production/skill/production_skill_session.gd` can spend the aligned `mp_cost` / `combo_cost` fields, but still requires a manually selected technique id.
+- The category-only resolver, exact 5-MP fallback preview/commit, target-separated time primitives and replacement presentation are not yet wired; this data slice alone is not the player-facing new Skill flow.
 
-No Godot code, scene, resource, runtime asset or Human/player evidence is promoted by this contract. Phase 2 implementation must replace the manual-grid data/UI/session path with a deterministic resolver, use RED→GREEN tests for the formula above, and obtain target-resolution plus first-exposure evidence before a usability/pass claim.
+No target-device runtime, scene presentation or Human/player evidence is promoted by this partial implementation. Phase 2 must still replace the manual-grid UI/session path with a deterministic resolver, use RED→GREEN tests for the formula above, and obtain target-resolution plus first-exposure evidence before a usability/pass claim.
 
 ## 7. Acceptance contract for the later implementation issue
 

@@ -103,18 +103,18 @@ func test_explicit_use_commits_once_and_releases_only_the_tactical_pause() -> vo
 	assert_true(bool(session.select_technique("atk_t1_quick_cut").get("selected", false)))
 	var committed: Dictionary = session.commit_selected(context)
 	assert_true(bool(committed.get("committed", false)))
-	assert_eq(int(player.energy), 20)
+	assert_eq(int(player.energy), 22)
 	assert_eq(int(player.stock), 2)
-	assert_eq(int(enemy.hp), 88)
+	assert_eq(int(enemy.hp), 86)
 	assert_false(controller.is_paused())
 
 	var second_commit: Dictionary = session.commit_selected(context)
 	assert_false(bool(second_commit.get("committed", false)))
-	assert_eq(int(player.energy), 20, "USE may spend a selected Technique only once")
+	assert_eq(int(player.energy), 22, "USE may spend a selected Technique only once")
 	assert_eq(int(player.stock), 2, "USE may spend a selected Technique only once")
-	assert_eq(int(enemy.hp), 88, "USE may apply a selected Technique only once")
+	assert_eq(int(enemy.hp), 86, "USE may apply a selected Technique only once")
 
-func test_realtime_migration_required_techniques_fail_closed_without_partial_spend() -> void:
+func test_future_time_primitive_fails_closed_without_partial_spend() -> void:
 	var fixture := _make_fixture()
 	if fixture.is_empty():
 		return
@@ -126,13 +126,13 @@ func test_realtime_migration_required_techniques_fail_closed_without_partial_spe
 
 	assert_true(session.open())
 	assert_true(session.select_category("SUPPORT"))
-	var selected: Dictionary = session.select_technique("sup_t3_haste")
+	var selected: Dictionary = session.select_technique("sup_t6_breather")
 	assert_true(bool(selected.get("selected", false)))
-	var readiness: Dictionary = session.readiness("sup_t3_haste", context)
+	var readiness: Dictionary = session.readiness("sup_t6_breather", context)
 	assert_false(bool(readiness.get("ready", true)))
-	assert_eq(String(readiness.get("reason", "")), "REALTIME_MIGRATION_REQUIRED")
+	assert_eq(String(readiness.get("reason", "")), "EFFECT_NOT_READY")
 	var committed: Dictionary = session.commit_selected(context)
 	assert_false(bool(committed.get("committed", false)))
-	assert_eq(String(committed.get("reason", "")), "REALTIME_MIGRATION_REQUIRED")
+	assert_eq(String(committed.get("reason", "")), "EFFECT_NOT_READY")
 	assert_eq(int(player.energy), 30)
 	assert_eq(int(player.stock), 6)
