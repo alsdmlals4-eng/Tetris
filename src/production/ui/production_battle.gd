@@ -9,7 +9,12 @@ const CHAIN := "CHAIN"
 @onready var _chain_view: Control = $MainRow/PuzzleColumn/PuzzleHost/ChainBoardView
 @onready var _current_threat: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/CurrentTelegraph
 @onready var _next_forecast: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/NextForecast
-@onready var _guided_practice_prompt: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/GuidedPracticePrompt
+@onready var _guided_practice_prompt: Label = $MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack/GuidedPracticePrompt
+@onready var _action_phase_subtitle: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/ActionPhaseSubtitle
+@onready var _shared_timer_value: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/SharedTimerCore/SharedTimerValue
+@onready var _shared_timer_caption: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/SharedTimerCore/SharedTimerCaption
+@onready var _current_action_frame: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/CurrentActionFrame
+@onready var _next_action_frame: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/NextActionFrame
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
 @onready var _skill_stage_summary: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillStageSummary
@@ -203,7 +208,7 @@ func select_skill_category(category: String) -> bool:
 	if bool(preview.get("ready", false)):
 		preview_label.text = "%s · C%d · MP %d\n%s" % [String(preview.get("display_name", "")), int(preview.get("resolved_stage", 0)), int(preview.get("mp_cost", 0)), "\n".join(PackedStringArray(preview.get("preview_lines", [])))]
 	else:
-		preview_label.text = "NO READY TECHNIQUE · %s" % String(preview.get("reason", ""))
+		preview_label.text = "NO AVAILABLE TECHNIQUE · %s" % String(preview.get("reason", ""))
 	_refresh_skill_surface(_runtime.snapshot(), preview)
 	return bool(preview.get("selected", false))
 
@@ -244,11 +249,25 @@ func _retry_encounter() -> void:
 func _refresh_runtime_labels() -> void:
 	if _runtime == null:
 		_current_threat.text = "CURRENT THREAT · unavailable"
+		_action_phase_subtitle.text = "PLAYER WINDOW · unavailable"
+		_shared_timer_value.text = "--"
+		_shared_timer_caption.text = "SEC · BOSS / PLAYER"
+		_current_action_frame.text = "CURRENT\nTHREAT ETA"
+		_next_action_frame.text = "NEXT\nFORECAST"
 		return
 	var snapshot: Dictionary = _runtime.snapshot()
 	var is_terminal: bool = bool(snapshot.get("terminal", false))
-	_current_threat.text = "CURRENT THREAT · ETA %.1fs" % float(snapshot.get("enemy_eta_seconds", 0.0))
+	var enemy_eta_seconds := maxf(0.0, float(snapshot.get("enemy_eta_seconds", 0.0)))
+	_current_threat.text = "CURRENT THREAT · ETA %.1fs" % enemy_eta_seconds
 	_next_forecast.text = "NEXT FORECAST · realtime authored schedule"
+	var active_workspace := "LINE"
+	if _workspace_manager != null:
+		active_workspace = _workspace_manager.active_workspace()
+	_action_phase_subtitle.text = "PLAYER WINDOW · %s · SHARED TIMER" % active_workspace
+	_shared_timer_value.text = "--" if is_terminal else "%d" % ceili(enemy_eta_seconds)
+	_shared_timer_caption.text = "SEC · BOSS / PLAYER"
+	_current_action_frame.text = "CURRENT\nTHREAT ETA %.1fs" % enemy_eta_seconds
+	_next_action_frame.text = "NEXT\n%s FORECAST" % ("BOSS" if not is_terminal else "COMBAT")
 	_resource_bar.text = "HP %d / 100    MP %d / 60    COMBO %d / 10" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
 	var guided: Dictionary = Dictionary(snapshot.get("guided_practice", {}))
 	_guided_practice_prompt.visible = bool(guided.get("active", false))

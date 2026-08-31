@@ -15,21 +15,6 @@ MANIFEST_PATH = REPO_ROOT / "docs/assets/reference/approved/APPROVED_REFERENCE_M
 CONTRACT_PATH = REPO_ROOT / "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
 BATTLE_SCENE_PATH = REPO_ROOT / "scenes/production/battle.tscn"
 EXPECTED_ASSETS = {
-    "TETRIS-IMG-033": {
-        "path": "assets/production/characters/vanguard_combat_cutout_v1.png",
-        "source": "IMG-P0-002",
-        "consumer": "MainRow/CombatColumn/CombatStage/VanguardReference",
-        "resource_id": "6_vanguard_cutout",
-        "node_name": "VanguardReference",
-        "texture_reference": "ExtResource(\"6_vanguard_cutout\")",
-        "anchor_left": "0.0",
-        "anchor_top": "0.0",
-        "anchor_right": "0.32",
-        "anchor_bottom": "1.0",
-        "z_index": "2",
-        "stretch_mode": "5",
-        "geometry_phrase": "aspect-centered stage slot",
-    },
     "TETRIS-IMG-034": {
         "path": "assets/production/bosses/gatebreaker_combat_cutout_v1.png",
         "source": "IMG-P0-003",
@@ -37,14 +22,20 @@ EXPECTED_ASSETS = {
         "resource_id": "7_gatebreaker_cutout",
         "node_name": "GatebreakerReference",
         "texture_reference": "SubResource(\"AtlasTexture_gatebreaker_stage\")",
-        "anchor_left": "0.06",
-        "anchor_top": "-0.14",
+        "anchor_left": "0.0",
+        "anchor_top": "-0.18",
         "anchor_right": "1.0",
-        "anchor_bottom": "1.14",
+        "anchor_bottom": "1.18",
         "z_index": "1",
         "stretch_mode": "6",
         "geometry_phrase": "upper-body AtlasTexture region",
     },
+}
+
+RETAINED_UNBOUND_VANGUARD = {
+    "asset_id": "TETRIS-IMG-033",
+    "path": "assets/production/characters/vanguard_combat_cutout_v1.png",
+    "source": "IMG-P0-002",
 }
 
 
@@ -178,7 +169,19 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     "PNG must contain at least one actually transparent pixel",
                 )
 
-        self.assertIn("full-height, aspect-centered stage slot", contract)
+        retained = assets_by_id[RETAINED_UNBOUND_VANGUARD["asset_id"]]
+        self.assertEqual(retained["local_path"], RETAINED_UNBOUND_VANGUARD["path"])
+        self.assertEqual(retained["derived_from"], RETAINED_UNBOUND_VANGUARD["source"])
+        self.assertEqual(retained["runtime_consumer"], "NOT_PRESENT")
+        self.assertEqual(
+            retained["runtime_integration"],
+            "RETAINED_UNBOUND_AFTER_USER_DIRECTED_BOSS_ONLY_STAGE",
+        )
+        self.assertEqual(retained["runtime_verification"], "NO_ACTIVE_RUNTIME_CONSUMER")
+        self.assertIn("boss-only", retained["reference_scope"])
+
+        self.assertIn("boss-only", contract)
+        self.assertIn("no active consumer", contract)
         self.assertNotIn("centered bottom", contract)
 
     def test_cutouts_are_bound_inside_the_production_combat_stage(self) -> None:
@@ -187,6 +190,9 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
         assets_by_id = {asset["asset_id"]: asset for asset in manifest["assets"]}
 
         self.assertIn('[node name="StageBackdrop" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]', scene)
+        self.assertNotIn('name="VanguardReference"', scene)
+        self.assertNotIn('id="6_vanguard_cutout"', scene)
+        self.assertIn("clip_contents = true", scene)
         for asset_id, expected in EXPECTED_ASSETS.items():
             with self.subTest(asset_id=asset_id):
                 asset = assets_by_id[asset_id]

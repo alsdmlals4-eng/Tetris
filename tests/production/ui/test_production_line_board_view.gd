@@ -58,3 +58,24 @@ func test_meta_snapshot_is_safe_before_session_binding() -> void:
 
 func test_control_guide_lists_all_supported_line_inputs() -> void:
 	assert_eq(ProductionLineBoardView.CONTROL_GUIDE, ["← / A", "→ / D", "↓ / S", "↑ / X", "Z", "C HOLD", "SPACE DROP"])
+
+func test_line_board_resolves_every_tetromino_to_a_locked_ornamental_tile_texture() -> void:
+	var view := ProductionLineBoardView.new()
+	add_child_autofree(view)
+	var expected_texture_paths := {
+		"I": "res://assets/production/tiles/chain_tile_cyan_v1.png",
+		"J": "res://assets/production/tiles/chain_tile_blue_v1.png",
+		"L": "res://assets/production/tiles/chain_tile_yellow_v1.png",
+		"O": "res://assets/production/tiles/chain_tile_yellow_v1.png",
+		"S": "res://assets/production/tiles/chain_tile_green_v1.png",
+		"T": "res://assets/production/tiles/chain_tile_purple_v1.png",
+		"Z": "res://assets/production/tiles/chain_tile_red_v1.png",
+	}
+	assert_true(view.has_method("get_piece_texture"), "LINE blocks must resolve their existing tetromino ids to the locked ornamental tile family")
+	if not view.has_method("get_piece_texture"):
+		return
+	for piece_id: String in expected_texture_paths:
+		var texture = view.call("get_piece_texture", piece_id) as Texture2D
+		assert_not_null(texture, "%s needs a non-flat runtime tile texture" % piece_id)
+		if texture != null:
+			assert_eq(texture.resource_path, expected_texture_paths[piece_id])

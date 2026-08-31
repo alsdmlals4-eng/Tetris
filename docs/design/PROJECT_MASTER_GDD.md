@@ -178,7 +178,7 @@ Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CH
 
 ### Approved visual anchor
 
-`TETRIS-VISUAL-043 · Obsidian Rift Tactics + Readable Puzzle Combat` is current. `VISUAL_BIBLE.md` owns the detailed repository visual contract. The latest user-directed references establish dark obsidian panels, antique-gold construction, contained violet-rift light, a dominant boss composition, a readable player face portrait and ornate Chain tiles as the battle language; their pictured legacy UI rules are not canon. Approved runtime visual sources (`TETRIS-IMG-031`, `033`, `034`, `035`, `036`) remain preserved with named consumers, while new candidate tiles/portrait remain outside runtime until locked.
+`TETRIS-VISUAL-043 · Obsidian Rift Tactics + Readable Puzzle Combat` is current. `VISUAL_BIBLE.md` owns the detailed repository visual contract. The latest user-directed references establish dark obsidian panels, antique-gold construction, contained violet-rift light, a dominant boss composition, a readable player face portrait and ornate Chain tiles as the battle language; their pictured legacy UI rules are not canon. `TETRIS-IMG-031`, `034`, `035`, `036`, the locked tile/portrait family `040`–`046`, and title logo `047` have named runtime consumers on this worktree. `TETRIS-IMG-033` remains retained but deliberately unbound until a distinct player-stage or loadout surface is approved.
 
 | Layer | Keep | Avoid / Do Not Drift |
 | --- | --- | --- |
@@ -212,16 +212,15 @@ Locking a planning board means **approved project planning reference**, not runt
 
 ### Battle scene
 
-`scenes/production/battle.tscn` provides one large `PuzzleColumn` (LINE/CHAIN/Skill mode buttons and `PuzzleHost`) and a persistent `CombatColumn`. The latter holds `ThreatPanel`, `CombatStage`, resource state and `SkillFrame`.
+`scenes/production/battle.tscn` provides one large `PuzzleColumn` (LINE/CHAIN/Skill mode buttons and `PuzzleHost`) and a persistent `CombatColumn`. The latter holds `ThreatPanel`, `CombatStage`, a visual-only `SharedActionFrame` driven by the active enemy ETA, resource state and `SkillFrame`.
 
 `CombatStage` has current named texture consumers:
 
 - `StageBackdrop` → `assets/production/backgrounds/fracture_frontier_combat_stage_v1.png`
-- `VanguardReference` → `assets/production/characters/vanguard_combat_cutout_v1.png`
 - `GatebreakerReference` → `assets/production/bosses/gatebreaker_combat_cutout_v1.png`
 - `VanguardAttackAccent` and `GatebreakerThreatTelegraph` → two bounded VFX textures
 
-These prove scene binding, not composition readability or art approval at a player’s target resolution.
+`CombatStage` is boss-only and clips its enlarged Gatebreaker to its own frame. The separate `ResourceRow/VanguardPortrait` uses `TETRIS-IMG-046`; it does not place a full-body player character in the enemy area. `SharedActionFrame` shows the same current `enemy_eta_seconds` that drives the telegraph as the player’s visual reaction window; it does not reintroduce a turn budget, READY, timeout, or PASS mechanic. These prove scene binding, not composition readability or art approval at a player’s target resolution.
 
 ### Runtime/data map
 

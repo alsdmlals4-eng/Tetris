@@ -38,7 +38,7 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
     def test_runtime_and_planned_surfaces_remain_truthfully_classified(self) -> None:
         rows = {row["screen_id"]: row for row in json.loads(INVENTORY.read_text(encoding="utf-8"))["screens"]}
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
-        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_EXACT_HEAD_AND_HUMAN_VERIFICATION", rows["TETRIS-SCREEN-007"]["coverage_status"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-008"]["consumer_kind"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-002"]["consumer_kind"])
         self.assertEqual("PRODUCT_DISTRIBUTION", rows["TETRIS-SCREEN-016"]["consumer_kind"])
@@ -56,7 +56,7 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-006"]["consumer_kind"])
         self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION", rows["TETRIS-SCREEN-006"]["coverage_status"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
-        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_EXACT_HEAD_AND_HUMAN_VERIFICATION", rows["TETRIS-SCREEN-007"]["coverage_status"])
         self.assertEqual(
             "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
             inventory["first_session_onboarding"]["first_visit_deploy_gate"],

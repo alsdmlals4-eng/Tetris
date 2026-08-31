@@ -283,6 +283,8 @@ The right surface keeps at least:
 - player HP / MP / Combo;
 - mode controls `LINE / CHAIN / SKILL`.
 
+`Shared Action Timer` is a presentation alias for the exact current `enemy_eta_seconds`: the central visual counter, Current ETA and player reaction window must show the same continuous scheduler value. It is not a Shared Player Turn Budget and must not restore historical turn rails, READY, timeout, PASS, or any ordered player/enemy loop.
+
 Skill-open state visibly communicates `TACTICAL PAUSE`, preserves the frozen puzzle as context, and prioritizes `ATK / DEF / SUP → one Combo-Resolved preview → explicit CONFIRM` while keeping the motivating enemy threat readable.
 
 Do not show obsolete ordered stage rails, stage-advance READY UI, turn-timeout PASS UI, or the superseded turn-speed reward UI as current production controls.

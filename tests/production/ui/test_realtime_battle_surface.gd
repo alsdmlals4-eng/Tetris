@@ -35,7 +35,7 @@ func test_battle_surface_has_required_50_50_hierarchy_without_a_turn_rail() -> v
 		"MainRow/PuzzleColumn/PuzzleHost/LineBoardView",
 		"MainRow/PuzzleColumn/PuzzleHost/ChainBoardView",
 		"MainRow/CombatColumn/ThreatFrame/ThreatPanel",
-		"MainRow/CombatColumn/ThreatFrame/ThreatPanel/GuidedPracticePrompt",
+		"MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack/GuidedPracticePrompt",
 		"MainRow/CombatColumn/CombatStage",
 		"MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar",
 		"MainRow/CombatColumn/SkillFrame/SkillPanel",
@@ -137,6 +137,11 @@ func test_skill_panel_groups_categories_and_one_resolved_preview_for_the_compact
 	assert_not_null(battle.get_node_or_null("%s/SkillStageRail" % skill_panel_path))
 	assert_not_null(battle.get_node_or_null("%s/SkillDetailCard" % skill_panel_path))
 
+func test_skill_unavailability_does_not_reintroduce_the_historical_ready_term() -> void:
+	var battle_script_text := FileAccess.get_file_as_string("res://src/production/ui/production_battle.gd")
+	assert_false(battle_script_text.contains("NO READY TECHNIQUE"), "the current real-time skill surface must not reuse the superseded READY terminology")
+	assert_true(battle_script_text.contains("NO AVAILABLE TECHNIQUE"), "unavailable category feedback must describe availability without implying an old stage-advance state")
+
 func test_skill_detail_exposes_a_read_only_stage_rail_and_prebrowse_card_without_restoring_manual_selection() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
@@ -181,19 +186,34 @@ func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	assert_eq(backdrop.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_COVERED, "the wide stage slot must cover its full bounds")
 	assert_true(backdrop.mouse_filter == Control.MOUSE_FILTER_IGNORE, "the decorative backdrop must never intercept battle controls")
 
-func test_combat_stage_gives_gatebreaker_the_dominant_silhouette_and_keeps_vanguard_compact() -> void:
+func test_combat_stage_reserves_enemy_visual_space_for_gatebreaker_only() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	var stage: Control = battle.get_node("MainRow/CombatColumn/CombatStage")
 	var gatebreaker: TextureRect = battle.get_node("MainRow/CombatColumn/CombatStage/GatebreakerReference")
-	var vanguard: TextureRect = battle.get_node("MainRow/CombatColumn/CombatStage/VanguardReference")
 	assert_gte(stage.custom_minimum_size.y, 200.0, "the combat stage needs enough dedicated height for an imposing boss silhouette")
+	assert_true(stage.clip_contents, "the oversized boss must remain visually contained in its enemy-stage frame and never cover the shared timer")
 	assert_lte(gatebreaker.anchor_left, 0.12, "the Gatebreaker must enter early enough to dominate the combat stage")
 	assert_eq(gatebreaker.anchor_right, 1.0)
 	assert_lte(gatebreaker.anchor_top, -0.1)
 	assert_gte(gatebreaker.anchor_bottom, 1.1)
-	assert_lte(vanguard.anchor_right, 0.4, "the Vanguard cutout must not compete with the boss silhouette")
-	assert_eq(vanguard.anchor_left, 0.0)
+	assert_null(battle.get_node_or_null("MainRow/CombatColumn/CombatStage/VanguardReference"), "the enemy combat stage must not contain a player Vanguard cutout")
+
+func test_action_phase_surfaces_the_single_enemy_eta_as_the_player_shared_action_timer() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var action_frame: Control = battle.get_node_or_null("MainRow/CombatColumn/SharedActionFrame") as Control
+	assert_not_null(action_frame, "the boss-action and player-action window needs a dedicated central Action Phase surface")
+	if action_frame == null:
+		return
+	for node_name in ["ActionPhaseTitle", "ActionPhaseSubtitle", "SharedTimerValue", "SharedTimerCaption", "CurrentActionFrame", "NextActionFrame"]:
+		assert_not_null(action_frame.find_child(node_name, true, false), "%s is required for the shared-action reading order" % node_name)
+	battle._runtime = TerminalRuntime.new({"terminal": false, "paused": false, "player_hp": 100, "player_energy": 12, "player_stock": 3, "enemy_hp": 100, "enemy_eta_seconds": 28.4})
+	battle._refresh_runtime_labels()
+	var timer_value: Label = action_frame.find_child("SharedTimerValue", true, false)
+	var timer_caption: Label = action_frame.find_child("SharedTimerCaption", true, false)
+	assert_eq(timer_value.text, "29", "the central player-action timer must read the same countdown as the enemy ETA")
+	assert_eq(timer_caption.text, "SEC · BOSS / PLAYER", "the timer must communicate one shared action window rather than an unrelated decorative countdown")
 
 func test_1280x720_combat_surface_minimum_height_keeps_every_required_panel_on_screen() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
@@ -206,6 +226,7 @@ func test_1280x720_combat_surface_minimum_height_keeps_every_required_panel_on_s
 		"MainRow/PuzzleColumn/ModeFrame",
 		"MainRow/CombatColumn/ThreatFrame",
 		"MainRow/CombatColumn/CombatStage",
+		"MainRow/CombatColumn/SharedActionFrame",
 		"MainRow/CombatColumn/ResourceFrame",
 		"MainRow/CombatColumn/SkillFrame",
 	]:
@@ -224,6 +245,38 @@ func test_resource_surface_exposes_a_large_vanguard_portrait_separate_from_the_b
 	assert_gte(portrait.custom_minimum_size.x, 96.0, "the portrait must remain readable at battle scale")
 	assert_gte(portrait.custom_minimum_size.y, 96.0, "the portrait must remain readable at battle scale")
 	assert_eq(portrait.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+
+func test_resource_surface_consumes_the_locked_vanguard_face_portrait_asset() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var portrait: TextureRect = battle.get_node("MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait")
+	assert_not_null(portrait.texture, "the readable resource portrait needs its dedicated locked face asset")
+	if portrait.texture != null:
+		assert_eq(
+			portrait.texture.resource_path,
+			"res://assets/production/characters/vanguard_face_portrait_v1.png",
+			"the compact portrait must no longer depend on a crop from the full-body stage cutout",
+		)
+
+func test_chain_workspace_resolves_each_symbol_to_its_locked_ornamental_tile_texture() -> void:
+	var view := ProductionChainBoardView.new()
+	add_child_autofree(view)
+	var expected_texture_paths := {
+		"R": "res://assets/production/tiles/chain_tile_red_v1.png",
+		"G": "res://assets/production/tiles/chain_tile_green_v1.png",
+		"B": "res://assets/production/tiles/chain_tile_blue_v1.png",
+		"Y": "res://assets/production/tiles/chain_tile_yellow_v1.png",
+		"P": "res://assets/production/tiles/chain_tile_purple_v1.png",
+		"C": "res://assets/production/tiles/chain_tile_cyan_v1.png",
+	}
+	assert_true(view.has_method("get_tile_texture"), "Chain rendering must resolve gameplay symbols to locked ornamental textures")
+	if not view.has_method("get_tile_texture"):
+		return
+	for symbol: String in expected_texture_paths:
+		var texture = view.call("get_tile_texture", symbol) as Texture2D
+		assert_not_null(texture, "%s must have a dedicated chain tile texture" % symbol)
+		if texture != null:
+			assert_eq(texture.resource_path, expected_texture_paths[symbol])
 
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
 	for action_name in [

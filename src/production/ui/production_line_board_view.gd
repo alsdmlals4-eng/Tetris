@@ -3,6 +3,15 @@ class_name ProductionLineBoardView
 extends Control
 
 const CONTROL_GUIDE := ["← / A", "→ / D", "↓ / S", "↑ / X", "Z", "C HOLD", "SPACE DROP"]
+const PIECE_TEXTURES: Dictionary = {
+	"I": preload("res://assets/production/tiles/chain_tile_cyan_v1.png"),
+	"J": preload("res://assets/production/tiles/chain_tile_blue_v1.png"),
+	"L": preload("res://assets/production/tiles/chain_tile_yellow_v1.png"),
+	"O": preload("res://assets/production/tiles/chain_tile_yellow_v1.png"),
+	"S": preload("res://assets/production/tiles/chain_tile_green_v1.png"),
+	"T": preload("res://assets/production/tiles/chain_tile_purple_v1.png"),
+	"Z": preload("res://assets/production/tiles/chain_tile_red_v1.png"),
+}
 
 var _session = null
 
@@ -60,15 +69,24 @@ func _draw_board(board_rect: Rect2) -> void:
 	for y in range(board.visible_height):
 		for x in range(board.width):
 			var position := Vector2i(x, y + board.hidden_rows)
-			var occupied: bool = board.get_cell(position) != ""
-			draw_rect(Rect2(offset + Vector2(x, y) * cell_size, Vector2.ONE * (cell_size - 1.0)), Color("3973b9") if occupied else Color("142238"), true)
+			var piece_id: String = board.get_cell(position)
+			var cell_rect := Rect2(offset + Vector2(x, y) * cell_size, Vector2.ONE * (cell_size - 1.0))
+			draw_rect(cell_rect, Color("142238"), true)
+			var tile := get_piece_texture(piece_id)
+			if tile != null:
+				draw_texture_rect(tile, cell_rect, false)
 	var active = _session.piece_cycle.active_piece
 	if active != null:
+		var active_tile := get_piece_texture(active.piece_id)
 		for cell_variant in active.get_cells():
 			var cell: Vector2i = active.origin + Vector2i(cell_variant)
 			var visible_y: int = cell.y - board.hidden_rows
 			if visible_y >= 0 and visible_y < board.visible_height:
-				draw_rect(Rect2(offset + Vector2(cell.x, visible_y) * cell_size, Vector2.ONE * (cell_size - 1.0)), Color("a35cff"), true)
+				var active_rect := Rect2(offset + Vector2(cell.x, visible_y) * cell_size, Vector2.ONE * (cell_size - 1.0))
+				if active_tile != null:
+					draw_texture_rect(active_tile, active_rect, false)
+				else:
+					draw_rect(active_rect, _piece_color(active.piece_id), true)
 
 func _draw_meta_rail(rail_rect: Rect2, meta: Dictionary) -> void:
 	draw_rect(rail_rect, Color("0d1929"), true)
@@ -88,7 +106,7 @@ func _draw_meta_rail(rail_rect: Rect2, meta: Dictionary) -> void:
 	if hold_piece_id == "":
 		_draw_text(font, Vector2(x, y + 24.0), "EMPTY", 11, Color("65788e"))
 	else:
-		_draw_piece_preview(hold_piece_id, Vector2(x + 4.0, y + 21.0), 9.0, _piece_color(hold_piece_id))
+		_draw_piece_preview(hold_piece_id, Vector2(x + 4.0, y + 21.0), 9.0)
 	if not bool(meta.get("hold_available", false)):
 		_draw_text(font, Vector2(x + 52.0, y + 27.0), "USED", 10, Color("8391a2"))
 
@@ -98,7 +116,7 @@ func _draw_meta_rail(rail_rect: Rect2, meta: Dictionary) -> void:
 	for index in range(next_preview.size()):
 		var piece_id := String(next_preview[index])
 		_draw_text(font, Vector2(x, y + 22.0 + index * 27.0), "%d" % (index + 1), 10, Color("71869c"))
-		_draw_piece_preview(piece_id, Vector2(x + 18.0, y + 12.0 + index * 27.0), 6.5, _piece_color(piece_id))
+		_draw_piece_preview(piece_id, Vector2(x + 18.0, y + 12.0 + index * 27.0), 6.5)
 
 	var last_clear := String(meta.get("last_clear", ""))
 	if last_clear != "":
@@ -115,7 +133,7 @@ func _draw_section(rail_rect: Rect2, y: float, title: String, active: bool) -> v
 func _draw_text(font: Font, position: Vector2, text: String, font_size: int, color: Color) -> void:
 	draw_string(font, position, text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size, color)
 
-func _draw_piece_preview(piece_id: String, origin: Vector2, cell_size: float, color: Color) -> void:
+func _draw_piece_preview(piece_id: String, origin: Vector2, cell_size: float) -> void:
 	if _session == null or _session.piece_cycle == null:
 		return
 	var cells: Array = _session.piece_cycle.catalog.get_cells(piece_id, 0)
@@ -129,7 +147,15 @@ func _draw_piece_preview(piece_id: String, origin: Vector2, cell_size: float, co
 	for cell_variant in cells:
 		var cell: Vector2i = cell_variant
 		var position := origin + Vector2(cell - min_cell) * cell_size
-		draw_rect(Rect2(position, Vector2.ONE * maxf(2.0, cell_size - 1.0)), color, true)
+		var preview_rect := Rect2(position, Vector2.ONE * maxf(2.0, cell_size - 1.0))
+		var tile := get_piece_texture(piece_id)
+		if tile != null:
+			draw_texture_rect(tile, preview_rect, false)
+		else:
+			draw_rect(preview_rect, _piece_color(piece_id), true)
+
+func get_piece_texture(piece_id: String) -> Texture2D:
+	return PIECE_TEXTURES.get(piece_id) as Texture2D
 
 func _piece_color(piece_id: String) -> Color:
 	var colors := {

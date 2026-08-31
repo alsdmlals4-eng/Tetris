@@ -50,8 +50,8 @@ The intended first session is `TITLE → BATTLE_BRIEFING → SHORT_GUIDED_LIVE_P
 | Existing item | Actual consumer | Role | Reuse disposition |
 | --- | --- | --- | --- |
 | `TETRIS-IMG-031` stage background | `CombatStage/StageBackdrop` | Battle environment | `REUSE_AS_IS` for current battle only. |
-| `TETRIS-IMG-033` Vanguard cutout | `CombatStage/VanguardReference` | Player identity | `VARIANT_SEED` for future portrait/loadout work; no unapproved mutation. |
-| `TETRIS-IMG-034` Gatebreaker cutout | `CombatStage/GatebreakerReference` | Enemy identity | `VARIANT_SEED` for briefing/result references only after a named surface exists. |
+| `TETRIS-IMG-033` Vanguard cutout | No active consumer | Retained full-body player source | `RETAIN_UNBOUND` until a named player-stage or loadout surface exists; no unapproved mutation. |
+| `TETRIS-IMG-034` Gatebreaker cutout | `CombatStage/GatebreakerReference` | Enemy identity | `REUSE_AS_IS` in the boss-only combat stage. |
 | `TETRIS-IMG-035` attack accent | `CombatStage/VanguardAttackAccent` | Committed attack feedback | `REUSE_AS_IS` for battle only. |
 | `TETRIS-IMG-036` rift telegraph | `CombatStage/GatebreakerThreatTelegraph` | Active threat feedback | `REUSE_AS_IS` for battle only. |
 
@@ -61,7 +61,7 @@ The intended first session is `TITLE → BATTLE_BRIEFING → SHORT_GUIDED_LIVE_P
 | --- | --- | --- |
 | Puzzle/input | LINE, CHAIN, Hold/Next, board selection and state feedback | Godot drawing/theme; no bitmap UI queue. |
 | Combat targeting/telegraph | ETA text, current threat, rift telegraph, skill pause | Existing VFX/UI; phase overlay is planned. |
-| Character/enemy | Battle cutouts and stage layering | Current combat needs covered; animation/portrait families wait for a consumer. |
+| Character/enemy | Boss-only stage cutout plus a separate Vanguard face portrait in the resource strip | Current combat needs are covered without placing the player inside the enemy zone; future animation/loadout families wait for a consumer. |
 | Buttons/slots/gauges | Normal/selected/disabled layout states | Godot Theme/StyleBox/Control, not raster files by default. |
 | Result/meta | Retry exists; reward, save, growth states planned | Create structured UI and data consumer before any runtime image. |
 | Accessibility/input | Current keyboard prompts; gamepad, language and reduced-motion settings planned | Text/icon/UI first; image only if a named surface needs one. |
