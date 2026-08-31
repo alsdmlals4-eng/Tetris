@@ -11,7 +11,7 @@
   "skill_authority": "TETRIS-SKILL-039",
   "skill_content_authority": "TETRIS-SKILL-042",
   "balance_authority": "TETRIS-BALANCE-040",
-  "visual_authority": "TETRIS-VISUAL-041",
+  "visual_authority": "TETRIS-VISUAL-043",
   "human_evidence_state": "NOT_RUN",
   "image_state": "VISUAL_REFERENCE_NORTH_STAR_NOT_RUNTIME_PROOF",
   "protect_draft_build_pr_19": true,

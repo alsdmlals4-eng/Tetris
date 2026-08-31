@@ -22,7 +22,7 @@ Retained authorities:
 - `TETRIS-CORE-021` where it defines production Swap-Match Chain grammar;
 - `TETRIS-CHAIN-038` for the current orthogonal-swap, straight-3+ horizontal/vertical/diagonal match grammar and optional MP lock;
 - `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` for Vanguard category-only Combo-Resolved Technique preview/confirm and bounded skill-only Combo-to-MP fallback;
-- `TETRIS-VISUAL-041` for Parchment Field Manual + Readable Puzzle Tactics direction;
+- `TETRIS-VISUAL-043` for Obsidian Rift Tactics + Readable Puzzle Combat direction;
 - authored Telegraph / visible Next Forecast principles where compatible with continuous combat.
 
 Machine routing authority is `docs/design/PRODUCTION_CANON_INDEX.json`.

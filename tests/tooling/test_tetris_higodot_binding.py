@@ -179,6 +179,46 @@ class TetrisHiGodotBindingTests(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, launcher)
 
+    def test_worktree_runtime_switch_is_explicitly_isolated_from_slot_eight(self) -> None:
+        launcher = _text(LAUNCHER)
+        required = (
+            "[switch]$WorktreeRuntime",
+            "$WorktreeRuntimeProject",
+            "Tetris-phase2-runtime-resume",
+            "Godot-Tetris-Phase2Runtime-4.7.1",
+            ".codex-tetris-phase2-runtime",
+            "$HttpPort = 8001",
+            "$WsPort = 9501",
+            "WORKTREE_RUNTIME_CANONICAL_PROJECT_CONFLICT_FAIL_CLOSED",
+            "tetris-phase2-runtime-bootstrap.lock",
+        )
+        for token in required:
+            self.assertIn(token, launcher)
+
+        self.assertIn(
+            r"$Project = 'C:\Users\user\Documents\GitHub\Ninza\Tetris'",
+            launcher,
+        )
+
+    def test_dynamic_port_listener_pattern_uses_regex_whitespace_not_literal_backslash(self) -> None:
+        launcher = _text(LAUNCHER)
+        self.assertIn('"(?i)(?:^|\\s)--port\\s+"', launcher)
+        self.assertIn('"(?i)(?:^|\\s)--ws-port\\s+"', launcher)
+        self.assertNotIn('"(?i)(?:^|\\\\s)--port\\\\s+"', launcher)
+        self.assertNotIn('"(?i)(?:^|\\\\s)--ws-port\\\\s+"', launcher)
+
+    def test_editor_matcher_compares_parsed_absolute_project_path_exactly(self) -> None:
+        launcher = _text(LAUNCHER)
+        self.assertIn("function Get-ProjectPathFromGodotCommandLine", launcher)
+        self.assertIn(
+            "(Normalize-PathText $candidate) -eq (Normalize-PathText $ProjectPath)",
+            launcher,
+        )
+        self.assertNotIn(
+            "Contains((Normalize-PathText $ProjectPath))",
+            launcher,
+        )
+
     def test_one_click_entrypoint_docs_and_ci_contract_exist(self) -> None:
         self.assertTrue(ENTRYPOINT.is_file())
         self.assertIn("start_tetris_local_executor.ps1", _text(ENTRYPOINT))

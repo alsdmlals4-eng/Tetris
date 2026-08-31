@@ -11,7 +11,7 @@
   "current_skill_decision": "TETRIS-SKILL-039",
   "current_skill_content_decision": "TETRIS-SKILL-042",
   "current_balance_decision": "TETRIS-BALANCE-040",
-  "current_visual_decision": "TETRIS-VISUAL-041",
+  "current_visual_decision": "TETRIS-VISUAL-043",
   "current_image_decision": "TETRIS-IMAGE-030",
   "current_onboarding_decision": "TETRIS-ONBOARDING-037",
   "current_chain_decision": "TETRIS-CHAIN-038",
@@ -61,6 +61,7 @@
     "TETRIS-UX-023",
     "TETRIS-VISUAL-028",
     "TETRIS-VISUAL-041",
+    "TETRIS-VISUAL-043",
     "TETRIS-ENCOUNTER-006",
     "TETRIS-WORLD-004",
     "TETRIS-AUDIO-014",
@@ -70,7 +71,8 @@
   ],
   "superseded_decisions": [
     "TETRIS-CORE-024",
-    "TETRIS-TIME-025"
+    "TETRIS-TIME-025",
+    "TETRIS-VISUAL-041"
   ],
   "superseded_contracts": [
     "ordered_line_chain_action_enemy_turn",

@@ -60,6 +60,13 @@ func test_battle_surface_uses_named_theme_and_semantic_visual_frames() -> void:
 	]:
 		assert_not_null(battle.get_node_or_null(node_path), "%s must provide a semantic visual hierarchy frame" % node_path)
 
+func test_battle_theme_uses_an_antique_gold_border_over_the_obsidian_surface() -> void:
+	var theme: Theme = load("res://resources/production/production_battle_theme.tres")
+	var panel_style := theme.get_stylebox("panel", "PanelContainer") as StyleBoxFlat
+	assert_not_null(panel_style, "the battle theme needs a concrete panel style for the visual canon")
+	if panel_style != null:
+		assert_gt(panel_style.border_color.r, panel_style.border_color.b, "TETRIS-VISUAL-043 requires antique-gold panel borders instead of the superseded violet-only chrome")
+
 func test_skill_panel_is_pause_capable_and_chain_board_starts_hidden() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
 		return
@@ -126,6 +133,19 @@ func test_skill_panel_groups_categories_and_one_resolved_preview_for_the_compact
 	assert_not_null(battle.get_node_or_null("%s/SkillCategories" % skill_panel_path))
 	assert_not_null(battle.get_node_or_null("%s/ResolvedPreview" % skill_panel_path))
 	assert_not_null(battle.get_node_or_null("%s/ConfirmButton" % skill_panel_path))
+	assert_not_null(battle.get_node_or_null("%s/SkillStageSummary" % skill_panel_path))
+	assert_not_null(battle.get_node_or_null("%s/SkillStageRail" % skill_panel_path))
+	assert_not_null(battle.get_node_or_null("%s/SkillDetailCard" % skill_panel_path))
+
+func test_skill_detail_exposes_a_read_only_stage_rail_and_prebrowse_card_without_restoring_manual_selection() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var skill_panel_path := "MainRow/CombatColumn/SkillFrame/SkillPanel"
+	var stage_rail: Control = battle.get_node("%s/SkillStageRail" % skill_panel_path)
+	assert_eq(stage_rail.find_children("*", "Button", true, false).size(), 0, "the C1-C10 rail is explanatory only; it must not restore manual stage selection")
+	for node_name in ["TechniqueName", "TechniquePurpose", "TechniqueCost", "TechniqueAvailability"]:
+		assert_not_null(battle.get_node_or_null("%s/SkillDetailCard/TechniqueStack/%s" % [skill_panel_path, node_name]))
+	assert_true(battle.has_method("_refresh_skill_surface"), "the visible card must refresh from the current runtime snapshot")
 
 func test_skill_categories_reserve_illustrated_seal_slots_without_restoring_a_tier_grid() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
@@ -164,12 +184,34 @@ func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 func test_combat_stage_gives_gatebreaker_the_dominant_silhouette_and_keeps_vanguard_compact() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
+	var stage: Control = battle.get_node("MainRow/CombatColumn/CombatStage")
 	var gatebreaker: TextureRect = battle.get_node("MainRow/CombatColumn/CombatStage/GatebreakerReference")
 	var vanguard: TextureRect = battle.get_node("MainRow/CombatColumn/CombatStage/VanguardReference")
-	assert_lte(gatebreaker.anchor_left, 0.24, "the Gatebreaker must enter early enough to dominate the combat stage")
+	assert_gte(stage.custom_minimum_size.y, 200.0, "the combat stage needs enough dedicated height for an imposing boss silhouette")
+	assert_lte(gatebreaker.anchor_left, 0.12, "the Gatebreaker must enter early enough to dominate the combat stage")
 	assert_eq(gatebreaker.anchor_right, 1.0)
+	assert_lte(gatebreaker.anchor_top, -0.1)
+	assert_gte(gatebreaker.anchor_bottom, 1.1)
 	assert_lte(vanguard.anchor_right, 0.4, "the Vanguard cutout must not compete with the boss silhouette")
 	assert_eq(vanguard.anchor_left, 0.0)
+
+func test_1280x720_combat_surface_minimum_height_keeps_every_required_panel_on_screen() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	battle.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	battle.position = Vector2.ZERO
+	battle.size = Vector2(1280.0, 720.0)
+	add_child_autofree(battle)
+	await get_tree().process_frame
+	for node_path in [
+		"MainRow/PuzzleColumn/ModeFrame",
+		"MainRow/CombatColumn/ThreatFrame",
+		"MainRow/CombatColumn/CombatStage",
+		"MainRow/CombatColumn/ResourceFrame",
+		"MainRow/CombatColumn/SkillFrame",
+	]:
+		var panel: Control = battle.get_node(node_path)
+		assert_gte(panel.global_position.y, 0.0, "%s must start inside the declared viewport" % node_path)
+		assert_lte(panel.global_position.y + panel.size.y, 720.0, "%s must remain inside the declared 1280x720 viewport" % node_path)
 
 func test_resource_surface_exposes_a_large_vanguard_portrait_separate_from_the_boss_stage() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
@@ -179,7 +221,8 @@ func test_resource_surface_exposes_a_large_vanguard_portrait_separate_from_the_b
 	if portrait == null:
 		return
 	assert_not_null(portrait.texture)
-	assert_gte(portrait.custom_minimum_size.x, 72.0, "the portrait must remain readable at battle scale")
+	assert_gte(portrait.custom_minimum_size.x, 96.0, "the portrait must remain readable at battle scale")
+	assert_gte(portrait.custom_minimum_size.y, 96.0, "the portrait must remain readable at battle scale")
 	assert_eq(portrait.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:

@@ -20,7 +20,7 @@ Current authorities:
 2. `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` — ATK / DEF / SUP category-only, current-Combo-resolved preview/CONFIRM and bounded fallback.
 3. `TETRIS-SKILL-042` — deliberate lower-Combo resolution and target-separated player board-play / visible-current-Telegraph ETA semantics.
 4. `TETRIS-CHAIN-038` — straight-3+ horizontal/vertical/diagonal CHAIN rule and optional MP lock.
-5. `TETRIS-VISUAL-041` — Parchment Field Manual + Readable Puzzle Tactics.
+5. `TETRIS-VISUAL-043` — Obsidian Rift Tactics + Readable Puzzle Combat.
 6. `TETRIS-IMAGE-030` — production images require a real runtime consumer.
 
 `TETRIS-CORE-024` and `TETRIS-TIME-025` are historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
@@ -179,7 +179,7 @@ No Human claim may treat player board-play opportunity and visible-current-Teleg
 
 ### G. BALANCED_50_50_LAYOUT_READABILITY
 
-`TETRIS-VISUAL-041` is evaluated as gameplay readability, not taste polling.
+`TETRIS-VISUAL-043` is evaluated as gameplay readability, not taste polling.
 
 Target hierarchy:
 

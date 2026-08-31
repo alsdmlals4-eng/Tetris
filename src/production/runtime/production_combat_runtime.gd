@@ -137,15 +137,21 @@ func is_skill_open() -> bool:
 func select_skill_category(category: String) -> Dictionary:
 	if _skill_session == null or _enemy_scheduler == null:
 		return {"selected": false, "ready": false, "reason": "SKILL_UNAVAILABLE"}
-	var preview: Dictionary = _skill_session.select_category(category, {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id(), "current_action_kind": _enemy_scheduler.current_action_kind(), "enemy_scheduler": _enemy_scheduler, "board_opportunity": _board_opportunity})
+	var preview: Dictionary = _skill_session.select_category(category, _skill_context())
 	if _guided_practice != null and _guided_practice.has_method("record_skill_preview"):
 		_guided_practice.record_skill_preview(preview)
 	return preview
 
+## 화면의 C1-C10 정보 레일이 전술 정지 없이 정의를 미리 읽게 한다.
+func inspect_skill_stage(category: String, stage: int) -> Dictionary:
+	if _skill_session == null or _enemy_scheduler == null:
+		return {"inspectable": false, "reason": "SKILL_UNAVAILABLE"}
+	return _skill_session.inspect_stage(category, stage, _skill_context())
+
 func use_selected_skill() -> Dictionary:
 	if _skill_session == null:
 		return {"committed": false, "reason": "SKILL_UNAVAILABLE"}
-	var result: Dictionary = _skill_session.commit_selected({"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id(), "current_action_kind": _enemy_scheduler.current_action_kind(), "enemy_scheduler": _enemy_scheduler, "board_opportunity": _board_opportunity})
+	var result: Dictionary = _skill_session.commit_selected(_skill_context())
 	if _guided_practice != null and _guided_practice.has_method("record_skill_confirmation"):
 		_guided_practice.record_skill_confirmation(result)
 	if bool(result.get("committed", false)) and _telemetry != null:
@@ -212,6 +218,9 @@ func guided_practice_snapshot() -> Dictionary:
 
 func snapshot() -> Dictionary:
 	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "player_energy": _player.energy if _player != null else 0, "player_stock": _player.stock if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0, "player_board_opportunity_seconds": _board_opportunity.remaining_seconds() if _board_opportunity != null and _board_opportunity.has_method("remaining_seconds") else 0.0, "guided_practice": guided_practice_snapshot(), "last_time_feedback": _last_time_feedback.duplicate(true)}
+
+func _skill_context() -> Dictionary:
+	return {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id(), "current_action_kind": _enemy_scheduler.current_action_kind(), "enemy_scheduler": _enemy_scheduler, "board_opportunity": _board_opportunity}
 
 func _tick_active_puzzle(delta: float) -> void:
 	if _workspace_manager.active_workspace() == "LINE" and _workspace_manager.line_session != null:

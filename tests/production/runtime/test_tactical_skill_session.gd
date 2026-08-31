@@ -85,3 +85,23 @@ func test_cancel_and_second_confirm_do_not_spend_or_apply_twice() -> void:
 	assert_eq(player.energy, 0)
 	assert_eq(player.stock, 0)
 	assert_eq(enemy.hp, 86)
+
+func test_stage_inspection_prebrowses_a_technique_without_opening_the_pause_or_spending_resources() -> void:
+	var fixture := _fixture()
+	if fixture.is_empty():
+		return
+	var player = fixture["player"]
+	var session = fixture["session"]
+	player.energy = 7
+	player.stock = 0
+	assert_false(session.is_open())
+	assert_false(session.has_method("select_technique"))
+	var detail: Dictionary = session.inspect_stage("DEFENSE", 1, _context(fixture))
+	assert_true(bool(detail.get("inspectable", false)))
+	assert_eq(int(detail.get("stage", 0)), 1)
+	assert_eq(String(detail.get("display_name", "")), "Brace")
+	assert_eq(int(detail.get("combo_cost", 0)), 1)
+	assert_eq(int(detail.get("mp_cost", 0)), 8)
+	assert_eq(player.energy, 7)
+	assert_eq(player.stock, 0)
+	assert_false(session.is_open(), "prebrowsing must not enter tactical pause or select a payable technique")

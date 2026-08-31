@@ -41,6 +41,28 @@ func selected_preview() -> Dictionary:
 func selected_detail() -> Dictionary:
 	return selected_preview()
 
+## 전술 정지나 자원 소비 없이 C1-C10 내용을 미리 읽는다.
+func inspect_stage(category: String, stage: int, context: Dictionary) -> Dictionary:
+	if not LANES.has(category) or stage < 1 or stage > 10:
+		return {"inspectable": false, "reason": "INVALID_STAGE"}
+	var definition: Dictionary = _catalog.definition_for_lane_stage(category, stage)
+	if definition.is_empty():
+		return {"inspectable": false, "reason": "MISSING_STAGE"}
+	var resolved: Dictionary = _catalog.resolve_effects(definition, String(context.get("current_action_kind", "")))
+	if not bool(resolved.get("ok", false)):
+		return {"inspectable": false, "reason": resolved.get("reason", "INVALID_EFFECT_PACKAGE")}
+	return {
+		"inspectable": true,
+		"id": definition["id"],
+		"lane": category,
+		"stage": stage,
+		"display_name": definition["display_name"],
+		"preview_lines": resolved["preview_lines"],
+		"effects": resolved["effects"],
+		"combo_cost": int(definition["combo_cost"]),
+		"mp_cost": int(definition["mp_cost"]),
+	}
+
 func commit_selected(context: Dictionary) -> Dictionary:
 	if _pause_token == 0 or _selected_preview.is_empty() or not bool(_selected_preview.get("ready", false)):
 		return {"committed": false, "reason": "NO_READY_PREVIEW"}

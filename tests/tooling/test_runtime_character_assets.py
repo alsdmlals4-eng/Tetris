@@ -21,11 +21,14 @@ EXPECTED_ASSETS = {
         "consumer": "MainRow/CombatColumn/CombatStage/VanguardReference",
         "resource_id": "6_vanguard_cutout",
         "node_name": "VanguardReference",
+        "texture_reference": "ExtResource(\"6_vanguard_cutout\")",
         "anchor_left": "0.0",
         "anchor_top": "0.0",
         "anchor_right": "0.32",
         "anchor_bottom": "1.0",
         "z_index": "2",
+        "stretch_mode": "5",
+        "geometry_phrase": "aspect-centered stage slot",
     },
     "TETRIS-IMG-034": {
         "path": "assets/production/bosses/gatebreaker_combat_cutout_v1.png",
@@ -33,11 +36,14 @@ EXPECTED_ASSETS = {
         "consumer": "MainRow/CombatColumn/CombatStage/GatebreakerReference",
         "resource_id": "7_gatebreaker_cutout",
         "node_name": "GatebreakerReference",
-        "anchor_left": "0.18",
-        "anchor_top": "-0.06",
+        "texture_reference": "SubResource(\"AtlasTexture_gatebreaker_stage\")",
+        "anchor_left": "0.06",
+        "anchor_top": "-0.14",
         "anchor_right": "1.0",
-        "anchor_bottom": "1.06",
+        "anchor_bottom": "1.14",
         "z_index": "1",
+        "stretch_mode": "6",
+        "geometry_phrase": "upper-body AtlasTexture region",
     },
 }
 
@@ -144,13 +150,16 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 self.assertEqual(asset["planned_consumer_node"], expected["consumer"])
                 self.assertEqual(asset["approval_status"], "SOURCE_ASSET_CANDIDATE")
                 self.assertEqual(asset["runtime_integration"], "IMPLEMENTED_ON_BRANCH")
-                self.assertEqual(asset["runtime_verification"], "SCENE_TREE_EQUIVALENT_RENDER_VERIFIED")
-                self.assertIn("aspect-centered stage slot", asset["geometry_contract"])
+                self.assertEqual(
+                    asset["runtime_verification"],
+                    "CURRENT_WORKTREE_RUNTIME_CAPTURED_1280X720_NOT_EXACT_COMMITTED_HEAD",
+                )
+                self.assertIn(expected["geometry_phrase"], asset["geometry_contract"])
                 self.assertNotIn("bottom anchor", asset["geometry_contract"])
-                self.assertIn("StageBackdrop and both cutouts visible", asset["runtime_render_evidence"])
-                self.assertIn("non-retained local test result", asset["runtime_render_evidence"])
-                self.assertNotIn("direct branch render", asset["runtime_render_evidence"])
-                self.assertNotIn("screenshot SHA-256", asset["runtime_render_evidence"])
+                self.assertIn("target worktree runtime capture", asset["runtime_render_evidence"])
+                self.assertIn("1280x720", asset["runtime_render_evidence"])
+                self.assertIn("uncommitted-worktree receipt", asset["runtime_render_evidence"])
+                self.assertNotIn("Human/readability artifact", asset["runtime_render_evidence"].split("not an exact")[0])
                 self.assertIn(asset_id, contract)
                 self.assertIn(expected["consumer"], contract)
 
@@ -186,7 +195,7 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     scene,
                 )
                 block = scene_node_block(scene, expected["node_name"])
-                self.assertIn(f'texture = ExtResource("{expected["resource_id"]}")', block)
+                self.assertIn(f'texture = {expected["texture_reference"]}', block)
                 self.assertIn(f'anchor_top = {expected["anchor_top"]}', block)
                 self.assertIn(f'anchor_bottom = {expected["anchor_bottom"]}', block)
                 self.assertIn(f'anchor_left = {expected["anchor_left"]}', block)
@@ -194,8 +203,11 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 self.assertIn(f'z_index = {expected["z_index"]}', block)
                 self.assertIn("mouse_filter = 2", block)
                 self.assertIn("expand_mode = 1", block)
-                self.assertIn("stretch_mode = 5", block)
+                self.assertIn(f'stretch_mode = {expected["stretch_mode"]}', block)
                 self.assertEqual(asset["runtime_consumer"], expected["consumer"])
+
+        self.assertIn('[sub_resource type="AtlasTexture" id="AtlasTexture_gatebreaker_stage"]', scene)
+        self.assertIn('atlas = ExtResource("7_gatebreaker_cutout")', scene)
 
 
 if __name__ == "__main__":

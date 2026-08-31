@@ -48,7 +48,7 @@ For live operational truth, read the latest completed `main`, all open/draft PRs
 
 ## 4. Visual and artifact continuity
 
-- `TETRIS-VISUAL-041` owns the warm parchment / sepia ink / watercolor-violet-rift grammar in [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md); `TETRIS-VISUAL-028` is superseded for global presentation language.
+- `TETRIS-VISUAL-043` owns the obsidian-black / antique-gold / violet-rift combat grammar in [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md). `TETRIS-VISUAL-041` and `TETRIS-VISUAL-028` remain superseded provenance only.
 - `TETRIS-VIS-BOARD-002` is a `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`: it fixes the planning visual grammar and flow-review reference only. It is not a runtime asset, implementation, runtime render or Human/player UX PASS. `TETRIS-VIS-BOARD-001` is superseded.
 - `TETRIS-SREF-001` through `TETRIS-SREF-005` are retained locally with hash, dimensions, source classification and named planned screen in `docs/assets/reference/planned/SCREEN_REFERENCE_MANIFEST.json`.
 - Runtime asset candidates and their Godot consumers remain in the approved/production manifests and [`RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md`](RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md).

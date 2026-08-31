@@ -18,7 +18,7 @@
     "BALANCED_50_50_LAYOUT_READABILITY",
     "PLAYER_EXPERIENCE_SIGNAL"
   ],
-  "visual_authority": "TETRIS-VISUAL-041",
+  "visual_authority": "TETRIS-VISUAL-043",
   "gameplay_authorities": [
     "TETRIS-CORE-029",
     "TETRIS-SKILL-039",

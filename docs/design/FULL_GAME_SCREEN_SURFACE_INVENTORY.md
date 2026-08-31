@@ -1,7 +1,7 @@
 # Full Game Screen Surface Inventory
 
 - Status: `CURRENT PLANNING INVENTORY / Issues #49, #54, #56, #66, #68, and #70`
-- Authority: user-supplied screen-first inventory, `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, `TETRIS-SKILL-039`, `TETRIS-BALANCE-040`, `TETRIS-VISUAL-041`, `TETRIS-IMAGE-030`, `TETRIS-ONBOARDING-037`, and actual merged `main`.
+- Authority: user-supplied screen-first inventory, `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, `TETRIS-SKILL-039`, `TETRIS-BALANCE-040`, `TETRIS-VISUAL-043`, `TETRIS-IMAGE-030`, `TETRIS-ONBOARDING-037`, and actual merged `main`.
 - Target: the eventual Tetris game flow, not a claim that every listed screen is currently implemented.
 - Evidence rule: every player-facing row needs one whole-screen evidence item: approved screen design reference, target-resolution wireframe/mockup, Godot capture, prototype capture, or verified reuse evidence.
 

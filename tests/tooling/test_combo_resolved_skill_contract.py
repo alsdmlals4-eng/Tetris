@@ -23,12 +23,12 @@ AGENTS = ROOT / "AGENTS.md"
 
 
 class ComboResolvedSkillContractTests(unittest.TestCase):
-    def test_current_decisions_route_to_category_resolved_skill_and_parchment_visual(self) -> None:
+    def test_current_decisions_route_to_category_resolved_skill_and_obsidian_visual(self) -> None:
         index = json.loads(INDEX.read_text(encoding="utf-8"))
 
         self.assertEqual("TETRIS-SKILL-039", index["current_skill_decision"])
         self.assertEqual("TETRIS-BALANCE-040", index["current_balance_decision"])
-        self.assertEqual("TETRIS-VISUAL-041", index["current_visual_decision"])
+        self.assertEqual("TETRIS-VISUAL-043", index["current_visual_decision"])
         self.assertEqual("docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md", index["combo_resolved_skill_contract"])
 
     def test_category_preview_confirm_and_bounded_fallback_are_exact(self) -> None:
@@ -98,15 +98,15 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         self.assertIn("select_category", skill_session)
         self.assertNotIn("select_technique", skill_session)
 
-    def test_visual_direction_rejects_the_old_dark_matrix_and_uses_the_user_reference_language(self) -> None:
+    def test_visual_direction_adopts_the_current_obsidian_rift_combat_language(self) -> None:
         bible = VISUAL_BIBLE.read_text(encoding="utf-8")
         for required in (
-            "TETRIS-VISUAL-041",
-            "warm ivory parchment",
-            "sepia ink",
-            "watercolor violet rift",
-            "permanent 3×6 skill wall",
-            "dark metal-card",
+            "TETRIS-VISUAL-043",
+            "obsidian-black",
+            "antique-gold",
+            "violet-rift",
+            "large boss silhouette",
+            "non-interactive C1–C10 stage rail",
         ):
             self.assertIn(required, bible)
 

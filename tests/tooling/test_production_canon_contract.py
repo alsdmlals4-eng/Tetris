@@ -53,7 +53,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-039")
         self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-040")
-        self.assertEqual(data["current_visual_decision"], "TETRIS-VISUAL-041")
+        self.assertEqual(data["current_visual_decision"], "TETRIS-VISUAL-043")
         self.assertEqual(data["current_onboarding_decision"], "TETRIS-ONBOARDING-037")
         self.assertEqual(data["current_chain_decision"], "TETRIS-CHAIN-038")
         self.assertEqual(
@@ -136,6 +136,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("TETRIS-BALANCE-040", retained)
         self.assertIn("TETRIS-VISUAL-028", retained)
         self.assertIn("TETRIS-VISUAL-041", retained)
+        self.assertIn("TETRIS-VISUAL-043", retained)
         self.assertIn("TETRIS-ONBOARDING-037", retained)
         self.assertIn("TETRIS-CHAIN-038", retained)
         self.assertTrue(SKILL_CANON_PATH.is_file())

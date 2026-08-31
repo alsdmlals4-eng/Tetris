@@ -12,6 +12,12 @@ const CHAIN := "CHAIN"
 @onready var _guided_practice_prompt: Label = $MainRow/CombatColumn/ThreatFrame/ThreatPanel/GuidedPracticePrompt
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
+@onready var _skill_stage_summary: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillStageSummary
+@onready var _skill_stage_rail: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillStageRail
+@onready var _technique_name: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack/TechniqueName
+@onready var _technique_purpose: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack/TechniquePurpose
+@onready var _technique_cost: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack/TechniqueCost
+@onready var _technique_availability: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack/TechniqueAvailability
 @onready var _retry_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton
 @onready var _chain_lock_frame: Control = $MainRow/PuzzleColumn/ChainLockFrame
 @onready var _chain_lock_keep_button: Button = $MainRow/PuzzleColumn/ChainLockFrame/LockPrompt/KeepButton
@@ -198,6 +204,7 @@ func select_skill_category(category: String) -> bool:
 		preview_label.text = "%s · C%d · MP %d\n%s" % [String(preview.get("display_name", "")), int(preview.get("resolved_stage", 0)), int(preview.get("mp_cost", 0)), "\n".join(PackedStringArray(preview.get("preview_lines", [])))]
 	else:
 		preview_label.text = "NO READY TECHNIQUE · %s" % String(preview.get("reason", ""))
+	_refresh_skill_surface(_runtime.snapshot(), preview)
 	return bool(preview.get("selected", false))
 
 func _use_selected_skill() -> void:
@@ -255,3 +262,44 @@ func _refresh_runtime_labels() -> void:
 		_pause_state.text = "SYSTEM PAUSE"
 	else:
 		_pause_state.text = "COMBAT RUNNING"
+	_refresh_skill_surface(snapshot)
+
+func _refresh_skill_surface(snapshot: Dictionary, resolved_preview: Dictionary = {}) -> void:
+	if _runtime == null or not _runtime.has_method("inspect_skill_stage"):
+		_skill_stage_summary.text = "COMBO STAGE · unavailable"
+		_skill_stage_rail.text = "C1 · C2 · C3 · C4 · C5 · C6 · C7 · C8 · C9 · C10"
+		_technique_name.text = "TECHNIQUE PREVIEW · unavailable"
+		_technique_purpose.text = "Runtime skill catalog is unavailable."
+		_technique_cost.text = ""
+		_technique_availability.text = ""
+		return
+	var current_combo := clampi(int(snapshot.get("player_stock", 0)), 0, 10)
+	var preview_stage := maxi(1, current_combo)
+	var lane := _selected_skill_lane if not _selected_skill_lane.is_empty() else "DEFENSE"
+	var detail: Dictionary = resolved_preview
+	var is_resolved_selection := bool(detail.get("ready", false))
+	if not is_resolved_selection:
+		detail = _runtime.inspect_skill_stage(lane, preview_stage)
+	var active_stage := int(detail.get("resolved_stage", detail.get("stage", preview_stage)))
+	_skill_stage_summary.text = "COMBO %d / 10 · %s C%d" % [current_combo, "CURRENT" if current_combo > 0 else "NEXT", active_stage]
+	_skill_stage_rail.text = _format_stage_rail(active_stage)
+	if not bool(detail.get("inspectable", true)) and not is_resolved_selection:
+		_technique_name.text = "%s · C%d unavailable" % [lane, active_stage]
+		_technique_purpose.text = "The authored technique data is not available for this context."
+		_technique_cost.text = ""
+		_technique_availability.text = ""
+		return
+	_technique_name.text = "%s · %s" % [lane, String(detail.get("display_name", "TECHNIQUE"))]
+	_technique_purpose.text = " · ".join(PackedStringArray(detail.get("preview_lines", [])))
+	_technique_cost.text = "COST · COMBO %d · MP %d" % [int(detail.get("combo_cost", detail.get("opening_combo", active_stage))), int(detail.get("mp_cost", 0))]
+	if is_resolved_selection:
+		var converted_combo := int(detail.get("converted_combo", 0))
+		_technique_availability.text = "RESOLVED C%d · CONFIRM commits%s" % [active_stage, " · fallback converts %d Combo" % converted_combo if converted_combo > 0 else ""]
+	else:
+		_technique_availability.text = "PREVIEW ONLY · select a category, then CONFIRM. No resource is spent."
+
+func _format_stage_rail(active_stage: int) -> String:
+	var cells: Array[String] = []
+	for stage in range(1, 11):
+		cells.append("◆ C%d" % stage if stage == active_stage else "C%d" % stage)
+	return "  ".join(cells)

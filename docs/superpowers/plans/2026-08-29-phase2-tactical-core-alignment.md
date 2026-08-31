@@ -24,7 +24,7 @@
 - The only voluntary lower-Combo strategy is ending CHAIN at that current Combo. The only resolver down-rank is the approved MP-shortage fallback: every converted surplus Combo gives exactly `5 MP`, then the highest feasible lower stage resolves; the transaction spends all opening Combo.
 - Player board-play opportunity affects only active LINE gravity/lock simulation. Enemy ETA effects affect only the exact visible current Telegraph action ID. Never use `Engine.time_scale`, a global pause, an inactive workspace, a Next Forecast, or a hidden future action as an effect target.
 - A preview, category press, cancel, manual pause, or tactical pause changes no resource, board state, or clock. An ETA effect cannot apply after `EnemyActionScheduler.is_action_committed()` becomes true.
-- All new GDScript files start with a one-line Korean role comment. Do not generate a production image batch; retain the existing `TETRIS-VISUAL-041` Parchment Field Manual theme and existing runtime consumers.
+- All new GDScript files start with a one-line Korean role comment. Do not generate a production image batch without exact consumers and a later user lock; use the current `TETRIS-VISUAL-043` Obsidian Rift Tactics theme and retain existing runtime consumers where compatible.
 - Every code task follows RED → expected failure → minimal GREEN → focused regression → commit. Every implementation PR requires exact-head full GUT, Python tooling, Godot import/parse, CI, runtime receipt, and the stated Human gate before any player-experience claim.
 
 ---
@@ -717,7 +717,7 @@ func select_skill_category(category: String) -> Dictionary:
     return preview
 ```
 
-Use the existing named theme and Parchment Field Manual hierarchy. The preview must expose the resolved stage, target, effect, unchanged comparison value, fallback conversion when present, and total cost before `CONFIRM` is enabled. Do not add imagery, icons, pseudo-text, or a visual card wall to convey rules.
+Use the existing named theme and current Obsidian Rift Tactics hierarchy. The preview must expose the resolved stage, target, effect, unchanged comparison value, fallback conversion when present, and total cost before `CONFIRM` is enabled. Category choice remains the only interactive selection; a visual detail card and non-interactive stage rail may explain rules without becoming a card wall or a manual tier selector.
 
 - [ ] **Step 4: Run UI plus full production tests and inspect a 960×540 local runtime scene.**
 
