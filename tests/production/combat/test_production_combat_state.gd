@@ -92,3 +92,34 @@ func test_reset_combo_returns_previous_value_and_clears_state() -> void:
 
 	assert_eq(state.reset_combo(), 4)
 	assert_eq(state.stock, 0)
+
+func test_checked_state_and_resource_snapshots_restore_only_valid_same_capacity_values() -> void:
+	var state = _make_state()
+	if state == null:
+		return
+	assert_true(state.has_method("snapshot_state"))
+	assert_true(state.has_method("restore_state"))
+	assert_true(state.has_method("resource_snapshot"))
+	assert_true(state.has_method("restore_resource_snapshot"))
+	if not state.has_method("snapshot_state"):
+		return
+	state.hp = 55
+	state.energy = 20
+	state.stock = 4
+	var state_snapshot: Dictionary = state.snapshot_state()
+	var resource_snapshot: Dictionary = state.resource_snapshot()
+	state.hp = 10
+	state.energy = 1
+	state.stock = 0
+	assert_true(state.restore_state(state_snapshot))
+	assert_eq(state.hp, 55)
+	assert_eq(state.energy, 20)
+	assert_eq(state.stock, 4)
+	state.energy = 2
+	state.stock = 1
+	assert_true(state.restore_resource_snapshot(resource_snapshot))
+	assert_eq(state.energy, 20)
+	assert_eq(state.stock, 4)
+	assert_false(state.restore_state({"max_hp": 101, "hp": 55, "energy": 20, "stock": 4}))
+	assert_eq(state.max_hp, 100)
+	assert_eq(state.hp, 55)

@@ -144,3 +144,27 @@ func heal(amount: int) -> int:
 
 func is_defeated() -> bool:
     return hp <= 0
+
+func snapshot_state() -> Dictionary:
+    return {"max_hp": max_hp, "hp": hp, "energy": energy, "stock": stock}
+
+func restore_state(snapshot: Dictionary) -> bool:
+    for key in ["max_hp", "hp", "energy", "stock"]:
+        if not snapshot.has(key) or not (snapshot[key] is int):
+            return false
+    var restored_max_hp := int(snapshot["max_hp"])
+    var restored_hp := int(snapshot["hp"])
+    var restored_energy := int(snapshot["energy"])
+    var restored_stock := int(snapshot["stock"])
+    if restored_max_hp != max_hp or restored_hp < 0 or restored_hp > max_hp or restored_energy < 0 or restored_energy > MP_CAP or restored_stock < 0 or restored_stock > COMBO_CAP:
+        return false
+    hp = restored_hp
+    energy = restored_energy
+    stock = restored_stock
+    return true
+
+func resource_snapshot() -> Dictionary:
+    return snapshot_state()
+
+func restore_resource_snapshot(snapshot: Dictionary) -> bool:
+    return restore_state(snapshot)
