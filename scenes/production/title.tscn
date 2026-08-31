@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_title.gd" id="1_title"]
 [ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="2_theme"]
 [ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="3_backdrop"]
+[ext_resource type="Texture2D" path="res://assets/production/branding/fracture_frontier_title_logo_v1.png" id="4_logo"]
 
 [node name="Title" type="Control"]
 layout_mode = 3
@@ -57,10 +58,10 @@ layout_mode = 2
 theme_override_constants/separation = 16
 
 [node name="TitleLogo" type="TextureRect" parent="Margin/Panel/Content"]
-visible = false
 layout_mode = 2
 custom_minimum_size = Vector2(920, 368)
 mouse_filter = 2
+texture = ExtResource("4_logo")
 expand_mode = 1
 stretch_mode = 5
 
@@ -72,6 +73,7 @@ text = "THE FRONTIER GATE"
 horizontal_alignment = 1
 
 [node name="TitleText" type="Label" parent="Margin/Panel/Content"]
+visible = false
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.76, 1)
 theme_override_font_sizes/font_size = 46

@@ -5,6 +5,7 @@ const TITLE_SCENE_PATH := "res://scenes/production/title.tscn"
 const BRIEFING_SCENE_PATH := "res://scenes/production/battle_briefing.tscn"
 const BATTLE_SCENE_PATH := "res://scenes/production/battle.tscn"
 const FLOW_SCRIPT_PATH := "res://src/production/session/production_first_session_flow.gd"
+const TITLE_LOGO_PATH := "res://assets/production/branding/fracture_frontier_title_logo_v1.png"
 
 func test_project_starts_at_the_production_title_surface() -> void:
 	var project_config := ConfigFile.new()
@@ -39,17 +40,26 @@ func test_briefing_scene_exposes_rules_acknowledgement_and_explicit_deploy() -> 
 	if deploy_button != null:
 		assert_true(deploy_button.disabled, "Deploy must remain gated until the player acknowledges the rule summary")
 
-func test_title_reserves_a_transparent_logo_consumer_without_promoting_an_unlocked_candidate() -> void:
+func test_title_binds_the_user_locked_logo_without_a_duplicate_text_title() -> void:
+	assert_true(ResourceLoader.exists(TITLE_LOGO_PATH), "the user-locked title logo must be registered at its canonical runtime path")
 	assert_true(ResourceLoader.exists(TITLE_SCENE_PATH))
 	if not ResourceLoader.exists(TITLE_SCENE_PATH):
 		return
 	var title = load(TITLE_SCENE_PATH).instantiate()
 	add_child_autofree(title)
 	var logo_slot: TextureRect = title.get_node_or_null("Margin/Panel/Content/TitleLogo")
-	assert_not_null(logo_slot, "the title needs a named consumer before an approved logo can be bound")
+	var title_text: Label = title.get_node_or_null("Margin/Panel/Content/TitleText")
+	assert_not_null(logo_slot, "the title needs the registered logo consumer")
+	assert_not_null(title_text)
 	if logo_slot != null:
 		assert_eq(logo_slot.mouse_filter, Control.MOUSE_FILTER_IGNORE)
-		assert_null(logo_slot.texture, "a generated logo remains unbound until the user locks that exact candidate")
+		assert_true(logo_slot.visible, "the locked logo must be visible on the production title surface")
+		assert_not_null(logo_slot.texture)
+		if logo_slot.texture != null:
+			assert_eq(logo_slot.texture.resource_path, TITLE_LOGO_PATH)
+		assert_eq(logo_slot.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_CENTERED)
+	if title_text != null:
+		assert_false(title_text.visible, "the raster title logo replaces the duplicate text rendering while preserving the text contract below")
 
 func test_title_names_the_world_not_the_player_job() -> void:
 	assert_true(ResourceLoader.exists(TITLE_SCENE_PATH))

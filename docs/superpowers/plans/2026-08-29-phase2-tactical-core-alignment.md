@@ -748,7 +748,7 @@ git commit -m "feat: present combo resolved skill confirmation"
 **Interfaces:**
 - `ProductionFirstSessionFlow` owns the local `Title → BattleBriefing → Deploy → Battle` transition and does not persist a visit-complete flag.
 - `BattleBriefing` disables Deploy until the rules `ScrollContainer` reaches its end or the accessible equivalent acknowledgement is completed on each launch. Later-visit immediate Deploy and an in-battle rules popup remain out of scope until persistence is separately specified.
-- `BattleBriefing.deployed` causes the main scene to change to `battle.tscn`; the title screen remains the real entry point and reserves a title-logo consumer slot for a user-locked candidate.
+- `BattleBriefing.deployed` causes the main scene to change to `battle.tscn`; the title screen remains the real entry point and binds the user-locked `TETRIS-IMG-040` title-logo asset at its dedicated consumer slot.
 - The seed text contains only existing world facts: Vanguard, Frontier Gate, Gatebreaker, imminent threat, LINE MP, CHAIN rule/reward/lock, C1–C10 category preview/confirm/fallback, and target-separated timing contrast.
 
 - [ ] **Step 1: Add failing progress and briefing-gate tests.**
