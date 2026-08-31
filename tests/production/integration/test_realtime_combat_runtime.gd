@@ -142,6 +142,28 @@ func test_runtime_commits_each_puzzle_reward_once_and_marks_terminal_without_tur
 	assert_true(runtime.is_terminal())
 	assert_true(terminal_events.any(func(event): return String(event.get("kind", "")) == "DEFEAT"))
 
+func test_guided_opening_keeps_realtime_active_but_prevents_terminal_defeat_until_first_confirm() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var guided = load("res://src/production/session/production_guided_practice_state.gd").new()
+	var runtime = load(RUNTIME_PATH).new(player, enemy, FakeWorkspaceManager.new(), scheduler, _skill_session(pause, player), pause, null, null, null, guided)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	var eta_before: float = scheduler.remaining_seconds()
+	assert_almost_eq(eta_before, 28.0, 0.001, "the first guided encounter shares one live 28-second opening ETA")
+	player.hp = 0
+	var guarded_events: Array = runtime.tick(0.1)
+	assert_false(runtime.is_terminal(), "the opening may apply pressure but cannot end before the first explicit CONFIRM")
+	assert_eq(player.hp, 1, "the opening guard keeps a visible one-HP recovery floor instead of freezing time")
+	assert_true(guarded_events.any(func(event): return String(event.get("kind", "")) == "GUIDED_OPENING_GUARD"))
+	assert_almost_eq(scheduler.remaining_seconds(), eta_before - 0.1, 0.001, "the enemy ETA remains a live realtime clock during the opening")
+
+	guided.record_skill_confirmation({"committed": true})
+	player.hp = 0
+	runtime.tick(0.1)
+	assert_true(runtime.is_terminal(), "the authored opening guard ends immediately after the first CONFIRM")
+
 func test_failed_chain_swap_resets_combo_and_keeps_only_after_one_mp_payment() -> void:
 	var pause = load(PAUSE_PATH).new()
 	var player = load(COMBAT_STATE_PATH).new(100)

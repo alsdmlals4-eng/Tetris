@@ -15,9 +15,9 @@
 | `docs/design/PRODUCTION_CANON_INDEX.json` | Current decision IDs, authority order, machine-readable current/actual boundary | `CURRENT` |
 | `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` | `TETRIS-CORE-029`: continuous battle, workspace and pause grammar | `CURRENT` |
 | `docs/design/CHAIN_COMBO_MP_CONTRACT.md` | `TETRIS-CHAIN-038`: CHAIN match, MP lock, Combo and recovery formula | `CURRENT` |
-| `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` and `COMBO_STAGE_SKILL_CONTENT_GDD.md` | `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` / `TETRIS-SKILL-042`: category-only preview/confirm, bounded fallback and the target-separated 12-second board-opportunity mechanism | `CURRENT / PHASE 2 MECHANISM LOCK / DOCUMENTED_NOT_IMPLEMENTED` |
+| `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` and `COMBO_STAGE_SKILL_CONTENT_GDD.md` | `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` / `TETRIS-SKILL-042`: category-only preview/confirm, bounded fallback and the target-separated 12-second board-opportunity mechanism | `CURRENT / IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING` |
 | `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` and `DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` | Older manual Tier matrix and its cost grammar | `SUPERSEDED_FOR_CURRENT_SELECTION_FLOW / HISTORICAL_EFFECT_PROVENANCE` |
-| `docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md` | `TETRIS-ONBOARDING-037`: briefing and safe live tutorial intention | `CURRENT / DOCUMENTED_NOT_IMPLEMENTED` |
+| `docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md` | `TETRIS-ONBOARDING-037`: title, full-rule briefing and same-encounter safe live tutorial | `CURRENT / IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING` |
 | `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` | Runtime consumer and image-generation/lock workflow | `CURRENT` |
 | `AGENTS.md` § `MANDATORY_CURRENT_TASK_EVIDENCE_GATE` | Fresh source read, targeted official research, feasibility classification, five adversarial loops and exact-head/destination readback | `CURRENT / PROCESS AUTHORITY` |
 | `docs/design/FULL_GAME_SCREEN_SURFACE_INVENTORY.md` | Current and planned screen coverage | `CURRENT` |
@@ -46,10 +46,10 @@
 | --- | --- | --- |
 | `SUPERSEDED` | Ordered LINE→CHAIN→enemy turns, shared player-turn budget, READY/pass flow, timeout and Tempo language | `TETRIS-CORE-024` / `TETRIS-TIME-025` are provenance only. CORE-029 continuous realtime replaces them. |
 | `HISTORICAL` | `CORE_GAMEPLAY_GDD.md` describes earlier Energy/Stock and board concepts | Foundation reference only; it cannot define current player-facing rules. |
-| `CONFLICT` | Approved CHAIN requires both diagonals, 1-MP lock, 60 MP cap, 10 Combo cap and per-wave formula; current code has `STOCK_CAP = 6`, H/V-only matching, forced no-match restore and legacy depth rewards | `TETRIS-CHAIN-038` is `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`; the user-approved Phase 2 contract sequences its correction before Skill/onboarding implementation. |
-| `CONFLICT` | Old current documents and merged UI/data expose manual `ATK/DEF/SUP × T1–T6`; the user-directed flow is category-only, current-Combo preview, explicit confirm and a bounded 5-MP fallback. | `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` supersede selection/cost grammar. Actual runtime remains `LEGACY_MANUAL_TIER_1_TO_6`; no new system is implemented yet. |
+| `RESOLVED_IN_CURRENT_WORKTREE` | Approved CHAIN requires both diagonals, 1-MP lock, 60 MP cap, 10 Combo cap and per-wave formula. | The current worktree implements all-axis matching, explicit MP lock, caps and per-wave recovery. Exact-head full verification remains required before a merged-main claim. |
+| `RESOLVED_IN_CURRENT_WORKTREE` | Old current documents and merged UI/data exposed manual `ATK/DEF/SUP × T1–T6`; the user-directed flow is category-only, current-Combo preview, explicit confirm and a bounded 5-MP fallback. | The current worktree uses category-only preview/confirm, current-Combo Stage resolution, bounded fallback and target-separated board opportunity. Exact-head full verification remains required before a merged-main claim. |
 | `CONFLICT` | Current runtime backgrounds/cutouts use a dark pixel-rendered combat treatment, while the current user reference requires a parchment field-manual presentation. | `TETRIS-VISUAL-041` supersedes the global planning direction. Existing image consumers remain preserved until a separately contracted runtime art pass. |
-| `PARTIAL` | Battle runtime enters directly into continuous battle, while the approved first session requires briefing → Deploy → short guided live practice → same encounter | First-session contract is `USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED`. |
+| `PARTIAL` | The approved first session requires title → briefing → Deploy → short guided live practice → same encounter. | Title and accessible full-rule briefing now gate Deploy in the current worktree; the safe guided live-practice sequence remains to implement. |
 | `UNKNOWN_UNVERIFIED` | Dedicated repository Audio Contract file | `VISUAL_BIBLE.md` is the repository visual owner. Audio has only pause-bridge support; a player-facing audio plan and evidence remain unknown. |
 | `UNKNOWN_UNVERIFIED` | User-Windows play, target-resolution composite readability, first-exposure comprehension, tension, balance, accessibility and player appeal | **Human/player evidence: NOT_RUN**. Automated/scene-equivalent checks do not prove any of these. |
 
@@ -86,12 +86,12 @@ Live Telegraph + ETA
 | Work stage | Status | Evidence ceiling and next gate |
 | --- | --- | --- |
 | 1. Core promise, economy and visual direction | `CURRENT / USER_APPROVED` | CORE-029, CHAIN-038, SKILL-039/BALANCE-040, VISUAL-041 and ONBOARDING-037 are defined. |
-| 2. Representative continuous-battle slice | `IMPLEMENTED / PARTIAL` | 60/40 battle, persistent workspaces, scheduler, pause, skill and named art consumers exist. CHAIN-038 and onboarding remain incomplete. |
+| 2. Representative continuous-battle slice | `IMPLEMENTED / PARTIAL` | 50/50 battle, persistent workspaces, scheduler, pause, Combo-resolved skill preview/confirm, named art consumers, title/briefing entry, and a safe same-encounter guided-practice sequence exist in this worktree. Terminal reward/route remain incomplete. |
 | 3. Human usability / player experience | `NOT_RUN` | The immediate required validation gate: target-resolution capture and first-exposure observation. |
 | 4. First-session and session-completion loop | `DESIGNED / NOT_IMPLEMENTED` | Briefing/tutorial is approved; result/reward/route/meta remain planned. |
 | 5. Production expansion and polish | `DEFERRED` | Start only after Stage 3 evidence identifies the smallest necessary correction. |
 
-**Active Playable Slice:** one Gatebreaker encounter in `scenes/production/battle.tscn`, direct-entry continuous battle, with LINE, CHAIN, live telegraph/ETA, tactical Skill pause and retry. It is not yet the approved first-time-player flow.
+**Active Playable Slice:** `scenes/production/title.tscn` → `battle_briefing.tscn` → one Gatebreaker encounter in `battle.tscn`, with LINE, CHAIN, live telegraph/ETA, tactical Skill pause and retry. The title/briefing entry is implemented in the current worktree; the safe guided live practice is not yet implemented.
 
 ## 3. Core loop, systems and content
 
@@ -100,7 +100,7 @@ Live Telegraph + ETA
 | Loop | Status | Player flow |
 | --- | --- | --- |
 | Core combat loop | `CURRENT / IMPLEMENTED BASELINE` | Read ETA → choose LINE/CHAIN → gain/prep resource → pause for deliberate Technique commitment → resolve response → read next ETA. |
-| Intended first-session loop | `CURRENT / NOT_IMPLEMENTED` | Short Vanguard/Frontier Gate/Gatebreaker threat explanation → full economy-critical rule review → Deploy → safe live guided practice → seamless normal battle → result/retry. |
+| Intended first-session loop | `CURRENT / PARTIAL` | Title → short Vanguard/Frontier Gate/Gatebreaker threat explanation → full economy-critical rule review → Deploy → safe live guided practice → seamless normal battle → result/retry. Title/briefing/Deploy and the four evidence-driven guide prompts are implemented in the current worktree; Human/player effectiveness remains unverified. |
 | Full-session loop | `PARTIAL` | Planned title/loadout/route/briefing/battle/result surfaces exist as references; no route, persistence or reward data is implemented. |
 | Progression/meta loop | `UNKNOWN_UNVERIFIED` | Route, workshop, persistent reward, unlock and long-run motivation must not be inferred from planned screen references. |
 
@@ -108,13 +108,13 @@ Live Telegraph + ETA
 
 | System | Player-facing rule | Approved / actual state | Implementation owner |
 | --- | --- | --- | --- |
-| `SYS-CORE-029` Continuous battle | Enemy time runs after Deploy; encounter ends at victory/defeat; no old turn rail. | `CURRENT`; direct-entry realtime runtime is implemented. | `src/production/runtime/production_combat_runtime.gd`, scheduler and battle scene. |
+| `SYS-CORE-029` Continuous battle | Enemy time runs after Deploy; encounter ends at victory/defeat; no old turn rail. | `CURRENT`; realtime runtime is implemented in the current worktree. | `src/production/runtime/production_combat_runtime.gd`, scheduler and battle scene. |
 | `SYS-LINE-MP` | LINE no clear/Single/Double/Triple/Four gains `0/10/22/36/52 MP`; cap 60. | Rules current; reward seed exists; MP hard cap still not actual runtime proof. | `data/production/line_reward_seed.json`, line session/state. |
-| `SYS-CHAIN-038` | Orthogonal adjacent swap; straight 3+ horizontal/vertical/diagonal matching. Failed swap restores, or fixed 1 MP locks a setup. | `CURRENT DESIGN / PARTIAL RUNTIME`. Current code only proves H/V and restore. | `chain_board.gd`, `chain_resolver.gd`, `production_chain_session.gd`. |
-| `SYS-COMBO-MP` | Each resolution wave grants Combo +1 (cap 10), then MP = `(sum maximal qualified line lengths − 3) + post-wave Combo`. | `CURRENT DESIGN / NOT IMPLEMENTED`. Current depth-to-stock map and cap 6 conflict. | CHAIN contract and `ProductionCombatState`. |
-| `SYS-SKILL-039 / SKILL-042` | Skill fully pauses; choose ATK/DEF/SUP only, inspect the current Combo-resolved Stage, then explicitly CONFIRM. A player may deliberately stop at a lower Combo for a unique effect; player board-time and enemy ETA effects remain target-separated. Player board opportunity is a capped 12-second reserve which holds LINE gravity/lock while input remains available; enemy ETA continues in full real time. If MP is short, convert surplus Combo at 5 MP each and preview the highest feasible lower Stage. | `CURRENT CONTENT CANON / PHASE 2 MECHANISM LOCK / DOCUMENTED_NOT_IMPLEMENTED`; merged runtime still has manual Tier 1–6 selection/USE, no fallback and no target-separated time-control primitive. | [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md), then later replacement of `production_skill_session.gd`, `production_skill_catalog.gd`, `production_battle.gd`, scheduler and skill seed. |
+| `SYS-CHAIN-038` | Orthogonal adjacent swap; straight 3+ horizontal/vertical/diagonal matching. Failed swap restores, or fixed 1 MP locks a setup. | `IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING`. | `chain_board.gd`, `chain_resolver.gd`, `production_chain_session.gd`. |
+| `SYS-COMBO-MP` | Each resolution wave grants Combo +1 (cap 10), then MP = `(sum maximal qualified line lengths − 3) + post-wave Combo`. | `IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING`. | CHAIN contract and `ProductionCombatState`. |
+| `SYS-SKILL-039 / SKILL-042` | Skill fully pauses; choose ATK/DEF/SUP only, inspect the current Combo-resolved Stage, then explicitly CONFIRM. A player may deliberately stop at a lower Combo for a unique effect; player board-time and enemy ETA effects remain target-separated. Player board opportunity is a capped 12-second reserve which holds LINE gravity/lock while input remains available; enemy ETA continues in full real time. If MP is short, convert surplus Combo at 5 MP each and preview the highest feasible lower Stage. | `IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING`; manual Tier buttons are removed from the current battle scene. | [`COMBO_STAGE_SKILL_CONTENT_GDD.md`](COMBO_STAGE_SKILL_CONTENT_GDD.md), `production_skill_session.gd`, `production_skill_catalog.gd`, `production_battle.gd`, scheduler and skill seed. |
 | `SYS-ENEMY` | Gatebreaker telegraph and ETA tell the player what is imminent. | `IMPLEMENTED` scheduling/preview; readability and tuning unknown. | `gatebreaker_*`, realtime timing/action/sequence seed. |
-| `SYS-ONBOARDING-037` | Full rules before first Deploy; then short safe live practice in the actual encounter. | `CURRENT DESIGN / NOT IMPLEMENTED`. | Future BattleBriefing/tutorial extension; no current scene. |
+| `SYS-ONBOARDING-037` | Full rules before first Deploy; then short safe live practice in the actual encounter. | `IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING`. | `title.tscn`, `battle_briefing.tscn`, `production_guided_practice_state.gd`, `production_combat_runtime.gd`, and `battle.tscn`. |
 | `SYS-RESULT-RETRY` | Terminal outcome gives a visible retry path. | Retry exists; reward and explanatory result flow are planned. | battle UI / future Result surface. |
 | `SYS-AUDIO` | Simulation audio should pause with the tactical simulation. | Pause bridge supports the `simulation_audio` group; no confirmed authored audio content or audio UX evidence. | `simulation_pause_bridge.gd`; dedicated content owner unknown. |
 
@@ -138,8 +138,8 @@ This example describes approved CHAIN-038 intent, not current runtime behavior. 
 | `CNT-VANGUARD` | Player combat identity and technique user. | Approved visual master and runtime cutout consumer; no biography beyond first-session immediate role. |
 | `CNT-FRONTIER-GATE` | Immediate battleground and deployment context. | Current world-facing first-session fact; stage consumer is implemented. |
 | `CNT-GATEBREAKER` | Enemy with readable forecast and combat phases. | Action/sequence seeds and runtime cutout/telegraph consumer exist. |
-| `CNT-FRONTIER-GATEBREAKER-01` | The active vertical-slice encounter. | Direct-entry runtime slice; first-session framing is planned. |
-| `CNT-COMBO-RESOLVED-TECHNIQUES` | ATK/DEF/SUP resolved from the player’s current Combo Stage 1–10. | Category/preview/confirm, bounded fallback and the approved C1–C10 lower-Combo content matrix are current design. Existing 18-entry manual Tier 1–6 seed is legacy, and data/resolver/time-control implementation remain required. |
+| `CNT-FRONTIER-GATEBREAKER-01` | The active vertical-slice encounter. | Title/briefing entry, direct continuous encounter, and same-encounter guided practice are implemented in the current worktree; target-resolution and Human evidence remain pending. |
+| `CNT-COMBO-RESOLVED-TECHNIQUES` | ATK/DEF/SUP resolved from the player’s current Combo Stage 1–10. | Category/preview/confirm, bounded fallback and the C1–C10 content matrix are implemented in the current worktree; exact-head full verification remains required. |
 
 ## 4. UX, screen flow and first-time player learning
 
@@ -147,7 +147,7 @@ This example describes approved CHAIN-038 intent, not current runtime behavior. 
 
 ```mermaid
 flowchart LR
-  A[Planned Title] --> B[Planned Battle Briefing]
+  A[Title] --> B[Battle Briefing]
   B --> C[First visit: full rule review]
   C --> D[Explicit Deploy]
   D --> E[Safe live guided practice]
@@ -156,12 +156,12 @@ flowchart LR
   G --> H[Planned reward or route]
 ```
 
-The merged-main runtime presently starts at **F**, not at A–E. This is an intentional evidence distinction, not a missing detail to invent.
+The current worktree starts at **A**, implements B–D, then enters E–F as one continuous battle. Safe guided practice E observes real reward/preview/CONFIRM evidence and releases to normal pressure without changing encounters.
 
 | Surface | Consumer / state | Player goal | Necessary information and feedback |
 | --- | --- | --- | --- |
-| Title/Main Menu | Planned `TETRIS-SREF-001`, future Title scene | Start with a clear promise. | Vanguard/Gatebreaker tension, one primary start action. |
-| Battle Briefing | Planned `TETRIS-SREF-003`, future BattleBriefing | Understand where/why and what Deploy means. | Only Vanguard, Frontier Gate, Gatebreaker and immediate threat; separate complete rule review. |
+| Title/Main Menu | `scenes/production/title.tscn` | Start with a clear promise. | Vanguard/Gatebreaker tension, one primary briefing action and re-openable core loop note. |
+| Battle Briefing | `scenes/production/battle_briefing.tscn` | Understand where/why and what Deploy means. | Immediate threat plus complete critical rule review; acknowledgement enables Deploy. |
 | Continuous Battle | `scenes/production/battle.tscn` | Select the right preparation under pressure. | Current Telegraph, next forecast, ETA, health, MP, Combo, active workspace and visible response. |
 | Tactical Skill | Battle-owned `SkillFrame` | Compare category response versus saving Combo for later. | Same frozen threat/puzzle state, category→resolved Stage preview→CONFIRM; cancel returns to paused state. |
 | Result/Retry | Existing retry plus planned `TETRIS-SREF-004` Result | Learn cause and choose a next action. | Outcome, causal feedback, retry; rewards/persistence unknown. |
@@ -228,10 +228,10 @@ These prove scene binding, not composition readability or art approval at a play
 | --- | --- | --- |
 | Bootstrap and UI | `src/production/session/production_battle_bootstrap.gd`, `src/production/ui/production_battle.gd` | Construct and connect the production battle. |
 | LINE | `src/production/line/**`, `data/production/line_*.json` | Persistent active LINE workspace and line reward seed. |
-| CHAIN | `src/production/chain/**`, `data/production/chain_runtime_seed.json` | Active CHAIN board, H/V match resolver and legacy wave/depth reward mapping. |
+| CHAIN | `src/production/chain/**`, `data/production/chain_runtime_seed.json` | Active CHAIN board, orthogonal swaps, H/V/both-diagonal resolver, optional fixed 1 MP lock and per-wave Combo/MP recovery. Exact-HEAD full verification remains pending. |
 | Combat/enemy | `src/production/combat/**`, `src/production/runtime/enemy_action_scheduler.gd`, `data/production/gatebreaker_*.json` | Forecasted Gatebreaker scheduling and responses. |
 | Skill/pause | `src/production/skill/**`, `simulation_pause_*.gd`, `data/production/vanguard_skill_seed.json` | Full tactical pause, selection and explicit commit boundaries. |
-| State boundary | `src/production/combat/production_combat_state.gd` | Current `energy`/`stock` internal fields, including `STOCK_CAP = 6`; this is the material CHAIN-038 mismatch. |
+| State boundary | `src/production/combat/production_combat_state.gd` | Current `energy`/`stock` internal fields, with `COMBO_CAP = 10` and bounded resource validation. Exact-HEAD full verification remains pending. |
 | Persistence/audio | `manual_validation_tracker.gd`; `simulation_pause_bridge.gd` | Manual evidence file save and audio pause support only; no player save/profile or verified authored audio content. |
 
 ### Evidence ceiling
@@ -249,8 +249,8 @@ These prove scene binding, not composition readability or art approval at a play
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | The live telegraph + persistent two-workspace + full tactical-pause structure is specific and readable as a design contract. | `STRENGTH` | CORE-029, scene/code path and automated contracts. | `VERIFIED` for structure; not fun. | Gives a memorable decision vocabulary. | Focuses the slice. | `PROTECT` | Observe an uncoached first player. |
 | The project now has a user-supplied parchment/ink/watercolor reference and a concrete rule for what stays readable. | `STRENGTH` | `TETRIS-VISUAL-041`, two user-provided comparison images and Visual Bible. | `PARTIAL` | Makes the intended mood and UI hierarchy easier to distinguish. | Gives later art/UI work a narrower style target. | `PROTECT` | Inspect the new planning board, then target-resolution runtime composite after a consumer-specific art pass. |
-| The manual Tier wall and dark runtime presentation conflict with current approved flow/direction. | `WEAKNESS` | Fresh merged `production_battle.gd`, skill catalog/seed, actual runtime image files versus SKILL-039/VISUAL-041. | `VERIFIED` | Current player cannot yet experience or read the approved choice grammar. | Replacement touches UI/session/catalog/data and later art consumers. | `IMPROVE` | One bounded Phase 2 implementation contract with visual target-resolution capture. |
-| The approved CHAIN economy and actual runtime are materially divergent. | `WEAKNESS` | CHAIN-038 versus current H/V resolver, legacy depth reward and `STOCK_CAP = 6`. | `VERIFIED` | Players cannot yet receive the promised all-axis/setup/combo strategy. | Requires bounded Phase 2 implementation/review. | `IMPROVE` | Phase 2 contract and GDScript test-first implementation. |
+| The new category preview/explicit-confirm presentation still has no exact-HEAD full runtime or Human/player evidence. | `WEAKNESS` | Current-worktree battle/UI/session sources and the evidence contract. | `VERIFIED` for the evidence gap. | Readability, timing pressure and the spend-or-save decision remain unproved. | Requires verification rather than another parallel Skill architecture. | `TEST` | Exact-head regression, target-resolution capture and first-exposure receipt. |
+| The approved CHAIN economy is implemented in the current worktree but still awaits exact-HEAD full verification. | `WEAKNESS` | CHAIN-038, all-axis resolver, fixed 1 MP lock, Combo cap 10 and per-wave recovery sources. | `VERIFIED` for code presence; not runtime/UX validated. | Players have the intended choices in code, but their clarity and tuning are not yet proven. | Requires verification and focused tuning, not another CHAIN ruleset. | `TEST` | Exact-head regression and target-resolution first-play observation. |
 | Human/player evidence is absent. | `WEAKNESS` | Human evidence index and reconciliation record. | `VERIFIED` | No reliable claim about comprehension, tension or balance. | Blocks safe polish prioritization. | `TEST` | Three first-exposure receipts at target resolution. |
 | A concise explanation plus safe live practice can make the unusual economy marketable without a long lore layer. | `OPPORTUNITY` | Approved onboarding logic; inference, not market research. | `INFERENCE` | Could make the hook understandable in one session. | Reuses existing battle rather than creating a tutorial mode. | `TEST` | Compare comprehension after real onboarding runtime exists. |
 | Earlier turn-era materials and open PRs can reintroduce obsolete terminology. | `THREAT` | Fresh conflict register and READ_ONLY open PR rule. | `VERIFIED` | Confuses player-facing UX and design intent. | Causes documentation/implementation churn. | `MITIGATE` | Fresh main + authority read before material work. |
@@ -268,13 +268,15 @@ No market/competitor claim is made here: no material current market decision req
 
 ### Remaining required work, in dependency order
 
-1. **Human evidence gate:** capture the current runtime at target resolution and observe first exposure. Validate threat reading, LINE→MP versus CHAIN→Combo, Combo spend-or-save, Skill/USE commitment and failure/retry causality.
-2. **Phase 2 implementation review:** reconcile CHAIN-038 with actual code; define data, UI feedback, caps/reset behavior, diagonal matcher and 1-MP lock before any Godot change.
-3. **Implement the approved first-session boundary:** only after the Phase 2 review; BattleBriefing, first-visit rule gate, safe live opening and guided handoff must reuse the same realtime encounter.
+1. **Exact-HEAD verification gate:** run the full deterministic/runtime suite against the current worktree, then inspect the title, briefing, 50/50 battle, Chain feedback and category preview at target resolution.
+2. **Human evidence gate:** observe first exposure. Validate threat reading, LINE→MP versus CHAIN→Combo, Combo spend-or-save, Skill/CONFIRM commitment and failure/retry causality.
+3. **Verify the safe guided practice at target resolution:** the same-encounter triggers and non-terminal pre-CONFIRM guard are implemented; confirm the live ETA, prompt hierarchy, and unforced handoff with runtime and first-exposure evidence before tuning it.
 4. **Correct evidence-backed UX problems:** prioritize by player value/risk, not by a generic feature list.
 5. **Then evaluate session closure/meta:** result reward, route, loadout, save/profile and Codex/Manual only if core-loop evidence supports expansion.
 
-### Fresh technical feasibility preflight — 2026-08-28
+### Historical fresh technical feasibility preflight — 2026-08-28
+
+This snapshot records the pre-implementation starting point. It is retained as `HISTORICAL` feasibility evidence and does not override the current-worktree implementation/evidence status above.
 
 | Question | Fresh evidence | Result and required boundary |
 | --- | --- | --- |

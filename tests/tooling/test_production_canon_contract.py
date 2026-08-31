@@ -91,8 +91,8 @@ class ProductionCanonContractTests(unittest.TestCase):
         data = self._index()
         ui = data["ui"]
 
-        self.assertEqual(ui["puzzle_surface_target_ratio"], 0.60)
-        self.assertEqual(ui["combat_surface_target_ratio"], 0.40)
+        self.assertEqual(ui["puzzle_surface_target_ratio"], 0.50)
+        self.assertEqual(ui["combat_surface_target_ratio"], 0.50)
         self.assertFalse(ui["mandatory_sidecar"])
 
     def test_supersession_contract_reenables_realtime_clock_and_free_switching(self) -> None:
@@ -184,7 +184,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             reality["chain_038_runtime_alignment"],
-            "PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD",
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_ALL_AXES_MP_LOCK_CAP10_PER_WAVE_RECOVERY_PENDING_FULL_VERIFICATION",
         )
         self.assertEqual(chain_reward_data["seed_source"], "TETRIS-CHAIN-038")
         self.assertNotIn("stock_by_chain_depth", chain_reward_data)
@@ -221,7 +221,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
-    def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
+    def test_first_session_contract_records_implemented_guided_practice_without_overclaiming_human_evidence(self) -> None:
         data = self._index()
         reality = data["implementation_reality"]
         onboarding_index = data["onboarding"]
@@ -230,7 +230,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertTrue(ONBOARDING_CONTRACT_PATH.is_file())
         self.assertEqual(
             reality["first_session_briefing_and_tutorial"],
-            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+            "TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
         )
         self.assertEqual(onboarding_index["rule_delivery"], "FULL_PRE_DEPLOY_BRIEFING")
         self.assertEqual(
@@ -239,7 +239,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             onboarding_index["later_visit_deploy_behavior"],
-            "IMMEDIATELY_ENABLED_WITH_REOPENABLE_RULE_SUMMARY",
+            "PER_LAUNCH_RULE_ACKNOWLEDGEMENT_UNTIL_PERSISTENCE_IS_SPECIFIED",
         )
         self.assertEqual(
             onboarding_index["post_deploy_tutorial_handoff"],
@@ -253,6 +253,7 @@ class ProductionCanonContractTests(unittest.TestCase):
             onboarding_index["tutorial_clock_behavior"],
             "CONTINUOUS_FROM_DEPLOY",
         )
+        self.assertEqual(onboarding_index["guided_opening_eta_seconds"], 28.0)
         self.assertEqual(
             onboarding_index["tutorial_opening_guardrail"],
             "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
@@ -260,6 +261,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(
             onboarding_index["tutorial_handoff_pressure"],
             "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
+        )
+        self.assertEqual(
+            onboarding_index["implementation_status"],
+            "TITLE_FULL_RULE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
         )
         self.assertEqual(
             onboarding_index["pre_deploy_rule_scope"],
@@ -282,14 +287,15 @@ class ProductionCanonContractTests(unittest.TestCase):
             "CONTINUOUS_FROM_DEPLOY",
             "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
             "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
-            "first intended session only",
+            "first intended session",
             "same encounter",
             "Full rules before Deploy",
             "Vanguard",
             "Frontier Gate",
             "Gatebreaker",
             "Current Telegraph and ETA",
-            "USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED",
+            "USER_APPROVED / PHASE 1 CANON / TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING",
+            "per launch until persistence is separately specified",
         ):
             self.assertIn(token, onboarding)
         self.assertIn("Shared Turn Timer", onboarding)
@@ -326,7 +332,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("exact Godot runtime consumer", text)
         self.assertIn("does not become a runtime asset", text)
 
-    def test_current_main_reality_does_not_describe_core_029_as_unimplemented(self) -> None:
+    def test_current_worktree_reality_separates_merged_baseline_from_unmerged_improvements(self) -> None:
         data = self._index()
         reality = data["implementation_reality"]
         readme = README_PATH.read_text(encoding="utf-8")
@@ -339,10 +345,25 @@ class ProductionCanonContractTests(unittest.TestCase):
             "simulation_pause_controller",
             "enemy_realtime_scheduler",
             "skill_tactical_pause_runtime",
-            "production_60_40_ui",
             "runtime_image_consumers",
         ):
             self.assertEqual(reality[key], "IMPLEMENTED_ON_MERGED_MAIN")
+        self.assertEqual(
+            reality["production_50_50_ui"],
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
+        )
+        self.assertEqual(
+            reality["category_resolved_skill_039_runtime"],
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_CATEGORY_PREVIEW_CONFIRM_FALLBACK_PENDING_FULL_VERIFICATION",
+        )
+        self.assertEqual(
+            reality["chain_038_runtime_alignment"],
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_ALL_AXES_MP_LOCK_CAP10_PER_WAVE_RECOVERY_PENDING_FULL_VERIFICATION",
+        )
+        self.assertEqual(
+            reality["first_session_briefing_and_tutorial"],
+            "TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
+        )
         self.assertEqual(
             reality["merged_main_runtime"],
             "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
@@ -365,6 +386,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(reality["production_human_playtest"], "NOT_RUN")
         self.assertIn("CORE-029 Production runtime: **main에 구현됨**", readme)
+        self.assertIn("current worktree additionally contains the user-directed 50/50 battle composition", readme)
         self.assertIn("1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a", readme)
         self.assertIn("92b59bccd2ea45f772003b4abac2d9aa84672307", readme)
         self.assertIn("fb55b96f2612497f356bae6586429b944d35d7a8", readme)

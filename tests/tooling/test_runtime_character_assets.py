@@ -22,7 +22,9 @@ EXPECTED_ASSETS = {
         "resource_id": "6_vanguard_cutout",
         "node_name": "VanguardReference",
         "anchor_left": "0.0",
-        "anchor_right": "0.6",
+        "anchor_top": "0.0",
+        "anchor_right": "0.32",
+        "anchor_bottom": "1.0",
         "z_index": "2",
     },
     "TETRIS-IMG-034": {
@@ -31,8 +33,10 @@ EXPECTED_ASSETS = {
         "consumer": "MainRow/CombatColumn/CombatStage/GatebreakerReference",
         "resource_id": "7_gatebreaker_cutout",
         "node_name": "GatebreakerReference",
-        "anchor_left": "0.34",
+        "anchor_left": "0.18",
+        "anchor_top": "-0.06",
         "anchor_right": "1.0",
+        "anchor_bottom": "1.06",
         "z_index": "1",
     },
 }
@@ -183,8 +187,8 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 )
                 block = scene_node_block(scene, expected["node_name"])
                 self.assertIn(f'texture = ExtResource("{expected["resource_id"]}")', block)
-                self.assertIn("anchor_top = 0.0", block)
-                self.assertIn("anchor_bottom = 1.0", block)
+                self.assertIn(f'anchor_top = {expected["anchor_top"]}', block)
+                self.assertIn(f'anchor_bottom = {expected["anchor_bottom"]}', block)
                 self.assertIn(f'anchor_left = {expected["anchor_left"]}', block)
                 self.assertIn(f'anchor_right = {expected["anchor_right"]}', block)
                 self.assertIn(f'z_index = {expected["z_index"]}', block)

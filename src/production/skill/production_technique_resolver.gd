@@ -35,6 +35,52 @@ func resolve(definition: Dictionary, context: Dictionary) -> Dictionary:
 		results.append(result)
 	return {"ok": true, "results": results}
 
+func preflight_effects(effects: Array, context: Dictionary) -> Dictionary:
+	if effects.is_empty():
+		return {"ok": false, "reason": "NO_EFFECTS"}
+	for effect_variant in effects:
+		if not effect_variant is Dictionary or not _effect_is_ready(effect_variant, context):
+			return {"ok": false, "reason": "EFFECT_NOT_READY"}
+	return {"ok": true, "effects": effects.duplicate(true)}
+
+func resolve_preflighted_effects(preflight: Dictionary, context: Dictionary) -> Dictionary:
+	if not bool(preflight.get("ok", false)) or not preflight.get("effects") is Array:
+		return {"ok": false, "reason": "INVALID_PREFLIGHT"}
+	var results: Array = []
+	for effect_variant in preflight["effects"]:
+		var result: Dictionary = _effect_executor.execute(effect_variant, context)
+		if not bool(result.get("ok", false)):
+			return {"ok": false, "reason": result.get("reason", "EFFECT_FAILED")}
+		results.append(result)
+	return {"ok": true, "results": results}
+
+func capture_effect_checkpoint(context: Dictionary) -> Dictionary:
+	var checkpoint: Dictionary = {}
+	for owner_key in ["player", "enemy"]:
+		var owner = context.get(owner_key)
+		if owner != null and owner.has_method("snapshot_state"):
+			checkpoint[owner_key] = owner.snapshot_state()
+	for owner_key in ["response_state", "board_opportunity", "enemy_scheduler"]:
+		var owner = context.get(owner_key)
+		var method_name: String = String({"response_state": "snapshot_action_state", "board_opportunity": "snapshot_state", "enemy_scheduler": "snapshot_current_action_state"}[owner_key])
+		if owner != null and owner.has_method(method_name):
+			checkpoint[owner_key] = owner.call(method_name)
+	return checkpoint
+
+func restore_effect_checkpoint(checkpoint: Dictionary, context: Dictionary) -> bool:
+	for owner_key in ["player", "enemy"]:
+		if checkpoint.has(owner_key):
+			var owner = context.get(owner_key)
+			if owner == null or not owner.has_method("restore_state") or not owner.restore_state(checkpoint[owner_key]):
+				return false
+	for owner_key in ["response_state", "board_opportunity", "enemy_scheduler"]:
+		if checkpoint.has(owner_key):
+			var owner = context.get(owner_key)
+			var method_name: String = String({"response_state": "restore_action_state", "board_opportunity": "restore_state", "enemy_scheduler": "restore_current_action_state"}[owner_key])
+			if owner == null or not owner.has_method(method_name) or not owner.call(method_name, checkpoint[owner_key]):
+				return false
+	return true
+
 func _effect_is_ready(effect: Dictionary, context: Dictionary) -> bool:
 	var op := String(effect.get("op", ""))
 	var magnitude := int(effect.get("magnitude", 0))

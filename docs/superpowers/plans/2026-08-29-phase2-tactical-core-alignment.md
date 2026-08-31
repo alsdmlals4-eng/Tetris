@@ -14,7 +14,7 @@
 
 - Issue: [#82](https://github.com/alsdmlals4-eng/Tetris/issues/82). Status: `USER_APPROVED_FOR_IMPLEMENTATION`. The user approved the capped stored board-opportunity reserve on 2026-08-29. Start only the first bounded implementation PR after its exact Issue/Goal, RED tests and isolation gate are in place.
 - Work from a fresh isolated `codex/` worktree created from the latest completed `main`; all other open/draft PRs remain read-only.
-- Preserve continuous CORE-029 combat, one active 60/40 Puzzle/Combat surface, persistent LINE↔CHAIN state, full tokenized Skill/manual pause, and explicit scheduler commit boundaries.
+- Preserve continuous CORE-029 combat, one active **50:50 Puzzle/Combat** desktop surface, persistent LINE↔CHAIN state, full tokenized Skill/manual pause, and explicit scheduler commit boundaries. The ratio was updated by the user's later visual-direction approval; it remains a readability target rather than a fixed pixel law.
 - Use `energy` and `stock` as internal field names in this delivery. Player-facing labels are `MP` and `COMBO`; no broad field-name migration is permitted.
 - MP cap is exactly `60`; Combo cap is exactly `10`. A successful CHAIN wave awards Combo before its own MP recovery: `sum(maximal qualified line lengths) - 3 + post-wave Combo`.
 - A failed CHAIN swap resets Combo exactly once. A player may spend exactly `1 MP` to keep that already-swapped board, but that lock gives no immediate clear, cascade, Combo, or CHAIN MP.
@@ -65,7 +65,7 @@ The candidate must be a valid lane/stage definition and must have one legal curr
 | --- | --- | --- |
 | PR A — CHAIN/resource core | `production_combat_state.gd`, `chain_board.gd`, `production_chain_config.gd`, `production_chain_session.gd`, `production_combat_runtime.gd`, `production_battle.gd`, `battle.tscn`, chain seed and focused tests | Diagonal groups, per-wave Combo/MP, 60/10 caps, deterministic failed-swap lock prompt. |
 | PR B — Skill/time control | `player_board_opportunity_state.gd` (new), scheduler, Skill catalog/session/resolver/executor, bootstrap, skill seed, runtime/UI/scene and focused tests | Data-driven C1–C10 resolution, fallback, target-separated timing, category preview/CONFIRM. |
-| PR C — First session | `first_session_progress.gd` (new), `battle_briefing.gd` (new), `battle_briefing.tscn` (new), tutorial state/seed (new), bootstrap/runtime/UI/scene/project config and focused tests | Full rule review, safe continuous live practice, re-openable rules, real encounter handoff. |
+| PR C — First session | title/briefing UI, guided-practice state, bootstrap/runtime/UI/scene/project config and focused tests | Full rule review at each launch until persistence is separately specified, safe continuous live practice, and real encounter handoff. |
 | Documentation/verification | This plan, current canonical contracts, human evidence index/contract, Issue #82 and PR descriptions | Evidence boundaries, accepted seeds, exact-head/runtime/Human readback. |
 
 The same implementation agent must not combine PR A/B/C just to reduce Git work. Each PR is a review gate and has an independently runnable behavior. A defect in a later PR is fixed against latest merged `main`, never by rewriting an older open PR.
@@ -78,7 +78,7 @@ The same implementation agent must not combine PR A/B/C just to reduce Git work.
 | C1–C10 data and category-resolved preview/CONFIRM | `PARTIAL` | The current JSON/catalog/session/executor path is data-driven and pause-aware, but it is legacy manual Tier 1–6 with an unexecuted multiplier. PR B replaces that schema and removes the multiplier dependency. |
 | Player board opportunity | `PARTIAL` | `ProductionLineSession.tick(delta)` is isolated from `EnemyActionScheduler.tick_simulation(delta)`. `PlayerBoardOpportunityState` is a narrow LINE-delta gate, so it is feasible without a global clock or inactive-workspace simulation. |
 | Exact current Telegraph ETA adjustment | `FEASIBLE` | Scheduler already owns `_remaining_seconds`, `current_action_id()`, `next_action_id()`, and `is_action_committed()`. PR B adds an ID-checked adjustment method at that owner. |
-| First briefing and safe live practice | `FEASIBLE` | `project.godot` has one direct Battle entry and runtime/telemetry already own simulation state. PR C adds a small entry scene, a one-bit local completion record, and observed tutorial state without a parallel economy or combat loop. |
+| First briefing and safe live practice | `FEASIBLE` | `project.godot` can enter through a small title and briefing scene while runtime/telemetry own simulation state. The current delivery uses a per-launch accessible rule acknowledgement until a separately scoped persistence owner exists, plus observed guided-practice state without a parallel economy or combat loop. |
 | Runtime readability, strategy quality, and fun | `BLOCKED_UNVERIFIED` | Automated tests can prove deterministic behavior only. Target-device runtime receipt and three independent Human first-exposure sessions are still required. |
 
 Fresh official Godot research was read on 2026-08-29: [Engine time scale](https://docs.godotengine.org/en/stable/classes/class_engine.html), [pausing and process modes](https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html), and [SceneTree](https://docs.godotengine.org/en/stable/classes/class_scenetree.html). `Engine.time_scale` affects timers and delta-driven simulation broadly, so it is rejected. Existing tokenized pause and local runtime delta ownership are the compatible implementation path.
@@ -746,26 +746,24 @@ git commit -m "feat: present combo resolved skill confirmation"
 - Create: `tests/production/ui/test_battle_briefing.gd`
 
 **Interfaces:**
-- `FirstSessionProgress.is_briefing_complete() -> bool`, `mark_briefing_complete() -> bool`, `reset_for_test() -> void`; it stores only `{ "briefing_complete": true }` at `user://first_session_progress.json`.
-- `BattleBriefing.configure(reference_mode: bool = false) -> void`; first visit disables Deploy until the rules `ScrollContainer` reaches its end, later visit enables Deploy immediately, reference mode never changes progress.
-- `BattleBriefing.deployed` signal causes the main scene to change to `battle.tscn`; a `RulesButton` in Battle opens the same scene in reference mode inside a `PopupPanel`.
+- `ProductionFirstSessionFlow` owns the local `Title → BattleBriefing → Deploy → Battle` transition and does not persist a visit-complete flag.
+- `BattleBriefing` disables Deploy until the rules `ScrollContainer` reaches its end or the accessible equivalent acknowledgement is completed on each launch. Later-visit immediate Deploy and an in-battle rules popup remain out of scope until persistence is separately specified.
+- `BattleBriefing.deployed` causes the main scene to change to `battle.tscn`; the title screen remains the real entry point and reserves a title-logo consumer slot for a user-locked candidate.
 - The seed text contains only existing world facts: Vanguard, Frontier Gate, Gatebreaker, imminent threat, LINE MP, CHAIN rule/reward/lock, C1–C10 category preview/confirm/fallback, and target-separated timing contrast.
 
 - [ ] **Step 1: Add failing progress and briefing-gate tests.**
 
 ```gdscript
-func test_first_visit_requires_full_rules_review_but_later_visit_can_deploy_immediately() -> void:
-    progress.reset_for_test()
+func test_each_launch_requires_full_rules_review_before_deploy() -> void:
     briefing.configure()
     assert_true(briefing.deploy_button.disabled)
     briefing.rules_scroll.scroll_vertical = briefing.rules_scroll.get_v_scroll_bar().max_value
     briefing._on_rules_scrolled()
     assert_false(briefing.deploy_button.disabled)
     briefing._on_deploy_pressed()
-    assert_true(progress.is_briefing_complete())
-    var revisit = _briefing()
-    revisit.configure()
-    assert_false(revisit.deploy_button.disabled)
+    var next_launch = _briefing()
+    next_launch.configure()
+    assert_true(next_launch.deploy_button.disabled)
 ```
 
 - [ ] **Step 2: Run briefing tests and confirm the direct-to-battle main scene fails.**
@@ -778,7 +776,7 @@ Expected: FAIL because there is no progress object, briefing scene, scroll gate,
 
 ```gdscript
 func _on_rules_scrolled() -> void:
-    if _reference_mode or _progress.is_briefing_complete():
+    if _reference_mode:
         _deploy_button.disabled = false
         return
     var bar := _rules_scroll.get_v_scroll_bar()
@@ -787,7 +785,6 @@ func _on_rules_scrolled() -> void:
 func _on_deploy_pressed() -> void:
     if _deploy_button.disabled:
         return
-    _progress.mark_briefing_complete()
     deployed.emit()
 ```
 
@@ -799,7 +796,7 @@ Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/pro
 
 Run: `godot --headless --path . --editor --quit`
 
-Expected: PASS; keyboard or pointer scrolling can satisfy the accessible review boundary, later runs expose immediate Deploy plus a readable rule summary, and no simulation begins before Deploy.
+Expected: PASS; keyboard or pointer scrolling can satisfy the accessible review boundary on each launch, the title/briefing route remains re-readable, and no simulation begins before Deploy.
 
 - [ ] **Step 5: Commit the briefing entry surface.**
 
@@ -825,7 +822,7 @@ git commit -m "feat: add first session rules briefing"
 
 **Interfaces:**
 - Tutorial steps are `READ_THREAT`, `LINE_REWARD`, `CHAIN_REWARD`, `SKILL_PREVIEW`, `SKILL_CONFIRM`, `FREE_PLAY`.
-- The first-session seed adds `tutorial_opening_eta_seconds: 45.0` and `tutorial_nonterminal_until_first_confirm: true`.
+- The guided-practice state sets `opening_eta_seconds() -> 28.0`; the live first current Telegraph is extended to that shared ETA and `tutorial_nonterminal_until_first_confirm` is true.
 - Scheduler uses `tutorial_opening_eta_seconds` only for its first displayed current action after Deploy; it still decrements continuously.
 - Before first confirmed Skill, enemy direct damage obeys an explicit nonterminal floor of 1 HP; resource loss, board play, switching, and all timing remain real. The guard is removed permanently on first confirmed Skill.
 - Telemetry records `TUTORIAL_STEP_COMPLETED`, `TUTORIAL_SAFE_OPENING_STARTED`, and `TUTORIAL_FREE_PLAY_STARTED` with simulation time.
@@ -833,10 +830,10 @@ git commit -m "feat: add first session rules briefing"
 - [ ] **Step 1: Add failing safe-opening and seamless-handoff tests.**
 
 ```gdscript
-func test_safe_opening_uses_live_45_second_eta_and_cannot_defeat_before_confirm() -> void:
+func test_safe_opening_uses_live_28_second_eta_and_cannot_defeat_before_confirm() -> void:
     runtime.start_battle()
-    assert_almost_eq(runtime.snapshot()["enemy_eta_seconds"], 45.0, 0.001)
-    runtime.tick(44.0)
+    assert_almost_eq(runtime.snapshot()["enemy_eta_seconds"], 28.0, 0.001)
+    runtime.tick(27.0)
     assert_false(runtime.is_terminal())
     runtime.tick(1.0)
     assert_gte(player.hp, 1)
@@ -918,7 +915,7 @@ Expected: PASS with no new parser, test, or strict-GUT-log failure.
 - [ ] **Step 3: Perform the target-device runtime scenario without promoting Human evidence.**
 
 ```text
-Launch BattleBriefing → complete rule review → Deploy → read live 45-second ETA → make one LINE MP reward → make one diagonal CHAIN reward → fail one swap and choose restore or 1-MP keep → open Skill → inspect a C5 preview → cancel → inspect a target-separated time preview → CONFIRM → verify unchanged comparison value → finish or Retry.
+Launch Title → BattleBriefing → complete rule review → Deploy → read live 28-second shared ETA → make one LINE MP reward → make one diagonal CHAIN reward → fail one swap and choose restore or 1-MP keep → open Skill → inspect a C5 preview → cancel → inspect a target-separated time preview → CONFIRM → verify unchanged comparison value → finish or Retry.
 ```
 
 - [ ] **Step 4: Record the actual result and adversarial closeout.**
@@ -942,7 +939,7 @@ Use the exact reviewed HEAD for CI/readback, then squash merge only the current-
 - CHAIN-038 is covered by Tasks 1–3: orthogonal swaps remain, H/V/diagonal runs become maximal groups, waves award Combo then MP, cap/lock/reset semantics are deterministic.
 - SKILL-039/BALANCE-040/SKILL-042 are covered by Tasks 4–7: C1–C10 data, category preview, deliberate C5, forced shortage fallback, atomic confirm, and exact current-action target separation.
 - The unresolved multiplier is removed from new content rather than silently skipped.
-- `TETRIS-ONBOARDING-037` is covered by Tasks 8–9: short world framing, full pre-Deploy rules, live but safe opening, actual encounter handoff, later re-openable rules.
+- `TETRIS-ONBOARDING-037` is covered by Tasks 8–9: short world framing, full pre-Deploy rules, live but safe opening, actual encounter handoff, and a per-launch review boundary until persistence is separately specified.
 - Visual-041 is protected by Task 7: existing theme and runtime consumers only; no reference board is promoted to a production asset.
 - Runtime/Human evidence ceiling is covered by Task 10.
 
@@ -969,4 +966,4 @@ The plan specifies owners, paths, method names, return shapes, test cases, value
 
 ## Approval gate
 
-This contract intentionally sets numeric seeds, the LINE-only board-opportunity mechanism, a 45-second first safe ETA, exact new data fields, and three implementation PR boundaries. On 2026-08-29 the user approved the recommended capped stored-reserve mechanism; this contract is therefore `USER_APPROVED_FOR_IMPLEMENTATION`. Each PR still requires its own exact Issue/Goal, RED tests, isolation and review gate. Neither approval nor automated checks turn current docs into Human usability/pass evidence.
+This contract intentionally sets numeric seeds, the LINE-only board-opportunity mechanism, a **28-second** first safe shared ETA, exact new data fields, and three implementation PR boundaries. The user's later direct approvals replace the prior 60/40, 45-second and persisted-revisit assumptions above; this current worktree therefore implements a 50:50 desktop target, 28-second live opening, and per-launch review boundary. On 2026-08-29 the user approved the recommended capped stored-reserve mechanism; this contract is therefore `USER_APPROVED_FOR_IMPLEMENTATION`. Each PR still requires its own exact Issue/Goal, RED tests, isolation and review gate. Neither approval nor automated checks turn current docs into Human usability/pass evidence.

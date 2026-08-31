@@ -81,13 +81,22 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
-    def test_partial_catalog_adoption_keeps_unfinished_selection_flow_honest(self) -> None:
+    def test_current_catalog_adoption_keeps_category_resolved_selection_flow_honest(self) -> None:
         contract = CONTRACT.read_text(encoding="utf-8")
-        self.assertIn("PARTIAL_IMPLEMENTATION_NOT_RUNTIME_VERIFIED", contract)
+        battle_ui = BATTLE_UI.read_text(encoding="utf-8")
+        skill_session = SKILL_SESSION.read_text(encoding="utf-8")
+        self.assertIn(
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_CATEGORY_PREVIEW_CONFIRM_FALLBACK_PENDING_FULL_VERIFICATION",
+            contract,
+        )
         self.assertIn("stage < 1 or stage > 10", CATALOG.read_text(encoding="utf-8"))
         self.assertIn("combo_cost", CATALOG.read_text(encoding="utf-8"))
-        self.assertIn("TierGrid", BATTLE_UI.read_text(encoding="utf-8"))
-        self.assertIn("select_technique", SKILL_SESSION.read_text(encoding="utf-8"))
+        self.assertNotIn("TierGrid", battle_ui)
+        self.assertIn("ResolvedPreview", battle_ui)
+        self.assertIn("ConfirmButton", battle_ui)
+        self.assertIn("select_skill_category", battle_ui)
+        self.assertIn("select_category", skill_session)
+        self.assertNotIn("select_technique", skill_session)
 
     def test_visual_direction_rejects_the_old_dark_matrix_and_uses_the_user_reference_language(self) -> None:
         bible = VISUAL_BIBLE.read_text(encoding="utf-8")

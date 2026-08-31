@@ -35,31 +35,35 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
             })
             self.assertIsInstance(row["blockers"], list)
 
-    def test_runtime_and_planned_surfaces_are_not_promoted_to_each_other(self) -> None:
+    def test_runtime_and_planned_surfaces_remain_truthfully_classified(self) -> None:
         rows = {row["screen_id"]: row for row in json.loads(INVENTORY.read_text(encoding="utf-8"))["screens"]}
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
-        self.assertEqual("COVERED_EXISTING_FOR_CORE_RUNTIME", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION", rows["TETRIS-SCREEN-007"]["coverage_status"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-008"]["consumer_kind"])
-        self.assertEqual("PLANNED_GAME_SURFACE", rows["TETRIS-SCREEN-002"]["consumer_kind"])
+        self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-002"]["consumer_kind"])
         self.assertEqual("PRODUCT_DISTRIBUTION", rows["TETRIS-SCREEN-016"]["consumer_kind"])
         self.assertNotEqual("COVERED_EXISTING", rows["TETRIS-SCREEN-016"]["coverage_status"])
 
-    def test_first_session_briefing_is_required_but_not_promoted_to_runtime(self) -> None:
+    def test_first_session_briefing_and_embedded_guide_are_implemented_but_not_human_validated(self) -> None:
         inventory = json.loads(INVENTORY.read_text(encoding="utf-8"))
         rows = {row["screen_id"]: row for row in inventory["screens"]}
 
         self.assertEqual("TETRIS-ONBOARDING-037", inventory["first_session_onboarding"]["decision"])
         self.assertEqual(
-            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+            "USER_APPROVED_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
             inventory["first_session_onboarding"]["status"],
         )
-        self.assertEqual("PLANNED_GAME_SURFACE", rows["TETRIS-SCREEN-006"]["consumer_kind"])
-        self.assertEqual("GAP_BLOCKING_FOR_INTENDED_FIRST_SESSION", rows["TETRIS-SCREEN-006"]["coverage_status"])
+        self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-006"]["consumer_kind"])
+        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION", rows["TETRIS-SCREEN-006"]["coverage_status"])
         self.assertEqual("GAME_RUNTIME", rows["TETRIS-SCREEN-007"]["consumer_kind"])
-        self.assertEqual("COVERED_EXISTING_FOR_CORE_RUNTIME", rows["TETRIS-SCREEN-007"]["coverage_status"])
+        self.assertEqual("IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION", rows["TETRIS-SCREEN-007"]["coverage_status"])
         self.assertEqual(
             "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
             inventory["first_session_onboarding"]["first_visit_deploy_gate"],
+        )
+        self.assertEqual(
+            "PER_LAUNCH_RULE_ACKNOWLEDGEMENT_UNTIL_PERSISTENCE_IS_SPECIFIED",
+            inventory["first_session_onboarding"]["later_visit_deploy_behavior"],
         )
         self.assertEqual(
             "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
@@ -73,6 +77,10 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
             "CONTINUOUS_FROM_DEPLOY",
             inventory["first_session_onboarding"]["tutorial_clock_behavior"],
         )
+        self.assertEqual(
+            28.0,
+            inventory["first_session_onboarding"]["guided_opening_eta_seconds"],
+        )
         self.assertIn("first intended session only", rows["TETRIS-SCREEN-006"]["player_goal"])
         self.assertIn("same encounter", rows["TETRIS-SCREEN-007"]["player_goal"])
         self.assertIn("safe live opening", rows["TETRIS-SCREEN-007"]["player_goal"])
@@ -84,7 +92,7 @@ class ScreenSurfaceInventoryTests(unittest.TestCase):
         text = GUIDE.read_text(encoding="utf-8")
         for token in (
             "Whole-screen evidence requirement", "TETRIS-IMG-031", "TETRIS-IMG-036",
-            "no bitmap UI queue", "planned, not implemented", "not a claim that every listed screen is currently implemented",
+            "no bitmap UI queue", "not yet a Godot scene or runtime asset", "not a claim that every listed screen is currently implemented",
         ):
             self.assertIn(token, text)
 

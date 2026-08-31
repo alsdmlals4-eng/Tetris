@@ -87,6 +87,11 @@ func next_action_id() -> String:
         return ""
     return String(_telegraph.next_action().get("id", ""))
 
+func current_action_kind() -> String:
+    if _telegraph == null:
+        return ""
+    return String(_telegraph.current_action().get("kind", ""))
+
 func remaining_seconds() -> float:
     return _remaining_seconds
 

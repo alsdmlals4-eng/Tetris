@@ -4,7 +4,7 @@
 
 Read current production gameplay in this order:
 
-1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 60:40 battle composition authority (`TETRIS-CORE-029`).
+1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 50:50 battle composition authority (`TETRIS-CORE-029`).
 2. `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` — current `ATK / DEF / SUP` category-only, Combo-Resolved preview/explicit CONFIRM and bounded 5-MP fallback authority (`TETRIS-SKILL-039` / `TETRIS-BALANCE-040`).
 3. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar, optional MP lock, Combo recovery and preserved opportunity cost (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
 5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
@@ -87,7 +87,7 @@ For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, da
 
 ## UI / UX invariants
 
-- Target desktop composition: approximately `60% large Puzzle Surface / 40% persistent Combat-Threat-Resource-Skill surface`.
+- Target desktop composition: approximately `50% large Puzzle Surface / 50% persistent Combat-Threat-Resource-Skill surface`.
 - The ratio is a readability target, not a fixed pixel law.
 - Right-side surface keeps enemy HP/phase, Current Telegraph + ETA, lower-priority Next Forecast when known, player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
 - Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context and a category-resolved preview.

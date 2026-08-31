@@ -1,4 +1,4 @@
-## CORE-029 전투 화면이 단일 60/40 퍼즐·전투 표면과 pause 가능한 스킬 문맥을 제공하는지 검증한다.
+## CORE-029 전투 화면이 단일 50/50 퍼즐·전투 표면과 pause 가능한 스킬 문맥을 제공하는지 검증한다.
 extends GutTest
 
 const BATTLE_SCENE_PATH := "res://scenes/production/battle.tscn"
@@ -21,7 +21,7 @@ func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 			return true
 	return false
 
-func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> void:
+func test_battle_surface_has_required_50_50_hierarchy_without_a_turn_rail() -> void:
 	assert_true(ResourceLoader.exists(BATTLE_SCENE_PATH), "CORE-029 production battle scene must exist")
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
 		return
@@ -35,15 +35,16 @@ func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> v
 		"MainRow/PuzzleColumn/PuzzleHost/LineBoardView",
 		"MainRow/PuzzleColumn/PuzzleHost/ChainBoardView",
 		"MainRow/CombatColumn/ThreatFrame/ThreatPanel",
+		"MainRow/CombatColumn/ThreatFrame/ThreatPanel/GuidedPracticePrompt",
 		"MainRow/CombatColumn/CombatStage",
-		"MainRow/CombatColumn/ResourceFrame/ResourceBar",
+		"MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar",
 		"MainRow/CombatColumn/SkillFrame/SkillPanel",
 	]:
-		assert_not_null(battle.get_node_or_null(node_path), "%s is required by the 60/40 battle composition" % node_path)
+		assert_not_null(battle.get_node_or_null(node_path), "%s is required by the 50/50 battle composition" % node_path)
 	var puzzle_column: Control = battle.get_node_or_null("MainRow/PuzzleColumn")
 	var combat_column: Control = battle.get_node_or_null("MainRow/CombatColumn")
-	assert_almost_eq(puzzle_column.size_flags_stretch_ratio, 0.6, 0.01)
-	assert_almost_eq(combat_column.size_flags_stretch_ratio, 0.4, 0.01)
+	assert_almost_eq(puzzle_column.size_flags_stretch_ratio, 0.5, 0.01)
+	assert_almost_eq(combat_column.size_flags_stretch_ratio, 0.5, 0.01)
 	assert_eq(battle.find_children("*Turn*", "", true, false).size(), 0, "CORE-029 must not restore a turn rail")
 	assert_false(battle.get_node("MainRow/PuzzleColumn/ChainLockFrame").visible, "a lock choice appears only after a failed Chain swap")
 
@@ -88,28 +89,54 @@ func test_mode_buttons_switch_the_single_visible_puzzle_surface() -> void:
 	assert_true(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/LineBoardView").visible)
 	assert_false(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/ChainBoardView").visible)
 
-func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
+func test_puzzle_board_precedes_controls_and_surfaces_tetris_chain_feedback_below_it() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var puzzle_column: VBoxContainer = battle.get_node("MainRow/PuzzleColumn")
+	var host: Control = battle.get_node("MainRow/PuzzleColumn/PuzzleHost")
+	var feedback_frame: Control = battle.get_node_or_null("MainRow/PuzzleColumn/PuzzleFeedbackFrame")
+	var lock_frame: Control = battle.get_node("MainRow/PuzzleColumn/ChainLockFrame")
+	var mode_frame: Control = battle.get_node("MainRow/PuzzleColumn/ModeFrame")
+	assert_not_null(feedback_frame, "TETRIS and CHAIN outcomes require a persistent text feedback surface")
+	if feedback_frame != null:
+		assert_lt(puzzle_column.get_children().find(host), puzzle_column.get_children().find(feedback_frame), "the board must keep the available top area")
+	assert_lt(puzzle_column.get_children().find(host), puzzle_column.get_children().find(lock_frame), "the conditional Chain decision belongs below the board")
+	assert_lt(puzzle_column.get_children().find(host), puzzle_column.get_children().find(mode_frame), "mode guidance belongs below the active puzzle")
+	assert_true(battle.has_method("_refresh_puzzle_feedback"))
+	assert_not_null(battle.get_node_or_null("MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack/PuzzleFeedback"))
+	assert_not_null(battle.get_node_or_null("MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack/ChainFeedback"))
+
+func test_skill_panel_exposes_category_resolved_preview_and_confirm_controls() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
 		return
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	for node_path in ["Attack", "Defense", "Support"]:
 		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/%s" % node_path))
-	for tier in range(1, 7):
-		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier))
-	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton"))
+	assert_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/ResolvedPreview"))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/ConfirmButton"))
 	assert_true(battle.has_method("select_skill_category"))
-	assert_true(battle.has_method("select_skill_tier"))
+	assert_false(battle.has_method("select_skill_tier"))
 
-func test_skill_panel_groups_categories_and_tiers_for_the_compact_combat_column() -> void:
+func test_skill_panel_groups_categories_and_one_resolved_preview_for_the_compact_combat_column() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	var skill_panel_path := "MainRow/CombatColumn/SkillFrame/SkillPanel"
 	assert_not_null(battle.get_node_or_null("%s/SkillCategories" % skill_panel_path))
-	var tier_grid = battle.get_node_or_null("%s/TierGrid" % skill_panel_path)
-	assert_not_null(tier_grid)
-	if tier_grid != null:
-		assert_eq(tier_grid.columns, 3, "six tiers must use a compact 3-column grid instead of pushing USE below the viewport")
+	assert_not_null(battle.get_node_or_null("%s/ResolvedPreview" % skill_panel_path))
+	assert_not_null(battle.get_node_or_null("%s/ConfirmButton" % skill_panel_path))
+
+func test_skill_categories_reserve_illustrated_seal_slots_without_restoring_a_tier_grid() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	for category_name in ["Attack", "Defense", "Support"]:
+		var category: Button = battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/%s" % category_name)
+		var seal: TextureRect = category.get_node_or_null("CategorySeal")
+		assert_not_null(seal, "%s needs a bounded category-seal icon slot" % category_name)
+		if seal != null:
+			assert_eq(seal.mouse_filter, Control.MOUSE_FILTER_IGNORE)
+			assert_gte(seal.custom_minimum_size.x, 32.0, "%s seal must remain legible as the compact column changes width" % category_name)
 
 func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
@@ -124,6 +151,27 @@ func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	assert_not_null(backdrop.texture, "the stage backdrop needs a deterministic placeholder or production texture")
 	assert_eq(backdrop.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_COVERED, "the wide stage slot must cover its full bounds")
 	assert_true(backdrop.mouse_filter == Control.MOUSE_FILTER_IGNORE, "the decorative backdrop must never intercept battle controls")
+
+func test_combat_stage_gives_gatebreaker_the_dominant_silhouette_and_keeps_vanguard_compact() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var gatebreaker: TextureRect = battle.get_node("MainRow/CombatColumn/CombatStage/GatebreakerReference")
+	var vanguard: TextureRect = battle.get_node("MainRow/CombatColumn/CombatStage/VanguardReference")
+	assert_lte(gatebreaker.anchor_left, 0.24, "the Gatebreaker must enter early enough to dominate the combat stage")
+	assert_eq(gatebreaker.anchor_right, 1.0)
+	assert_lte(vanguard.anchor_right, 0.4, "the Vanguard cutout must not compete with the boss silhouette")
+	assert_eq(vanguard.anchor_left, 0.0)
+
+func test_resource_surface_exposes_a_large_vanguard_portrait_separate_from_the_boss_stage() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var portrait: TextureRect = battle.get_node_or_null("MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait")
+	assert_not_null(portrait, "the player-facing resource strip needs a dedicated, readable Vanguard portrait")
+	if portrait == null:
+		return
+	assert_not_null(portrait.texture)
+	assert_gte(portrait.custom_minimum_size.x, 72.0, "the portrait must remain readable at battle scale")
+	assert_eq(portrait.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 
 func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions() -> void:
 	for action_name in [

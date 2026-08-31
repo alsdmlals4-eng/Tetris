@@ -1,7 +1,7 @@
 # Combo Stage Skill Content GDD
 
 - Decision: `TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`
-- Status: `USER_APPROVED / PHASE 2 MECHANISM LOCK / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / PHASE 2 MECHANISM LOCK / IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION`
 - Issue: [#80](https://github.com/alsdmlals4-eng/Tetris/issues/80)
 - Date: 2026-08-29
 - Extends: `TETRIS-SKILL-039`, `TETRIS-BALANCE-040`, `TETRIS-CHAIN-038`, and `TETRIS-CORE-029`.
@@ -56,7 +56,7 @@ Target: Enemy   | Current pattern ETA: +N seconds    | Player board time unchang
 - A decelerated enemy ETA cannot cross into an already-resolved action; an accelerated enemy ETA cannot retroactively resolve an action inside tactical pause. The scheduler's commit boundary remains authoritative.
 - Tactical pause freezes both domains. A preview never advances, shortens or restores any clock. The approved effect begins only after `CONFIRM` and battle resume.
 - Player board-play opportunity is a player-side effect, not a global `Engine.time_scale` change. It must not slow or speed enemy ETA, status ticking, VFX, audio or the inactive workspace.
-- The active runtime has no player board-time controller. The user-approved Phase 2 mechanism is a **bounded stored opportunity reserve**: confirmed player-target effects add their displayed seconds to a `12.0`-second maximum reserve; while continuous simulation is running and `LINE` is the active workspace, the reserve supplies `0.0` only to LINE gravity/lock advancement while LINE input stays enabled. It consumes no reserve in `CHAIN`, during Skill/manual pause, or after terminal state; it does not change the scheduler's full real delta. This is `APPROVED / NOT IMPLEMENTED`, not an existing Haste translation.
+- The current worktree implements the user-approved **bounded stored opportunity reserve**: confirmed player-target effects add their displayed seconds to a `12.0`-second maximum reserve; while continuous simulation is running and `LINE` is the active workspace, the reserve supplies `0.0` only to LINE gravity/lock advancement while LINE input stays enabled. It consumes no reserve in `CHAIN`, during Skill/manual pause, or after terminal state; it does not change the scheduler's full real delta. This is `IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION`, not a global Haste translation.
 
 This explicitly replaces the unsafe historical interpretation of `Haste`, `Battle Trance`, turn-only duration and Tempo. They remain `REALTIME_MIGRATION_REQUIRED` and are not silently re-enabled.
 
@@ -109,22 +109,22 @@ After confirmation, the combat surface must show the same target-separated resul
 
 The first-session briefing teaches this in one contrast: **"Slow the Gatebreaker to gain pattern time; accelerate yourself to gain board time. They are different effects."** The safe tutorial may demonstrate one, but must not imply that an unshown effect already works in runtime.
 
-## 6. Fresh feasibility classification
+## 6. Current-worktree feasibility and implementation classification
 
 | Surface | Current evidence | Classification | Required Phase 2 boundary |
 | --- | --- | --- | --- |
-| Category → resolved preview → explicit confirm | Existing pause token, category selection, preview/commit split and rollback in `ProductionSkillSession`. | `PARTIAL` | Replace manual technique-id/Tier-grid selection with the deterministic C1–C10 lane resolver and bounded fallback transaction. |
-| Enemy current-ETA acceleration/deceleration | `EnemyActionScheduler` owns `_remaining_seconds`, current action id and a commit boundary. | `FEASIBLE_WITH_NEW_EFFECT_PRIMITIVE` | Add an exact-action-id ETA adjustment primitive; clamp safely at the scheduler commit boundary and log before/after ETA. |
-| Player board-play acceleration/deceleration | Current runtime ticks the active workspace but owns no player-side board-time window or duration state. | `APPROVED_MECHANISM_NOT_IMPLEMENTED` | Create the user-approved bounded stored-opportunity controller: cap `12.0`, consume only while active LINE gravity/lock is held at `0.0` with input enabled, persist through workspace switching, pause exactly with simulation, and never mutate enemy ETA. |
-| Existing data-driven effects | JSON definitions already use effect arrays; the catalog and executor validate a finite effect vocabulary. | `PARTIAL` | Add only the required target/time-domain primitives and data validation. Do not create per-skill scripts. |
-| Existing `CONDITIONAL_MULTIPLIER` claim | The catalog accepts it, but `ProductionTechniqueResolver` skips it during resolution. | `CONFLICT` | Do not author a Stage effect that depends on it until it is either implemented with tests or removed from authored content. |
-| Current Stage 1–10 player promise | Runtime catalog, combat state and CHAIN config still cap Tier/Stock at 6; data is legacy manual Tier 1–6. | `BLOCKED_UNVERIFIED` for runtime | Align CHAIN-038 and SKILL-039 first; this document does not promote content into data or runtime. |
+| Category → resolved preview → explicit confirm | `ProductionSkillSession` and `ProductionTechniqueResolver` provide category-only selection, one C1–C10 preview, rollback and atomic confirm. | `IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION` | Preserve category-only selection; no manual Tier-grid route may return. |
+| Enemy current-ETA acceleration/deceleration | `EnemyActionScheduler.adjust_current_eta` binds to the exact current action id and commit boundary. | `IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION` | Keep forecast and player board opportunity out of this primitive. |
+| Player board-play acceleration/deceleration | `PlayerBoardOpportunityState` caps at `12.0` and `ProductionCombatRuntime` suppresses only active LINE gravity/lock while enemy ETA uses full delta. | `IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION` | Keep it inactive in CHAIN, pause and terminal states. |
+| Existing data-driven effects | C1–C10 JSON definitions use a finite validated effect vocabulary and target-separated executor. | `IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION` | Do not create per-skill scripts or hidden effect types. |
+| Legacy `CONDITIONAL_MULTIPLIER` claim | The catalog rejects legacy multiplier schema in the current C1–C10 path. | `RESOLVED_BY_REJECTION` | Do not reintroduce it without an explicitly previewed, tested resolver. |
+| Current Stage 1–10 player promise | Runtime catalog, combat state, CHAIN cap/grammar, fallback, and battle UI align in this current worktree. | `IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION` | Target-resolution and Human evidence remain mandatory before balance/readability claims. |
 
 The technical assessment is grounded in the current scheduler and pause implementation plus the official Godot documentation: [pausing and process modes](https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html), [SceneTree timers](https://docs.godotengine.org/en/stable/classes/class_scenetree.html), and [Engine time scale](https://docs.godotengine.org/en/stable/classes/class_engine.html). Godot supports timer/process separation, but a global time scale would affect delta-driven simulation broadly, so it is explicitly rejected for this feature.
 
-## 7. Phase 2 acceptance contract, not authorization
+## 7. Phase 2 verification acceptance contract
 
-Before any implementation begins, one bounded implementation contract must specify data schema, exact seed values, UI nodes, telemetry names, controller ownership and tests. It must prove at least:
+The bounded implementation contract now owns data schema, exact seed values, UI nodes, telemetry names, controller ownership and tests. Exact-head verification must continue to prove at least:
 
 1. C1–C10 resolves from actual Combo and no manual lower-stage browse exists.
 2. A player can intentionally stop at C5 and receive the C5 effect; the MP-shortage fallback is not used in that case.
@@ -134,7 +134,7 @@ Before any implementation begins, one bounded implementation contract must speci
 6. Legacy `CONDITIONAL_MULTIPLIER` cannot silently produce a weaker cast than its preview.
 7. CHAIN cap-10/diagonal/MP-lock/per-wave reward and Skill C1–C10 alignment pass deterministic tests before target-resolution runtime and Human first-exposure validation.
 
-No Godot scene, runtime asset, production seed, test result, target-device render, Human usability result or player-experience result is created by this GDD.
+This GDD does not itself create a target-device render, Human usability result, balance result, or player-experience result.
 
 ## 8. Adversarial review closeout
 
@@ -149,7 +149,7 @@ No Godot scene, runtime asset, production seed, test result, target-device rende
 
 Document-only evidence was rerun on the GDD branch: canonical-reference scan (Loop 1), actual cap/multiplier contradiction scan (Loop 2), player-flow/time-axis scan (Loop 3), full changed-path boundary scan including untracked files (Loop 4), and JSON/local-link/review-gate scan (Loop 5). All five passed. Two validation-command defects—an overly specific prohibition literal and a shell-escaped link-check regex—were corrected in the validation commands before a pass was accepted; neither was a repository-content defect.
 
-`CLEAN_REVIEW_EXIT` applies to this Phase 1 document only. Runtime feasibility is `PARTIAL`, and Human/player evidence remains `NOT_RUN`.
+`CLEAN_REVIEW_EXIT` applies to the former document-only review only. The current worktree implementation is pending exact-head target-resolution verification, and Human/player evidence remains `NOT_RUN`.
 
 ## 9. Decision log
 

@@ -130,7 +130,7 @@ Puzzle/HUD readability remains higher priority than decorative texture and spect
 
 ## 8. CORE-029 current state
 
-The merged CORE-029 baseline has a real consumer: `TETRIS-IMG-031` is consumed by `MainRow/CombatColumn/CombatStage/StageBackdrop` in the main 60/40 Battle scene. This proves the consumer-first path is live; it does not promote reference sheets or approve a new image request by itself.
+The CORE-029 runtime has a real reusable consumer: `TETRIS-IMG-031` is consumed by `MainRow/CombatColumn/CombatStage/StageBackdrop` in the main 50/50 Battle scene and, without duplication, by `scenes/production/title.tscn` → `Backdrop` for the current worktree title atmosphere. This proves the consumer-first path is live; it does not promote reference sheets or approve a new image request by itself.
 
 Therefore:
 
@@ -157,7 +157,7 @@ The user has approved bounded derivation of two runtime source-asset candidates 
 | `TETRIS-IMG-033` · Vanguard Combat Cutout v1 | `IMG-P0-002` | `res://assets/production/characters/vanguard_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/VanguardReference` | `TextureRect.texture: Texture2D` | transparent alpha; vertical full body, sword and shield retained; max source dimension 1536 px; full-height, aspect-centered stage slot | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: IMPLEMENTED_ON_BRANCH` · `RUNTIME_VERIFICATION: SCENE_TREE_EQUIVALENT_RENDER_VERIFIED` |
 | `TETRIS-IMG-034` · Gatebreaker Combat Cutout v1 | `IMG-P0-003` | `res://assets/production/bosses/gatebreaker_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | `TextureRect.texture: Texture2D` | transparent alpha; full body with asymmetric ram-arm and visible Rift Core; max source dimension 1536 px; full-height, aspect-centered stage slot | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: IMPLEMENTED_ON_BRANCH` · `RUNTIME_VERIFICATION: SCENE_TREE_EQUIVALENT_RENDER_VERIFIED` |
 
-Issue #42 binds both approved cutouts as pointer-transparent, aspect-preserving direct children of `CombatStage`. The Vanguard uses the left 60% of the stage at foreground z-order; Gatebreaker uses the right 66% at the background z-order. This preserves the stage backdrop and keeps the puzzle, forecast, resource, and skill regions outside the art bounds. A Godot 4.7.1 GUI render of the scene-equivalent branch tree at 960×540 confirmed the existing stage backdrop and both cutouts are visible; it does not establish Human readability or final commercial-art approval.
+The current 50/50 composition binds both cutouts as pointer-transparent, aspect-preserving direct children of `CombatStage`. The compact Vanguard stage cutout occupies the left `0.0–0.32` foreground band, while the Gatebreaker begins at `0.18`, slightly overscans vertically, and owns the dominant right-side silhouette. A separate `ResourceRow/VanguardPortrait` gives player identity a readable 76×76 state-strip slot without competing with the boss stage. This preserves the board, forecast, resource, and skill regions outside the art bounds. Automated scene construction proves these slots load; it does not establish Human readability or final commercial-art approval.
 
 ## 11. Authored combat VFX candidates · Issue #47
 
@@ -169,3 +169,25 @@ The user explicitly requested the needed production images on 2026-08-28 after t
 | `TETRIS-IMG-036` · Gatebreaker Threat Telegraph v1 | `res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph` | active enemy telegraph feedback | 1254×1254 RGBA; transparent square crop and hollow centre; `TextureRect.texture`, aspect-centred behind the boss, pointer-transparent, lossless UI/VFX import | subtly pulses only while a non-terminal enemy ETA is active |
 
 Both assets are original generated source candidates, not derivatives of the approved masters and not a claim of human readability approval. The static geometry keeps the VFX inside the CombatStage so it cannot cover the puzzle, forecast, resource, or skill controls.
+
+## 12. Combo-resolved category seal candidates · current user-requested work
+
+The current user requested produced skill-icon imagery for the implemented category-only `ATK / DEF / SUP → resolved preview → CONFIRM` surface. Each request is a separate bounded consumer; no atlas, title text, gameplay number, or new skill rule is baked into the image.
+
+| Asset | Exact final target | Scene consumer | Purpose | Geometry / import | Pre-lock fallback and current state |
+| --- | --- | --- | --- | --- | --- |
+| `TETRIS-IMG-037` · Attack Category Seal v1 | `res://assets/production/icons/skill_lane_attack_seal_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Attack/CategorySeal.texture` | identify current-Combo ATK preview selection | 256×256 RGBA; transparent background; central sword/ink-slash mark inside 84% safe area; `TextureRect.texture`, aspect-centred, pointer-transparent, lossless UI import | label-only `ATK` Button remains functional; `SOURCE_ASSET_CANDIDATE` after generated inspection, not bound until user lock |
+| `TETRIS-IMG-038` · Defense Category Seal v1 | `res://assets/production/icons/skill_lane_defense_seal_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Defense/CategorySeal.texture` | identify current-Combo DEF preview selection | 256×256 RGBA; transparent background; central ward-shield mark inside 84% safe area; `TextureRect.texture`, aspect-centred, pointer-transparent, lossless UI import | label-only `DEF` Button remains functional; `SOURCE_ASSET_CANDIDATE` after generated inspection, not bound until user lock |
+| `TETRIS-IMG-039` · Support Category Seal v1 | `res://assets/production/icons/skill_lane_support_seal_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Support/CategorySeal.texture` | identify current-Combo SUP preview selection | 256×256 RGBA; transparent background; central beacon/compass mark inside 84% safe area; `TextureRect.texture`, aspect-centred, pointer-transparent, lossless UI import | label-only `SUP` Button remains functional; `SOURCE_ASSET_CANDIDATE` after generated inspection, not bound until user lock |
+
+All three candidates use the current parchment-field-manual grammar: fine sepia contour, restrained lane colour (`rust red / steel blue / moss green`), small watercolor wash, no letters, numerals, pseudo-interface or decorative full frame. Candidate generation proves only source artwork. User lock, exact target copy, scene binding and runtime render remain separate gates.
+
+## 13. Frontier title-logo candidate · current user-requested work
+
+The user clarified that the requested logo is the game title itself: a world-facing name and title-screen mark, not a generic interface label. `FRACTURE VANGUARD` is a **candidate title**, derived only from the existing immediate facts: a Vanguard answers an imminent Gatebreaker threat at a Frontier Gate. It does not establish a new faction, history, location, character or world canon until the user locks it.
+
+| Asset | Candidate source | Exact final target | Scene consumer | Geometry / import | State |
+| --- | --- | --- | --- | --- | --- |
+| `TETRIS-IMG-040` · Fracture Vanguard Title Logo v1 | Built-in image generation candidate; `C:\\Users\\user\\.codex\\generated_images\\01a04af3-ebbf-76e1-a16a-cc5f54b88a9e\\exec-3749671f-be6f-4c31-9cfe-e709d1603c20.png`; SHA-256 `c6afae14b22a1516a1ccc34fad83a4bf6c1a22073b265f8d2c22e4ee641444b0` | `res://assets/production/branding/fracture_vanguard_title_logo_v1.png` | `scenes/production/title.tscn` → `Margin/Panel/Content/TitleLogo.texture` | source 1983×793 RGBA, transparent corners; preserve wide ratio, pointer-transparent `TextureRect`, target title safe area 920×368 minimum | `SOURCE_ASSET_CANDIDATE`; candidate consumer slot exists but is invisible and unbound until user lock |
+
+The candidate uses engraved dark-steel serif forms, restrained antique-gold filigree, a Frontier Gate halo, a Vanguard spear crest and a contained violet fracture accent. It must not be copied into `assets/`, displayed by the title scene, renamed as public canon, or used as Human/readability proof until the user locks this exact candidate.

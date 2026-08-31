@@ -24,7 +24,7 @@ EXPECTED_DIMENSIONS = [
     "TACTICAL_PAUSE_COMPREHENSION",
     "LINE_MP_VS_CHAIN_COMBO_AND_MP_LOCK",
     "TECHNIQUE_DECISION_QUALITY",
-    "SIXTY_FORTY_LAYOUT_READABILITY",
+    "BALANCED_50_50_LAYOUT_READABILITY",
     "PLAYER_EXPERIENCE_SIGNAL",
 ]
 
@@ -67,7 +67,7 @@ class HumanEvidenceContractTests(unittest.TestCase):
         self.assertIn("Combo", text)
         self.assertIn("TETRIS-CHAIN-038", text)
         self.assertIn("TACTICAL_PAUSE_SKILL", text)
-        self.assertIn("60/40", text)
+        self.assertIn("50/50", text)
         self.assertIn("MEMORABLE_MOMENT", text)
         self.assertIn("THREE_SESSIONS_REQUIRED_FOR_PASS", text)
         self.assertIn("NOT_RUN", text)

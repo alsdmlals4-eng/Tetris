@@ -8,7 +8,7 @@
 
 ## 1. Authority and supersession boundary
 
-This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the 60/40 battle composition.
+This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the user-directed 50/50 battle composition.
 
 The following production documents are **HISTORICAL / SUPERSEDED** where they define ordered player/enemy turns or turn-budget timing:
 
@@ -260,10 +260,10 @@ Retained non-turn-bound families include direct damage, healing, mitigation, cou
 
 Target desktop composition:
 
-- left ≈ **60%**: one large Puzzle Surface;
-- right ≈ **40%**: persistent Combat Stage + enemy threat + resources + Skill surface.
+- left ≈ **50%**: one large Puzzle Surface;
+- right ≈ **50%**: persistent Combat Stage + enemy threat + resources + Skill surface.
 
-The ratio is a readability target, not a fixed pixel law. 1280×720 validation may adjust the exact split without making the puzzle secondary.
+The ratio is a user-directed readability target, not a fixed pixel law. The Gatebreaker occupies the dominant CombatStage silhouette; the separate Vanguard portrait keeps player identity readable without shrinking the boss. 1280×720 validation may adjust small gutters without making either primary surface secondary.
 
 The left surface shows only the active full puzzle workspace:
 

@@ -1,14 +1,14 @@
 # CHAIN Combo and MP Lock Contract
 
 - Decision: `TETRIS-CHAIN-038`
-- Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / PHASE 1 CANON / IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION`
 - Issue: #56
 - Cost approval: fixed **1 MP** failed-swap lock, Issue #58
 - MP-cap approval: hard cap of **60 MP**, Issue #60
 - Combo / CHAIN MP recovery approval: Issue #64
 - Date: 2026-08-28
 - Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-040`, `TETRIS-SKILL-039`, and `PRODUCTION_CANON_INDEX.json`.
-- Scope: player-facing resource language and CHAIN interaction grammar. This is not a Godot implementation, balance lock, runtime capture, or Human/player-experience result.
+- Scope: player-facing resource language and CHAIN interaction grammar. The current worktree implements the linked deterministic path; this contract is not a balance lock, target-resolution capture, or Human/player-experience result.
 
 ## 1. Resource ownership
 
@@ -74,11 +74,11 @@ MP recovery = (sum of all qualified maximal group lengths − 3) + Combo after t
 
 - The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. Initial LINE recovery is fixed to the existing data seed: no clear/Single/Double/Triple/Four = **0 / 10 / 22 / 36 / 52 MP**. The Combo/CHAIN-MP rule is structurally approved; its numerical balance remains `TUNE_REQUIRED` until Human evidence exists.
 - MP overflow creates no combat resource. The UI must expose a full MP state before another LINE reward, and explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert`, `Spend 1 MP to keep this swap for a later Combo`, and `MP full — spend MP before the next LINE reward`.
-- Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, does not cap energy, and has no MP-lock path. Its legacy CHAIN reward data maps total cascade depth 1–6 to Combo 1–6 with a cap of 6, and grants no CHAIN MP. Its alignment is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`.
-- Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must expose each wave's `line term + post-wave Combo = MP recovery`, raise the stored Combo cap to 10, and replace the legacy manual Tier 1–6 path with the `TETRIS-SKILL-039` category-resolved Stage 1–10 path. It must not claim balance or Human/player validation before runtime evidence exists.
+- Historical merged-main baseline used internal `energy` / `stock` names, horizontal/vertical-only runs, default restore, no MP cap/lock and depth 1–6 reward mapping. Its historical alignment was `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`.
+- The current worktree updates deterministic board/resolver/session/resource bridge, input feedback, configuration and regression tests together. It exposes each wave's `line term + post-wave Combo = MP recovery`, caps stored Combo at 10, and replaces the legacy manual Tier 1–6 path with the `TETRIS-SKILL-039` category-resolved Stage 1–10 path. Balance and Human/player validation remain unclaimed.
 
 ## 6. Tutorial and visual rule
 
-`TETRIS-ONBOARDING-037` now uses **FULL_PRE_DEPLOY_BRIEFING**. On the **first intended session only**, Deploy remains disabled until the readable full-rule region reaches its end or the player completes an equivalent accessible review action; later entries may Deploy immediately and re-open that same summary. The section presents the complete first-slice CHAIN grammar: orthogonal swap; straight horizontal, vertical, or either-diagonal 3+ match; Combo +1 per resolved wave to cap 10; `(sum maximal qualified line lengths − 3) + post-wave Combo` MP recovery; default no-match revert and Combo reset; and the fixed-1-MP optional lock that keeps the swap but resets Combo and grants no immediate reward. It also states that Tier N spends N shared Combo plus configured Technique MP, so saving Combo preserves later CHAIN MP recovery.
+`TETRIS-ONBOARDING-037` now uses **FULL_PRE_DEPLOY_BRIEFING**. On the **first intended session only**, Deploy remains disabled until the readable full-rule region reaches its end or the player completes an equivalent accessible review action; current behavior repeats this acknowledgement per launch until persistence is separately specified. The section presents the complete first-slice CHAIN grammar: orthogonal swap; straight horizontal, vertical, or either-diagonal 3+ match; Combo +1 per resolved wave to cap 10; `(sum maximal qualified line lengths − 3) + post-wave Combo` MP recovery; default no-match revert and Combo reset; and the fixed-1-MP optional lock that keeps the swap but resets Combo and grants no immediate reward. It also states that Tier N spends N shared Combo plus configured Technique MP, so saving Combo preserves later CHAIN MP recovery.
 
 After Deploy, a short guided practice inside the actual CORE-029 battle verifies those disclosed rules, then continues normal play in the same encounter. MP lock remains an optional planning tool, never a required first-tutorial transaction. Planning boards and visual references may illustrate the rule, but their images are not the source of truth. The exact rule belongs to this text contract and its linked repository/GitHub decision records.

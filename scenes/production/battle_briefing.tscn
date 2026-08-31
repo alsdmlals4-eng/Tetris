@@ -1,0 +1,82 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/production/ui/production_battle_briefing.gd" id="1_briefing"]
+[ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="2_theme"]
+
+[node name="BattleBriefing" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_briefing")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.09, 0.07, 0.06, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 44.0
+offset_right = -80.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Margin/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Heading" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.77, 0.42, 1)
+theme_override_font_sizes/font_size = 30
+text = "FRONTIER GATE · BATTLE BRIEFING"
+horizontal_alignment = 1
+
+[node name="Situation" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.86, 0.73, 1)
+theme_override_font_sizes/font_size = 19
+autowrap_mode = 2
+text = "A Gatebreaker is already moving. Read its ETA, prepare your resources, then make one deliberate Vanguard response."
+horizontal_alignment = 1
+
+[node name="Rules" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.78, 0.9, 1)
+theme_override_font_sizes/font_size = 17
+autowrap_mode = 2
+text = "LINE · clear lines to recover MP (cap 60).\nCHAIN · swap orthogonal cells; 3+ matches include both diagonals. Each resolving wave grants Combo, then recovers MP. A failed swap restores, or spend 1 MP to keep the setup and reset Combo.\nCOMBO · shared cap 10. A category resolves to your current Combo stage; if MP is short, only the needed surplus Combo converts at 5 MP each and previews the highest feasible lower stage.\nSKILL · ATK / DEF / SUP opens a complete tactical pause. Preview first, then CONFIRM."
+
+[node name="AcknowledgeRules" type="Button" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "I UNDERSTAND THE CORE RULES"
+
+[node name="Acknowledgement" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.63, 0.88, 1)
+text = "ACKNOWLEDGE THE RULES TO ARM DEPLOY"
+horizontal_alignment = 1
+
+[node name="Deploy" type="Button" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+disabled = true
+text = "DEPLOY TO FRONTIER GATE"

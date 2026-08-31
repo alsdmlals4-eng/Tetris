@@ -1,4 +1,4 @@
-## 전술 스킬 탐색과 명시적 USE를 full simulation pause 안에서 분리한다.
+## 현재 Combo로 ATK·DEF·SUP 스킬을 해석하고 명시적 CONFIRM만 원자적으로 적용한다.
 class_name ProductionSkillSession
 extends RefCounted
 
@@ -11,7 +11,7 @@ var _catalog
 var _technique_resolver
 var _pause_token: int = 0
 var _selected_category: String = ""
-var _selected_technique_id: String = ""
+var _selected_preview: Dictionary = {}
 
 func _init(pause_controller: SimulationPauseController, combat_state: ProductionCombatState, catalog, technique_resolver) -> void:
 	_pause_controller = pause_controller
@@ -28,51 +28,41 @@ func open() -> bool:
 func is_open() -> bool:
 	return _pause_token != 0
 
-func select_category(category: String) -> bool:
+func select_category(category: String, context: Dictionary) -> Dictionary:
 	if _pause_token == 0 or not LANES.has(category):
-		return false
+		return {"selected": false, "ready": false, "reason": "INVALID_CATEGORY"}
 	_selected_category = category
-	_selected_technique_id = ""
-	return true
+	_selected_preview = _preview_for_current_combo(category, context)
+	return _selected_preview.duplicate(true)
 
-func select_technique(technique_id: String) -> Dictionary:
-	var definition: Dictionary = _catalog.get_by_id(technique_id)
-	if _pause_token == 0 or definition.is_empty() or String(definition.get("lane", "")) != _selected_category:
-		return {"selected": false, "reason": "INVALID_TECHNIQUE"}
-	_selected_technique_id = technique_id
-	return {"selected": true, "technique_id": technique_id}
+func selected_preview() -> Dictionary:
+	return _selected_preview.duplicate(true)
 
 func selected_detail() -> Dictionary:
-	return _catalog.get_by_id(_selected_technique_id)
-
-func readiness(technique_id: String, context: Dictionary) -> Dictionary:
-	var definition: Dictionary = _catalog.get_by_id(technique_id)
-	if definition.is_empty():
-		return {"ready": false, "reason": "UNKNOWN_TECHNIQUE"}
-	if String(definition.get("runtime_status", "")) == "REALTIME_MIGRATION_REQUIRED":
-		return {"ready": false, "reason": "REALTIME_MIGRATION_REQUIRED"}
-	if _combat_state.energy < int(definition.get("mp_cost", 0)) or _combat_state.stock < int(definition.get("combo_cost", 0)):
-		return {"ready": false, "reason": "INSUFFICIENT_RESOURCE"}
-	return _technique_resolver.readiness(definition, context)
+	return selected_preview()
 
 func commit_selected(context: Dictionary) -> Dictionary:
-	if _pause_token == 0 or _selected_technique_id == "":
-		return {"committed": false, "reason": "NO_SELECTION"}
-	var definition: Dictionary = selected_detail()
-	var preflight: Dictionary = readiness(_selected_technique_id, context)
-	if not bool(preflight.get("ready", false)):
-		return {"committed": false, "reason": preflight.get("reason", "NOT_READY")}
-	var mp_cost := int(definition["mp_cost"])
-	var combo_cost := int(definition["combo_cost"])
-	if not _combat_state.try_spend_skill_cost(mp_cost, combo_cost):
-		return {"committed": false, "reason": "INSUFFICIENT_RESOURCE"}
-	var resolution: Dictionary = _technique_resolver.resolve(definition, context)
+	if _pause_token == 0 or _selected_preview.is_empty() or not bool(_selected_preview.get("ready", false)):
+		return {"committed": false, "reason": "NO_READY_PREVIEW"}
+	var effects: Array = Array(_selected_preview.get("effects", []))
+	var preflight: Dictionary = _technique_resolver.preflight_effects(effects, context)
+	if not bool(preflight.get("ok", false)):
+		return {"committed": false, "reason": preflight.get("reason", "EFFECT_PREFLIGHT_FAILED")}
+	var resource_snapshot: Dictionary = _combat_state.resource_snapshot()
+	var effect_checkpoint: Dictionary = _technique_resolver.capture_effect_checkpoint(context)
+	var transaction: Dictionary = _combat_state.try_commit_combo_skill(int(_selected_preview["mp_cost"]), int(_selected_preview["opening_combo"]), int(_selected_preview["resolved_stage"]))
+	if not bool(transaction.get("committed", false)):
+		return transaction
+	var resolution: Dictionary = _technique_resolver.resolve_preflighted_effects(preflight, context)
 	if not bool(resolution.get("ok", false)):
-		_combat_state.apply_energy_delta(mp_cost)
-		_combat_state.gain_stock(combo_cost)
-		return {"committed": false, "reason": resolution.get("reason", "RESOLUTION_FAILED")}
+		var resource_restored: bool = _combat_state.restore_resource_snapshot(resource_snapshot)
+		var effects_restored: bool = _technique_resolver.restore_effect_checkpoint(effect_checkpoint, context)
+		if not resource_restored or not effects_restored:
+			return {"committed": false, "reason": "ROLLBACK_FAILED", "resolution_reason": resolution.get("reason", "EFFECT_FAILED")}
+		return {"committed": false, "reason": resolution.get("reason", "EFFECT_FAILED")}
+	var preview := selected_preview()
 	cancel()
-	return {"committed": true, "technique_id": String(definition["id"]), "results": resolution.get("results", [])}
+	return {"committed": true, "preview": preview, "results": resolution.get("results", [])}
 
 func cancel() -> Dictionary:
 	if _pause_token == 0:
@@ -80,5 +70,37 @@ func cancel() -> Dictionary:
 	_pause_controller.release(_pause_token)
 	_pause_token = 0
 	_selected_category = ""
-	_selected_technique_id = ""
+	_selected_preview = {}
 	return {"canceled": true, "cancelled": true}
+
+func _preview_for_current_combo(category: String, context: Dictionary) -> Dictionary:
+	var opening_combo := _combat_state.stock
+	if opening_combo < 1:
+		return {"selected": true, "ready": false, "reason": "NO_COMBO", "opening_combo": opening_combo}
+	for stage in range(opening_combo, 0, -1):
+		var definition: Dictionary = _catalog.definition_for_lane_stage(category, stage)
+		if definition.is_empty():
+			return {"selected": true, "ready": false, "reason": "MISSING_STAGE"}
+		var converted_combo := opening_combo - stage
+		var available_mp := mini(ProductionCombatState.MP_CAP, _combat_state.energy + converted_combo * 5)
+		var mp_cost := int(definition.get("mp_cost", -1))
+		if available_mp < mp_cost:
+			continue
+		var resolved: Dictionary = _catalog.resolve_effects(definition, String(context.get("current_action_kind", "")))
+		if not bool(resolved.get("ok", false)):
+			return {"selected": true, "ready": false, "reason": resolved.get("reason", "INVALID_EFFECT_PACKAGE")}
+		var preflight: Dictionary = _technique_resolver.preflight_effects(Array(resolved["effects"]), context)
+		return {
+			"selected": true,
+			"ready": bool(preflight.get("ok", false)),
+			"reason": preflight.get("reason", "READY"),
+			"id": definition["id"],
+			"display_name": definition["display_name"],
+			"preview_lines": resolved["preview_lines"],
+			"effects": resolved["effects"],
+			"opening_combo": opening_combo,
+			"resolved_stage": stage,
+			"converted_combo": converted_combo,
+			"mp_cost": mp_cost,
+		}
+	return {"selected": true, "ready": false, "reason": "INSUFFICIENT_RESOURCE", "opening_combo": opening_combo}

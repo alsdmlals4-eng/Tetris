@@ -34,15 +34,15 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 ## 3. Current handoff
 
-`TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `CONFIRM`. `TETRIS-SKILL-039` now defines the intended category-only / Combo-resolved Skill flow. The merged runtime entry is `scenes/production/battle.tscn`, but it is still a legacy manual Tier 1–6 implementation.
+`TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `CONFIRM`. `TETRIS-SKILL-039` is implemented in the current worktree as category-only / Combo-resolved C1–C10 preview and confirm. The merged-main baseline remains legacy; `scenes/production/battle.tscn` in this worktree is the current implementation target pending full verification.
 
-`TETRIS-CHAIN-038` and `TETRIS-ONBOARDING-037` are approved but only partially represented by the present runtime. Do not promote diagonal CHAIN matching, 1-MP failed-swap lock, MP/Combo caps and CHAIN MP recovery, or the BattleBriefing/embedded tutorial as implemented. Human/player evidence is `NOT_RUN`.
+`TETRIS-CHAIN-038` and `TETRIS-ONBOARDING-037` are implemented in the current worktree: all-axis CHAIN matching, 1-MP failed-swap lock, MP/Combo caps, CHAIN MP recovery, BattleBriefing and embedded guided tutorial all have deterministic tests. They remain pending exact-head target-resolution verification; Human/player evidence is `NOT_RUN`.
 
 The current work order is:
 
-1. Apply the user-approved Phase 2 contract: [`2026-08-29-phase2-tactical-core-alignment.md`](../superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md) locks the C1–C10 content, target-separated time semantics and the capped stored board-opportunity reserve. `TETRIS-VIS-BOARD-002` remains a planning-only reference, not a runtime asset.
-2. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill and target-separated timing → briefing/rules/Deploy and safe live practice, reusing the same encounter.
-3. Capture target-resolution and Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
+1. Verify the user-approved Phase 2 contract at the exact current head: C1–C10 content, target-separated time semantics, capped board-opportunity reserve, all-axis CHAIN, and explicit preview/confirm.
+2. Inspect the title, briefing, guided prompts, 50/50 battle, boss hierarchy and Skill panel at target resolution; `TETRIS-VIS-BOARD-002` remains a planning-only reference, not a runtime asset.
+3. Capture Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
 
 For live operational truth, read the latest completed `main`, all open/draft PRs as read-only parallel work, the relevant GitHub issue/PR, and the actual repository evidence. This index deliberately does not freeze transient PR, CI or runtime claims.
 
