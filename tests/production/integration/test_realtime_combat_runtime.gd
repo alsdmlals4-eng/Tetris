@@ -13,9 +13,11 @@ const COMBAT_STATE_PATH := "res://src/production/combat/production_combat_state.
 class FakeLineSession:
 	var input_enabled := true
 	var tick_count := 0
+	var last_delta := -1.0
 	var events: Array[Dictionary] = []
-	func tick(_delta: float) -> Dictionary:
+	func tick(delta: float) -> Dictionary:
 		tick_count += 1
+		last_delta = delta
 		return {"advanced": true}
 	func drain_events() -> Array[Dictionary]:
 		var drained := events.duplicate(true)
@@ -200,6 +202,44 @@ func test_workspace_switch_keeps_only_the_active_puzzle_simulating() -> void:
 	assert_true(bool(runtime.process_player_command({"kind": "SWITCH_WORKSPACE", "target": "CHAIN"}).get("accepted", false)))
 	runtime.tick(0.25)
 	assert_eq(workspace.line_session.tick_count, 1, "inactive Line workspace must not receive a simulation tick")
+
+func test_player_board_opportunity_holds_only_line_delta_while_enemy_eta_uses_full_delta() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	var opportunity = load("res://src/production/runtime/player_board_opportunity_state.gd").new()
+	var runtime = load(RUNTIME_PATH).new(player, enemy, workspace, scheduler, _skill_session(pause, player), pause, null, null, opportunity)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	assert_true(runtime.has_method("grant_player_board_opportunity"))
+	if not runtime.has_method("grant_player_board_opportunity"):
+		return
+
+	runtime.grant_player_board_opportunity(2.0)
+	var eta_before: float = scheduler.remaining_seconds()
+	runtime.tick(1.0)
+	assert_almost_eq(workspace.line_session.last_delta, 0.0, 0.001)
+	assert_true(workspace.line_session.input_enabled)
+	assert_almost_eq(scheduler.remaining_seconds(), eta_before - 1.0, 0.001)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 1.0, 0.001)
+
+func test_player_board_opportunity_does_not_consume_while_chain_or_paused() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	var opportunity = load("res://src/production/runtime/player_board_opportunity_state.gd").new()
+	var runtime = load(RUNTIME_PATH).new(player, enemy, workspace, scheduler, _skill_session(pause, player), pause, null, null, opportunity)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	runtime.grant_player_board_opportunity(2.0)
+	assert_true(bool(runtime.process_player_command({"kind": "SWITCH_WORKSPACE", "target": "CHAIN"}).get("accepted", false)))
+	runtime.tick(0.5)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 2.0, 0.001)
+	assert_true(bool(runtime.toggle_system_pause().get("paused", false)))
+	runtime.tick(0.5)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 2.0, 0.001)
 
 func _read_json(path: String):
 	return JSON.parse_string(FileAccess.get_file_as_string(path))

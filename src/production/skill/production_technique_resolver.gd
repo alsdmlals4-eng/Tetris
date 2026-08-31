@@ -50,4 +50,10 @@ func _effect_is_ready(effect: Dictionary, context: Dictionary) -> bool:
 		return context.get("player_status") != null if op == "APPLY_SELF_BUFF" else context.get("enemy_status") != null
 	if op in ["MITIGATE_CURRENT_DIRECT", "COUNTER_FROM_PREVENTED_DAMAGE", "PROTECT_RESOURCE_LOSS", "LETHAL_SAFETY"]:
 		return context.get("response_state") != null and String(context.get("telegraph_action_id", "")) != ""
+	if op == "GRANT_PLAYER_BOARD_OPPORTUNITY":
+		var opportunity = context.get("board_opportunity")
+		return opportunity != null and opportunity.has_method("grant")
+	if op == "ADJUST_CURRENT_ENEMY_ETA":
+		var scheduler = context.get("enemy_scheduler")
+		return scheduler != null and scheduler.has_method("adjust_current_eta") and String(context.get("telegraph_action_id", "")) != ""
 	return false

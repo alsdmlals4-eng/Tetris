@@ -93,6 +93,49 @@ func remaining_seconds() -> float:
 func is_action_committed() -> bool:
     return _started and _timing != null and _remaining_seconds <= _timing.commit_lead_seconds
 
+func adjust_current_eta(action_id: String, delta_seconds: float) -> Dictionary:
+    if not _started or _telegraph == null or _timing == null or action_id == "" or action_id != current_action_id() or delta_seconds <= 0.0 or is_action_committed():
+        return {"adjusted": false, "reason": "CURRENT_ACTION_UNAVAILABLE", "action_id": action_id}
+    var before := _remaining_seconds
+    _remaining_seconds = maxf(_timing.commit_lead_seconds, _remaining_seconds + delta_seconds)
+    return {
+        "adjusted": true,
+        "before_seconds": before,
+        "after_seconds": _remaining_seconds,
+        "action_id": action_id,
+    }
+
+func snapshot_current_action_state() -> Dictionary:
+    if not _started or _telegraph == null:
+        return {}
+    return {
+        "current_action_id": current_action_id(),
+        "next_action_id": next_action_id(),
+        "remaining_seconds": _remaining_seconds,
+        "resolution_attempted": _resolution_attempted,
+        "is_action_committed": is_action_committed(),
+    }
+
+func restore_current_action_state(snapshot: Dictionary) -> bool:
+    if not _started or _telegraph == null or _timing == null:
+        return false
+    for key in ["current_action_id", "next_action_id", "remaining_seconds", "resolution_attempted", "is_action_committed"]:
+        if not snapshot.has(key):
+            return false
+    if String(snapshot.get("current_action_id", "")) != current_action_id() or String(snapshot.get("next_action_id", "")) != next_action_id():
+        return false
+    var raw_remaining = snapshot.get("remaining_seconds")
+    if not (raw_remaining is int or raw_remaining is float) or not (snapshot.get("resolution_attempted") is bool) or not (snapshot.get("is_action_committed") is bool):
+        return false
+    var restored_remaining := float(raw_remaining)
+    if restored_remaining != restored_remaining or restored_remaining < 0.0:
+        return false
+    if bool(snapshot["is_action_committed"]) != (restored_remaining <= _timing.commit_lead_seconds):
+        return false
+    _remaining_seconds = restored_remaining
+    _resolution_attempted = bool(snapshot["resolution_attempted"])
+    return true
+
 func _boss_hp_ratio(context: Dictionary) -> float:
     var enemy = context.get("enemy")
     if enemy == null or int(enemy.max_hp) <= 0:
