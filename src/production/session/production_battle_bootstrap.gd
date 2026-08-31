@@ -50,7 +50,7 @@ func _make_chain():
 	if not randomizer.fill_playable_board(board):
 		return null
 	var resolver = load("res://src/production/chain/chain_resolver.gd").new(board, randomizer)
-	return load("res://src/production/chain/production_chain_session.gd").new(board, resolver, config)
+	return load("res://src/production/chain/production_chain_session.gd").new(board, resolver)
 
 func _make_scheduler():
 	var catalog = load("res://src/production/combat/gatebreaker_action_catalog.gd").from_dictionary(_json(ACTION_DATA))

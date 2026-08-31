@@ -56,6 +56,13 @@ func request_switch(target: String) -> Dictionary:
 
 ## Call after a session atomic operation returns or a Chain resolution settles to apply safe ownership.
 func process_safe_handoff() -> Dictionary:
+    if _active_workspace == CHAIN and chain_session != null and chain_session.has_pending_failed_swap():
+        _sync_input_ownership()
+        return {
+            "switched": false,
+            "reason": "CHAIN_LOCK_CHOICE_PENDING",
+        }
+
     if _pending_workspace == "":
         _sync_input_ownership()
         return {
@@ -100,5 +107,5 @@ func _sync_input_ownership() -> void:
     if line_session != null:
         line_session.set_input_enabled(_active_workspace == LINE)
     if chain_session != null:
-        var chain_can_receive_input := _active_workspace == CHAIN and not chain_session.is_resolving()
+        var chain_can_receive_input := _active_workspace == CHAIN and not chain_session.is_resolving() and not chain_session.has_pending_failed_swap()
         chain_session.set_input_enabled(chain_can_receive_input)

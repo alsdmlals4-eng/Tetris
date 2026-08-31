@@ -12,6 +12,9 @@ const CHAIN := "CHAIN"
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceBar
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
 @onready var _retry_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton
+@onready var _chain_lock_frame: Control = $MainRow/PuzzleColumn/ChainLockFrame
+@onready var _chain_lock_keep_button: Button = $MainRow/PuzzleColumn/ChainLockFrame/LockPrompt/KeepButton
+@onready var _chain_lock_discard_button: Button = $MainRow/PuzzleColumn/ChainLockFrame/LockPrompt/DiscardButton
 @onready var _vanguard_attack_accent: TextureRect = $MainRow/CombatColumn/CombatStage/VanguardAttackAccent
 @onready var _gatebreaker_threat_telegraph: TextureRect = $MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph
 
@@ -34,6 +37,8 @@ func _ready() -> void:
 		get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
 	_retry_button.pressed.connect(_retry_encounter)
+	_chain_lock_keep_button.pressed.connect(_confirm_chain_mp_lock)
+	_chain_lock_discard_button.pressed.connect(_discard_chain_mp_lock)
 	var bootstrap = load("res://src/production/session/production_battle_bootstrap.gd").new()
 	var result: Dictionary = bootstrap.build_runtime()
 	_runtime = result.get("runtime")
@@ -45,6 +50,7 @@ func _ready() -> void:
 		_pause_bridge.bind_controller(pause_controller)
 	set_active_workspace(LINE)
 	_refresh_runtime_labels()
+	_refresh_chain_lock_prompt()
 	_refresh_stage_vfx(0.0)
 
 func _process(delta: float) -> void:
@@ -56,6 +62,7 @@ func _process(delta: float) -> void:
 		_line_view.bind_line_session(_workspace_manager.line_session)
 		_chain_view.bind_chain_session(_workspace_manager.chain_session)
 	_refresh_runtime_labels()
+	_refresh_chain_lock_prompt()
 	_refresh_stage_vfx(delta)
 
 func set_active_workspace(workspace: String) -> bool:
@@ -133,7 +140,25 @@ func _handle_chain_click(global_position: Vector2) -> bool:
 	_chain_view.set_selected_cell(_selected_chain_cell)
 	if abs(first.x - selected.x) + abs(first.y - selected.y) != 1:
 		return false
-	return bool(_workspace_manager.chain_session.begin_swap(first, selected).get("accepted", false))
+	var result: Dictionary = _runtime.try_chain_swap(first, selected)
+	_refresh_chain_lock_prompt()
+	return bool(result.get("accepted", false)) or String(result.get("reason", "")) == "NO_MATCH"
+
+func _confirm_chain_mp_lock() -> void:
+	if _runtime != null:
+		_runtime.confirm_chain_mp_lock()
+	_refresh_chain_lock_prompt()
+
+func _discard_chain_mp_lock() -> void:
+	if _runtime != null:
+		_runtime.discard_chain_mp_lock()
+	_refresh_chain_lock_prompt()
+
+func _refresh_chain_lock_prompt() -> void:
+	var has_pending_lock := false
+	if _workspace_manager != null and _workspace_manager.chain_session != null:
+		has_pending_lock = _workspace_manager.chain_session.has_pending_failed_swap()
+	_chain_lock_frame.visible = has_pending_lock
 
 func _toggle_skill() -> void:
 	if _runtime == null:

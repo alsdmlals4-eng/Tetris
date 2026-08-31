@@ -30,6 +30,8 @@ func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> v
 	add_child_autofree(battle)
 	for node_path in [
 		"MainRow/PuzzleColumn/ModeFrame/ModeBar",
+		"MainRow/PuzzleColumn/ChainLockFrame/LockPrompt/KeepButton",
+		"MainRow/PuzzleColumn/ChainLockFrame/LockPrompt/DiscardButton",
 		"MainRow/PuzzleColumn/PuzzleHost/LineBoardView",
 		"MainRow/PuzzleColumn/PuzzleHost/ChainBoardView",
 		"MainRow/CombatColumn/ThreatFrame/ThreatPanel",
@@ -43,6 +45,7 @@ func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> v
 	assert_almost_eq(puzzle_column.size_flags_stretch_ratio, 0.6, 0.01)
 	assert_almost_eq(combat_column.size_flags_stretch_ratio, 0.4, 0.01)
 	assert_eq(battle.find_children("*Turn*", "", true, false).size(), 0, "CORE-029 must not restore a turn rail")
+	assert_false(battle.get_node("MainRow/PuzzleColumn/ChainLockFrame").visible, "a lock choice appears only after a failed Chain swap")
 
 func test_battle_surface_uses_named_theme_and_semantic_visual_frames() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
@@ -134,6 +137,8 @@ func test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause
 	assert_true(battle.has_method("_unhandled_input"), "the battle bridge must receive named input actions")
 	assert_true(battle.has_method("_handle_line_action"), "the battle bridge must route Line controls through the active session")
 	assert_true(battle.has_method("_handle_chain_click"), "the battle bridge must route Chain pointer selection through the active session")
+	assert_true(battle.has_method("_confirm_chain_mp_lock"), "the battle bridge must explicitly confirm the fixed MP lock")
+	assert_true(battle.has_method("_discard_chain_mp_lock"), "the battle bridge must explicitly discard a failed Chain swap")
 	assert_eq(battle.process_mode, Node.PROCESS_MODE_ALWAYS, "the input bridge must remain available while SceneTree is paused")
 
 func test_line_actions_keep_letter_bindings_and_add_directional_aliases() -> void:

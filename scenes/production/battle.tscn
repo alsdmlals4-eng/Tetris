@@ -57,6 +57,27 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "TACTICAL SKILL · K"
 
+[node name="ChainLockFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
+visible = false
+layout_mode = 2
+
+[node name="LockPrompt" type="HBoxContainer" parent="MainRow/PuzzleColumn/ChainLockFrame"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LockText" type="Label" parent="MainRow/PuzzleColumn/ChainLockFrame/LockPrompt"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "NO CHAIN · COMBO RESET · 1 MP로 현재 교환 유지?"
+
+[node name="KeepButton" type="Button" parent="MainRow/PuzzleColumn/ChainLockFrame/LockPrompt"]
+layout_mode = 2
+text = "KEEP · 1 MP"
+
+[node name="DiscardButton" type="Button" parent="MainRow/PuzzleColumn/ChainLockFrame/LockPrompt"]
+layout_mode = 2
+text = "DISCARD"
+
 [node name="PuzzleHost" type="Control" parent="MainRow/PuzzleColumn"]
 layout_mode = 2
 size_flags_vertical = 3

@@ -25,8 +25,27 @@ class FakeLineSession:
 class FakeChainSession:
 	var input_enabled := false
 	var events: Array[Dictionary] = []
+	var pending_failed_swap := false
+	var begin_swap_result: Dictionary = {}
+	var keep_call_count := 0
 	func is_resolving() -> bool:
 		return false
+	func begin_swap(_first: Vector2i, _second: Vector2i) -> Dictionary:
+		pending_failed_swap = String(begin_swap_result.get("reason", "")) == "NO_MATCH"
+		return begin_swap_result.duplicate(true)
+	func has_pending_failed_swap() -> bool:
+		return pending_failed_swap
+	func keep_pending_failed_swap() -> bool:
+		if not pending_failed_swap:
+			return false
+		keep_call_count += 1
+		pending_failed_swap = false
+		return true
+	func discard_pending_failed_swap() -> bool:
+		if not pending_failed_swap:
+			return false
+		pending_failed_swap = false
+		return true
 	func complete_pending_resolution() -> Dictionary:
 		return {"success": false}
 	func drain_events() -> Array[Dictionary]:
@@ -56,6 +75,7 @@ func test_runtime_exposes_continuous_api_and_tactical_pause_freezes_enemy_eta_in
 	var runtime = runtime_script.new(null, null, null, null, null, null, null)
 	for method_name in [
 		"start_battle", "process_player_command", "tick", "open_skill", "close_skill_without_use",
+		"try_chain_swap", "confirm_chain_mp_lock", "discard_chain_mp_lock",
 		"is_simulation_paused", "is_terminal", "snapshot",
 	]:
 		assert_true(runtime.has_method(method_name), "%s is required by the continuous runtime contract" % method_name)
@@ -119,6 +139,53 @@ func test_runtime_commits_each_puzzle_reward_once_and_marks_terminal_without_tur
 	var terminal_events: Array = runtime.tick(0.1)
 	assert_true(runtime.is_terminal())
 	assert_true(terminal_events.any(func(event): return String(event.get("kind", "")) == "DEFEAT"))
+
+func test_failed_chain_swap_resets_combo_and_keeps_only_after_one_mp_payment() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	player.energy = 20
+	player.stock = 5
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	workspace._active = "CHAIN"
+	workspace.chain_session.begin_swap_result = {
+		"accepted": false,
+		"reason": "NO_MATCH",
+		"swapped_snapshot": ["swapped"],
+	}
+	var runtime = load(RUNTIME_PATH).new(player, enemy, workspace, scheduler, _skill_session(pause, player), pause, null)
+
+	var failed_swap: Dictionary = runtime.try_chain_swap(Vector2i(0, 1), Vector2i(1, 1))
+	assert_eq(String(failed_swap.get("reason", "")), "NO_MATCH")
+	assert_eq(player.stock, 0)
+	assert_true(workspace.chain_session.has_pending_failed_swap())
+	assert_true(bool(runtime.confirm_chain_mp_lock().get("kept", false)))
+	assert_eq(player.energy, 19)
+	assert_eq(workspace.chain_session.keep_call_count, 1)
+	assert_false(workspace.chain_session.has_pending_failed_swap())
+
+func test_runtime_applies_every_valid_chain_wave_in_order() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	workspace.chain_session.events.append({
+		"kind": "production_chain_resolved",
+		"waves": [
+			{"qualified_line_lengths": [3]},
+			{"qualified_line_lengths": [4]},
+		],
+	})
+	var runtime = load(RUNTIME_PATH).new(player, enemy, workspace, scheduler, _skill_session(pause, player), pause, null)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+
+	var events: Array = runtime.tick(0.1)
+
+	assert_eq(player.stock, 2)
+	assert_eq(player.energy, 4, "per-wave recovery is (3 - 3 + 1) + (4 - 3 + 2)")
+	assert_true(events.any(func(event): return String(event.get("kind", "")) == "production_chain_resolved"))
 
 func test_workspace_switch_keeps_only_the_active_puzzle_simulating() -> void:
 	var pause = load(PAUSE_PATH).new()

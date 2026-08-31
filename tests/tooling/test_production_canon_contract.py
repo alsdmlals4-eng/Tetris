@@ -186,10 +186,8 @@ class ProductionCanonContractTests(unittest.TestCase):
             reality["chain_038_runtime_alignment"],
             "PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD",
         )
-        self.assertEqual(
-            chain_reward_data["stock_by_chain_depth"],
-            {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6},
-        )
+        self.assertEqual(chain_reward_data["seed_source"], "TETRIS-CHAIN-038")
+        self.assertNotIn("stock_by_chain_depth", chain_reward_data)
         self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
         self.assertEqual(economy["mp_cap"], 60)
         self.assertEqual(economy["mp_cap_status"], "USER_APPROVED_FIXED_60_MP_HARD_CAP")
