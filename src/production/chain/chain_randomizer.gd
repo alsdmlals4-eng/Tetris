@@ -64,10 +64,13 @@ func fill_playable_board(board: ChainBoard, max_attempts: int = 128) -> bool:
     return false
 
 func _would_create_starting_match(board: ChainBoard, position: Vector2i, symbol: String) -> bool:
-    if position.x >= 2:
-        if board.get_cell(position + Vector2i(-1, 0)) == symbol and board.get_cell(position + Vector2i(-2, 0)) == symbol:
-            return true
-    if position.y >= 2:
-        if board.get_cell(position + Vector2i(0, -1)) == symbol and board.get_cell(position + Vector2i(0, -2)) == symbol:
+    var previous_directions: Array[Vector2i] = [
+        Vector2i.LEFT,
+        Vector2i.UP,
+        Vector2i(-1, -1),
+        Vector2i(1, -1),
+    ]
+    for direction in previous_directions:
+        if board.get_cell(position + direction) == symbol and board.get_cell(position + direction * 2) == symbol:
             return true
     return false

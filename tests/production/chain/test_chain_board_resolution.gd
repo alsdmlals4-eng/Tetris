@@ -56,7 +56,7 @@ func test_clear_current_matches_then_gravity_leaves_no_floating_symbol() -> void
     _fill(board, [
         ["R", "G", "B", "Y"],
         ["G", "B", "Y", "R"],
-        ["B", "X", "Y", "G"],
+        ["G", "X", "Y", "G"],
         ["Y", "X", "R", "B"],
         ["R", "X", "G", "Y"],
     ])
