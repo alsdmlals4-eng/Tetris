@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
@@ -9,6 +9,9 @@
 [ext_resource type="Texture2D" path="res://assets/production/bosses/gatebreaker_combat_cutout_v1.png" id="7_gatebreaker_cutout"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/vanguard_attack_accent_v1.png" id="8_vanguard_attack_fx"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png" id="9_gatebreaker_telegraph_fx"]
+[ext_resource type="Texture2D" path="res://assets/production/icons/skill_lane_attack_seal_v1.png" id="10_skill_attack_seal"]
+[ext_resource type="Texture2D" path="res://assets/production/icons/skill_lane_defense_seal_v1.png" id="11_skill_defense_seal"]
+[ext_resource type="Texture2D" path="res://assets/production/icons/skill_lane_support_seal_v1.png" id="12_skill_support_seal"]
 
 [node name="Battle" type="Control"]
 process_mode = 3
@@ -297,6 +300,7 @@ custom_minimum_size = Vector2(36, 36)
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+texture = ExtResource("10_skill_attack_seal")
 
 [node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
@@ -320,6 +324,7 @@ custom_minimum_size = Vector2(36, 36)
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+texture = ExtResource("11_skill_defense_seal")
 
 [node name="Support" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
@@ -343,6 +348,7 @@ custom_minimum_size = Vector2(36, 36)
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+texture = ExtResource("12_skill_support_seal")
 
 [node name="ResolvedPreview" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 layout_mode = 2

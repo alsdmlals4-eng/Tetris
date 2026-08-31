@@ -71,6 +71,7 @@ Region, threat state, time of day and faction/state may vary wash intensity, pap
 | `TETRIS-IMG-031` | Runtime-bound production asset | `CombatStage/StageBackdrop` | Current dark stage consumer binding, subject to runtime/render evidence ceiling. |
 | `TETRIS-IMG-033/034` | Runtime-bound source candidates | `VanguardReference` / `GatebreakerReference` | Current pixel-rendered cutout bindings and identity provenance. |
 | `TETRIS-IMG-035/036` | Runtime-bound VFX candidates | Attack accent / active telegraph texture nodes | Bounded combat feedback binding. |
+| `TETRIS-IMG-037/038/039` | User-locked category-seal runtime assets | `Attack` / `Defense` / `Support` `CategorySeal` slots | Keeps the category-only Combo-resolved skill choice scannable without restoring a Tier grid. |
 | `TETRIS-VIS-BOARD-001` | `SUPERSEDED_BY_TETRIS-VIS-BOARD-002` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png` | Replaced because it did not make the current category-resolved skill flow or the intended parchment style intelligible. Not a runtime asset. |
 | `TETRIS-VIS-BOARD-002` | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png` | User-locked AI-understanding/planning review board; `runtime_consumer: NONE`. It is still not a runtime asset. |
 

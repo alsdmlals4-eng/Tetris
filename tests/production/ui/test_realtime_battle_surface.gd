@@ -130,13 +130,22 @@ func test_skill_panel_groups_categories_and_one_resolved_preview_for_the_compact
 func test_skill_categories_reserve_illustrated_seal_slots_without_restoring_a_tier_grid() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	for category_name in ["Attack", "Defense", "Support"]:
+	var expected_texture_paths := {
+		"Attack": "res://assets/production/icons/skill_lane_attack_seal_v1.png",
+		"Defense": "res://assets/production/icons/skill_lane_defense_seal_v1.png",
+		"Support": "res://assets/production/icons/skill_lane_support_seal_v1.png",
+	}
+	for category_name: String in expected_texture_paths:
 		var category: Button = battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/%s" % category_name)
 		var seal: TextureRect = category.get_node_or_null("CategorySeal")
 		assert_not_null(seal, "%s needs a bounded category-seal icon slot" % category_name)
 		if seal != null:
 			assert_eq(seal.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 			assert_gte(seal.custom_minimum_size.x, 32.0, "%s seal must remain legible as the compact column changes width" % category_name)
+			assert_eq(seal.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_CENTERED, "%s seal must preserve its illustrated aspect" % category_name)
+			assert_not_null(seal.texture, "%s must consume its locked category-seal asset" % category_name)
+			if seal.texture != null:
+				assert_eq(seal.texture.resource_path, expected_texture_paths[category_name])
 
 func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):

@@ -10,6 +10,8 @@
 
 **Spec:** `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md`, `docs/design/CHAIN_COMBO_MP_CONTRACT.md`, `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md`, `docs/design/COMBO_STAGE_SKILL_CONTENT_GDD.md`, and `docs/design/FIRST_SESSION_ONBOARDING_CONTRACT.md`.
 
+> **Execution readback · 2026-08-31:** Tasks 1–9 are implemented in the current worktree and covered by the current automated suite; the unchecked lines below are preserved as the original RED→GREEN procedure, not a live assertion that their code is absent. Task 10's automated import/GUT/tooling gates also pass on this branch. The remaining evidence is deliberately narrower: target-resolution runtime observation is blocked because the managed Godot binding still targets the separate `...\Ninza\Tetris` checkout, and Human/player sessions remain `NOT_RUN`. See `RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` for the exact asset/readback receipt; do not upgrade these evidence ceilings from the historical checkbox syntax.
+
 ## Global Constraints
 
 - Issue: [#82](https://github.com/alsdmlals4-eng/Tetris/issues/82). Status: `USER_APPROVED_FOR_IMPLEMENTATION`. The user approved the capped stored board-opportunity reserve on 2026-08-29. Start only the first bounded implementation PR after its exact Issue/Goal, RED tests and isolation gate are in place.

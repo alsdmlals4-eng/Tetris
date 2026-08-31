@@ -89,8 +89,8 @@ self.assertEqual(data["combat_time"]["manual_pause"], "FULL_SIMULATION_PAUSE")
 self.assertFalse(data["combat_time"]["shared_player_turn_budget"])
 self.assertFalse(data["combat_time"]["tempo_bonus"])
 self.assertFalse(data["ui"]["mandatory_sidecar"])
-self.assertEqual(data["ui"]["puzzle_surface_target_ratio"], 0.60)
-self.assertEqual(data["ui"]["combat_surface_target_ratio"], 0.40)
+self.assertEqual(data["ui"]["puzzle_surface_target_ratio"], 0.50)
+self.assertEqual(data["ui"]["combat_surface_target_ratio"], 0.50)
 ```
 
 Require `continuous_enemy_combat_clock` and `free_manual_board_switching` to be removed from `superseded_contracts`. Require ordered stages, Shared Turn Budget, READY handoff, turn timeout/PASS, and Tempo timing to be added as superseded contracts.
@@ -165,8 +165,8 @@ BATTLE_START
     "tempo_bonus": false
   },
   "ui": {
-    "puzzle_surface_target_ratio": 0.60,
-    "combat_surface_target_ratio": 0.40,
+    "puzzle_surface_target_ratio": 0.50,
+    "combat_surface_target_ratio": 0.50,
     "mandatory_sidecar": false
   }
 }
@@ -579,17 +579,17 @@ Required hierarchy:
 ```text
 Battle
 └─ MainRow
-   ├─ PuzzleColumn (~60%)
+   ├─ PuzzleColumn (~50%)
    │  ├─ ModeBar [LINE | CHAIN | SKILL]
    │  └─ PuzzleHost [LineBoardView | ChainBoardView; exactly one visible]
-   └─ CombatColumn (~40%)
+   └─ CombatColumn (~50%)
       ├─ ThreatPanel [Current Telegraph + ETA + Next Forecast]
       ├─ CombatStage
       ├─ ResourceBar [HP | Energy | Stock]
       └─ SkillPanel
 ```
 
-At 1280×720 automated layout test: Puzzle ratio `0.56..0.64`; only one puzzle visible/input-active.
+At 1280×720 automated layout test: Puzzle and combat ratios each stay within `0.46..0.54`; only one puzzle is visible/input-active. This replaces the earlier 60:40 example so this historical execution plan cannot reintroduce the superseded composition.
 
 Forbidden current UI: Shared Turn Timer, READY, ordered phase rail, PASS, Tempo provisional reward, mandatory inactive-board Sidecar.
 

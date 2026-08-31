@@ -93,7 +93,9 @@ func test_bridge_applies_full_tree_pause_keeps_pause_ui_alive_and_preserves_stop
     stopped_audio.stream = _audio_stream()
 
     await get_tree().process_frame
-    await get_tree().physics_frame
+    # SceneTree.physics_frame fires before node _physics_process calls. The
+    # physics timer expires after them, so this observes a completed tick.
+    await get_tree().create_timer(0.0, true, true).timeout
     assert_gt(simulation.process_ticks, 0)
     assert_gt(simulation.physics_ticks, 0)
     assert_true(active_audio.playing)
