@@ -3,6 +3,7 @@
 - Status: `CURRENT_READER_GDD / CANONICAL_SYNTHESIS`, Issue #72; current visual-lock/evidence-gate correction tracked in Issue #78
 - Fresh source snapshot: `origin/main` `f84939d0be5d7c248201628bc88bb7f7c6640fe1`, read 2026-08-29. It retains the prior gameplay snapshot `dec60706ab8fcec3986b01f279d9d60080a309f8` and the Master-GDD/visual-workflow snapshot `59c537f29ed0bebed8d40be5cecfd6ff5b89318b` as provenance.
 - Purpose: make the currently approved game intelligible in one place without replacing the documents and runtime evidence that own individual facts.
+- Public title: **FRACTURE FRONTIER** (`USER_APPROVED_TEXTUAL_TITLE`). Its generated title-logo image remains a separate source candidate until the user locks that exact artwork.
 - Reader rule: a rule may be **approved** yet not be **implemented**; an implemented system may be automated-tested yet not be **Human/player validated**. This document preserves those distinctions.
 - Current owner rule: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the sole current project owners. Notion is `HISTORICAL_EXTERNAL_PROVENANCE_ONLY`; do not read, write, sync, or require it for current work.
 

@@ -2,6 +2,11 @@
   "schema_version": 3,
   "project": "TETRIS",
   "status": "CURRENT_PRODUCTION_CANON",
+  "public_identity": {
+    "game_title": "FRACTURE FRONTIER",
+    "game_title_status": "USER_APPROVED_TEXTUAL_TITLE / TITLE_LOGO_SOURCE_ASSET_CANDIDATE_NOT_LOCKED",
+    "title_does_not_define": ["NEW_FACTION", "HISTORY", "GEOGRAPHY", "NAMED_CHARACTER"]
+  },
   "current_core_decision": "TETRIS-CORE-029",
   "current_skill_decision": "TETRIS-SKILL-039",
   "current_skill_content_decision": "TETRIS-SKILL-042",

@@ -17,7 +17,7 @@
 
 The player should understand, before pressure begins, that a Vanguard is responding to the immediate Gatebreaker threat at a Frontier Gate. The first encounter then proves the distinctive promise: a live threat can be read, two different puzzle workspaces create different resources, and a tactical Skill pause enables a deliberate Technique commitment.
 
-The only approved world-facing facts for this first explanation are the existing current names and their immediate relationship: **Vanguard**, **Frontier Gate**, **Gatebreaker**, and an imminent threat. Do not invent factions, history, geography, named characters, or a public title to fill this moment.
+The approved public game title is **FRACTURE FRONTIER**. The remaining first-explanation facts are the existing immediate names and relationship: **Vanguard**, **Frontier Gate**, **Gatebreaker**, and an imminent threat. The title identifies the game but does not establish a new faction, history, geography or named character; do not invent those facts to fill this moment.
 
 ## Intended first-session flow
 

@@ -50,3 +50,14 @@ func test_title_reserves_a_transparent_logo_consumer_without_promoting_an_unlock
 	if logo_slot != null:
 		assert_eq(logo_slot.mouse_filter, Control.MOUSE_FILTER_IGNORE)
 		assert_null(logo_slot.texture, "a generated logo remains unbound until the user locks that exact candidate")
+
+func test_title_names_the_world_not_the_player_job() -> void:
+	assert_true(ResourceLoader.exists(TITLE_SCENE_PATH))
+	if not ResourceLoader.exists(TITLE_SCENE_PATH):
+		return
+	var title = load(TITLE_SCENE_PATH).instantiate()
+	add_child_autofree(title)
+	var title_text: Label = title.get_node_or_null("Margin/Panel/Content/TitleText")
+	assert_not_null(title_text)
+	if title_text != null:
+		assert_eq(title_text.text, "FRACTURE FRONTIER", "the public title must name the Frontier Gate world, not the Vanguard player job")

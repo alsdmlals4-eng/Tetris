@@ -75,7 +75,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.9, 0.76, 1)
 theme_override_font_sizes/font_size = 46
-text = "TETRIS\nFRACTURE FRONTIER"
+text = "FRACTURE FRONTIER"
 horizontal_alignment = 1
 
 [node name="Promise" type="Label" parent="Margin/Panel/Content"]
