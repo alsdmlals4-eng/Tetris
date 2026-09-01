@@ -240,7 +240,7 @@
   },
   "image_production": {
     "model": "RUNTIME_CONSUMER_FIRST",
-    "generation_status": "CONSUMER_GAP_BLOCKS_RUNTIME_GENERATION_PLANNING_EXPLORATION_ALLOWED",
+    "generation_status": "EXACT_CONSUMER_REQUIRED_USER_STANDING_APPROVAL_2026-09-02",
     "concept_sheet_is_production_asset": false,
     "required_consumer_fields": [
       "target_res_path",
@@ -250,8 +250,8 @@
       "alpha_crop_anchor",
       "import_or_use_mode"
     ],
-    "planning_generation_policy": "AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
-    "runtime_generation_policy": "EXACT_CONSUMER_REQUIRED_AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+    "planning_generation_policy": "USER_STANDING_IMAGE_APPROVAL_2026-09-02",
+    "runtime_generation_policy": "EXACT_CONSUMER_REQUIRED_USER_STANDING_IMAGE_APPROVAL_2026-09-02",
     "one_explicit_approval_one_image": false,
     "atlas_allowed_only_when_runtime_consumes_exact_sheet": true
   },

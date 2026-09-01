@@ -295,7 +295,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("Shared Turn Timer", onboarding)
         self.assertIn("3×6", onboarding)
 
-    def test_image_production_requires_a_runtime_consumer_contract_and_user_lock(self) -> None:
+    def test_image_production_uses_standing_approval_but_keeps_the_runtime_consumer_gate(self) -> None:
         data = self._index()
         image_production = data["image_production"]
         self.assertEqual(
@@ -304,15 +304,15 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             image_production["generation_status"],
-            "CONSUMER_GAP_BLOCKS_RUNTIME_GENERATION_PLANNING_EXPLORATION_ALLOWED",
+            "EXACT_CONSUMER_REQUIRED_USER_STANDING_APPROVAL_2026-09-02",
         )
         self.assertEqual(
             image_production["planning_generation_policy"],
-            "AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+            "USER_STANDING_IMAGE_APPROVAL_2026-09-02",
         )
         self.assertEqual(
             image_production["runtime_generation_policy"],
-            "EXACT_CONSUMER_REQUIRED_AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+            "EXACT_CONSUMER_REQUIRED_USER_STANDING_IMAGE_APPROVAL_2026-09-02",
         )
         self.assertFalse(image_production["one_explicit_approval_one_image"])
         self.assertTrue(IMAGE_CONTRACT_PATH.is_file())
@@ -322,7 +322,8 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("consumer scene path", text)
         self.assertIn("consumer node / material / UI slot", text)
         self.assertIn("concept sheet", text)
-        self.assertIn("AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION", text)
+        self.assertIn("USER_STANDING_IMAGE_APPROVAL_2026-09-02", text)
+        self.assertIn("no per-candidate user lock request", text)
         self.assertIn("exact Godot runtime consumer", text)
         self.assertIn("does not become a runtime asset", text)
 

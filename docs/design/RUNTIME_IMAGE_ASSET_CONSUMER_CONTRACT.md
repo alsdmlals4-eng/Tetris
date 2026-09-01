@@ -1,6 +1,6 @@
 # Runtime Image Asset Consumer Contract
 
-- Status: **CURRENT / USER_APPROVED**
+- Status: **CURRENT / USER_APPROVED / STANDING_IMAGE_APPROVAL_AMENDED_2026-09-02**
 - Decision: `TETRIS-IMAGE-030 · Runtime Consumer First Asset Production`
 - Date: 2026-08-26
 - Scope: every newly generated or commissioned production image intended for the Tetris game runtime
@@ -99,21 +99,23 @@ Production image work follows this sequence:
 5. show the text Brief only when it improves a material design decision; otherwise proceed with the bounded work item;
 6. generate the candidate automatically under the approved project workflow;
 7. inspect the result against the consumer geometry and style contract;
-8. ask the user only whether to **lock** the inspected candidate;
-9. after user lock confirmation, import/bind the approved artifact into the intended Godot consumer;
+8. inspect the candidate, record provenance and confirm it satisfies the exact consumer geometry; under `USER_STANDING_IMAGE_APPROVAL_2026-09-02`, make no per-candidate user lock request;
+9. register the inspected versioned artifact and import/bind it into the intended Godot consumer without overwriting prior approved sources;
 10. verify the scene references the asset and produce runtime/render evidence before calling it a production-integrated asset.
 
 If steps 9–10 have not happened, classify the result as `SOURCE_ASSET_CANDIDATE` or `REFERENCE`, not `RUNTIME_INTEGRATED`.
 
-## 6. Generation and lock workflow amendment · 2026-08-28
+## 6. Generation approval workflow amendments · 2026-08-28 and 2026-09-02
 
-User direction: **do not request approval before generating an image; generate first, then request confirmation only to lock the selected result.**
+Historical user direction (2026-08-28): **do not request approval before generating an image; generate first, then request confirmation only to lock the selected result.**
 
-`AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION` applies to bounded planning visualizations and to runtime image work that already has an exact Godot runtime consumer. It changes the approval timing; it does **not** remove the consumer-first gate, expand a work item into a batch, or promote an image merely because it was generated.
+`AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION` remains the historical workflow for work completed before the newer standing approval. It changed approval timing but did **not** remove the consumer-first gate, expand a work item into a batch, or promote an image merely because it was generated.
+
+Current user direction (2026-09-02): **`USER_STANDING_IMAGE_APPROVAL_2026-09-02`**. For a necessary, bounded planning or runtime image, do not ask for a separate per-candidate approval or lock. The project must still define the exact consumer before runtime generation, inspect the result, preserve prior approved originals, record the source/provenance/hash/geometry/import/rollback facts, bind the versioned file, and keep runtime/render and Human evidence as separate gates. This standing approval is not permission for an unrelated asset batch, new public branding, a title decision, or an external paid image route.
 
 - A planning board or concept comparison is `GENERATED_EXPLORATION`: it has no runtime consumer and does not become a runtime asset.
-- A runtime candidate still requires an exact target `res://` path, scene, node/slot, geometry, import/use mode, and user lock confirmation before it is classified as a Project Asset.
-- Before that lock, an image remains `SOURCE_ASSET_CANDIDATE` or `REFERENCE`; it does not become a runtime asset, UI implementation, scene implementation, or Human/player usability PASS.
+- A runtime candidate still requires an exact Godot runtime consumer: exact target `res://` path, scene, node/slot, geometry, import/use mode and inspected provenance before it is classified as a Project Asset under the standing approval.
+- Before versioned registration and scene binding, an image remains `SOURCE_ASSET_CANDIDATE` or `REFERENCE`; it does not become a runtime asset, UI implementation, scene implementation, or Human/player usability PASS.
 - One bounded consumer/work-item may generate one candidate at a time. A later variation requires a new bounded reason; do not silently build an unrelated image batch.
 
 One image may contain multiple regions only when the **runtime consumer itself** requires a single atlas/sprite sheet texture. In that case the Brief must define exact region/frame layout before generation.
@@ -134,7 +136,7 @@ The merged CORE-029 baseline has a real consumer: `TETRIS-IMG-031` is consumed b
 
 Therefore:
 
-- runtime image generation is blocked until a concrete consumer gap has an exact contract; planning exploration may proceed under `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`;
+- runtime image generation is blocked until a concrete consumer gap has an exact contract; bounded planning exploration and contracted runtime generation may proceed under `USER_STANDING_IMAGE_APPROVAL_2026-09-02`;
 - the previous `Battle Screen UI final concept`, character master/pose sheet, and generic environment concept backlog is **HISTORICAL / REFERENCE ONLY**;
 - image production resumes only after the relevant runtime consumer has an explicit contract. A later Draft PR may provide branch-only consumer evidence; it does not rewrite merged-main status.
 
@@ -155,9 +157,10 @@ The user has approved bounded derivation of two runtime source-asset candidates 
 | Derived asset | Approved source | Exact target | Planned scene consumer | Consumer type | Geometry / anchor | Current evidence |
 | --- | --- | --- | --- | --- | --- | --- |
 | `TETRIS-IMG-033` · Vanguard Combat Cutout v1 | `IMG-P0-002` | `res://assets/production/characters/vanguard_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait` | `TextureRect.texture: AtlasTexture` | transparent alpha; source cutout preserved; deterministic 400×400 face/shoulder crop into a `128×96` HUD portrait, aspect-centred and pointer-transparent | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: IMPLEMENTED_ON_BRANCH` · `RUNTIME_VERIFICATION: PENDING_EXACT_HEAD_RENDER` |
-| `TETRIS-IMG-034` · Gatebreaker Combat Cutout v1 | `IMG-P0-003` | `res://assets/production/bosses/gatebreaker_combat_cutout_v1.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | `TextureRect.texture: AtlasTexture` | transparent alpha; deterministic 932×1128 boss-focused stage crop with the Rift Core and ram-arm safe area; full CombatStage width, vertically enlarged and clipped, pointer-transparent | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: IMPLEMENTED_ON_BRANCH` · `RUNTIME_VERIFICATION: PENDING_EXACT_HEAD_RENDER` |
+| `TETRIS-IMG-034` · Gatebreaker Combat Cutout v1 | `IMG-P0-003` | `res://assets/production/bosses/gatebreaker_combat_cutout_v1.png` | retained rollback source; no current scene binding | n/a until a rollback | transparent alpha; original 932×1128 boss-focused crop is retained byte-for-byte with the Rift Core and ram-arm safe area | `SOURCE_ASSET_CANDIDATE` · `RUNTIME_INTEGRATION: RETAINED_ROLLBACK_SOURCE` · `RUNTIME_VERIFICATION: PENDING_EXACT_HEAD_RENDER` |
+| `TETRIS-IMG-037` · Gatebreaker Rift Core Combat Cutout v2 | `USER_STANDING_IMAGE_APPROVAL_2026-09-02` / `TETRIS-VISUAL-041` | `res://assets/production/bosses/gatebreaker_combat_cutout_v2.png` | `scenes/production/battle.tscn` → `MainRow/CombatColumn/CombatStage/GatebreakerReference` | `TextureRect.texture: AtlasTexture` | transparent RGBA; deterministic 1024×1408 crop retains the violet Rift Core, ram-arm and chained flail safe area; full CombatStage width, vertically enlarged and clipped, pointer-transparent | `USER_STANDING_APPROVED_RUNTIME_CANDIDATE` · `RUNTIME_INTEGRATION: IMPLEMENTED_ON_BRANCH` · `RUNTIME_VERIFICATION: PENDING_EXACT_HEAD_RENDER` |
 
-Issue #42 now keeps the combat roles separate: the Gatebreaker alone occupies the boss-focused, aspect-covered `CombatStage` crop, while the Vanguard appears only as a large readable HUD portrait beside player resources. This preserves the stage backdrop, gives the boss a clear hierarchy and keeps the puzzle, forecast, resource and skill regions outside the art bounds. An earlier Godot 4.7.1 scene-tree-equivalent result confirmed that the StageBackdrop and both cutouts visible in the prior same-stage layout; it is retained solely as historical source-asset evidence. The changed consumers require an exact-head render before their `PENDING_EXACT_HEAD_RENDER` status can advance. Neither record establishes Human readability or final commercial-art approval.
+Issue #42 now keeps the combat roles separate: the Gatebreaker alone occupies the boss-focused, aspect-covered `CombatStage` crop, while the Vanguard appears only as a large readable HUD portrait beside player resources. `TETRIS-IMG-037` is the current bounded v2 consumer under the 2026-09-02 standing approval; `TETRIS-IMG-034` remains an intact rollback source rather than a silently overwritten or deleted asset. This preserves the stage backdrop, gives the boss a clear hierarchy and keeps the puzzle, forecast, resource and skill regions outside the art bounds. An earlier Godot 4.7.1 scene-tree-equivalent result confirmed that the StageBackdrop and both cutouts visible in the prior same-stage layout; it is retained solely as historical source-asset evidence. The changed consumer requires an exact-head render before its `PENDING_EXACT_HEAD_RENDER` status can advance. Neither record establishes Human readability or final commercial-art approval.
 
 ## 11. Authored combat VFX candidates · Issue #47
 

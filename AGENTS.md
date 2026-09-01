@@ -78,7 +78,7 @@ For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, da
 - LINE remains the primary MP source (current internal field: `energy`).
 - CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; every resolved wave adds Combo +1 and then recovers MP from `(sum maximal qualified line lengths − 3) + post-wave Combo`. Combo is the shared Tier/CHAIN-MP resource (current internal field: `stock`).
 - A no-match restores by default and resets Combo; fixed **1 MP** may keep that swapped board for later setup, but also resets Combo and grants no immediate clear, Combo, or CHAIN MP recovery.
-- Combo cap is **10**. Selecting a Skill category resolves the current Combo Stage; when current-stage MP is insufficient, surplus Combo converts at **5 MP each** only to reach the highest feasible lower Stage. This intentionally lowers later CHAIN MP recovery. The CHAIN/resource cap, all-axis matcher, per-wave recovery and MP-lock boundary are implemented and machine-verified; the legacy manual Tier 1–6 Skill selection remains until the separate Phase 2 Skill PR.
+- Combo cap is **10**. Selecting a Skill category resolves the current Combo Stage; when current-stage MP is insufficient, surplus Combo converts at **5 MP each** only to reach the highest feasible lower Stage. This intentionally lowers later CHAIN MP recovery. The CHAIN/resource cap, all-axis matcher, per-wave recovery, MP-lock boundary, category-only preview and atomic CONFIRM are implemented and machine-verified; manual Tier 1–6 selection is historical provenance only.
 - Enemy Current Telegraph + ETA continues while the player solves LINE/CHAIN.
 - Visible Next Forecast remains lower priority than Current.
 - Opening SKILL enters `TACTICAL_PAUSE_SKILL` and fully stops combat simulation.
@@ -117,7 +117,7 @@ No consumer = no production generation.
 
 Concept sheets, master sheets, pose explanation sheets, combined UI sheets, and mock screenshots are reference-only unless the runtime directly consumes that exact file. Atlas/sprite sheets are allowed only when the runtime consumes the exact atlas with a defined region/frame contract.
 
-Planning visualizations may be generated first under `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`; ask the user only whether to lock the inspected result. A planning visualization remains `GENERATED_EXPLORATION`, not a runtime asset. Runtime image generation still requires the relevant CORE-029 exact Godot consumer, target path and geometry/import contract before generation; user lock plus runtime evidence are required before promotion.
+`USER_STANDING_IMAGE_APPROVAL_2026-09-02` permits necessary bounded planning and runtime image generation without a per-candidate user lock request. A planning visualization remains `GENERATED_EXPLORATION`, not a runtime asset. Runtime image generation still requires the relevant CORE-029 exact Godot consumer, target path, geometry/import contract, provenance record and scene binding before integration; runtime/render and Human evidence remain separate gates.
 
 ## Human evidence
 

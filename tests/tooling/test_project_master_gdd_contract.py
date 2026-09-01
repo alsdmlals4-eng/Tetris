@@ -39,7 +39,7 @@ class ProjectMasterGddContractTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
-    def test_auto_generation_requires_lock_and_preserves_runtime_consumer_gate(self) -> None:
+    def test_auto_generation_uses_standing_approval_and_preserves_runtime_consumer_gate(self) -> None:
         index = json.loads(CANON_INDEX_PATH.read_text(encoding="utf-8"))
         image_production = index["image_production"]
         contract = IMAGE_CONTRACT_PATH.read_text(encoding="utf-8")
@@ -47,17 +47,18 @@ class ProjectMasterGddContractTests(unittest.TestCase):
 
         self.assertEqual(
             image_production["planning_generation_policy"],
-            "AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+            "USER_STANDING_IMAGE_APPROVAL_2026-09-02",
         )
         self.assertEqual(
             image_production["runtime_generation_policy"],
-            "EXACT_CONSUMER_REQUIRED_AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION",
+            "EXACT_CONSUMER_REQUIRED_USER_STANDING_IMAGE_APPROVAL_2026-09-02",
         )
         self.assertFalse(image_production["one_explicit_approval_one_image"])
-        self.assertIn("AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION", contract)
+        self.assertIn("USER_STANDING_IMAGE_APPROVAL_2026-09-02", contract)
+        self.assertIn("no per-candidate user lock request", contract)
         self.assertIn("exact Godot runtime consumer", contract)
         self.assertIn("does not become a runtime asset", contract)
-        self.assertIn("AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION", agents)
+        self.assertIn("USER_STANDING_IMAGE_APPROVAL_2026-09-02", agents)
         self.assertIn("GENERATED_EXPLORATION", agents)
 
     def test_core_scene_board_is_a_planning_reference_not_a_runtime_asset(self) -> None:

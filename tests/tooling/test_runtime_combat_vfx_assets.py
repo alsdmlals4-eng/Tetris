@@ -123,6 +123,21 @@ class RuntimeCombatVfxAssetTests(unittest.TestCase):
         self.assertIn("_refresh_stage_vfx", script)
         self.assertIn("enemy_eta_seconds", script)
 
+    def test_gatebreaker_presence_is_presentation_only_and_freezes_with_tactical_pause(self) -> None:
+        script = UI_SCRIPT_PATH.read_text(encoding="utf-8")
+
+        self.assertIn(
+            "@onready var _gatebreaker_reference: TextureRect = $MainRow/CombatColumn/CombatStage/GatebreakerReference",
+            script,
+        )
+        self.assertIn("func _refresh_gatebreaker_presence() -> void:", script)
+        self.assertIn("_refresh_gatebreaker_presence()", script)
+        self.assertIn("_runtime.is_simulation_paused()", script)
+        self.assertIn("_stage_vfx_elapsed += simulation_delta", script)
+        self.assertIn("_gatebreaker_reference.position = _gatebreaker_base_position + Vector2(0.0, bob * 4.0)", script)
+        self.assertIn("_gatebreaker_reference.scale = Vector2.ONE * (1.0 + breath * 0.012)", script)
+        self.assertNotIn("_runtime.advance(_stage_vfx_elapsed)", script)
+
     def test_render_probe_fails_cleanly_when_a_headless_viewport_cannot_capture(self) -> None:
         probe = RENDER_PROBE_PATH.read_text(encoding="utf-8")
         self.assertIn('DisplayServer.get_name() == "headless"', probe)

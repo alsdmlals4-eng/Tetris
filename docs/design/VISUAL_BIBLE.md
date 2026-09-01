@@ -81,24 +81,24 @@ The board is a planning visualization. It deliberately uses symbols, seals, arro
 | Panel | Scene / screen | Player goal and action | Choice / feedback / next connection | Status boundary |
 | --- | --- | --- | --- | --- |
 | 1 | Frontier Gate / first live combat context | Read Gatebreaker Current Telegraph + ETA and make a move in one active puzzle surface. | The same field manual shows threat, MP and Combo before the player opens Skill. | Combat context exists; target-resolution readability is not Human-validated. |
-| 2 | CHAIN reward state | Complete an orthogonal adjacent swap whose same-symbol line reaches 3+. | Chain resolution raises Combo and shows its MP recovery, creating a meaningful current Combo state. | All-axis/MP-lock/cap/formula are approved but runtime remains partial. |
-| 3 | Tactical Skill category choice | Full tactical pause; select exactly one of ATK/DEF/SUP seals. | The chosen seal reveals one current Combo-Resolved technique. Selection alone has no cost. | C1–C10 data and adaptive packages are implemented; category-only selection remains pending. |
-| 4 | Resolved technique preview and confirm | Inspect purpose, target, expected effect, current Combo Stage and MP/Combo cost. | Explicit CONFIRM resolves that one pre-authored technique; there is no manual tier/card browse. | Preview/confirm grammar is planned; actual runtime retains a temporary legacy manual Tier 1–6 bridge. |
-| 5 | MP-insufficient fallback | Understand a lower-stage result before committing. | If the current stage lacks MP, surplus Combo converts at 5 MP each only to reach the highest feasible lower stage; then CONFIRM spends the displayed total. | Formula is current Phase 1 canon; runtime/data/test proof is pending Phase 2. |
+| 2 | CHAIN reward state | Complete an orthogonal adjacent swap whose same-symbol line reaches 3+. | Chain resolution raises Combo and shows its MP recovery, creating a meaningful current Combo state. | All-axis/MP-lock/cap/formula are implemented and machine-verified; target-resolution readability and balance remain unverified. |
+| 3 | Tactical Skill category choice | Full tactical pause; select exactly one of ATK/DEF/SUP seals. | The chosen seal reveals one current Combo-Resolved technique. Selection alone has no cost. | C1–C10 data, adaptive package resolution and category-only selection are implemented and machine-verified. |
+| 4 | Resolved technique preview and confirm | Inspect purpose, target, expected effect, current Combo Stage and MP/Combo cost. | Explicit CONFIRM resolves that one pre-authored technique; there is no manual tier/card browse. | Preview/confirm and atomic rollback are implemented and machine-verified; target-device and Human evidence remain pending. |
+| 5 | MP-insufficient fallback | Understand the lower stage before committing. | If the current stage lacks MP, surplus Combo converts at 5 MP each only to reach the highest feasible lower stage; then CONFIRM spends the displayed total. | Current C1–C10 data and fallback runtime are implemented and machine-verified; balance and Human evidence remain pending. |
 | 6 | Outcome and return to threat | See the action stamp/impact, changed resource state and same frozen context resume. | The result answers or alters the threat, prompting the next LINE/CHAIN/Skill preparation. | Player comprehension, balance and fun remain `NOT_RUN`. |
 
 The user locked `TETRIS-VIS-BOARD-002` as `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` on 2026-08-28. The lock approves only this planning reference; it does not create a Godot runtime asset, UI/scene implementation, runtime render or Human/player UX PASS.
 
-## 7. Generate-first and lock-after-inspection workflow
+## 7. Standing image approval and inspected-consumer workflow
 
-`AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION` applies to a bounded planning visual and to a runtime candidate whose exact consumer has already been defined. Generate the candidate first, inspect it against this Bible and the consumer contract, then ask only whether the user locks it.
+`USER_STANDING_IMAGE_APPROVAL_2026-09-02` applies to a necessary bounded planning visual and to a runtime candidate whose exact consumer has already been defined. Generate the candidate, inspect it against this Bible and the consumer contract, then proceed without a per-candidate user lock request.
 
 For production runtime images, generation still requires:
 
 1. exact `res://` target path;
 2. exact scene and node/material/UI consumer;
 3. size/aspect, alpha/crop/anchor and import/use contract;
-4. user lock confirmation after inspection; and
+4. inspected source/provenance/hash record under the standing approval; and
 5. scene binding plus runtime/render evidence before promotion.
 
 A planning exploration never bypasses these production gates.

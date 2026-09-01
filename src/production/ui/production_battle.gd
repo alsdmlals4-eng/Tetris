@@ -29,6 +29,7 @@ const CHAIN := "CHAIN"
 @onready var _rules_briefing = $RulesReferencePopup/BattleBriefing
 @onready var _vanguard_attack_accent: TextureRect = $MainRow/CombatColumn/CombatStage/VanguardAttackAccent
 @onready var _gatebreaker_threat_telegraph: TextureRect = $MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph
+@onready var _gatebreaker_reference: TextureRect = $MainRow/CombatColumn/CombatStage/GatebreakerReference
 
 var _runtime = null
 var _workspace_manager = null
@@ -37,6 +38,8 @@ var _selected_skill_lane := ""
 var _selected_chain_cell := Vector2i(-1, -1)
 var _stage_vfx_elapsed := 0.0
 var _vanguard_attack_fx_remaining := 0.0
+var _gatebreaker_base_position := Vector2.ZERO
+var _gatebreaker_presence_base_captured := false
 var _timing_feedback_remaining := 0.0
 var _last_timing_feedback: Dictionary = {}
 
@@ -65,6 +68,7 @@ func _ready() -> void:
 		_pause_bridge.bind_controller(pause_controller)
 	set_active_workspace(LINE)
 	_refresh_runtime_labels()
+	call_deferred("_capture_gatebreaker_presence_base")
 	_refresh_stage_vfx(0.0)
 
 func _process(delta: float) -> void:
@@ -278,9 +282,11 @@ func _trigger_vanguard_attack_fx() -> void:
 	_vanguard_attack_accent.modulate = Color(1.0, 1.0, 1.0, 0.9)
 
 func _refresh_stage_vfx(delta: float) -> void:
-	_stage_vfx_elapsed += maxf(0.0, delta)
+	var simulation_delta := 0.0 if _runtime != null and _runtime.is_simulation_paused() else maxf(0.0, delta)
+	_stage_vfx_elapsed += simulation_delta
+	_refresh_gatebreaker_presence()
 	if _vanguard_attack_fx_remaining > 0.0:
-		_vanguard_attack_fx_remaining = maxf(0.0, _vanguard_attack_fx_remaining - delta)
+		_vanguard_attack_fx_remaining = maxf(0.0, _vanguard_attack_fx_remaining - simulation_delta)
 		var slash_alpha := 0.9 * (_vanguard_attack_fx_remaining / 0.42)
 		_vanguard_attack_accent.visible = slash_alpha > 0.0
 		_vanguard_attack_accent.modulate = Color(1.0, 1.0, 1.0, slash_alpha)
@@ -295,6 +301,27 @@ func _refresh_stage_vfx(delta: float) -> void:
 	if active_telegraph:
 		var pulse := 0.22 + 0.08 * (0.5 + 0.5 * sin(_stage_vfx_elapsed * 3.0))
 		_gatebreaker_threat_telegraph.modulate = Color(1.0, 1.0, 1.0, pulse)
+
+func _capture_gatebreaker_presence_base() -> void:
+	if not is_instance_valid(_gatebreaker_reference):
+		return
+	_gatebreaker_base_position = _gatebreaker_reference.position
+	_gatebreaker_reference.pivot_offset = _gatebreaker_reference.size * 0.5
+	_gatebreaker_presence_base_captured = true
+	_refresh_gatebreaker_presence()
+
+func _refresh_gatebreaker_presence() -> void:
+	if not is_instance_valid(_gatebreaker_reference):
+		return
+	if not _gatebreaker_presence_base_captured:
+		_gatebreaker_base_position = _gatebreaker_reference.position
+		_gatebreaker_reference.pivot_offset = _gatebreaker_reference.size * 0.5
+		_gatebreaker_presence_base_captured = true
+	var bob := sin(_stage_vfx_elapsed * 1.25)
+	var breath := 0.5 + 0.5 * sin(_stage_vfx_elapsed * 0.9)
+	_gatebreaker_reference.position = _gatebreaker_base_position + Vector2(0.0, bob * 4.0)
+	_gatebreaker_reference.scale = Vector2.ONE * (1.0 + breath * 0.012)
+	_gatebreaker_reference.modulate = Color(1.0, 1.0, 1.0, 0.94 + breath * 0.06)
 
 func _retry_encounter() -> void:
 	get_tree().reload_current_scene()
