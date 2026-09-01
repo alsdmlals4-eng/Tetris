@@ -13,9 +13,16 @@ from pypdf import PdfReader
 ROOT = Path(__file__).resolve().parents[2]
 PDF_PATH = ROOT / "docs" / "blueprints" / "TETRIS_HUMAN_GAME_BLUEPRINT.pdf"
 MANIFEST_PATH = ROOT / "docs" / "blueprints" / "TETRIS_HUMAN_GAME_BLUEPRINT.manifest.json"
+CORE_CI_PATH = ROOT / ".github" / "workflows" / "core-poc-ci.yml"
 
 
 class HumanGameBlueprintPdfTests(unittest.TestCase):
+    def test_core_ci_installs_the_pdf_reader_before_running_tooling_tests(self) -> None:
+        workflow = CORE_CI_PATH.read_text(encoding="utf-8")
+        dependency = "pypdf==6.14.2"
+        self.assertIn(dependency, workflow)
+        self.assertLess(workflow.index(dependency), workflow.index("python -m unittest discover -s tests/tooling"))
+
     def test_blueprint_is_a_readable_derived_pdf_with_exact_source_provenance(self) -> None:
         self.assertTrue(PDF_PATH.is_file(), "human blueprint PDF must be generated")
         self.assertTrue(MANIFEST_PATH.is_file(), "human blueprint provenance manifest must be generated")
