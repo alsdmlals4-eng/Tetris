@@ -34,9 +34,9 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 ## 3. Current handoff
 
-`TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `CONFIRM`. `TETRIS-SKILL-039` now defines the intended category-only / Combo-resolved Skill flow. The merged runtime entry is `scenes/production/battle.tscn`; its Skill surface still uses a temporary manual Tier 1–6 bridge, though the underlying C1–C10 data/catalog is now implemented.
+`TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `CONFIRM`. `TETRIS-SKILL-039` now defines the intended category-only / Combo-resolved Skill flow. The merged runtime entry is `scenes/production/battle.tscn`; its Skill surface still uses a temporary manual Tier 1–6 bridge, though the underlying C1–C10 data/catalog and narrow target-separated time primitives are now implemented.
 
-`TETRIS-CHAIN-038` and `TETRIS-ONBOARDING-037` are approved but only partially represented by the present runtime. Do not promote diagonal CHAIN matching, 1-MP failed-swap lock, MP/Combo caps and CHAIN MP recovery, or the BattleBriefing/embedded tutorial as implemented. Human/player evidence is `NOT_RUN`.
+`TETRIS-CHAIN-038` is implemented and machine-verified: diagonal CHAIN matching, the 1-MP failed-swap keep-or-revert lock, MP/Combo caps and per-wave CHAIN MP recovery are runtime behavior. `TETRIS-ONBOARDING-037` remains approved but unimplemented: do not promote the BattleBriefing or embedded tutorial. Human/player evidence for every surface remains `NOT_RUN`.
 
 The current work order is:
 
