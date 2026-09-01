@@ -35,7 +35,7 @@ ornament, texture and annotation
 | Palette/value | **Warm ivory parchment** is the base. Charcoal/sepia owns legible text and structure; watercolor violet rift owns threat; restrained rust-red/steel-blue/moss-green distinguish ATK/DEF/SUP without relying only on hue. Puzzle cells and immediate ETA/action states take the clearest values. |
 | Material/lighting | Fibrous paper grain, ink bleed and translucent wash may appear in empty/background zones. Strong light is a painted rift glow or local action wash, never a black-metal/neon interface. |
 | Shape/silhouette | Vanguard remains a broad triangular defender with offset shield, face/weapon and short mantle. Gatebreaker remains asymmetric, heavy, chained and Rift-Core-led. Their current identities are retained; their shading may become sketch/wash in a future consumer-specific art pass. |
-| Camera/framing | One large active puzzle surface plus persistent combat/threat context. The planned board may use a left-to-right field-note flow; runtime still targets an approximately 60/40 puzzle/combat hierarchy until a separately tested layout change. |
+| Camera/framing | One large active puzzle surface plus persistent combat/threat context. The planned board may use a left-to-right field-note flow; runtime targets a balanced 50/50 puzzle/combat hierarchy. The Gatebreaker alone owns the oversized stage crop, while Vanguard remains a large readable HUD portrait beside player resources. |
 | UI/icon/VFX grammar | UI is paper labels, ink borders, clear icon families and sparing wash highlights. ATK/DEF/SUP are category seals, not a 3×6 grid. A selected seal reveals one large resolved technique preview; confirmation gets a clear stamp/ink-slash response. |
 
 ## 4. Keep, Avoid and allowed variation
@@ -69,7 +69,7 @@ Region, threat state, time of day and faction/state may vary wash intensity, pap
 | `IMG-P0-002` | `APPROVED_REFERENCE` | Vanguard master reference | Character identity source, not a runtime asset by itself. |
 | `IMG-P0-003` | `APPROVED_REFERENCE` | Gatebreaker master reference | Boss identity source, not a runtime asset by itself. |
 | `TETRIS-IMG-031` | Runtime-bound production asset | `CombatStage/StageBackdrop` | Current dark stage consumer binding, subject to runtime/render evidence ceiling. |
-| `TETRIS-IMG-033/034` | Runtime-bound source candidates | `VanguardReference` / `GatebreakerReference` | Current pixel-rendered cutout bindings and identity provenance. |
+| `TETRIS-IMG-033/034` | Runtime-bound source candidates | `VanguardPortrait` HUD / `GatebreakerReference` boss stage | Separate player-readability and boss-hierarchy bindings; identity provenance remains unchanged. |
 | `TETRIS-IMG-035/036` | Runtime-bound VFX candidates | Attack accent / active telegraph texture nodes | Bounded combat feedback binding. |
 | `TETRIS-VIS-BOARD-001` | `SUPERSEDED_BY_TETRIS-VIS-BOARD-002` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v1.png` | Replaced because it did not make the current category-resolved skill flow or the intended parchment style intelligible. Not a runtime asset. |
 | `TETRIS-VIS-BOARD-002` | `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME` | `docs/assets/reference/planned/tetris-project-core-scene-visual-board-v2.png` | User-locked AI-understanding/planning review board; `runtime_consumer: NONE`. It is still not a runtime asset. |

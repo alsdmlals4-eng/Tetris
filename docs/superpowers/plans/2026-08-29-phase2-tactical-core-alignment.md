@@ -14,7 +14,7 @@
 
 - Issue: [#82](https://github.com/alsdmlals4-eng/Tetris/issues/82). Status: `USER_APPROVED_FOR_IMPLEMENTATION`. The user approved the capped stored board-opportunity reserve on 2026-08-29. Start only the first bounded implementation PR after its exact Issue/Goal, RED tests and isolation gate are in place.
 - Work from a fresh isolated `codex/` worktree created from the latest completed `main`; all other open/draft PRs remain read-only.
-- Preserve continuous CORE-029 combat, one active 60/40 Puzzle/Combat surface, persistent LINE↔CHAIN state, full tokenized Skill/manual pause, and explicit scheduler commit boundaries.
+- Preserve continuous CORE-029 combat, one active 50/50 Puzzle/Combat surface, persistent LINE↔CHAIN state, full tokenized Skill/manual pause, and explicit scheduler commit boundaries.
 - Use `energy` and `stock` as internal field names in this delivery. Player-facing labels are `MP` and `COMBO`; no broad field-name migration is permitted.
 - MP cap is exactly `60`; Combo cap is exactly `10`. A successful CHAIN wave awards Combo before its own MP recovery: `sum(maximal qualified line lengths) - 3 + post-wave Combo`.
 - A failed CHAIN swap resets Combo exactly once. A player may spend exactly `1 MP` to keep that already-swapped board, but that lock gives no immediate clear, cascade, Combo, or CHAIN MP.

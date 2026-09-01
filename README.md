@@ -88,7 +88,7 @@ CORE-029 baseline에는 `TETRIS-IMG-031` StageBackdrop이라는 실제 runtime c
 - CORE-029 written canon/spec/implementation plan: **main 구현과 함께 유지**.
 - CORE-029 Production runtime: **main에 구현됨**; `AUTOMATED_VERTICAL_SLICE_READY` 근거는 runtime baseline main `1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a`와 tree-equivalent인 source head `92b59bccd2ea45f772003b4abac2d9aa84672307`의 CI/runtime 증거입니다. 이 문서 정정 PR의 기준 main은 `fb55b96f2612497f356bae6586429b944d35d7a8`이며, 별도 main-commit runtime 영수증은 아직 없습니다.
 - Draft PR #19 ordered-turn implementation: **READ_ONLY source snapshot**, wholesale merge/cherry-pick 금지.
-- Production Line/Chain reusable deterministic components, full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 60/40 production scene: **main에 구현됨**.
+- Production Line/Chain reusable deterministic components, full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 50/50 production scene: **main에 구현됨**.
 - CORE-029 runtime-consumed image assets: `TETRIS-IMG-031` StageBackdrop이 main에서 소비됩니다. Draft PR #33의 Gatebreaker composition은 branch-only evidence이며 병합 전 main 사실을 바꾸지 않습니다.
 - 사용자 Windows Production runtime / first-exposure Human playtest: **NOT_RUN**.
 
@@ -98,7 +98,7 @@ Human validation contract:
 
 `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md`
 
-첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, MP vs Combo와 MP-lock 이해, Technique decision quality, 60/40 layout readability, player experience signal을 검증합니다.
+첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, MP vs Combo와 MP-lock 이해, Technique decision quality, 50/50 layout readability, player experience signal을 검증합니다.
 
 Positive directional PASS는 세 개의 독립 first-exposure A/B/C receipt가 필요합니다. Concept art나 자동 test를 Human readability/fun evidence로 승격하지 않습니다.
 

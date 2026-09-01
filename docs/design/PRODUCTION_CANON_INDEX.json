@@ -117,8 +117,8 @@
     "enemy_action_commit_point_explicit": true
   },
   "ui": {
-    "puzzle_surface_target_ratio": 0.6,
-    "combat_surface_target_ratio": 0.4,
+    "puzzle_surface_target_ratio": 0.5,
+    "combat_surface_target_ratio": 0.5,
     "mandatory_sidecar": false,
     "single_large_mode_switch_puzzle_surface": true,
     "persistent_right_combat_surface": true,

@@ -11,7 +11,7 @@ func _init() -> void:
 	var stage := battle.get_node("MainRow/CombatColumn/CombatStage") as Control
 	var slash := battle.get_node("MainRow/CombatColumn/CombatStage/VanguardAttackAccent") as TextureRect
 	var telegraph := battle.get_node("MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph") as TextureRect
-	var vanguard := battle.get_node("MainRow/CombatColumn/CombatStage/VanguardReference") as TextureRect
+	var vanguard := battle.get_node("MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait") as TextureRect
 	var gatebreaker := battle.get_node("MainRow/CombatColumn/CombatStage/GatebreakerReference") as TextureRect
 	print("stage_rect=%s slash_rect=%s telegraph_rect=%s vanguard_rect=%s gatebreaker_rect=%s" % [stage.get_global_rect(), slash.get_global_rect(), telegraph.get_global_rect(), vanguard.get_global_rect(), gatebreaker.get_global_rect()])
 	print("telegraph_visible=%s slash_visible=%s" % [telegraph.visible, slash.visible])

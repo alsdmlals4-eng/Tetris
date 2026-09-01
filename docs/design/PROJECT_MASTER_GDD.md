@@ -86,7 +86,7 @@ Live Telegraph + ETA
 | Work stage | Status | Evidence ceiling and next gate |
 | --- | --- | --- |
 | 1. Core promise, economy and visual direction | `CURRENT / USER_APPROVED` | CORE-029, CHAIN-038, SKILL-039/BALANCE-040, VISUAL-041 and ONBOARDING-037 are defined. |
-| 2. Representative continuous-battle slice | `IMPLEMENTED / PARTIAL` | 60/40 battle, persistent workspaces, scheduler, pause, skill and named art consumers exist. CHAIN-038 and onboarding remain incomplete. |
+| 2. Representative continuous-battle slice | `IMPLEMENTED / PARTIAL` | 50/50 battle, persistent workspaces, scheduler, pause, skill and named art consumers exist. CHAIN-038 and onboarding remain incomplete. |
 | 3. Human usability / player experience | `NOT_RUN` | The immediate required validation gate: target-resolution capture and first-exposure observation. |
 | 4. First-session and session-completion loop | `DESIGNED / NOT_IMPLEMENTED` | Briefing/tutorial is approved; result/reward/route/meta remain planned. |
 | 5. Production expansion and polish | `DEFERRED` | Start only after Stage 3 evidence identifies the smallest necessary correction. |
@@ -211,13 +211,13 @@ Locking a planning board means **approved project planning reference**, not runt
 
 ### Battle scene
 
-`scenes/production/battle.tscn` provides one large `PuzzleColumn` (LINE/CHAIN/Skill mode buttons and `PuzzleHost`) and a persistent `CombatColumn`. The latter holds `ThreatPanel`, `CombatStage`, resource state and `SkillFrame`.
+`scenes/production/battle.tscn` provides a balanced 50/50 `PuzzleColumn` (LINE/CHAIN/Skill mode buttons and `PuzzleHost`) and persistent `CombatColumn`. The latter holds `ThreatPanel`, a boss-dominant `CombatStage`, a shared action-timer presentation, Vanguard resource HUD and `SkillFrame`.
 
 `CombatStage` has current named texture consumers:
 
 - `StageBackdrop` → `assets/production/backgrounds/fracture_frontier_combat_stage_v1.png`
-- `VanguardReference` → `assets/production/characters/vanguard_combat_cutout_v1.png`
-- `GatebreakerReference` → `assets/production/bosses/gatebreaker_combat_cutout_v1.png`
+- `VanguardPortrait` → `assets/production/characters/vanguard_combat_cutout_v1.png` as an AtlasTexture HUD portrait in `ResourceRow`
+- `GatebreakerReference` → `assets/production/bosses/gatebreaker_combat_cutout_v1.png` as the boss-focused AtlasTexture crop in `CombatStage`
 - `VanguardAttackAccent` and `GatebreakerThreatTelegraph` → two bounded VFX textures
 
 These prove scene binding, not composition readability or art approval at a player’s target resolution.

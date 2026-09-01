@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_PROTECTED_CHANGE_APPROVAL",
+  "status": "APPROVED",
+  "protected_base_commit": "c2093d7796cf8948dff613c41407c7e857d7a3e2",
+  "decision_ids": [
+    "TETRIS-CORE-029",
+    "TETRIS-VISUAL-041"
+  ],
+  "approved_paths": [
+    "AGENTS.md",
+    "docs/design/PRODUCTION_CANON_INDEX.json",
+    "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
+    "docs/design/PROJECT_MASTER_GDD.md",
+    "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+    "docs/design/VISUAL_BIBLE.md",
+    "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
+  ],
+  "approval_source": "USER_CURRENT_SESSION_CONTINUATION_WITH_PRIOR_EXPLICIT_50_50_BOSS_HIERARCHY_VANGUARD_HUD_AND_SHARED_TIMER_DIRECTION",
+  "approval_time": "2026-09-01T21:31:07+09:00",
+  "scope_summary": "Approve only the active canonical paths needed to reconcile the user-approved 50:50 battle composition, Gatebreaker-only combat stage, Vanguard HUD portrait, and one shared enemy-ETA/player-window presentation alias."
+}

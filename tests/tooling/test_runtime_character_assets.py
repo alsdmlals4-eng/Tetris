@@ -18,12 +18,17 @@ EXPECTED_ASSETS = {
     "TETRIS-IMG-033": {
         "path": "assets/production/characters/vanguard_combat_cutout_v1.png",
         "source": "IMG-P0-002",
-        "consumer": "MainRow/CombatColumn/CombatStage/VanguardReference",
+        "consumer": "MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait",
         "resource_id": "6_vanguard_cutout",
-        "node_name": "VanguardReference",
-        "anchor_left": "0.0",
-        "anchor_right": "0.6",
-        "z_index": "2",
+        "node_name": "VanguardPortrait",
+        "parent": "MainRow/CombatColumn/ResourceFrame/ResourceRow",
+        "texture_binding": 'texture = SubResource("AtlasTexture_vanguard_portrait")',
+        "required_properties": [
+            "custom_minimum_size = Vector2(128, 96)",
+            "mouse_filter = 2",
+            "expand_mode = 1",
+            "stretch_mode = 5",
+        ],
     },
     "TETRIS-IMG-034": {
         "path": "assets/production/bosses/gatebreaker_combat_cutout_v1.png",
@@ -31,9 +36,18 @@ EXPECTED_ASSETS = {
         "consumer": "MainRow/CombatColumn/CombatStage/GatebreakerReference",
         "resource_id": "7_gatebreaker_cutout",
         "node_name": "GatebreakerReference",
-        "anchor_left": "0.34",
-        "anchor_right": "1.0",
-        "z_index": "1",
+        "parent": "MainRow/CombatColumn/CombatStage",
+        "texture_binding": 'texture = SubResource("AtlasTexture_gatebreaker_stage")',
+        "required_properties": [
+            "anchor_top = -0.16",
+            "anchor_bottom = 1.16",
+            "anchor_left = 0.0",
+            "anchor_right = 1.0",
+            "z_index = 1",
+            "mouse_filter = 2",
+            "expand_mode = 1",
+            "stretch_mode = 6",
+        ],
     },
 }
 
@@ -111,8 +125,8 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def scene_node_block(scene: str, node_name: str) -> str:
-    header = f'[node name="{node_name}" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]'
+def scene_node_block(scene: str, node_name: str, parent: str) -> str:
+    header = f'[node name="{node_name}" type="TextureRect" parent="{parent}"]'
     start = scene.index(header)
     next_node = scene.find("\n[node ", start + len(header))
     return scene[start:] if next_node == -1 else scene[start:next_node]
@@ -140,8 +154,7 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                 self.assertEqual(asset["planned_consumer_node"], expected["consumer"])
                 self.assertEqual(asset["approval_status"], "SOURCE_ASSET_CANDIDATE")
                 self.assertEqual(asset["runtime_integration"], "IMPLEMENTED_ON_BRANCH")
-                self.assertEqual(asset["runtime_verification"], "SCENE_TREE_EQUIVALENT_RENDER_VERIFIED")
-                self.assertIn("aspect-centered stage slot", asset["geometry_contract"])
+                self.assertEqual(asset["runtime_verification"], "PENDING_EXACT_HEAD_RENDER")
                 self.assertNotIn("bottom anchor", asset["geometry_contract"])
                 self.assertIn("StageBackdrop and both cutouts visible", asset["runtime_render_evidence"])
                 self.assertIn("non-retained local test result", asset["runtime_render_evidence"])
@@ -165,10 +178,11 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     "PNG must contain at least one actually transparent pixel",
                 )
 
-        self.assertIn("full-height, aspect-centered stage slot", contract)
+        self.assertIn("HUD portrait", contract)
+        self.assertIn("boss-focused stage crop", contract)
         self.assertNotIn("centered bottom", contract)
 
-    def test_cutouts_are_bound_inside_the_production_combat_stage(self) -> None:
+    def test_cutouts_use_their_separate_boss_stage_and_vanguard_hud_consumers(self) -> None:
         scene = BATTLE_SCENE_PATH.read_text(encoding="utf-8")
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         assets_by_id = {asset["asset_id"]: asset for asset in manifest["assets"]}
@@ -181,16 +195,10 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     f'[ext_resource type="Texture2D" path="res://{expected["path"]}" id="{expected["resource_id"]}"]',
                     scene,
                 )
-                block = scene_node_block(scene, expected["node_name"])
-                self.assertIn(f'texture = ExtResource("{expected["resource_id"]}")', block)
-                self.assertIn("anchor_top = 0.0", block)
-                self.assertIn("anchor_bottom = 1.0", block)
-                self.assertIn(f'anchor_left = {expected["anchor_left"]}', block)
-                self.assertIn(f'anchor_right = {expected["anchor_right"]}', block)
-                self.assertIn(f'z_index = {expected["z_index"]}', block)
-                self.assertIn("mouse_filter = 2", block)
-                self.assertIn("expand_mode = 1", block)
-                self.assertIn("stretch_mode = 5", block)
+                block = scene_node_block(scene, expected["node_name"], expected["parent"])
+                self.assertIn(expected["texture_binding"], block)
+                for property_text in expected["required_properties"]:
+                    self.assertIn(property_text, block)
                 self.assertEqual(asset["runtime_consumer"], expected["consumer"])
 
 
