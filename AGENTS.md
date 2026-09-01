@@ -17,6 +17,12 @@ Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 
 `docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` (`TETRIS-SKILL-026`) and `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` (`TETRIS-BALANCE-027`) remain historical provenance for manual Tier 1–6 choice/cost grammar and selected effect-purpose ideas. Preserve their bodies; do not use them as current Skill selection authority. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` (`TETRIS-CORE-024`) and `docs/design/PRODUCTION_TURN_TIME_CANON.md` (`TETRIS-TIME-025`) remain historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
 
+## TETRIS_FORMAL_BASE_ADAPTER_BOOTSTRAP
+
+- `docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json` is the project-owned first-migration policy source for the formal Base adapter route. It must be read at its exact merged `origin/main` commit before the adapter is installed.
+- `skills/PROJECT_BASE_ADAPTER.json` is the only future canonical adapter path. It is `NOT_INSTALLED` at this policy-source commit; no task may create the adapter and claim this same feature branch as its trusted protected baseline.
+- The subsequent adapter-install PR must use the merged policy commit as `protected_baseline.commit`, read `/protected_paths`, and preserve every listed path. It must not copy Base Skill bodies into this project.
+
 ## DOMAIN_SPLIT_CANON
 
 - `REPOSITORY_HUMAN_FACING_CANON`: `PROJECT_MASTER_GDD.md`, `VISUAL_BIBLE.md`, Flow/Storyboard, visual/reference manifests, and player-facing tables.
