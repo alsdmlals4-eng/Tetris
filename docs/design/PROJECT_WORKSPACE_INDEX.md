@@ -18,6 +18,7 @@
 | What should the project look and feel like? | [`VISUAL_BIBLE.md`](VISUAL_BIBLE.md), planned/approved asset manifests |
 | Which planned screens exist only as references? | `SCREEN_SURFACE_INVENTORY.json`, `FULL_GAME_SCREEN_SURFACE_INVENTORY.md`, `SCREEN_REFERENCE_MANIFEST.json` |
 | What evidence is still required before experience claims? | `docs/validation/PRODUCTION_HUMAN_EVIDENCE_INDEX.json`, `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md` |
+| Which Base operating principles apply without overriding Tetris canon? | `docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json`, `docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.md` |
 
 ## 2. Repository project structure
 
@@ -38,11 +39,14 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 `TETRIS-CHAIN-038` and `TETRIS-ONBOARDING-037` are implemented in the current worktree: all-axis CHAIN matching, 1-MP failed-swap lock, MP/Combo caps, CHAIN MP recovery, BattleBriefing and embedded guided tutorial all have deterministic tests. They remain pending exact-head target-resolution verification; Human/player evidence is `NOT_RUN`.
 
-The current work order is:
+The current work order is defined by [`docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.md`](../operations/TETRIS_PROJECT_OPERATION_CONTRACT.md) and [`docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md`](../superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md):
 
-1. Verify the user-approved Phase 2 contract at the exact current head: C1–C10 content, target-separated time semantics, capped board-opportunity reserve, all-axis CHAIN, and explicit preview/confirm.
-2. Inspect the title, briefing, guided prompts, 50/50 battle, boss hierarchy and Skill panel at target resolution; `TETRIS-VIS-BOARD-002` remains a planning-only reference, not a runtime asset.
-3. Capture Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
+1. Maintain the project route and its formal Base-adapter boundary without changing current gameplay canon.
+2. For a material product task, fresh-read the exact current head, active owners, actual consumers and parallel PRs, then verify the user-approved Phase 2 contract: C1–C10 content, target-separated time semantics, capped board-opportunity reserve, all-axis CHAIN, and explicit preview/confirm.
+3. Inspect the title, briefing, guided prompts, 50/50 battle, boss hierarchy and Skill panel at target resolution; `TETRIS-VIS-BOARD-002` remains a planning-only reference, not a runtime asset.
+4. Capture Human first-exposure evidence before expanding route, result, Codex, progression, assets or audio.
+
+The 2026-08-26 continuous-realtime plan remains historical implementation provenance only. It must not replace the current 2026-08-29 Phase 2 execution route.
 
 For live operational truth, read the latest completed `main`, all open/draft PRs as read-only parallel work, the relevant GitHub issue/PR, and the actual repository evidence. This index deliberately does not freeze transient PR, CI or runtime claims.
 

@@ -21,7 +21,10 @@ PLAN_PATH = (
     / "docs"
     / "superpowers"
     / "plans"
-    / "2026-08-26-continuous-realtime-mode-switch-combat.md"
+    / "2026-08-29-phase2-tactical-core-alignment.md"
+)
+PROJECT_OPERATION_CONTRACT_PATH = (
+    ROOT / "docs" / "operations" / "TETRIS_PROJECT_OPERATION_CONTRACT.json"
 )
 AGENTS_PATH = ROOT / "AGENTS.md"
 README_PATH = ROOT / "README.md"
@@ -50,6 +53,14 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertTrue(
             (ROOT / data["implementation_plan"]).is_file(),
             "current implementation plan must exist",
+        )
+        self.assertEqual(
+            data["project_operation_contract"],
+            "docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json",
+        )
+        self.assertTrue(
+            (ROOT / data["project_operation_contract"]).is_file(),
+            "current project operation contract must exist",
         )
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-039")
         self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-040")
@@ -406,9 +417,45 @@ class ProductionCanonContractTests(unittest.TestCase):
             self.assertIn("docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md", text)
             self.assertIn("docs/design/CHAIN_COMBO_MP_CONTRACT.md", text)
             self.assertIn("TETRIS-CORE-029", text)
-            self.assertIn("docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md", text)
+            self.assertIn("docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md", text)
             self.assertNotIn("One turn is `Enemy Telegraph → Line Phase → Line Settle → Chain Phase", text)
-        self.assertIn("TETRIS-CHAIN-038 amendment", PLAN_PATH.read_text(encoding="utf-8"))
+        self.assertIn("TETRIS-CHAIN-038", PLAN_PATH.read_text(encoding="utf-8"))
+        self.assertIn("Shared Action Timer is a presentation alias", agents)
+        self.assertIn("not a Shared Player Turn Budget", agents)
+
+    def test_project_operation_contract_keeps_base_adaptation_thin_and_truthful(self) -> None:
+        self.assertTrue(
+            PROJECT_OPERATION_CONTRACT_PATH.is_file(),
+            "project operation contract must exist",
+        )
+        contract = json.loads(PROJECT_OPERATION_CONTRACT_PATH.read_text(encoding="utf-8"))
+
+        self.assertEqual(contract["project"], "TETRIS")
+        self.assertEqual(contract["workspace_authority"], "REPOSITORY_PRIMARY_CANON")
+        self.assertEqual(
+            contract["current_implementation_plan"],
+            "docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md",
+        )
+        self.assertEqual(
+            contract["historical_implementation_plan"],
+            "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
+        )
+        self.assertEqual(
+            contract["formal_base_adapter"]["status"],
+            "BLOCKED_UNVERIFIED",
+        )
+        self.assertIn(
+            "first-migration protected policy source is absent from target origin/main",
+            contract["formal_base_adapter"]["blockers"],
+        )
+        self.assertIn(
+            "Base checker release-lock support is behind current Base release documentation",
+            contract["formal_base_adapter"]["blockers"],
+        )
+        self.assertFalse(
+            (ROOT / "skills" / "PROJECT_BASE_ADAPTER.json").exists(),
+            "do not claim a formal Base adapter before its bootstrap prerequisites exist",
+        )
 
 
 if __name__ == "__main__":

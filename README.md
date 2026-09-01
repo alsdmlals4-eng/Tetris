@@ -51,9 +51,12 @@ GitHub repository documents, GitHub issue/PR history, and runtime evidence are t
 7. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
 8. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
 9. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
-10. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
+10. `docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json` — machine-readable Base-adapted work route, protected scope and formal adapter boundary.
+11. `docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md` — current Phase 2 implementation plan, including the `TETRIS-CHAIN-038` alignment work.
 
 Historical provenance:
+
+- `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — retained implementation provenance only; not the current work entrypoint.
 
 - `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — CORE-024 ordered-turn history.
 - `docs/design/PRODUCTION_TURN_TIME_CANON.md` — TIME-025 Shared Turn Budget history.

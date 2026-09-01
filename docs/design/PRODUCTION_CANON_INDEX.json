@@ -17,6 +17,8 @@
   "current_chain_decision": "TETRIS-CHAIN-038",
   "project_human_facing_owner": "REPOSITORY_ONLY",
   "project_workspace_index": "docs/design/PROJECT_WORKSPACE_INDEX.md",
+  "project_operation_contract": "docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json",
+  "project_operation_contract_human_view": "docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.md",
   "project_master_gdd": "docs/design/PROJECT_MASTER_GDD.md",
   "visual_bible": "docs/design/VISUAL_BIBLE.md",
   "external_workspace_migration_record": "docs/operations/TETRIS_CURRENT_WORKSPACE_MIGRATION_2026-08-28.json",
