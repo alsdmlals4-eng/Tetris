@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "artifact_role": "TETRIS_FIRST_PROJECT_ADAPTER_PROTECTED_POLICY",
+  "project": "TETRIS",
+  "adapter_state_at_policy_commit": "NOT_INSTALLED",
+  "policy_state": "BASELINE_READY_FOR_FORMAL_ADAPTER_INSTALL",
+  "policy_source_role": "FIRST_MIGRATION_LEGACY_SOURCE",
+  "source_provenance": {
+    "approval_reference": "2026-09-01 user-approved formal Base adapter condition closure",
+    "authority": "REPOSITORY_PRIMARY_CANON",
+    "scope": "operational adapter bootstrap only"
+  },
+  "future_adapter": {
+    "canonical_path": "skills/PROJECT_BASE_ADAPTER.json",
+    "first_migration_policy_pointer": "/protected_paths",
+    "required_baseline_authority": "refs/remotes/origin/main",
+    "installation_rule": "The adapter must be created only in a later branch whose protected_baseline.commit equals the merged main commit containing this policy."
+  },
+  "protected_paths": [
+    "AGENTS.md",
+    "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json",
+    "docs/design/PRODUCTION_CANON_INDEX.json",
+    "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
+    "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md",
+    "docs/design/CHAIN_COMBO_MP_CONTRACT.md",
+    "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+    "docs/design/PROJECT_MASTER_GDD.md",
+    "docs/design/VISUAL_BIBLE.md",
+    "docs/design/PROJECT_WORKSPACE_INDEX.md",
+    "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
+  ],
+  "evidence_ceiling": {
+    "policy_source": "MACHINE_CHECKABLE_AFTER_ADAPTER_INSTALL",
+    "runtime": "NOT_RUN",
+    "device": "NOT_RUN",
+    "human": "NOT_RUN",
+    "release": "NOT_RUN"
+  }
+}
