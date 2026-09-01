@@ -1,0 +1,77 @@
+{
+  "artifact_role": "PROJECT_BASE_ADAPTER",
+  "base_release": {
+    "release_commit": "210ec78292fa12ed7563ba743b322dd36103ae4a",
+    "release_evidence_commit": "bb61e68dc3028421b60c11b87ba2abd297ee6f78",
+    "repository": "alsdmlals4-eng/Base",
+    "version": "9.4.4"
+  },
+  "compatibility": {
+    "cycle": "ONE_CYCLE",
+    "legacy_inputs": {},
+    "views": []
+  },
+  "gdd_sheet": {
+    "role": "GOOGLE_SHEETS_LEGACY_MIGRATION_SOURCE",
+    "sync_status": "NOT_CONFIGURED",
+    "workspace_status": "MIGRATION_COMPATIBILITY_SURFACE"
+  },
+  "project": {
+    "engine": "Godot 4.7.1",
+    "project_id": "tetris",
+    "repository": "alsdmlals4-eng/Tetris",
+    "root": "."
+  },
+  "protected_baseline": {
+    "authority_kind": "REMOTE_TRACKING_REF",
+    "authority_ref": "refs/remotes/origin/main",
+    "commit": "c2093d7796cf8948dff613c41407c7e857d7a3e2",
+    "policy_sha256": "d832a4b8a03ca1d5dfb75ec9c0c559d30596a4daf30051d884d4ac976cbdae71",
+    "policy_source_path": "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json",
+    "policy_source_type": "FIRST_MIGRATION_LEGACY_SOURCE",
+    "protected_paths_pointer": "/protected_paths"
+  },
+  "protected_paths": [
+    "AGENTS.md",
+    "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json",
+    "docs/design/PRODUCTION_CANON_INDEX.json",
+    "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
+    "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md",
+    "docs/design/CHAIN_COMBO_MP_CONTRACT.md",
+    "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+    "docs/design/PROJECT_MASTER_GDD.md",
+    "docs/design/VISUAL_BIBLE.md",
+    "docs/design/PROJECT_WORKSPACE_INDEX.md",
+    "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
+  ],
+  "routing": {
+    "aliases": [],
+    "base_routes": [
+      {"route_id": "auditing-canonical-reference-freshness", "skill_id": "auditing-canonical-reference-freshness", "status": "ACTIVE"},
+      {"route_id": "managing-base-change-proposals", "skill_id": "managing-base-change-proposals", "status": "ACTIVE"},
+      {"route_id": "managing-game-project-operating-system", "skill_id": "managing-game-project-operating-system", "status": "ACTIVE"},
+      {"route_id": "managing-project-intake-and-work-contract", "skill_id": "managing-project-intake-and-work-contract", "status": "ACTIVE"},
+      {"route_id": "reviewing-and-validating-project-changes", "skill_id": "reviewing-and-validating-project-changes", "status": "ACTIVE"},
+      {"route_id": "running-adversarial-review-and-refinement", "skill_id": "running-adversarial-review-and-refinement", "status": "ACTIVE"},
+      {"route_id": "synchronizing-local-and-github-state", "skill_id": "synchronizing-local-and-github-state", "status": "ACTIVE"}
+    ],
+    "inactive_routes": [],
+    "precedence": "PROJECT_LOCAL_THEN_BASE_SHARED",
+    "project_routes": []
+  },
+  "schema_version": 2,
+  "shared_overrides": {},
+  "skill_registry": {
+    "base": {
+      "hash_definition": "RAW_FILE_BYTES_SHA256",
+      "path": "skills/SKILL_REGISTRY.json",
+      "sha256": "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6"
+    },
+    "project": {
+      "hash_definition": "RAW_FILE_BYTES_SHA256",
+      "path": "skills/SKILL_REGISTRY.json",
+      "sha256": "0b096c201b9ddf3808f3ff746fdf9f162cb4721c217bb9ebc8f50948fa907453"
+    }
+  },
+  "validators": []
+}

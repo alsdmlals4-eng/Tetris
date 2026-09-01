@@ -1,0 +1,63 @@
+name: Validate Project Base Adapter
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json"
+      - "docs/PROJECT_OPERATING_HEALTH.json"
+      - "skills/**"
+      - ".github/workflows/validate-project-base-adapter.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out project
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+
+      - name: Check out pinned Base validator
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          repository: alsdmlals4-eng/Base
+          ref: 5adc196c0185951f50e49ab5e51586eff8d60886
+          path: .base-contract
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+
+      - name: Install validator dependencies
+        run: python -m pip install -r .base-contract/.github/validation-requirements.txt
+
+      - name: Select the trusted protected baseline
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          ADAPTER_PATH="skills/PROJECT_BASE_ADAPTER.json"
+          ADAPTER_CHANGES="$(git diff --name-only "$PR_BASE_SHA"...HEAD -- "$ADAPTER_PATH")"
+          if printf '%s\n' "$ADAPTER_CHANGES" | grep -Fxq "$ADAPTER_PATH"; then
+            PROTECTED_BASE_SHA="$PR_BASE_SHA"
+          else
+            PROTECTED_BASE_SHA="$(git show "$PR_BASE_SHA:$ADAPTER_PATH" | python -c 'import json, sys; print(json.load(sys.stdin)["protected_baseline"]["commit"])')"
+          fi
+          python -c 'import re, sys; raise SystemExit(0 if re.fullmatch(r"[0-9a-f]{40}", sys.argv[1]) else 1)' "$PROTECTED_BASE_SHA"
+          git cat-file -e "$PROTECTED_BASE_SHA^{commit}"
+          git merge-base --is-ancestor "$PROTECTED_BASE_SHA" "$PR_BASE_SHA"
+          printf 'PROTECTED_BASE_SHA=%s\n' "$PROTECTED_BASE_SHA" >> "$GITHUB_ENV"
+
+      - name: Validate adapter against the trusted protected baseline
+        run: |
+          python .base-contract/tools/check_project_operating_contract.py \
+            --project-root . \
+            --base-repository .base-contract \
+            --protected-base "$PROTECTED_BASE_SHA" \
+            --check

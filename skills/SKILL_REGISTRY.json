@@ -1,0 +1,13 @@
+{
+  "registry_role": "project-skill-router-and-learning-index",
+  "routing_policy": {
+    "automatic_selection": true,
+    "default_selection": "automatic-trigger-match",
+    "load_all_skills": false,
+    "require_execution_report": true,
+    "require_trigger_match": true,
+    "user_skill_declaration_required": false
+  },
+  "schema_version": 3,
+  "skills": []
+}

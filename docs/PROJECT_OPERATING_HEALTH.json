@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "artifact_role": "PROJECT_OPERATING_HEALTH",
+  "operating_maturity": "OM-L0",
+  "product_evidence_maturity": "PE-0",
+  "critical_gates": {
+    "static": "NOT_RUN",
+    "runtime": "NOT_RUN",
+    "device": "NOT_RUN",
+    "accessibility": "NOT_RUN",
+    "human": "NOT_RUN"
+  },
+  "integrity_verdict": "PASS_WITH_NOT_RUN_GATES",
+  "evidence": {
+    "operating": [],
+    "product": [],
+    "sheet": [],
+    "gates": {
+      "static": [],
+      "runtime": [],
+      "device": [],
+      "accessibility": [],
+      "human": []
+    }
+  }
+}
