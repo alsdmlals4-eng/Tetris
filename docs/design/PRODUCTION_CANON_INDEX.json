@@ -199,7 +199,7 @@
       "enemy_acceleration": "SHORTENS_CURRENT_PATTERN_ETA_ONLY",
       "enemy_deceleration": "LENGTHENS_CURRENT_PATTERN_ETA_ONLY",
       "global_engine_time_scale": "FORBIDDEN",
-      "implementation_status": "DOCUMENTED_NOT_IMPLEMENTED"
+      "implementation_status": "IMPLEMENTED_MACHINE_VERIFIED_TIME_PRIMITIVES_CATEGORY_FLOW_PENDING"
     },
     "forecast_control": {
       "future_control_requires_visible_forecast": true,

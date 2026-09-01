@@ -68,6 +68,9 @@ func test_scheduler_exposes_realtime_api_and_only_advances_when_ticked() -> void
         "next_action_id",
         "remaining_seconds",
         "is_action_committed",
+        "adjust_current_eta",
+        "snapshot_current_action_state",
+        "restore_current_action_state",
     ]:
         assert_true(scheduler.has_method(method_name), "%s is required by the realtime scheduler contract" % method_name)
 
@@ -83,6 +86,61 @@ func test_scheduler_exposes_realtime_api_and_only_advances_when_ticked() -> void
     assert_almost_eq(scheduler.remaining_seconds(), 5.0, 0.001)
     assert_eq(scheduler.tick_simulation(4.99, _context()).size(), 0)
     assert_almost_eq(scheduler.remaining_seconds(), 0.01, 0.001)
+
+func test_scheduler_adjusts_only_the_uncommitted_current_telegraph_and_preserves_next() -> void:
+    var scheduler = _make_scheduler()
+    if scheduler == null:
+        return
+    assert_true(scheduler.has_method("adjust_current_eta"), "current ETA adjustment must be owned by the scheduler")
+    if not scheduler.has_method("adjust_current_eta"):
+        return
+    assert_true(bool(scheduler.start().get("started", false)))
+    var current_id: String = scheduler.current_action_id()
+    var next_id: String = scheduler.next_action_id()
+    var before: float = scheduler.remaining_seconds()
+
+    var adjusted: Dictionary = scheduler.adjust_current_eta(current_id, 2.0)
+    assert_true(bool(adjusted.get("adjusted", false)))
+    assert_eq(String(adjusted.get("action_id", "")), current_id)
+    assert_almost_eq(float(adjusted.get("before_seconds", -1.0)), before, 0.001)
+    assert_almost_eq(float(adjusted.get("after_seconds", -1.0)), before + 2.0, 0.001)
+    assert_eq(scheduler.next_action_id(), next_id, "ETA adjustment may not rewrite the authored forecast")
+
+    var rejected_next: Dictionary = scheduler.adjust_current_eta(next_id, 2.0)
+    assert_false(bool(rejected_next.get("adjusted", true)))
+    assert_almost_eq(scheduler.remaining_seconds(), before + 2.0, 0.001)
+
+    var rejected_non_finite: Dictionary = scheduler.adjust_current_eta(current_id, INF)
+    assert_false(bool(rejected_non_finite.get("adjusted", true)))
+    assert_almost_eq(scheduler.remaining_seconds(), before + 2.0, 0.001)
+
+    # An unresolved deadline keeps the exact current action committed without advancing it.
+    scheduler.tick_simulation(before + 2.0, {})
+    assert_true(scheduler.is_action_committed())
+    var rejected_committed: Dictionary = scheduler.adjust_current_eta(current_id, 2.0)
+    assert_false(bool(rejected_committed.get("adjusted", true)))
+
+func test_scheduler_time_snapshot_restores_only_the_same_current_and_next_action_ids() -> void:
+    var scheduler = _make_scheduler()
+    if scheduler == null:
+        return
+    assert_true(scheduler.has_method("snapshot_current_action_state"))
+    assert_true(scheduler.has_method("restore_current_action_state"))
+    assert_true(scheduler.has_method("adjust_current_eta"))
+    if not scheduler.has_method("snapshot_current_action_state") or not scheduler.has_method("restore_current_action_state") or not scheduler.has_method("adjust_current_eta"):
+        return
+    assert_true(bool(scheduler.start().get("started", false)))
+    var saved: Dictionary = scheduler.snapshot_current_action_state()
+    assert_true(bool(scheduler.adjust_current_eta(scheduler.current_action_id(), 2.0).get("adjusted", false)))
+    assert_true(scheduler.restore_current_action_state(saved))
+    assert_eq(scheduler.current_action_id(), String(saved.get("current_action_id", "")))
+    assert_eq(scheduler.next_action_id(), String(saved.get("next_action_id", "")))
+    assert_almost_eq(scheduler.remaining_seconds(), float(saved.get("remaining_seconds", -1.0)), 0.001)
+
+    scheduler.tick_simulation(scheduler.remaining_seconds(), _context())
+    var before_rejected_restore: float = scheduler.remaining_seconds()
+    assert_false(scheduler.restore_current_action_state(saved), "an advanced authored action cannot be rolled back by a stale time snapshot")
+    assert_almost_eq(scheduler.remaining_seconds(), before_rejected_restore, 0.001)
 
 func test_scheduler_resolves_each_authored_action_once_then_advances_the_locked_forecast() -> void:
     var scheduler = _make_scheduler()

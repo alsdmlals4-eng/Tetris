@@ -10,11 +10,13 @@ var _skill_session
 var _pause_controller: SimulationPauseController
 var _response_state
 var _telemetry = null
+var _board_opportunity = null
+var _last_time_feedback: Dictionary = {}
 var _started := false
 var _terminal := false
 var _system_pause_token: int = 0
 
-func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null) -> void:
+func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null, board_opportunity = null) -> void:
 	_player = player
 	_enemy = enemy
 	_workspace_manager = workspace_manager
@@ -23,6 +25,7 @@ func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspac
 	_pause_controller = pause_controller
 	_response_state = response_state
 	_telemetry = telemetry
+	_board_opportunity = board_opportunity
 
 func start_battle() -> Dictionary:
 	if _started or _player == null or _enemy == null or _enemy_scheduler == null:
@@ -79,7 +82,7 @@ func tick(delta: float) -> Array[Dictionary]:
 			_telemetry.record("WORKSPACE_ENTERED", {"workspace": active_workspace})
 		_tick_active_puzzle(delta)
 		_commit_puzzle_events(events)
-	var context := {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id()}
+	var context := _effect_context()
 	var action_before: String = current_action_id()
 	for event in _enemy_scheduler.tick_simulation(delta, context):
 		events.append(event)
@@ -136,7 +139,7 @@ func select_skill_technique(technique_id: String) -> Dictionary:
 func use_selected_skill() -> Dictionary:
 	if _skill_session == null:
 		return {"committed": false, "reason": "SKILL_UNAVAILABLE"}
-	var result: Dictionary = _skill_session.commit_selected({"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id()})
+	var result: Dictionary = _skill_session.commit_selected(_effect_context())
 	if bool(result.get("committed", false)) and _telemetry != null:
 		_telemetry.record("TECHNIQUE_USED", result)
 		_telemetry.end_tactical_pause()
@@ -183,12 +186,37 @@ func is_terminal() -> bool:
 func current_action_id() -> String:
 	return _enemy_scheduler.current_action_id() if _enemy_scheduler != null else ""
 
+func grant_player_board_opportunity(seconds: float) -> Dictionary:
+	if _terminal:
+		return {"granted": false, "reason": "COMBAT_TERMINAL", "remaining_seconds": 0.0}
+	if _board_opportunity == null or not _board_opportunity.has_method("grant"):
+		return {"granted": false, "reason": "BOARD_OPPORTUNITY_UNAVAILABLE", "remaining_seconds": 0.0}
+	var granted: Dictionary = _board_opportunity.grant(seconds)
+	_last_time_feedback = granted.duplicate(true)
+	return granted
+
 func snapshot() -> Dictionary:
-	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "player_energy": _player.energy if _player != null else 0, "player_stock": _player.stock if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0}
+	return {
+		"started": _started,
+		"terminal": _terminal,
+		"paused": is_simulation_paused(),
+		"player_hp": _player.hp if _player != null else 0,
+		"player_energy": _player.energy if _player != null else 0,
+		"player_stock": _player.stock if _player != null else 0,
+		"enemy_hp": _enemy.hp if _enemy != null else 0,
+		"enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0,
+		"player_board_opportunity_seconds": _board_opportunity.remaining_seconds() if _board_opportunity != null and _board_opportunity.has_method("remaining_seconds") else 0.0,
+		"last_time_feedback": _last_time_feedback.duplicate(true),
+	}
 
 func _tick_active_puzzle(delta: float) -> void:
 	if _workspace_manager.active_workspace() == "LINE" and _workspace_manager.line_session != null:
-		_workspace_manager.line_session.tick(delta)
+		var line_delta := delta
+		if _board_opportunity != null and _board_opportunity.has_method("consume_line_delta"):
+			var opportunity_budget: Dictionary = _board_opportunity.consume_line_delta(delta)
+			line_delta = float(opportunity_budget.get("line_delta", delta))
+			_last_time_feedback = opportunity_budget.duplicate(true)
+		_workspace_manager.line_session.tick(line_delta)
 	elif _workspace_manager.active_workspace() == "CHAIN" and _workspace_manager.chain_session != null and _workspace_manager.chain_session.is_resolving():
 		_workspace_manager.chain_session.complete_pending_resolution()
 
@@ -229,3 +257,13 @@ func _resolve_terminal(events: Array[Dictionary]) -> void:
 		events.append({"kind": "DEFEAT"})
 		if _telemetry != null:
 			_telemetry.record("DEFEAT")
+
+func _effect_context() -> Dictionary:
+	return {
+		"player": _player,
+		"enemy": _enemy,
+		"response_state": _response_state,
+		"telegraph_action_id": _enemy_scheduler.current_action_id() if _enemy_scheduler != null else "",
+		"board_opportunity": _board_opportunity,
+		"enemy_scheduler": _enemy_scheduler,
+	}

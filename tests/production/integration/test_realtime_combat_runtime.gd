@@ -9,13 +9,16 @@ const CHAIN_SESSION_PATH := "res://src/production/chain/production_chain_session
 const SCHEDULER_PATH := "res://src/production/runtime/enemy_action_scheduler.gd"
 const SKILL_SESSION_PATH := "res://src/production/skill/production_skill_session.gd"
 const COMBAT_STATE_PATH := "res://src/production/combat/production_combat_state.gd"
+const BOARD_OPPORTUNITY_PATH := "res://src/production/runtime/player_board_opportunity_state.gd"
 
 class FakeLineSession:
 	var input_enabled := true
 	var tick_count := 0
+	var last_delta := -1.0
 	var events: Array[Dictionary] = []
-	func tick(_delta: float) -> Dictionary:
+	func tick(delta: float) -> Dictionary:
 		tick_count += 1
+		last_delta = delta
 		return {"advanced": true}
 	func drain_events() -> Array[Dictionary]:
 		var drained := events.duplicate(true)
@@ -157,6 +160,82 @@ func test_workspace_switch_keeps_only_the_active_puzzle_simulating() -> void:
 	assert_true(bool(runtime.process_player_command({"kind": "SWITCH_WORKSPACE", "target": "CHAIN"}).get("accepted", false)))
 	runtime.tick(0.25)
 	assert_eq(workspace.line_session.tick_count, 1, "inactive Line workspace must not receive a simulation tick")
+
+func test_board_opportunity_holds_only_line_gravity_while_enemy_eta_uses_full_delta() -> void:
+	assert_true(ResourceLoader.exists(BOARD_OPPORTUNITY_PATH), "LINE-only opportunity reserve must exist")
+	if not ResourceLoader.exists(BOARD_OPPORTUNITY_PATH):
+		return
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	var reserve = load(BOARD_OPPORTUNITY_PATH).new()
+	var runtime = load(RUNTIME_PATH).new(player, enemy, workspace, scheduler, _skill_session(pause, player), pause, null, null, reserve)
+	assert_true(runtime.has_method("grant_player_board_opportunity"), "runtime must expose the approved LINE-only reserve")
+	if not runtime.has_method("grant_player_board_opportunity"):
+		return
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	assert_true(bool(runtime.grant_player_board_opportunity(2.0).get("granted", false)))
+	var eta_before: float = scheduler.remaining_seconds()
+
+	runtime.tick(1.0)
+	assert_true(workspace.line_session.input_enabled, "board opportunity holds gravity and lock, never LINE input")
+	assert_almost_eq(workspace.line_session.last_delta, 0.0, 0.001)
+	assert_almost_eq(scheduler.remaining_seconds(), eta_before - 1.0, 0.001)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 1.0, 0.001)
+
+	runtime.tick(1.5)
+	assert_almost_eq(workspace.line_session.last_delta, 0.5, 0.001, "only the uncovered LINE delta may advance gravity")
+	assert_almost_eq(scheduler.remaining_seconds(), eta_before - 2.5, 0.001)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 0.0, 0.001)
+
+func test_board_opportunity_never_consumes_during_chain_or_pause() -> void:
+	assert_true(ResourceLoader.exists(BOARD_OPPORTUNITY_PATH))
+	if not ResourceLoader.exists(BOARD_OPPORTUNITY_PATH):
+		return
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	var reserve = load(BOARD_OPPORTUNITY_PATH).new()
+	var runtime = load(RUNTIME_PATH).new(player, load(COMBAT_STATE_PATH).new(100), workspace, scheduler, _skill_session(pause, player), pause, null, null, reserve)
+	if not runtime.has_method("grant_player_board_opportunity"):
+		assert_true(false, "runtime must expose the approved LINE-only reserve")
+		return
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	runtime.grant_player_board_opportunity(2.0)
+	workspace._active = "CHAIN"
+	runtime.tick(0.5)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 2.0, 0.001)
+	assert_true(bool(runtime.toggle_system_pause().get("paused", false)))
+	runtime.tick(0.5)
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 2.0, 0.001)
+
+func test_skill_time_effects_use_the_separate_board_and_current_eta_owners() -> void:
+	assert_true(ResourceLoader.exists(BOARD_OPPORTUNITY_PATH))
+	if not ResourceLoader.exists(BOARD_OPPORTUNITY_PATH):
+		return
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	player.energy = 30
+	player.stock = 6
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	var reserve = load(BOARD_OPPORTUNITY_PATH).new()
+	var runtime = load(RUNTIME_PATH).new(player, load(COMBAT_STATE_PATH).new(100), workspace, scheduler, _skill_session(pause, player), pause, null, null, reserve)
+	if not runtime.has_method("grant_player_board_opportunity"):
+		assert_true(false, "runtime must expose time-effect owners to the Skill resolver")
+		return
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	assert_true(bool(runtime.open_skill().get("opened", false)))
+	assert_true(runtime.select_skill_category("SUPPORT"))
+	assert_true(bool(runtime.select_skill_technique("sup_c6_breather").get("selected", false)))
+	var committed: Dictionary = runtime.use_selected_skill()
+	assert_true(bool(committed.get("committed", false)))
+	assert_false(runtime.is_simulation_paused())
+	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 3.0, 0.001)
+	assert_almost_eq(scheduler.remaining_seconds(), 10.0, 0.001, "current ETA delay may not change the authored next action")
 
 func test_no_match_resets_combo_once_and_confirmed_lock_spends_exactly_one_mp() -> void:
 	var pause = load(PAUSE_PATH).new()

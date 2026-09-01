@@ -24,7 +24,8 @@ func build_runtime() -> Dictionary:
 	var workspace = load("res://src/production/runtime/puzzle_workspace_manager.gd").new(line, chain)
 	var response = load("res://src/production/combat/production_response_state.gd").new()
 	var telemetry = load("res://src/production/telemetry/production_telemetry.gd").new()
-	var runtime = load("res://src/production/runtime/production_combat_runtime.gd").new(player, enemy, workspace, scheduler, skill, pause, response, telemetry)
+	var board_opportunity = load("res://src/production/runtime/player_board_opportunity_state.gd").new()
+	var runtime = load("res://src/production/runtime/production_combat_runtime.gd").new(player, enemy, workspace, scheduler, skill, pause, response, telemetry, board_opportunity)
 	var started: Dictionary = runtime.start_battle()
 	if not bool(started.get("started", false)):
 		return {"ready": false, "reason": started.get("reason", "RUNTIME_START_FAILED")}

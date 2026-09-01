@@ -82,9 +82,11 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
-    def test_current_partial_skill_delivery_distinguishes_data_from_unreplaced_runtime_flow(self) -> None:
+    def test_current_partial_skill_delivery_distinguishes_time_primitives_from_unreplaced_runtime_flow(self) -> None:
         contract = CONTRACT.read_text(encoding="utf-8")
-        self.assertIn("PARTIALLY_IMPLEMENTED_DATA_ONLY", contract)
+        self.assertIn("PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES", contract)
+        self.assertIn("PlayerBoardOpportunityState", contract)
+        self.assertIn("EnemyActionScheduler", contract)
         self.assertIn("temporary legacy Tier 1–6", contract)
         self.assertIn("stage < 1 or stage > 10", CATALOG.read_text(encoding="utf-8"))
         self.assertIn("definition_for_lane_stage", CATALOG.read_text(encoding="utf-8"))

@@ -93,6 +93,68 @@ func remaining_seconds() -> float:
 func is_action_committed() -> bool:
     return _started and _timing != null and _remaining_seconds <= _timing.commit_lead_seconds
 
+func adjust_current_eta(action_id: String, delta_seconds: float) -> Dictionary:
+    var before := _remaining_seconds
+    if not _started or _telegraph == null:
+        return _eta_adjustment_result(false, before, "SCHEDULER_NOT_STARTED")
+    if action_id == "" or action_id != current_action_id():
+        return _eta_adjustment_result(false, before, "NOT_CURRENT_ACTION")
+    if is_action_committed():
+        return _eta_adjustment_result(false, before, "ACTION_COMMITTED")
+    if is_nan(delta_seconds) or is_inf(delta_seconds):
+        return _eta_adjustment_result(false, before, "INVALID_DELTA")
+    if is_zero_approx(delta_seconds):
+        return _eta_adjustment_result(false, before, "ZERO_DELTA")
+    _remaining_seconds = maxf(_timing.commit_lead_seconds, _remaining_seconds + delta_seconds)
+    return _eta_adjustment_result(not is_equal_approx(before, _remaining_seconds), before, "")
+
+func snapshot_current_action_state() -> Dictionary:
+    if not _started or _telegraph == null:
+        return {}
+    return {
+        "current_action_id": current_action_id(),
+        "next_action_id": next_action_id(),
+        "remaining_seconds": _remaining_seconds,
+        "committed": is_action_committed(),
+        "resolution_attempted": _resolution_attempted,
+    }
+
+func restore_current_action_state(snapshot: Dictionary) -> bool:
+    var required_keys := ["current_action_id", "next_action_id", "remaining_seconds", "committed", "resolution_attempted"]
+    if not _started or _telegraph == null or snapshot.size() != required_keys.size():
+        return false
+    for key in required_keys:
+        if not snapshot.has(key):
+            return false
+    if not (snapshot["remaining_seconds"] is int or snapshot["remaining_seconds"] is float):
+        return false
+    if not (snapshot["committed"] is bool) or not (snapshot["resolution_attempted"] is bool):
+        return false
+    var restored_seconds := float(snapshot["remaining_seconds"])
+    if is_nan(restored_seconds) or is_inf(restored_seconds) or restored_seconds < 0.0:
+        return false
+    var snapshot_is_committed: bool = bool(snapshot["committed"])
+    var snapshot_resolution_attempted: bool = bool(snapshot["resolution_attempted"])
+    if snapshot_is_committed != (restored_seconds <= _timing.commit_lead_seconds):
+        return false
+    if String(snapshot["current_action_id"]) != current_action_id() or String(snapshot["next_action_id"]) != next_action_id():
+        return false
+    if snapshot_is_committed != is_action_committed() or snapshot_resolution_attempted != _resolution_attempted:
+        return false
+    _remaining_seconds = restored_seconds
+    return true
+
+func _eta_adjustment_result(adjusted: bool, before_seconds: float, reason: String) -> Dictionary:
+    var result := {
+        "adjusted": adjusted,
+        "before_seconds": before_seconds,
+        "after_seconds": _remaining_seconds,
+        "action_id": current_action_id(),
+    }
+    if reason != "":
+        result["reason"] = reason
+    return result
+
 func _boss_hp_ratio(context: Dictionary) -> float:
     var enemy = context.get("enemy")
     if enemy == null or int(enemy.max_hp) <= 0:

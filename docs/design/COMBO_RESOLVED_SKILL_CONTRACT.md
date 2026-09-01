@@ -3,7 +3,7 @@
 - Decision: `TETRIS-SKILL-039 · Category Choice → Combo-Resolved Technique → Explicit Confirm`
 - Balance amendment: `TETRIS-BALANCE-040 · Bounded Combo-to-MP Fallback`
 - Content amendment: [`TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`](COMBO_STAGE_SKILL_CONTENT_GDD.md)
-- Status: `USER_DIRECTED / PHASE 1 CANON / PARTIALLY_IMPLEMENTED_DATA_ONLY`
+- Status: `USER_DIRECTED / PHASE 1 CANON / PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES`
 - Date: 2026-08-28
 - Scope: one tactical-pause skill decision inside `TETRIS-CORE-029`; it does not alter continuous combat, LINE/CHAIN ownership, the 1-MP CHAIN setup lock, or the Combo cap.
 - Detailed predecessors: `TETRIS-SKILL-026` and `TETRIS-BALANCE-027` are `SUPERSEDED_FOR_MANUAL_TIER_SELECTION_AND_COST_GRAMMAR`. They remain historical evidence for the three lane identities and reusable effect primitives only.
@@ -96,10 +96,12 @@ This preserves the user-approved tension: spend the shared Combo now for a timel
 
 ## 6. Actual implementation boundary
 
-This is `PARTIALLY_IMPLEMENTED_DATA_ONLY`. Current exact-head evidence has completed the schema/content boundary, while the player-facing resolver remains incomplete:
+This is `PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES`. Current exact-head evidence has completed the schema/content boundary and the narrow target-separated time owners, while the player-facing resolver remains incomplete:
 
 - `data/production/vanguard_skill_seed.json` contains 30 authored `ATK/DEF/SUP × C1–C10` entries with `stage`, `combo_cost`, `mp_cost`, display text, preview text and only approved primitive effects.
 - `src/production/skill/production_skill_catalog.gd` validates Stage 1–10 definitions, resolves by lane/stage, rejects legacy Tier/conditional-multiplier data and selects exactly one C6/C10 adaptive package for the visible action kind.
+- `PlayerBoardOpportunityState` caps the player-side reserve at `12.0` seconds and only supplies `0.0` to active LINE gravity/lock; `EnemyActionScheduler` adjusts only the exact uncommitted current action ETA and preserves the authored Next Forecast. Both owners reject malformed/stale restore state.
+- `ProductionCombatRuntime` passes the full frame delta to the enemy scheduler, routes LINE through the reserve only while simulation is active, and gives the existing temporary Skill executor both narrow owners. This is deterministic machine-test evidence, not a category-only preview/confirm completion claim.
 - `src/production/ui/production_battle.gd` still binds `TierGrid/Tier1..Tier6`; it is a **temporary legacy Tier 1–6 bridge** whose six buttons now select matching C1–C6 definitions only until the grid is replaced.
 - `src/production/skill/production_skill_session.gd` still requires a manually selected technique id and uses the transitional direct-cost commit path. It does not yet derive a current Combo preview, apply the bounded fallback or expose the final category-only confirmation transaction.
 
