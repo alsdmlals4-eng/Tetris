@@ -58,7 +58,8 @@ class HumanGameBlueprintPdfTests(unittest.TestCase):
         extracted = "\n".join(page.extract_text() or "" for page in reader.pages)
         self.assertIn("TETRIS HUMAN GAME BLUEPRINT", extracted)
         self.assertIn("SHARED ACTION ETA", extracted)
-        self.assertIn("50 / 50 BATTLE SURFACE", extracted)
+        self.assertIn("BATTLE SURFACE MAP", extracted)
+        self.assertIn("50 / 50", extracted)
         self.assertIn("TETRIS-IMG-037", extracted)
         self.assertIn("PENDING_EXACT_HEAD_RENDER", extracted)
 
@@ -76,6 +77,7 @@ class HumanGameBlueprintPdfTests(unittest.TestCase):
         self.assertEqual(hero["sha256"], hashlib.sha256(HERO_PATH.read_bytes()).hexdigest())
 
         reader = PdfReader(str(PDF_PATH))
+        self.assertEqual(len(reader.pages), 4, "the visual blueprint is a deliberate four-page field guide")
         extracted = "\n".join(page.extract_text() or "" for page in reader.pages)
         self.assertIn("BATTLE SURFACE MAP", extracted)
 

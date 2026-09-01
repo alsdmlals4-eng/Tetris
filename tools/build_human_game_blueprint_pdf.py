@@ -391,6 +391,19 @@ def build_story(styles: dict[str, ParagraphStyle], page_width: float) -> list:
     )
     story.append(Spacer(1, 4 * mm))
     story.append(panel("고정 경계", "보스 무대에는 보스만 둔다. ETA·기술 확정·HUD는 무대를 가리지 않는 별도 표면에 놓고, 보드는 왼쪽의 가로 폭을 끝까지 확보한다.", styles, page_width))
+    story.append(Spacer(1, 7 * mm))
+    story.append(paragraph("이 표면에서 확인한 것과 아직 남은 것", styles["heading"]))
+    story.append(
+        cell_table(
+            [
+                ["현재 확인", "아직 주장하지 않는 것"],
+                ["50 / 50 화면 경계·공유 ETA·보스/플레이어 배치 계약", "실제 Godot 프레임의 크롭·가독성·보스 위압감"],
+                ["파생 PDF의 입력 SHA-256과 planning visual provenance", "Human/UX에서의 재미·학습 흐름 최종 승인"],
+            ],
+            [page_width / 2] * 2,
+            styles,
+        )
+    )
 
     story.append(PageBreak())
     story.append(paragraph("02 · PLAYER LOOP", styles["eyebrow"]))
@@ -430,26 +443,11 @@ def build_story(styles: dict[str, ParagraphStyle], page_width: float) -> list:
     story.append(paragraph("보여 주는 것과 아직 검증하지 않은 것을 분리한다", styles["display"]))
     art_cell: list = [paragraph("<b>TETRIS-IMG-037</b><br/>Gatebreaker Rift Core Combat Cutout v2<br/><br/>`CombatStage/GatebreakerReference`가 사용하는 현재 보스 무대 후보입니다.<br/><br/><b>상태</b><br/>USER_STANDING_APPROVED_RUNTIME_CANDIDATE<br/>PENDING_EXACT_HEAD_RENDER", styles["cell"])]
     if BOSS_ART_PATH.is_file():
-        art_cell.append(Image(str(BOSS_ART_PATH), width=48 * mm, height=72 * mm, kind="proportional"))
+        art_cell.append(Image(str(BOSS_ART_PATH), width=42 * mm, height=56 * mm, kind="proportional"))
     visual_table = Table([[art_cell[0], art_cell[1] if len(art_cell) > 1 else ""]], colWidths=[104 * mm, 65 * mm], hAlign="LEFT")
     visual_table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), PANEL), ("BOX", (0, 0), (-1, -1), 0.7, GOLD), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("LEFTPADDING", (0, 0), (-1, -1), 9), ("RIGHTPADDING", (0, 0), (-1, -1), 9), ("TOPPADDING", (0, 0), (-1, -1), 8), ("BOTTOMPADDING", (0, 0), (-1, -1), 8)]))
     story.append(KeepTogether([visual_table, Spacer(1, 3 * mm)]))
     story.append(paragraph("v2는 1024×1536 RGBA 투명 소스이며, Rift Core·ram-arm·chained flail이 남는 1024×1408 crop으로 CombatStage를 덮는다. v1 `TETRIS-IMG-034`는 덮어쓰지 않은 rollback source로 유지한다.", styles["body"]))
-    story.append(Spacer(1, 4 * mm))
-    story.append(paragraph("증거 상태", styles["heading"]))
-    story.append(
-        cell_table(
-            [
-                ["현재 확인", "아직 주장하지 않는 것"],
-                ["구조화 문서·scene binding·PNG RGBA/alpha/hash·tooling tests", "실제 Godot 프레임의 크롭·가독성·보스 위압감"],
-                ["퍼즐·공유 ETA·스킬·체인·자산 소비 계약의 회귀 검사", "기기별 입력감·성능·접근성"],
-                ["파생 PDF의 입력 SHA-256과 planning visual provenance", "Human/UX에서의 재미·학습 흐름 최종 승인"],
-            ],
-            [page_width / 2] * 2,
-            styles,
-        )
-    )
-    story.append(Spacer(1, 5 * mm))
     story.append(paragraph("추가·수정·삭제 권장 사항", styles["heading"]))
     story.append(
         cell_table(
