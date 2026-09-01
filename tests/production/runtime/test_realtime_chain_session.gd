@@ -53,7 +53,7 @@ func _make_session():
     ]))
     var randomizer = load(RANDOMIZER_PATH).new(20260826, config.palette)
     var resolver = load(RESOLVER_PATH).new(board, randomizer)
-    return load(SESSION_PATH).new(board, resolver, config)
+    return load(SESSION_PATH).new(board, resolver)
 
 func test_realtime_chain_session_has_no_turn_or_combat_resource_ownership() -> void:
     var session = _make_session()
@@ -64,8 +64,12 @@ func test_realtime_chain_session_has_no_turn_or_combat_resource_ownership() -> v
     assert_true(session.can_accept_input())
     assert_false(_has_property(session, "turn_controller"))
     assert_false(_has_property(session, "combat_state"))
+    assert_false(_has_property(session, "reward_policy"))
     assert_true(session.has_method("set_input_enabled"))
     assert_true(session.has_method("is_resolving"))
+    assert_true(session.has_method("has_pending_failed_swap"))
+    assert_true(session.has_method("keep_pending_failed_swap"))
+    assert_true(session.has_method("discard_pending_failed_swap"))
     assert_true(session.has_method("snapshot_runtime_state"))
 
 func test_stable_inactive_chain_rejects_new_swaps_without_mutating_board_or_rng() -> void:
@@ -117,9 +121,9 @@ func test_committed_swap_settles_once_after_input_closes_and_emits_resource_requ
         var event: Dictionary = events[0]
         assert_eq(String(event.get("kind", "")), "production_chain_resolved")
         assert_eq(int(event.get("chain_depth", 0)), int(resolution.get("chain_depth", 0)))
-        assert_eq(int(event.get("stock_requested", -1)), session.reward_policy.stock_for_resolution(resolution))
-        assert_false(event.has("stock_applied"), "Chain workspace must not mutate combat Stock directly")
-        assert_false(event.has("stock_lost_at_cap"))
+        assert_true(event.get("waves", null) is Array)
+        assert_false(event.has("stock_requested"), "Chain workspace must not choose depth rewards")
+        assert_false(event.has("stock_applied"), "Chain workspace must not mutate combat Combo directly")
 
     var duplicate: Dictionary = session.complete_pending_resolution()
     assert_false(bool(duplicate.get("success", false)))
@@ -132,3 +136,23 @@ func test_committed_swap_settles_once_after_input_closes_and_emits_resource_requ
     assert_eq(resumed["board"], frozen_after_settle["board"])
     assert_eq(resumed["rng_state"], frozen_after_settle["rng_state"])
     assert_true(session.can_accept_input())
+
+func test_failed_swap_holds_only_the_swapped_snapshot_until_the_player_decides() -> void:
+    var session = _make_session()
+    if session == null:
+        return
+
+    var before: Array = session.board.snapshot()
+    var failed_swap: Dictionary = session.begin_swap(Vector2i(0, 1), Vector2i(1, 1))
+
+    assert_false(bool(failed_swap.get("accepted", true)))
+    assert_eq(String(failed_swap.get("reason", "")), "NO_MATCH")
+    assert_true(session.has_pending_failed_swap())
+    assert_eq(session.board.snapshot(), before, "no-match must still show the original board before a keep choice")
+    assert_ne(failed_swap.get("swapped_snapshot", []), before)
+    assert_false(session.can_accept_input(), "pending keep/discard must lock Chain input")
+
+    assert_true(session.keep_pending_failed_swap())
+    assert_false(session.has_pending_failed_swap())
+    assert_eq(session.board.snapshot(), failed_swap["swapped_snapshot"])
+    assert_false(session.keep_pending_failed_swap(), "a pending swapped snapshot may be applied once")

@@ -36,8 +36,8 @@ func _board(width: int, height: int, rows: Array):
 func test_stable_board_resolves_zero_waves_without_consuming_refill_stream() -> void:
     var board = _board(3, 3, [
         ["A", "B", "C"],
-        ["B", "C", "A"],
-        ["C", "A", "B"],
+        ["D", "E", "F"],
+        ["G", "H", "I"],
     ])
     var randomizer := ScriptedRandomizer.new(["X"])
     var resolver = _resolver(board, randomizer)
@@ -113,6 +113,7 @@ func test_cross_match_preserves_two_group_axes_but_clears_center_once() -> void:
     assert_eq(result["waves"][0]["groups"][0]["axis"], "H")
     assert_eq(result["waves"][0]["groups"][1]["axis"], "V")
     assert_eq(result["waves"][0]["cleared_count"], 5)
+    assert_eq(result["waves"][0]["qualified_line_lengths"], [3, 3])
     assert_eq(result["waves"][0]["symbols"], ["X"])
     assert_true(board.find_match_groups().is_empty())
 

@@ -2,9 +2,20 @@
 class_name ProductionChainBoardView
 extends Control
 
-const PALETTE := {"R": Color("d85a61"), "G": Color("66c97a"), "B": Color("5c94e0"), "Y": Color("e7c85f"), "P": Color("b071db"), "C": Color("60c8ce")}
+const TILE_TEXTURES := {
+	"R": preload("res://assets/production/tiles/chain_tile_red_v1.png"),
+	"G": preload("res://assets/production/tiles/chain_tile_green_v1.png"),
+	"B": preload("res://assets/production/tiles/chain_tile_blue_v1.png"),
+	"Y": preload("res://assets/production/tiles/chain_tile_yellow_v1.png"),
+	"P": preload("res://assets/production/tiles/chain_tile_purple_v1.png"),
+	"C": preload("res://assets/production/tiles/chain_tile_cyan_v1.png"),
+}
+const FALLBACK_TINTS := {"R": Color("d85a61"), "G": Color("66c97a"), "B": Color("5c94e0"), "Y": Color("e7c85f"), "P": Color("b071db"), "C": Color("60c8ce")}
 var _session = null
 var _selected_cell := Vector2i(-1, -1)
+
+func get_tile_texture(symbol: String) -> Texture2D:
+	return TILE_TEXTURES.get(symbol) as Texture2D
 
 func bind_chain_session(session) -> void:
 	_session = session
@@ -35,6 +46,11 @@ func _draw() -> void:
 	for y in range(board.height):
 		for x in range(board.width):
 			var symbol: String = board.get_cell(Vector2i(x, y))
-			draw_rect(Rect2(offset + Vector2(x, y) * cell_size, Vector2.ONE * (cell_size - 2.0)), PALETTE.get(symbol, Color("302247")), true)
+			var tile_rect := Rect2(offset + Vector2(x, y) * cell_size, Vector2.ONE * (cell_size - 2.0))
+			var tile_texture := get_tile_texture(symbol)
+			if tile_texture != null:
+				draw_texture_rect(tile_texture, tile_rect, false)
+			else:
+				draw_rect(tile_rect, FALLBACK_TINTS.get(symbol, Color("302247")), true)
 	if _selected_cell.x >= 0 and _selected_cell.y >= 0:
 		draw_rect(Rect2(offset + Vector2(_selected_cell) * cell_size, Vector2.ONE * (cell_size - 2.0)), Color("f7dd75"), false, 2.0)

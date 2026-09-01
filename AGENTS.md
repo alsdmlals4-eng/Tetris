@@ -4,13 +4,14 @@
 
 Read current production gameplay in this order:
 
-1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 60:40 battle composition authority (`TETRIS-CORE-029`).
+1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 50:50 battle composition authority (`TETRIS-CORE-029`).
 2. `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` — current `ATK / DEF / SUP` category-only, Combo-Resolved preview/explicit CONFIRM and bounded 5-MP fallback authority (`TETRIS-SKILL-039` / `TETRIS-BALANCE-040`).
 3. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar, optional MP lock, Combo recovery and preserved opportunity cost (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
-5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
-6. `docs/design/PROJECT_WORKSPACE_INDEX.md`, `PROJECT_MASTER_GDD.md`, and `VISUAL_BIBLE.md` — repository-owned project-home structure, current picture, and visual direction.
-7. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
-8. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
+4. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
+5. `docs/design/PROJECT_WORKSPACE_INDEX.md`, `PROJECT_MASTER_GDD.md`, and `VISUAL_BIBLE.md` — repository-owned project-home structure, current picture, and visual direction.
+6. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
+7. `docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json` and `.md` — project-specific Base adaptation, work-mode route, protected scope and formal adapter boundary.
+8. `docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
 9. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
 
 Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
@@ -87,11 +88,12 @@ For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, da
 
 ## UI / UX invariants
 
-- Target desktop composition: approximately `60% large Puzzle Surface / 40% persistent Combat-Threat-Resource-Skill surface`.
+- Target desktop composition: approximately `50% large Puzzle Surface / 50% persistent Combat-Threat-Resource-Skill surface`.
 - The ratio is a readability target, not a fixed pixel law.
 - Right-side surface keeps enemy HP/phase, Current Telegraph + ETA, lower-priority Next Forecast when known, player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
+- Shared Action Timer is a presentation alias for the same current `enemy_eta_seconds` shown by Current ETA and the player reaction window; it is not a Shared Player Turn Budget and must not restore ordered turn rails, READY, timeout or PASS.
 - Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context and a category-resolved preview.
-- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, Shared Turn Timer, READY, turn timeout/PASS, Tempo UI, manual Tier buttons or an unconfirmed skill auto-cast as current production behavior.
+- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, a historical Shared Turn Timer/Shared Player Turn Budget, READY, turn timeout/PASS, Tempo UI, manual Tier buttons or an unconfirmed skill auto-cast as current production behavior.
 - Puzzle/HUD readability outranks decorative character, environment, and VFX detail.
 
 ## Image production contract
@@ -125,7 +127,8 @@ Human validation authority: `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVI
 
 ## Production implementation isolation
 
-- Current implementation plan: `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md`.
+- Current implementation plan: `docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md`.
+- The 2026-08-26 continuous-realtime plan is historical implementation provenance only; it is not a current task entrypoint.
 - Keep implementation isolated from `main` until exact-head verification and approval.
 - Draft PR #19 ordered-turn workstream remains read-only. Its pinned head may be used only as a source snapshot for explicitly selected reusable files.
 - Do not merge/cherry-pick PR #19 wholesale.

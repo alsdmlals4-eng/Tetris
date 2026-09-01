@@ -3,3 +3,5 @@ addons/gut/
 *.translation
 __pycache__/
 *.py[cod]
+# Godot can regenerate import metadata for non-runtime planning references.
+docs/assets/reference/planned/*.png.import

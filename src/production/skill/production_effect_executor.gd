@@ -35,6 +35,18 @@ func execute(effect: Dictionary, context: Dictionary) -> Dictionary:
 			if response == null or not response.has_method("configure_lethal_safety"):
 				return {"ok": false, "reason": "INVALID_RESPONSE_STATE"}
 			return {"ok": response.configure_lethal_safety(action_id, magnitude, int(effect.get("charges", 1)))}
+		"GRANT_PLAYER_BOARD_OPPORTUNITY":
+			var opportunity = context.get("board_opportunity")
+			if opportunity == null or not opportunity.has_method("grant") or magnitude <= 0:
+				return {"ok": false, "reason": "INVALID_BOARD_OPPORTUNITY"}
+			return {"ok": true, "result": opportunity.grant(float(magnitude))}
+		"ADJUST_CURRENT_ENEMY_ETA":
+			var scheduler = context.get("enemy_scheduler")
+			var current_action_id := String(context.get("telegraph_action_id", ""))
+			if scheduler == null or not scheduler.has_method("adjust_current_eta") or current_action_id == "" or magnitude <= 0:
+				return {"ok": false, "reason": "INVALID_ENEMY_SCHEDULER"}
+			var adjustment: Dictionary = scheduler.adjust_current_eta(current_action_id, float(magnitude))
+			return {"ok": bool(adjustment.get("adjusted", false)), "reason": adjustment.get("reason", ""), "result": adjustment}
 	return {"ok": false, "reason": "UNSUPPORTED_EFFECT"}
 
 func _damage_targets(targets: Array, magnitude: int) -> Dictionary:

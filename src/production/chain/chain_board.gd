@@ -95,6 +95,35 @@ func find_match_groups(minimum_run: int = 3) -> Array:
                 })
             y = end_y
 
+    var diagonal_directions: Array[Dictionary] = [
+        {"axis": "D_DOWN_RIGHT", "step": Vector2i(1, 1)},
+        {"axis": "D_DOWN_LEFT", "step": Vector2i(-1, 1)},
+    ]
+    for direction in diagonal_directions:
+        var axis: String = String(direction["axis"])
+        var step: Vector2i = direction["step"]
+        for y in range(height):
+            for x in range(width):
+                var start := Vector2i(x, y)
+                var symbol: String = get_cell(start)
+                if symbol == "":
+                    continue
+                var previous: Vector2i = start - step
+                if _inside(previous) and get_cell(previous) == symbol:
+                    continue
+
+                var cells: Array = []
+                var current: Vector2i = start
+                while _inside(current) and get_cell(current) == symbol:
+                    cells.append(current)
+                    current += step
+                if cells.size() >= threshold:
+                    groups.append({
+                        "axis": axis,
+                        "symbol": symbol,
+                        "cells": cells,
+                    })
+
     return groups
 
 func matched_cells(minimum_run: int = 3) -> Array:

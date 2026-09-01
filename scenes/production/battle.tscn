@@ -1,14 +1,21 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=13 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
 [ext_resource type="Script" path="res://src/production/ui/production_chain_board_view.gd" id="3_chain"]
 [ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="4_stage_backdrop"]
 [ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="5_theme"]
-[ext_resource type="Texture2D" path="res://assets/production/characters/vanguard_combat_cutout_v1.png" id="6_vanguard_cutout"]
 [ext_resource type="Texture2D" path="res://assets/production/bosses/gatebreaker_combat_cutout_v1.png" id="7_gatebreaker_cutout"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/vanguard_attack_accent_v1.png" id="8_vanguard_attack_fx"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png" id="9_gatebreaker_telegraph_fx"]
+[ext_resource type="Texture2D" path="res://assets/production/icons/skill_lane_attack_seal_v1.png" id="10_skill_attack_seal"]
+[ext_resource type="Texture2D" path="res://assets/production/icons/skill_lane_defense_seal_v1.png" id="11_skill_defense_seal"]
+[ext_resource type="Texture2D" path="res://assets/production/icons/skill_lane_support_seal_v1.png" id="12_skill_support_seal"]
+[ext_resource type="Texture2D" path="res://assets/production/characters/vanguard_face_portrait_v1.png" id="13_vanguard_face_portrait"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gatebreaker_stage"]
+atlas = ExtResource("7_gatebreaker_cutout")
+region = Rect2(0, 80, 1024, 680)
 
 [node name="Battle" type="Control"]
 process_mode = 3
@@ -33,29 +40,8 @@ theme_override_constants/separation = 12
 [node name="PuzzleColumn" type="VBoxContainer" parent="MainRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.6
+size_flags_stretch_ratio = 0.5
 theme_override_constants/separation = 8
-
-[node name="ModeFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
-layout_mode = 2
-
-[node name="ModeBar" type="HBoxContainer" parent="MainRow/PuzzleColumn/ModeFrame"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="LineButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
-layout_mode = 2
-text = "LINE · 1"
-
-[node name="ChainButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
-layout_mode = 2
-text = "CHAIN · 2"
-
-[node name="SkillButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
-process_mode = 2
-layout_mode = 2
-size_flags_horizontal = 3
-text = "TACTICAL SKILL · K"
 
 [node name="PuzzleHost" type="Control" parent="MainRow/PuzzleColumn"]
 layout_mode = 2
@@ -82,11 +68,78 @@ grow_vertical = 2
 color = Color(0.06, 0.045, 0.09, 1)
 script = ExtResource("3_chain")
 
+[node name="PuzzleFeedbackFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
+layout_mode = 2
+
+[node name="FeedbackStack" type="VBoxContainer" parent="MainRow/PuzzleColumn/PuzzleFeedbackFrame"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="PuzzleFeedback" type="Label" parent="MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.85, 1, 1)
+text = "LINE · clear lines for MP · TETRIS and B2B are called out here"
+
+[node name="ChainFeedback" type="Label" parent="MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.68, 1, 1)
+text = "CHAIN · 3+ in all axes · each wave grows shared Combo"
+
+[node name="GuidedPracticePrompt" type="Label" parent="MainRow/PuzzleColumn/PuzzleFeedbackFrame/FeedbackStack"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.8, 0.45, 1)
+theme_override_font_sizes/font_size = 12
+autowrap_mode = 2
+text = "GUIDED PRACTICE · BATTLE STARTING"
+
+[node name="ChainLockFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
+visible = false
+layout_mode = 2
+
+[node name="LockPrompt" type="HBoxContainer" parent="MainRow/PuzzleColumn/ChainLockFrame"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LockText" type="Label" parent="MainRow/PuzzleColumn/ChainLockFrame/LockPrompt"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "NO CHAIN · COMBO RESET · 1 MP로 현재 교환 유지?"
+
+[node name="KeepButton" type="Button" parent="MainRow/PuzzleColumn/ChainLockFrame/LockPrompt"]
+layout_mode = 2
+text = "KEEP · 1 MP"
+
+[node name="DiscardButton" type="Button" parent="MainRow/PuzzleColumn/ChainLockFrame/LockPrompt"]
+layout_mode = 2
+text = "DISCARD"
+
+[node name="ModeFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
+layout_mode = 2
+
+[node name="ModeBar" type="HBoxContainer" parent="MainRow/PuzzleColumn/ModeFrame"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LineButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
+layout_mode = 2
+text = "LINE · 1"
+
+[node name="ChainButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
+layout_mode = 2
+text = "CHAIN · 2"
+
+[node name="SkillButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
+process_mode = 2
+layout_mode = 2
+size_flags_horizontal = 3
+text = "TACTICAL SKILL · K"
+
 [node name="CombatColumn" type="VBoxContainer" parent="MainRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.4
-theme_override_constants/separation = 8
+size_flags_stretch_ratio = 0.5
+theme_override_constants/separation = 4
 
 [node name="ThreatFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 layout_mode = 2
@@ -98,17 +151,20 @@ theme_override_constants/separation = 4
 [node name="CurrentTelegraph" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5, 0.52, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 text = "CURRENT THREAT · ETA --"
 
 [node name="NextForecast" type="Label" parent="MainRow/CombatColumn/ThreatFrame/ThreatPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.71, 0.82, 1)
+theme_override_font_sizes/font_size = 10
 text = "NEXT FORECAST · --"
 
 [node name="CombatStage" type="ColorRect" parent="MainRow/CombatColumn"]
 layout_mode = 2
+custom_minimum_size = Vector2(0, 200)
 size_flags_vertical = 3
+clip_contents = true
 color = Color(0.08, 0.03, 0.06, 1)
 
 [node name="StageBackdrop" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
@@ -127,8 +183,8 @@ stretch_mode = 6
 z_index = 0
 layout_mode = 1
 anchors_preset = 0
-anchor_left = 0.36
-anchor_top = 0.08
+anchor_left = 0.18
+anchor_top = 0.02
 anchor_right = 1.0
 anchor_bottom = 0.96
 grow_horizontal = 2
@@ -138,35 +194,20 @@ texture = ExtResource("9_gatebreaker_telegraph_fx")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VanguardReference" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
-z_index = 2
-layout_mode = 1
-anchors_preset = 0
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.6
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("6_vanguard_cutout")
-expand_mode = 1
-stretch_mode = 5
-
 [node name="GatebreakerReference" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
 z_index = 1
 layout_mode = 1
 anchors_preset = 0
-anchor_left = 0.34
-anchor_top = 0.0
+anchor_left = 0.0
+anchor_top = -0.18
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 1.18
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = ExtResource("7_gatebreaker_cutout")
+texture = SubResource("AtlasTexture_gatebreaker_stage")
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 6
 
 [node name="VanguardAttackAccent" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]
 visible = false
@@ -174,9 +215,9 @@ z_index = 3
 layout_mode = 1
 anchors_preset = 0
 anchor_left = 0.0
-anchor_top = 0.16
-anchor_right = 0.66
-anchor_bottom = 0.92
+anchor_top = 0.1
+anchor_right = 1.0
+anchor_bottom = 0.96
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -184,28 +225,118 @@ texture = ExtResource("8_vanguard_attack_fx")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="SharedActionFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 72)
+
+[node name="ActionPhaseStack" type="VBoxContainer" parent="MainRow/CombatColumn/SharedActionFrame"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="ActionPhaseTitle" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.8, 0.52, 1)
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+text = "ACTION PHASE · PLAYER WINDOW"
+
+[node name="ActionPhaseSubtitle" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.73, 0.84, 1, 1)
+theme_override_font_sizes/font_size = 11
+horizontal_alignment = 1
+text = "PLAYER WINDOW · LINE · SHARED TIMER"
+
+[node name="SharedTimerRow" type="HBoxContainer" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="CurrentActionFrame" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.55, 0.52, 1)
+theme_override_font_sizes/font_size = 10
+text = "CURRENT\nTHREAT ETA"
+vertical_alignment = 1
+
+[node name="SharedTimerCore" type="VBoxContainer" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(112, 0)
+theme_override_constants/separation = -4
+
+[node name="SharedTimerValue" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/SharedTimerCore"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.84, 0.56, 1)
+theme_override_font_sizes/font_size = 24
+horizontal_alignment = 1
+text = "--"
+
+[node name="SharedTimerCaption" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/SharedTimerCore"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.82, 0.98, 1)
+theme_override_font_sizes/font_size = 9
+horizontal_alignment = 1
+text = "SEC · BOSS / PLAYER"
+
+[node name="NextActionFrame" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.52, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 10
+horizontal_alignment = 2
+text = "NEXT\nFORECAST"
+vertical_alignment = 1
+
 [node name="ResourceFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 layout_mode = 2
 
-[node name="ResourceBar" type="Label" parent="MainRow/CombatColumn/ResourceFrame"]
+[node name="ResourceRow" type="HBoxContainer" parent="MainRow/CombatColumn/ResourceFrame"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="VanguardPortrait" type="TextureRect" parent="MainRow/CombatColumn/ResourceFrame/ResourceRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(96, 96)
+mouse_filter = 2
+texture = ExtResource("13_vanguard_face_portrait")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ResourceBar" type="Label" parent="MainRow/CombatColumn/ResourceFrame/ResourceRow"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.66, 0.84, 1, 1)
 text = "HP -- / --    ENERGY --    STOCK -- / 6"
 
 [node name="SkillFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 process_mode = 2
 layout_mode = 2
+custom_minimum_size = Vector2(0, 0)
 
 [node name="SkillPanel" type="VBoxContainer" parent="MainRow/CombatColumn/SkillFrame"]
 process_mode = 2
 layout_mode = 2
-theme_override_constants/separation = 6
+theme_override_constants/separation = 1
 
 [node name="PauseState" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.82, 0.62, 1, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 14
 text = "TACTICAL PAUSE"
+
+[node name="SkillStageSummary" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.76, 0.38, 1)
+theme_override_font_sizes/font_size = 12
+text = "COMBO 0 / 10 · NEXT C1"
+
+[node name="SkillStageRail" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.71, 0.85, 1)
+theme_override_font_sizes/font_size = 10
+text = "◆ C1  C2  C3  C4  C5  C6  C7  C8  C9  C10"
 
 [node name="RetryButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
@@ -220,63 +351,116 @@ theme_override_constants/separation = 6
 [node name="Attack" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
 layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
 size_flags_horizontal = 3
 text = "ATK"
+tooltip_text = "ATK · resolved from current Combo"
+
+[node name="CategorySeal" type="TextureRect" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Attack"]
+layout_mode = 1
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -18.0
+offset_right = 44.0
+offset_bottom = 18.0
+grow_vertical = 2
+custom_minimum_size = Vector2(36, 36)
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("10_skill_attack_seal")
 
 [node name="Defense" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
 layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
 size_flags_horizontal = 3
 text = "DEF"
+tooltip_text = "DEF · resolved from current Combo"
+
+[node name="CategorySeal" type="TextureRect" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Defense"]
+layout_mode = 1
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -18.0
+offset_right = 44.0
+offset_bottom = 18.0
+grow_vertical = 2
+custom_minimum_size = Vector2(36, 36)
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("11_skill_defense_seal")
 
 [node name="Support" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories"]
 process_mode = 2
 layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
 size_flags_horizontal = 3
 text = "SUP"
+tooltip_text = "SUP · resolved from current Combo"
 
-[node name="TierGrid" type="GridContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
-layout_mode = 2
-columns = 3
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+[node name="CategorySeal" type="TextureRect" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Support"]
+layout_mode = 1
+anchors_preset = 0
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -18.0
+offset_right = 44.0
+offset_bottom = 18.0
+grow_vertical = 2
+custom_minimum_size = Vector2(36, 36)
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+texture = ExtResource("12_skill_support_seal")
 
-[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T1"
-
-[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T2"
-
-[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T3"
-
-[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T4"
-
-[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T5"
-
-[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T6"
-
-[node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+[node name="ResolvedPreview" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.71, 0.82, 1)
-text = "ATK / DEF / SUP → T1–T6 → DETAIL → USE"
+theme_override_font_sizes/font_size = 11
+text = "ATK / DEF / SUP → CURRENT COMBO PREVIEW → CONFIRM"
 
-[node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+[node name="SkillDetailCard" type="PanelContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+layout_mode = 2
+
+[node name="TechniqueStack" type="VBoxContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TechniqueName" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.86, 0.78, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "DEFENSE · BRACE"
+
+[node name="TechniquePurpose" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.92, 0.98, 1)
+theme_override_font_sizes/font_size = 11
+text_overrun_behavior = 3
+text = "Preview the authored technique before opening Tactical Pause."
+
+[node name="TechniqueCost" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.76, 0.38, 1)
+theme_override_font_sizes/font_size = 11
+text = "COST · COMBO 1 · MP 8"
+
+[node name="TechniqueAvailability" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/SkillDetailCard/TechniqueStack"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.78, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "PREVIEW ONLY · no resource is spent."
+
+[node name="ConfirmButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
 layout_mode = 2
-text = "USE SELECTED TECHNIQUE"
+theme_override_font_sizes/font_size = 12
+text = "CONFIRM RESOLVED TECHNIQUE"

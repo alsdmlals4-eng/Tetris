@@ -3,8 +3,9 @@
 - Status: `RUNTIME_CONSUMER_READY / GENERATION_APPROVED_BY_USER`
 - Purpose: the Combat Stage receives a restrained, readable environmental identity without competing with the puzzle surface or tactical controls.
 - Asset path: `res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png`
-- Consumer scene: `res://scenes/production/battle.tscn`
-- Consumer node: `MainRow/CombatColumn/CombatStage/StageBackdrop`
+- Primary consumer scene: `res://scenes/production/battle.tscn`
+- Primary consumer node: `MainRow/CombatColumn/CombatStage/StageBackdrop`
+- Secondary current-worktree consumer: `res://scenes/production/title.tscn` → `Backdrop`; it reuses the same source texture under a dark title veil and does not create a duplicate image asset.
 - Consumer type: opaque `Texture2D` in a `TextureRect`; `KEEP_ASPECT_COVERED`; decorative mouse input ignored.
 - Consumer geometry: compact wide stage strip; source may crop at top and bottom, so the safe content area is the center 70% of the image.
 - Import/use: background texture; default filtering/compression is acceptable for this first runtime slice.

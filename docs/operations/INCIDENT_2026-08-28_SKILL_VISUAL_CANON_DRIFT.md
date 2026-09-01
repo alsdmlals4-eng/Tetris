@@ -10,15 +10,15 @@ Fresh comparison found that the previous Project Core Scene Board and current me
 
 - the board did not clearly show the player’s new “category → current Combo result → confirm” decision;
 - planning style was dark/pixel/metal-adjacent while the user’s intended reference is an airy parchment field manual with ink and watercolor rift treatment;
-- actual `production_battle.gd`, catalog/session code and seed data still expose the old manual `ATK/DEF/SUP × T1–T6` grid.
+- Historical pre-correction snapshot: the earlier `production_battle.gd`, catalog/session code and seed data exposed an old manual `ATK/DEF/SUP × T1–T6` grid. This sentence is retained as incident provenance only, not as current runtime truth.
 
 ## Evidence and correction
 
 - User-provided comparison images were visually inspected and classified separately from their pictured legacy UI/rules.
 - `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` now own category-only selection, current-Combo Stage preview, explicit CONFIRM, 10-Combo cap and the bounded 5-MP-per-Combo lower-stage fallback.
-- `TETRIS-VISUAL-041` now owns warm ivory parchment, sepia ink and watercolor violet rift presentation, while preserving the current runtime consumers as evidence rather than falsely relabeling them as new art.
+- Historical resolution note: `TETRIS-VISUAL-041` previously owned warm ivory parchment, sepia ink and watercolor violet rift presentation. It was superseded by `TETRIS-VISUAL-043` on 2026-09-01 after the latest user-directed combat references; existing runtime consumers remain preserved and recomposed rather than falsely relabeled as new art.
 - `TETRIS-VIS-BOARD-001` is superseded by a generated v2 planning board. The user locked v2 as `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`; this still does not promote it to a runtime asset, scene/UI implementation, runtime render or Human/player UX PASS.
-- Actual code/data remains explicitly `DOCUMENTED_NOT_IMPLEMENTED` for the new skill grammar and visual direction.
+- Current worktree recovery: the actual scene/runtime now exposes category-only `ATK / DEF / SUP`, a read-only C1–C10 rail, non-spending stage prebrowse, explicit CONFIRM, a 50/50 1280×720 surface, an oversized Gatebreaker atlas composition and a 96×96 face-and-shoulders Vanguard crop. This is `IMPLEMENTED_IN_CURRENT_WORKTREE`; runtime/Human evidence remains separately classified.
 
 ## Lesson
 

@@ -2,7 +2,8 @@
 param(
     [switch]$SkipCodex,
     [switch]$StaticSelfTest,
-    [switch]$PortPreflightSelfTest
+    [switch]$PortPreflightSelfTest,
+    [switch]$WorktreeRuntime
 )
 
 Set-StrictMode -Version Latest
@@ -13,6 +14,8 @@ $ErrorActionPreference = 'Stop'
 # PROJECT_DEDICATED_LOCAL_EXECUTION_ENVIRONMENT_FIRST
 # BOOTSTRAP_ORCHESTRATION_ONLY
 
+$CanonicalProject = 'C:\Users\user\Documents\GitHub\Ninza\Tetris'
+$WorktreeRuntimeProject = 'C:\Users\user\Documents\GitHub\Ninza\Tetris-phase2-runtime-resume'
 $Project = 'C:\Users\user\Documents\GitHub\Ninza\Tetris'
 $ExpectedRemote = 'https://github.com/alsdmlals4-eng/Tetris.git'
 $GodotDir = 'C:\Users\user\Tools\Godot-Tetris-4.7.1'
@@ -23,6 +26,9 @@ $EditorDataDir = "$GodotDir\editor_data"
 $CodexHome = 'C:\Users\user\.codex-tetris'
 $HttpPort = 8008
 $WsPort = 9508
+$McpUrl = 'http://127.0.0.1:8008/mcp'
+$BootstrapLockName = 'tetris-higodot-slot8-bootstrap.lock'
+$BindingLabel = 'slot 8'
 $ExpectedGodotVersion = '4.7.1'
 $ExpectedGodotAiVersion = '3.2.0'
 $GodotZipName = 'Godot_v4.7.1-stable_win64.exe.zip'
@@ -33,6 +39,20 @@ $ExpectedGodotAiVendorSha256 = 'df3856abf8ea3fd948dae66176f67cfe5e7cdd139a0815b2
 $ManagedCodexMarker = '# TETRIS_DEDICATED_PROFILE_MANAGED'
 $ExpectedPidFileFragment = 'app_userdata/Tetris/godot_ai_server.pid'
 $BootstrapWaitSeconds = 120
+
+if ($WorktreeRuntime) {
+    $Project = $WorktreeRuntimeProject
+    $GodotDir = 'C:\Users\user\Tools\Godot-Tetris-Phase2Runtime-4.7.1'
+    $GodotExe = "$GodotDir\$GodotExeName"
+    $SelfContainedMarker = "$GodotDir\_sc_"
+    $EditorDataDir = "$GodotDir\editor_data"
+    $CodexHome = 'C:\Users\user\.codex-tetris-phase2-runtime'
+    $HttpPort = 8001
+    $WsPort = 9501
+    $McpUrl = 'http://127.0.0.1:8001/mcp'
+    $BootstrapLockName = 'tetris-phase2-runtime-bootstrap.lock'
+    $BindingLabel = 'phase2 runtime worktree'
+}
 
 function Write-Step([string]$Message) {
     Write-Host "[Tetris bootstrap] $Message"
@@ -206,10 +226,29 @@ function Test-LoopbackListener($Row) {
     return ([string]$Row.LocalAddress) -in @('127.0.0.1', '::1')
 }
 
+function Get-ProjectPathFromGodotCommandLine([string]$CommandLine) {
+    if ([string]::IsNullOrWhiteSpace($CommandLine)) { return '' }
+
+    $match = [regex]::Match($CommandLine, '(?:^|\s)--path\s+(?:"([^"]+)"|(\S+))')
+    if (-not $match.Success) { return '' }
+
+    $candidate = if (-not [string]::IsNullOrWhiteSpace($match.Groups[1].Value)) {
+        $match.Groups[1].Value
+    } else {
+        $match.Groups[2].Value
+    }
+    if (-not [System.IO.Path]::IsPathRooted($candidate)) { return '' }
+    return $candidate
+}
+
+function Test-CommandLineTargetsProject([string]$CommandLine, [string]$ProjectPath) {
+    $candidate = Get-ProjectPathFromGodotCommandLine $CommandLine
+    if ([string]::IsNullOrWhiteSpace($candidate)) { return $false }
+    return (Normalize-PathText $candidate) -eq (Normalize-PathText $ProjectPath)
+}
+
 function Test-CommandLineTargetsTetris([string]$CommandLine) {
-    if ([string]::IsNullOrWhiteSpace($CommandLine)) { return $false }
-    $normalized = $CommandLine.Replace('/', '\').ToLowerInvariant()
-    return $normalized.Contains((Normalize-PathText $Project)) -and $CommandLine -match '(?i)(?:^|\s)--path(?:\s|=)'
+    return Test-CommandLineTargetsProject $CommandLine $Project
 }
 
 function Get-TetrisGodotEditors {
@@ -250,12 +289,31 @@ function Assert-NoEditorConflict {
     }
 }
 
+function Assert-WorktreeRuntimeCanonicalProjectIsolation {
+    if (-not $WorktreeRuntime) { return }
+    $canonicalEditors = @()
+    foreach ($process in @(Get-CimInstance Win32_Process -ErrorAction Stop)) {
+        $name = ([string]$process.Name).ToLowerInvariant()
+        if (-not ($name.StartsWith('godot') -and $name.EndsWith('.exe'))) { continue }
+        if (Test-CommandLineTargetsProject ([string]$process.CommandLine) $CanonicalProject) {
+            $canonicalEditors += $process
+        }
+    }
+    if ($canonicalEditors.Count -eq 0) { return }
+
+    Write-Host 'WORKTREE_RUNTIME_CANONICAL_PROJECT_CONFLICT_FAIL_CLOSED'
+    foreach ($process in $canonicalEditors) {
+        Write-Host ("PID {0} Executable={1}`n  CommandLine={2}" -f $process.ProcessId, $process.ExecutablePath, $process.CommandLine)
+    }
+    Fail-Bootstrap 'The canonical Tetris editor is active, so the worktree cannot share Tetris user data. No process was terminated.'
+}
+
 function Test-ExactGodotAiListener($Row) {
     $commandLine = ([string]$Row.CommandLine).ToLowerInvariant()
     $normalized = $commandLine.Replace('\', '/')
     $isBranded = $commandLine.Contains('godot-ai') -or $commandLine.Contains('godot_ai')
-    $hasHttpPort = $commandLine -match '(?i)(?:^|\s)--port\s+8008(?:\s|$)'
-    $hasWsPort = $commandLine -match '(?i)(?:^|\s)--ws-port\s+9508(?:\s|$)'
+    $hasHttpPort = $commandLine -match ("(?i)(?:^|\s)--port\s+" + $HttpPort + "(?:\s|$)")
+    $hasWsPort = $commandLine -match ("(?i)(?:^|\s)--ws-port\s+" + $WsPort + "(?:\s|$)")
     $hasTetrisPidFile = $normalized.Contains($ExpectedPidFileFragment.ToLowerInvariant())
     return $isBranded -and $hasHttpPort -and $hasWsPort -and $hasTetrisPidFile
 }
@@ -278,7 +336,7 @@ function Assert-PortState($ExactEditor) {
     foreach ($row in $occupied) {
         Write-Host ("Port {0} Address={1} PID {2} Name={3}`n  Executable={4}`n  CommandLine={5}" -f $row.Port, $row.LocalAddress, $row.PID, $row.Name, $row.ExecutablePath, $row.CommandLine)
     }
-    Fail-Bootstrap 'HTTP 8008 or WS 9508 has an unknown, partial, or foreign owner. No process was terminated and no alternate port was selected.'
+    Fail-Bootstrap ("HTTP {0} or WS {1} has an unknown, partial, or foreign owner. No process was terminated and no alternate port was selected." -f $HttpPort, $WsPort)
 }
 
 function Invoke-PortPreflightSelfTest {
@@ -469,8 +527,8 @@ function Find-DedicatedEditorSettings {
 
 function Get-ExpectedEditorSettingPairs {
     return [ordered]@{
-        'godot_ai/http_port' = '8008'
-        'godot_ai/ws_port' = '9508'
+        'godot_ai/http_port' = $HttpPort.ToString()
+        'godot_ai/ws_port' = $WsPort.ToString()
         'godot_ai/keep_server_on_exit' = 'false'
         'godot_ai/allow_remote_hosts' = '""'
         'godot_ai/telemetry_enabled' = 'false'
@@ -504,7 +562,7 @@ function Ensure-DedicatedEditorSettings([bool]$EditorAlreadyRunning) {
     $raw = Get-Content -LiteralPath $settingsPath -Raw -Encoding UTF8
     if ($EditorAlreadyRunning) {
         Assert-EditorSettingsText $raw $settingsPath
-        Write-Step 'Exact running editor has the assigned HTTP 8008 / WS 9508 settings.'
+        Write-Step "Exact running editor has the assigned HTTP $HttpPort / WS $WsPort settings."
         return
     }
 
@@ -523,7 +581,7 @@ function Ensure-DedicatedEditorSettings([bool]$EditorAlreadyRunning) {
     $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
     [System.IO.File]::WriteAllText($settingsPath, $raw, $utf8NoBom)
     Assert-EditorSettingsText (Get-Content -LiteralPath $settingsPath -Raw -Encoding UTF8) $settingsPath
-    Write-Step "Dedicated EditorSettings assigned to HTTP 8008 / WS 9508. Backup: $backup"
+    Write-Step "Dedicated EditorSettings assigned to HTTP $HttpPort / WS $WsPort. Backup: $backup"
 }
 
 function Ensure-DedicatedCodexHome {
@@ -545,7 +603,7 @@ function Ensure-DedicatedCodexHome {
         'network_access = true',
         '',
         '[mcp_servers.godot-ai]',
-        'url = "http://127.0.0.1:8008/mcp"',
+        "url = `"$McpUrl`"",
         'enabled = true',
         'required = true',
         'startup_timeout_sec = 60',
@@ -613,7 +671,7 @@ function Wait-ForDedicatedListeners {
         }
         Start-Sleep -Milliseconds 500
     } while ((Get-Date) -lt $deadline)
-    Fail-Bootstrap "HTTP 8008 / WS 9508 did not become ready within $BootstrapWaitSeconds seconds. Verify that uv/uvx is installed and inspect the Godot AI dock."
+    Fail-Bootstrap "HTTP $HttpPort / WS $WsPort did not become ready within $BootstrapWaitSeconds seconds. Verify that uv/uvx is installed and inspect the Godot AI dock."
 }
 
 function Wait-ForExactHiGodotStatus {
@@ -668,7 +726,7 @@ if ($PortPreflightSelfTest) {
     exit 0
 }
 
-$bootstrapLockPath = Join-Path ([System.IO.Path]::GetTempPath()) 'tetris-higodot-slot8-bootstrap.lock'
+$bootstrapLockPath = Join-Path ([System.IO.Path]::GetTempPath()) $BootstrapLockName
 try {
     $bootstrapLock = [System.IO.File]::Open(
         $bootstrapLockPath,
@@ -678,17 +736,18 @@ try {
     )
 }
 catch {
-    Fail-Bootstrap 'CONCURRENT_BOOTSTRAP_FAIL_CLOSED: another Tetris slot 8 launcher is active. No process was terminated.'
+    Fail-Bootstrap "CONCURRENT_BOOTSTRAP_FAIL_CLOSED: another Tetris $BindingLabel launcher is active. No process was terminated."
 }
 
 Write-Host 'ASSUME_PREVIOUS_POWERSHELL_CLOSED'
 Write-Host 'PROJECT_DEDICATED_LOCAL_EXECUTION_ENVIRONMENT_FIRST'
-Write-Step 'Starting the bounded slot 8 bootstrap.'
+Write-Step "Starting the bounded $BindingLabel bootstrap."
 
 Assert-ProjectIdentity
 Assert-HiGodotServerPrerequisite
 Ensure-DedicatedGodot
 Assert-NoEditorConflict
+Assert-WorktreeRuntimeCanonicalProjectIsolation
 $exactEditor = Get-ExactDedicatedEditor
 Assert-PortState $exactEditor
 Ensure-DedicatedEditorSettings ($null -ne $exactEditor)
@@ -705,7 +764,7 @@ else {
 }
 
 $serverPid = Wait-ForDedicatedListeners
-Write-Step "Startup identity verified: Godot AI PID $serverPid, HTTP 8008, WS 9508."
+Write-Step "Startup identity verified: Godot AI PID $serverPid, HTTP $HttpPort, WS $WsPort."
 Wait-ForExactHiGodotStatus
 Write-Host 'POST_BOOTSTRAP_LIVE_READINESS_NOT_PROVEN'
 Write-Host 'FRESH_HIGODOT_READINESS_REQUIRED_BEFORE_MUTATION'

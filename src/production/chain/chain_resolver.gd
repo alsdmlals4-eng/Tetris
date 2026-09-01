@@ -35,16 +35,20 @@ func resolve_existing_matches() -> Dictionary:
         depth += 1
         var matched: Array = board.matched_cells()
         var symbols: Array = []
+        var qualified_line_lengths: Array[int] = []
         for group in groups:
             var symbol: String = String(group["symbol"])
             if not symbols.has(symbol):
                 symbols.append(symbol)
+            var group_cells: Array = group["cells"]
+            qualified_line_lengths.append(group_cells.size())
 
         var cleared_count: int = board.clear_cells(matched)
         waves.append({
             "depth": depth,
             "groups": groups.duplicate(true),
             "cleared_count": cleared_count,
+            "qualified_line_lengths": qualified_line_lengths,
             "symbols": symbols,
         })
 

@@ -14,7 +14,7 @@ class ProjectHomeIaContractTests(unittest.TestCase):
         self.assertEqual(data["project"], "TETRIS")
         self.assertEqual(data["human_home_role"], "PROJECT_LIVING_GDD_VISUAL_DASHBOARD")
         self.assertEqual(data["ai_workspace_root"], "EXISTING_TETRIS_SYSTEM_RECORD")
-        self.assertEqual(data["visual_authority"], "TETRIS-VISUAL-041")
+        self.assertEqual(data["visual_authority"], "TETRIS-VISUAL-043")
         self.assertEqual(data["schema_version"], 3)
         self.assertEqual(data["core_combat_authority"], "TETRIS-CORE-029")
         self.assertEqual(data["historical_timing_authority"], "TETRIS-TIME-025")

@@ -56,6 +56,38 @@ func clear_after_action(action_id: String) -> bool:
     _lethal_charges = 0
     return true
 
+func snapshot_action_state() -> Dictionary:
+    return {
+        "action_id": _action_id,
+        "direct_mitigation": _direct_mitigation,
+        "counter_ratio": _counter_ratio,
+        "resource_ward_ratio": _resource_ward_ratio,
+        "lethal_hp_floor": _lethal_hp_floor,
+        "lethal_charges": _lethal_charges,
+    }
+
+func restore_action_state(snapshot: Dictionary) -> bool:
+    for key in ["action_id", "direct_mitigation", "counter_ratio", "resource_ward_ratio", "lethal_hp_floor", "lethal_charges"]:
+        if not snapshot.has(key):
+            return false
+    if not (snapshot["direct_mitigation"] is int) or not (snapshot["counter_ratio"] is float or snapshot["counter_ratio"] is int) or not (snapshot["resource_ward_ratio"] is float or snapshot["resource_ward_ratio"] is int) or not (snapshot["lethal_hp_floor"] is int) or not (snapshot["lethal_charges"] is int):
+        return false
+    var action_id := String(snapshot["action_id"])
+    var direct := int(snapshot["direct_mitigation"])
+    var counter := float(snapshot["counter_ratio"])
+    var ward := float(snapshot["resource_ward_ratio"])
+    var floor := int(snapshot["lethal_hp_floor"])
+    var charges := int(snapshot["lethal_charges"])
+    if direct < 0 or counter < 0.0 or counter > 1.0 or ward < 0.0 or ward > 1.0 or floor < 0 or charges < 0 or (action_id == "" and (direct > 0 or counter > 0.0 or ward > 0.0 or floor > 0 or charges > 0)):
+        return false
+    _action_id = action_id
+    _direct_mitigation = direct
+    _counter_ratio = counter
+    _resource_ward_ratio = ward
+    _lethal_hp_floor = floor
+    _lethal_charges = charges
+    return true
+
 func _bind_action(action_id: String) -> bool:
     if action_id == "":
         return false

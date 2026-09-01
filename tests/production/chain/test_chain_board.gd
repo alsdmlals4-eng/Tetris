@@ -107,3 +107,25 @@ func test_match_groups_preserve_axes_while_matched_cells_are_unique() -> void:
     assert_eq(groups[1]["axis"], "V")
     assert_eq(matched.size(), 5, "Cross center belongs to two groups but clears once")
     assert_has(matched, Vector2i(2, 2))
+
+func test_match_groups_detect_both_diagonal_axes_as_maximal_lines() -> void:
+    var down_right = _board(5, 5)
+    var down_left = _board(5, 5)
+    if down_right == null or down_left == null:
+        return
+    for y in range(5):
+        for x in range(5):
+            down_right.set_cell(Vector2i(x, y), "R_%d_%d" % [x, y])
+            down_left.set_cell(Vector2i(x, y), "L_%d_%d" % [x, y])
+        down_right.set_cell(Vector2i(y, y), "RIFT")
+        down_left.set_cell(Vector2i(4 - y, y), "GATE")
+
+    var right_groups: Array = down_right.find_match_groups()
+    var left_groups: Array = down_left.find_match_groups()
+
+    assert_eq(right_groups.size(), 1)
+    assert_eq(right_groups[0]["axis"], "D_DOWN_RIGHT")
+    assert_eq(right_groups[0]["cells"].size(), 5)
+    assert_eq(left_groups.size(), 1)
+    assert_eq(left_groups[0]["axis"], "D_DOWN_LEFT")
+    assert_eq(left_groups[0]["cells"].size(), 5)

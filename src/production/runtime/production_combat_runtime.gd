@@ -10,11 +10,14 @@ var _skill_session
 var _pause_controller: SimulationPauseController
 var _response_state
 var _telemetry = null
+var _board_opportunity = null
+var _guided_practice = null
+var _last_time_feedback: Dictionary = {}
 var _started := false
 var _terminal := false
 var _system_pause_token: int = 0
 
-func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null) -> void:
+func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null, board_opportunity = null, guided_practice = null) -> void:
 	_player = player
 	_enemy = enemy
 	_workspace_manager = workspace_manager
@@ -23,6 +26,8 @@ func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspac
 	_pause_controller = pause_controller
 	_response_state = response_state
 	_telemetry = telemetry
+	_board_opportunity = board_opportunity
+	_guided_practice = guided_practice
 
 func start_battle() -> Dictionary:
 	if _started or _player == null or _enemy == null or _enemy_scheduler == null:
@@ -31,6 +36,13 @@ func start_battle() -> Dictionary:
 	if not bool(started.get("started", false)):
 		return started
 	_started = true
+	if _guided_practice != null and _guided_practice.has_method("begin"):
+		_guided_practice.begin()
+	if _guided_practice != null and _guided_practice.has_method("opening_eta_seconds"):
+		var guided_opening_eta := float(_guided_practice.opening_eta_seconds())
+		var remaining_eta: float = float(_enemy_scheduler.remaining_seconds())
+		if guided_opening_eta > remaining_eta:
+			_enemy_scheduler.adjust_current_eta(current_action_id(), guided_opening_eta - remaining_eta)
 	if _telemetry != null:
 		_telemetry.record("BATTLE_STARTED")
 		if _workspace_manager != null:
@@ -73,7 +85,7 @@ func tick(delta: float) -> Array[Dictionary]:
 			_telemetry.record("WORKSPACE_ENTERED", {"workspace": active_workspace})
 		_tick_active_puzzle(delta)
 		_commit_puzzle_events(events)
-	var context := {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id()}
+	var context := {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id(), "enemy_scheduler": _enemy_scheduler, "board_opportunity": _board_opportunity}
 	var action_before: String = current_action_id()
 	for event in _enemy_scheduler.tick_simulation(delta, context):
 		events.append(event)
@@ -81,12 +93,15 @@ func tick(delta: float) -> Array[Dictionary]:
 			_telemetry.record("ENEMY_ACTION_RESOLVED", event)
 	if _telemetry != null and action_before != "" and current_action_id() != action_before:
 		_telemetry.record("ENEMY_TELEGRAPH_STARTED", {"action_id": current_action_id()})
+	_record_guided_practice_progress(events)
 	_resolve_terminal(events)
 	return events
 
 func open_skill() -> Dictionary:
 	if _skill_session == null or _terminal:
 		return {"opened": false, "reason": "SKILL_UNAVAILABLE"}
+	if _enemy_scheduler != null and _enemy_scheduler.is_action_committed():
+		return {"opened": false, "reason": "ENEMY_ACTION_COMMITTED"}
 	var opened: bool = _skill_session.open()
 	if opened and _telemetry != null:
 		_telemetry.begin_tactical_pause()
@@ -119,22 +134,73 @@ func toggle_system_pause() -> Dictionary:
 func is_skill_open() -> bool:
 	return _skill_session != null and _skill_session.is_open()
 
-func select_skill_category(category: String) -> bool:
-	return _skill_session != null and _skill_session.select_category(category)
+func select_skill_category(category: String) -> Dictionary:
+	if _skill_session == null or _enemy_scheduler == null:
+		return {"selected": false, "ready": false, "reason": "SKILL_UNAVAILABLE"}
+	var preview: Dictionary = _skill_session.select_category(category, _skill_context())
+	if _guided_practice != null and _guided_practice.has_method("record_skill_preview"):
+		_guided_practice.record_skill_preview(preview)
+	return preview
 
-func select_skill_technique(technique_id: String) -> Dictionary:
-	if _skill_session == null:
-		return {"selected": false, "reason": "SKILL_UNAVAILABLE"}
-	return _skill_session.select_technique(technique_id)
+## 화면의 C1-C10 정보 레일이 전술 정지 없이 정의를 미리 읽게 한다.
+func inspect_skill_stage(category: String, stage: int) -> Dictionary:
+	if _skill_session == null or _enemy_scheduler == null:
+		return {"inspectable": false, "reason": "SKILL_UNAVAILABLE"}
+	return _skill_session.inspect_stage(category, stage, _skill_context())
 
 func use_selected_skill() -> Dictionary:
 	if _skill_session == null:
 		return {"committed": false, "reason": "SKILL_UNAVAILABLE"}
-	var result: Dictionary = _skill_session.commit_selected({"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id()})
+	var result: Dictionary = _skill_session.commit_selected(_skill_context())
+	if _guided_practice != null and _guided_practice.has_method("record_skill_confirmation"):
+		_guided_practice.record_skill_confirmation(result)
 	if bool(result.get("committed", false)) and _telemetry != null:
 		_telemetry.record("TECHNIQUE_USED", result)
 		_telemetry.end_tactical_pause()
 	return result
+
+func try_chain_swap(first: Vector2i, second: Vector2i) -> Dictionary:
+	if _terminal or _workspace_manager == null or _player == null:
+		return {"accepted": false, "reason": "CHAIN_UNAVAILABLE"}
+	if _workspace_manager.active_workspace() != "CHAIN" or _workspace_manager.chain_session == null:
+		return {"accepted": false, "reason": "CHAIN_NOT_ACTIVE"}
+	var result: Dictionary = _workspace_manager.chain_session.begin_swap(first, second)
+	if String(result.get("reason", "")) == "NO_MATCH":
+		result["combo_reset"] = _player.reset_combo()
+	return result
+
+func confirm_chain_mp_lock() -> Dictionary:
+	if _terminal or _workspace_manager == null or _player == null or _workspace_manager.chain_session == null:
+		return {"kept": false, "reason": "NO_PENDING_LOCK"}
+	var chain_session = _workspace_manager.chain_session
+	if not chain_session.has_pending_failed_swap():
+		return {"kept": false, "reason": "NO_PENDING_LOCK"}
+	if not _player.try_spend_mp(1):
+		return {"kept": false, "reason": "INSUFFICIENT_MP"}
+	if not chain_session.keep_pending_failed_swap():
+		_player.apply_energy_delta(1)
+		return {"kept": false, "reason": "LOCK_APPLY_FAILED"}
+	_workspace_manager.process_safe_handoff()
+	return {"kept": true, "mp_cost": 1}
+
+func discard_chain_mp_lock() -> Dictionary:
+	if _workspace_manager == null or _workspace_manager.chain_session == null:
+		return {"discarded": false, "reason": "NO_PENDING_LOCK"}
+	if not _workspace_manager.chain_session.discard_pending_failed_swap():
+		return {"discarded": false, "reason": "NO_PENDING_LOCK"}
+	_workspace_manager.process_safe_handoff()
+	return {"discarded": true}
+
+func grant_player_board_opportunity(seconds: float) -> Dictionary:
+	if _board_opportunity == null or not _board_opportunity.has_method("grant"):
+		return {"granted": false, "reason": "BOARD_OPPORTUNITY_UNAVAILABLE"}
+	var granted: Dictionary = _board_opportunity.grant(seconds)
+	_last_time_feedback = {
+		"kind": "PLAYER_BOARD_OPPORTUNITY_GRANTED",
+		"remaining_seconds": float(granted.get("remaining_seconds", 0.0)),
+		"granted_seconds": float(granted.get("granted_seconds", 0.0)),
+	}
+	return granted
 
 func is_simulation_paused() -> bool:
 	return _pause_controller != null and _pause_controller.is_paused()
@@ -145,12 +211,29 @@ func is_terminal() -> bool:
 func current_action_id() -> String:
 	return _enemy_scheduler.current_action_id() if _enemy_scheduler != null else ""
 
+func guided_practice_snapshot() -> Dictionary:
+	if _guided_practice == null or not _guided_practice.has_method("snapshot"):
+		return {}
+	return _guided_practice.snapshot()
+
 func snapshot() -> Dictionary:
-	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "player_energy": _player.energy if _player != null else 0, "player_stock": _player.stock if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0}
+	return {"started": _started, "terminal": _terminal, "paused": is_simulation_paused(), "player_hp": _player.hp if _player != null else 0, "player_energy": _player.energy if _player != null else 0, "player_stock": _player.stock if _player != null else 0, "enemy_hp": _enemy.hp if _enemy != null else 0, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0, "player_board_opportunity_seconds": _board_opportunity.remaining_seconds() if _board_opportunity != null and _board_opportunity.has_method("remaining_seconds") else 0.0, "guided_practice": guided_practice_snapshot(), "last_time_feedback": _last_time_feedback.duplicate(true)}
+
+func _skill_context() -> Dictionary:
+	return {"player": _player, "enemy": _enemy, "response_state": _response_state, "telegraph_action_id": _enemy_scheduler.current_action_id(), "current_action_kind": _enemy_scheduler.current_action_kind(), "enemy_scheduler": _enemy_scheduler, "board_opportunity": _board_opportunity}
 
 func _tick_active_puzzle(delta: float) -> void:
 	if _workspace_manager.active_workspace() == "LINE" and _workspace_manager.line_session != null:
-		_workspace_manager.line_session.tick(delta)
+		var line_delta := delta
+		if _board_opportunity != null and _board_opportunity.has_method("consume_line_delta"):
+			var budget: Dictionary = _board_opportunity.consume_line_delta(delta)
+			line_delta = float(budget.get("line_delta", delta))
+			_last_time_feedback = {
+				"kind": "PLAYER_BOARD_OPPORTUNITY_TICK",
+				"consumed_seconds": float(budget.get("consumed_seconds", 0.0)),
+				"remaining_seconds": float(budget.get("remaining_seconds", 0.0)),
+			}
+		_workspace_manager.line_session.tick(line_delta)
 	elif _workspace_manager.active_workspace() == "CHAIN" and _workspace_manager.chain_session != null and _workspace_manager.chain_session.is_resolving():
 		_workspace_manager.chain_session.complete_pending_resolution()
 
@@ -168,12 +251,60 @@ func _commit_puzzle_events(events: Array[Dictionary]) -> void:
 				_telemetry.record("BOARD_BREAK", event)
 	for event in _workspace_manager.chain_session.drain_events():
 		if String(event.get("kind", "")) == "production_chain_resolved":
-			_player.gain_stock(int(event.get("stock_requested", 0)))
+			event["resource_waves"] = _apply_chain_wave_rewards(event)
 			events.append(event)
 			if _telemetry != null:
 				_telemetry.record("CHAIN_REWARD", event)
 
+func _apply_chain_wave_rewards(event: Dictionary) -> Array:
+	var raw_waves = event.get("waves", null)
+	if not raw_waves is Array:
+		return []
+
+	var queued_line_lengths: Array = []
+	for raw_wave in raw_waves:
+		if not raw_wave is Dictionary:
+			return []
+		var raw_lengths = raw_wave.get("qualified_line_lengths", null)
+		if not raw_lengths is Array:
+			return []
+		var line_lengths: Array[int] = []
+		for raw_length in raw_lengths:
+			if not raw_length is int:
+				return []
+			line_lengths.append(int(raw_length))
+		queued_line_lengths.append(line_lengths)
+
+	var resource_waves: Array = []
+	for line_lengths in queued_line_lengths:
+		resource_waves.append(_player.apply_chain_wave(line_lengths))
+	return resource_waves
+
+func _record_guided_practice_progress(events: Array[Dictionary]) -> void:
+	if _guided_practice == null or not _guided_practice.has_method("observe_combat_events"):
+		return
+	var progress: Dictionary = _guided_practice.observe_combat_events(events)
+	if bool(progress.get("advanced", false)):
+		events.append({
+			"kind": "GUIDED_PRACTICE_PROGRESS",
+			"phase": String(progress.get("phase", "")),
+			"prompt": String(progress.get("prompt", "")),
+		})
+
 func _resolve_terminal(events: Array[Dictionary]) -> void:
+	if _guided_practice != null and _guided_practice.has_method("opening_guard_active") and bool(_guided_practice.opening_guard_active()):
+		var protected_terminal := ""
+		if _player.is_defeated():
+			_player.hp = 1
+			protected_terminal = "PLAYER_DEFEAT"
+		elif _enemy.is_defeated():
+			_enemy.hp = 1
+			protected_terminal = "ENEMY_DEFEAT"
+		if not protected_terminal.is_empty():
+			events.append({"kind": "GUIDED_OPENING_GUARD", "prevented_terminal": protected_terminal, "hp_floor": 1})
+			if _telemetry != null:
+				_telemetry.record("GUIDED_OPENING_GUARD", {"prevented_terminal": protected_terminal})
+			return
 	if _enemy.is_defeated():
 		_terminal = true
 		events.append({"kind": "VICTORY"})

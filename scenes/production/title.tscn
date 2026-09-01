@@ -1,0 +1,112 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/production/ui/production_title.gd" id="1_title"]
+[ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="3_backdrop"]
+[ext_resource type="Texture2D" path="res://assets/production/branding/fracture_frontier_title_logo_v1.png" id="4_logo"]
+
+[node name="Title" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_title")
+
+[node name="Backdrop" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+modulate = Color(0.44, 0.32, 0.5, 1)
+texture = ExtResource("3_backdrop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Veil" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.075, 0.045, 0.07, 0.78)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 72.0
+offset_top = 48.0
+offset_right = -72.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="Content" type="VBoxContainer" parent="Margin/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleLogo" type="TextureRect" parent="Margin/Panel/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(920, 368)
+mouse_filter = 2
+texture = ExtResource("4_logo")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Eyebrow" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.73, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "THE FRONTIER GATE"
+horizontal_alignment = 1
+
+[node name="TitleText" type="Label" parent="Margin/Panel/Content"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.9, 0.76, 1)
+theme_override_font_sizes/font_size = 46
+text = "FRACTURE FRONTIER"
+horizontal_alignment = 1
+
+[node name="Promise" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.74, 0.78, 0.9, 1)
+theme_override_font_sizes/font_size = 20
+autowrap_mode = 2
+text = "LINE으로 MP를 확보하고, CHAIN으로 Combo를 키운 뒤,\n정지한 전술 순간에 Vanguard Technique를 확정하십시오."
+horizontal_alignment = 1
+
+[node name="BeginBriefing" type="Button" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "BEGIN BRIEFING"
+
+[node name="FieldManual" type="Button" parent="Margin/Panel/Content"]
+layout_mode = 2
+text = "FIELD MANUAL · CORE LOOP"
+
+[node name="FieldNote" type="Label" parent="Margin/Panel/Content"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.69, 0.53, 1)
+autowrap_mode = 2
+text = "LIVE THREAT → LINE / CHAIN PREP → TACTICAL PAUSE → CATEGORY PREVIEW → CONFIRM.\nThe Gatebreaker clock resumes only after a confirmed technique."
+horizontal_alignment = 1
+
+[node name="Status" type="Label" parent="Margin/Panel/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.53, 0.75, 1)
+text = "VANGUARD LINK · STABLE    |    GATEBREAKER SIGNAL · DETECTED"
+horizontal_alignment = 1

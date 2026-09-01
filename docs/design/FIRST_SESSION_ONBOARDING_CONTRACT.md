@@ -1,23 +1,23 @@
 # First-Session Briefing and Embedded Tutorial Contract
 
 - Decision: `TETRIS-ONBOARDING-037`
-- Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / PHASE 1 CANON / TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING`
 - Issue: #54
 - Rule-delivery amendment: **Full rules before Deploy**, Issue #66
 - Rule-delivery mode: `FULL_PRE_DEPLOY_BRIEFING`
 - First-visit Deploy gate: `RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT`, Issue #68
 - Post-Deploy handoff: `SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER`, Issue #68
 - Tutorial pressure mode: `SAFE_LIVE_AUTHORED_OPENING`, Issue #70
-- Tutorial clock: `CONTINUOUS_FROM_DEPLOY`; opening guardrail: `SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM`, Issue #70
+- Tutorial clock: `CONTINUOUS_FROM_DEPLOY`; guided opening ETA: **28.0 seconds**; opening guardrail: `SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM`, Issue #70
 - Post-tutorial pressure: `NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF`, Issue #70
 - Authority: `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, the current Screen Surface Inventory, and the user's 2026-08-28 approvals.
-- Scope boundary: this is the intended first-session learning contract. It does not claim a Godot scene, runtime asset, localized final copy, Human/player validation, or a broader world-history canon.
+- Scope boundary: `scenes/production/title.tscn`, `battle_briefing.tscn`, `production_guided_practice_state.gd`, and `battle.tscn` now implement the entry, accessible full-rule acknowledgement, live-prompt state, and nonterminal pre-CONFIRM guard in the current worktree. This does not claim a runtime art lock, localized final copy, Human/player validation, balance finality, or a broader world-history canon.
 
 ## Player promise at first contact
 
 The player should understand, before pressure begins, that a Vanguard is responding to the immediate Gatebreaker threat at a Frontier Gate. The first encounter then proves the distinctive promise: a live threat can be read, two different puzzle workspaces create different resources, and a tactical Skill pause enables a deliberate Technique commitment.
 
-The only approved world-facing facts for this first explanation are the existing current names and their immediate relationship: **Vanguard**, **Frontier Gate**, **Gatebreaker**, and an imminent threat. Do not invent factions, history, geography, named characters, or a public title to fill this moment.
+The approved public game title is **FRACTURE FRONTIER**. The remaining first-explanation facts are the existing immediate names and relationship: **Vanguard**, **Frontier Gate**, **Gatebreaker**, and an imminent threat. The title identifies the game but does not establish a new faction, history, geography or named character; do not invent those facts to fill this moment.
 
 ## Intended first-session flow
 
@@ -30,11 +30,11 @@ Start
 → Result / Retry
 ```
 
-The present direct-entry runtime slice still begins at `CONTINUOUS_BATTLE`; that is an implementation fact, not the intended full first-session entry. The briefing is a planned `BattleBriefing` consumer and the embedded tutorial is a planned extension of the existing battle surface.
+The current worktree begins at `Title → BattleBriefing → explicit Deploy → guided CONTINUOUS_BATTLE`. The briefing is a real `BattleBriefing` scene whose acknowledgement enables Deploy; `ProductionGuidedPracticeState` advances the prompt only when the live battle emits a LINE reward, a CHAIN reward, a category preview, and an explicit CONFIRM.
 
 ## Briefing contract
 
-The briefing answers three world/threat questions, then a separate full-rules section, in one re-readable presentation. On the **first intended session only**, the full-rule region is not skippable as a route to live combat: Deploy remains disabled until the player reaches the end of that region or completes an equivalent accessible review action. This is a single readable boundary, not six checkboxes or a quiz. On later entries, Deploy is immediately enabled and the same rule summary remains re-openable.
+The briefing answers three world/threat questions, then a separate full-rules section, in one re-readable presentation. The full-rule region is not skippable as a route to live combat: Deploy remains disabled until the player completes the equivalent accessible acknowledgement action. This is a single readable boundary, not six checkboxes or a quiz. The current worktree intentionally keeps that acknowledgement boundary per launch until persistence is separately specified; it does not claim immediate later-visit Deploy.
 
 1. **Where and why?** A Frontier Gate is under immediate Gatebreaker threat; the Vanguard is deploying to answer it.
 2. **What will happen next?** The encounter begins only when the player chooses **Deploy**; the enemy threat starts after that explicit action.
@@ -61,7 +61,7 @@ After Deploy, the tutorial is a **short guided practice inside the actual contin
 
 ### Safe live authored opening
 
-Deploy starts the real continuous combat clock. Tutorial prompts must not silently freeze the enemy; only the already-approved Skill/manual pause may stop the simulation. The first authored Telegraph/ETA supplies enough real-time room for the required guided actions, and its outcome may communicate light pressure but cannot cause a terminal or forced-failure result before the first explicit CONFIRM. After that guided handoff, the same encounter uses its normal authored pressure with no separate tutorial ruleset or invulnerability mode.
+Deploy starts the real continuous combat clock. Tutorial prompts must not silently freeze the enemy; only the already-approved Skill/manual pause may stop the simulation. The current guided opening extends the first authored Telegraph to **28.0 seconds**, giving a single shared live timer for the required guided actions; its outcome may communicate light pressure but cannot cause a terminal or forced-failure result before the first explicit CONFIRM. After that guided handoff, the same encounter uses its normal authored pressure with no separate tutorial ruleset or invulnerability mode.
 
 | Step | Player question | Required feedback | Guardrail |
 | --- | --- | --- | --- |
@@ -75,11 +75,11 @@ Deploy starts the real continuous combat clock. Tutorial prompts must not silent
 ## Scope and production gates
 
 - Keep the world explanation short. The separate rules section is intentionally complete for economy-critical first-slice rules and revisit-able through the planned Codex/Manual surface; do not front-load all 30 Combo-Stage Technique identities.
-- The first-visit gate guarantees one complete rule review before Deploy without requiring a quiz. Later visits may Deploy immediately, while retaining a re-openable rule summary. The short guided battle tutorial must hand off to free play in the **same encounter**; it must not restart, terminate, or introduce a separate tutorial ruleset.
+- The current per-launch gate guarantees one complete rule review before Deploy without requiring a quiz. Later-visit immediate Deploy and a re-openable rule summary require a separate persistence implementation. The short guided battle tutorial must hand off to free play in the **same encounter**; it must not restart, terminate, or introduce a separate tutorial ruleset.
 - Use a **safe live authored opening**: continuous time begins at Deploy, the first authored ETA is sufficient for the guided actions, and its pre-first-CONFIRM result is nonterminal. This does not authorize tutorial-time auto-pause, a separate board/economy, or permanent safety; normal authored pressure resumes after the guided handoff.
 - Preserve `CORE-029`: continuous real-time battle after Deploy, free persistent `LINE ↔ CHAIN`, full tactical pause only through Skill/manual pause, and explicit `CONFIRM` commit.
 - This decision creates no runtime image need. `TETRIS-SREF-003` and `TETRIS-SREF-005` remain approved planning references, not implementation or Human-readability evidence.
-- Phase 2 may create the BattleBriefing scene/data contract and the minimum battle tutorial triggers only after its implementation review. It must not silently add a route, save, progression, production-asset batch, or broader narrative system.
+- The current worktree implements the Title and BattleBriefing entry contract plus the minimum battle tutorial triggers: `ProductionGuidedPracticeState` observes live puzzle/Skill evidence, `ProductionCombatRuntime` keeps real time active, and its opening guard prevents either terminal outcome before the first explicit CONFIRM. It must not silently add a route, save, progression, production-asset batch, or broader narrative system.
 
 ## Required human validation
 

@@ -49,6 +49,19 @@ func _make_scheduler():
         return null
     return load(SCHEDULER_PATH).new(director, timing, resolver)
 
+func _make_scheduler_with_commit_lead(commit_lead_seconds: float):
+    if not _required_paths_exist():
+        return null
+    var catalog = load(ACTION_CATALOG_PATH).from_dictionary(_read_json(ACTION_DATA_PATH))
+    var director = load(DIRECTOR_PATH).from_dictionary(_read_json(SEQUENCE_DATA_PATH), catalog)
+    var timing_data: Dictionary = _read_json(TIMING_DATA_PATH)
+    timing_data["commit_lead_seconds"] = commit_lead_seconds
+    var timing = load(TIMING_CONFIG_PATH).from_dictionary(timing_data)
+    var resolver = load(RESOLVER_PATH).new()
+    if catalog == null or director == null or timing == null:
+        return null
+    return load(SCHEDULER_PATH).new(director, timing, resolver)
+
 func _context(player_hp := 100, enemy_hp := 100) -> Dictionary:
     var player = load(COMBAT_STATE_PATH).new(100)
     player.hp = player_hp
@@ -131,3 +144,50 @@ func test_scheduler_uses_boss_hp_only_at_authored_resolution_boundaries() -> voi
     assert_eq(scheduler.next_action_id(), "gatebreaker:rift_siphon:3")
     assert_eq(scheduler.tick_simulation(12.0, phase_two_context).size(), 1)
     assert_eq(scheduler.current_action_id(), "gatebreaker:rift_siphon:3")
+
+func test_scheduler_adjusts_only_the_uncommitted_current_eta_and_restores_same_action_snapshot() -> void:
+    var scheduler = _make_scheduler()
+    if scheduler == null:
+        return
+    assert_true(scheduler.has_method("adjust_current_eta"))
+    assert_true(scheduler.has_method("snapshot_current_action_state"))
+    assert_true(scheduler.has_method("restore_current_action_state"))
+    if not scheduler.has_method("adjust_current_eta"):
+        return
+
+    scheduler.start()
+    var before: Dictionary = scheduler.snapshot_current_action_state()
+    var next_id: String = scheduler.next_action_id()
+    assert_false(bool(scheduler.adjust_current_eta(next_id, 2.0).get("adjusted", true)))
+    assert_almost_eq(scheduler.remaining_seconds(), 8.0, 0.001)
+    var adjusted: Dictionary = scheduler.adjust_current_eta(scheduler.current_action_id(), 2.0)
+    assert_true(bool(adjusted.get("adjusted", false)))
+    assert_almost_eq(scheduler.remaining_seconds(), 10.0, 0.001)
+    assert_true(scheduler.restore_current_action_state(before))
+    assert_eq(scheduler.current_action_id(), String(before.get("current_action_id", "")))
+    assert_eq(scheduler.next_action_id(), String(before.get("next_action_id", "")))
+    assert_almost_eq(scheduler.remaining_seconds(), float(before.get("remaining_seconds", -1.0)), 0.001)
+
+func test_scheduler_rejects_committed_or_advanced_snapshot_without_mutating_current_forecast() -> void:
+    var committed_scheduler = _make_scheduler_with_commit_lead(2.0)
+    if committed_scheduler == null:
+        return
+    committed_scheduler.start()
+    committed_scheduler.tick_simulation(6.0, _context())
+    assert_true(committed_scheduler.is_action_committed())
+    assert_false(bool(committed_scheduler.adjust_current_eta(committed_scheduler.current_action_id(), 2.0).get("adjusted", true)))
+    assert_almost_eq(committed_scheduler.remaining_seconds(), 2.0, 0.001)
+
+    var scheduler = _make_scheduler()
+    if scheduler == null:
+        return
+    scheduler.start()
+    var before: Dictionary = scheduler.snapshot_current_action_state()
+    scheduler.tick_simulation(8.0, _context())
+    var current_after: String = scheduler.current_action_id()
+    var next_after: String = scheduler.next_action_id()
+    var remaining_after: float = scheduler.remaining_seconds()
+    assert_false(scheduler.restore_current_action_state(before))
+    assert_eq(scheduler.current_action_id(), current_after)
+    assert_eq(scheduler.next_action_id(), next_after)
+    assert_almost_eq(scheduler.remaining_seconds(), remaining_after, 0.001)

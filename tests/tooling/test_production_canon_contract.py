@@ -21,7 +21,10 @@ PLAN_PATH = (
     / "docs"
     / "superpowers"
     / "plans"
-    / "2026-08-26-continuous-realtime-mode-switch-combat.md"
+    / "2026-08-29-phase2-tactical-core-alignment.md"
+)
+PROJECT_OPERATION_CONTRACT_PATH = (
+    ROOT / "docs" / "operations" / "TETRIS_PROJECT_OPERATION_CONTRACT.json"
 )
 AGENTS_PATH = ROOT / "AGENTS.md"
 README_PATH = ROOT / "README.md"
@@ -51,9 +54,17 @@ class ProductionCanonContractTests(unittest.TestCase):
             (ROOT / data["implementation_plan"]).is_file(),
             "current implementation plan must exist",
         )
+        self.assertEqual(
+            data["project_operation_contract"],
+            "docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json",
+        )
+        self.assertTrue(
+            (ROOT / data["project_operation_contract"]).is_file(),
+            "current project operation contract must exist",
+        )
         self.assertEqual(data["current_skill_decision"], "TETRIS-SKILL-039")
         self.assertEqual(data["current_balance_decision"], "TETRIS-BALANCE-040")
-        self.assertEqual(data["current_visual_decision"], "TETRIS-VISUAL-041")
+        self.assertEqual(data["current_visual_decision"], "TETRIS-VISUAL-043")
         self.assertEqual(data["current_onboarding_decision"], "TETRIS-ONBOARDING-037")
         self.assertEqual(data["current_chain_decision"], "TETRIS-CHAIN-038")
         self.assertEqual(
@@ -91,8 +102,8 @@ class ProductionCanonContractTests(unittest.TestCase):
         data = self._index()
         ui = data["ui"]
 
-        self.assertEqual(ui["puzzle_surface_target_ratio"], 0.60)
-        self.assertEqual(ui["combat_surface_target_ratio"], 0.40)
+        self.assertEqual(ui["puzzle_surface_target_ratio"], 0.50)
+        self.assertEqual(ui["combat_surface_target_ratio"], 0.50)
         self.assertFalse(ui["mandatory_sidecar"])
 
     def test_supersession_contract_reenables_realtime_clock_and_free_switching(self) -> None:
@@ -136,6 +147,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("TETRIS-BALANCE-040", retained)
         self.assertIn("TETRIS-VISUAL-028", retained)
         self.assertIn("TETRIS-VISUAL-041", retained)
+        self.assertIn("TETRIS-VISUAL-043", retained)
         self.assertIn("TETRIS-ONBOARDING-037", retained)
         self.assertIn("TETRIS-CHAIN-038", retained)
         self.assertTrue(SKILL_CANON_PATH.is_file())
@@ -184,12 +196,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             reality["chain_038_runtime_alignment"],
-            "PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD",
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_ALL_AXES_MP_LOCK_CAP10_PER_WAVE_RECOVERY_PENDING_FULL_VERIFICATION",
         )
-        self.assertEqual(
-            chain_reward_data["stock_by_chain_depth"],
-            {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6},
-        )
+        self.assertEqual(chain_reward_data["seed_source"], "TETRIS-CHAIN-038")
+        self.assertNotIn("stock_by_chain_depth", chain_reward_data)
         self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
         self.assertEqual(economy["mp_cap"], 60)
         self.assertEqual(economy["mp_cap_status"], "USER_APPROVED_FIXED_60_MP_HARD_CAP")
@@ -223,7 +233,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
-    def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
+    def test_first_session_contract_records_implemented_guided_practice_without_overclaiming_human_evidence(self) -> None:
         data = self._index()
         reality = data["implementation_reality"]
         onboarding_index = data["onboarding"]
@@ -232,7 +242,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertTrue(ONBOARDING_CONTRACT_PATH.is_file())
         self.assertEqual(
             reality["first_session_briefing_and_tutorial"],
-            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+            "TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
         )
         self.assertEqual(onboarding_index["rule_delivery"], "FULL_PRE_DEPLOY_BRIEFING")
         self.assertEqual(
@@ -241,7 +251,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(
             onboarding_index["later_visit_deploy_behavior"],
-            "IMMEDIATELY_ENABLED_WITH_REOPENABLE_RULE_SUMMARY",
+            "PER_LAUNCH_RULE_ACKNOWLEDGEMENT_UNTIL_PERSISTENCE_IS_SPECIFIED",
         )
         self.assertEqual(
             onboarding_index["post_deploy_tutorial_handoff"],
@@ -255,6 +265,7 @@ class ProductionCanonContractTests(unittest.TestCase):
             onboarding_index["tutorial_clock_behavior"],
             "CONTINUOUS_FROM_DEPLOY",
         )
+        self.assertEqual(onboarding_index["guided_opening_eta_seconds"], 28.0)
         self.assertEqual(
             onboarding_index["tutorial_opening_guardrail"],
             "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
@@ -262,6 +273,10 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(
             onboarding_index["tutorial_handoff_pressure"],
             "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
+        )
+        self.assertEqual(
+            onboarding_index["implementation_status"],
+            "TITLE_FULL_RULE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
         )
         self.assertEqual(
             onboarding_index["pre_deploy_rule_scope"],
@@ -284,14 +299,15 @@ class ProductionCanonContractTests(unittest.TestCase):
             "CONTINUOUS_FROM_DEPLOY",
             "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
             "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
-            "first intended session only",
+            "first intended session",
             "same encounter",
             "Full rules before Deploy",
             "Vanguard",
             "Frontier Gate",
             "Gatebreaker",
             "Current Telegraph and ETA",
-            "USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED",
+            "USER_APPROVED / PHASE 1 CANON / TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE / FULL_VERIFICATION_PENDING",
+            "per launch until persistence is separately specified",
         ):
             self.assertIn(token, onboarding)
         self.assertIn("Shared Turn Timer", onboarding)
@@ -328,7 +344,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertIn("exact Godot runtime consumer", text)
         self.assertIn("does not become a runtime asset", text)
 
-    def test_current_main_reality_does_not_describe_core_029_as_unimplemented(self) -> None:
+    def test_current_worktree_reality_separates_merged_baseline_from_unmerged_improvements(self) -> None:
         data = self._index()
         reality = data["implementation_reality"]
         readme = README_PATH.read_text(encoding="utf-8")
@@ -341,10 +357,25 @@ class ProductionCanonContractTests(unittest.TestCase):
             "simulation_pause_controller",
             "enemy_realtime_scheduler",
             "skill_tactical_pause_runtime",
-            "production_60_40_ui",
             "runtime_image_consumers",
         ):
             self.assertEqual(reality[key], "IMPLEMENTED_ON_MERGED_MAIN")
+        self.assertEqual(
+            reality["production_50_50_ui"],
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
+        )
+        self.assertEqual(
+            reality["category_resolved_skill_039_runtime"],
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_CATEGORY_PREVIEW_CONFIRM_FALLBACK_PENDING_FULL_VERIFICATION",
+        )
+        self.assertEqual(
+            reality["chain_038_runtime_alignment"],
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_ALL_AXES_MP_LOCK_CAP10_PER_WAVE_RECOVERY_PENDING_FULL_VERIFICATION",
+        )
+        self.assertEqual(
+            reality["first_session_briefing_and_tutorial"],
+            "TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
+        )
         self.assertEqual(
             reality["merged_main_runtime"],
             "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
@@ -367,6 +398,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         )
         self.assertEqual(reality["production_human_playtest"], "NOT_RUN")
         self.assertIn("CORE-029 Production runtime: **main에 구현됨**", readme)
+        self.assertIn("current worktree additionally contains the user-directed 50/50 battle composition", readme)
         self.assertIn("1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a", readme)
         self.assertIn("92b59bccd2ea45f772003b4abac2d9aa84672307", readme)
         self.assertIn("fb55b96f2612497f356bae6586429b944d35d7a8", readme)
@@ -385,9 +417,45 @@ class ProductionCanonContractTests(unittest.TestCase):
             self.assertIn("docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md", text)
             self.assertIn("docs/design/CHAIN_COMBO_MP_CONTRACT.md", text)
             self.assertIn("TETRIS-CORE-029", text)
-            self.assertIn("docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md", text)
+            self.assertIn("docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md", text)
             self.assertNotIn("One turn is `Enemy Telegraph → Line Phase → Line Settle → Chain Phase", text)
-        self.assertIn("TETRIS-CHAIN-038 amendment", PLAN_PATH.read_text(encoding="utf-8"))
+        self.assertIn("TETRIS-CHAIN-038", PLAN_PATH.read_text(encoding="utf-8"))
+        self.assertIn("Shared Action Timer is a presentation alias", agents)
+        self.assertIn("not a Shared Player Turn Budget", agents)
+
+    def test_project_operation_contract_keeps_base_adaptation_thin_and_truthful(self) -> None:
+        self.assertTrue(
+            PROJECT_OPERATION_CONTRACT_PATH.is_file(),
+            "project operation contract must exist",
+        )
+        contract = json.loads(PROJECT_OPERATION_CONTRACT_PATH.read_text(encoding="utf-8"))
+
+        self.assertEqual(contract["project"], "TETRIS")
+        self.assertEqual(contract["workspace_authority"], "REPOSITORY_PRIMARY_CANON")
+        self.assertEqual(
+            contract["current_implementation_plan"],
+            "docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md",
+        )
+        self.assertEqual(
+            contract["historical_implementation_plan"],
+            "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
+        )
+        self.assertEqual(
+            contract["formal_base_adapter"]["status"],
+            "BLOCKED_UNVERIFIED",
+        )
+        self.assertIn(
+            "first-migration protected policy source is absent from target origin/main",
+            contract["formal_base_adapter"]["blockers"],
+        )
+        self.assertIn(
+            "Base checker release-lock support is behind current Base release documentation",
+            contract["formal_base_adapter"]["blockers"],
+        )
+        self.assertFalse(
+            (ROOT / "skills" / "PROJECT_BASE_ADAPTER.json").exists(),
+            "do not claim a formal Base adapter before its bootstrap prerequisites exist",
+        )
 
 
 if __name__ == "__main__":

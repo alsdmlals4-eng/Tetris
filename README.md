@@ -19,7 +19,7 @@ BATTLE_START
 
 - 전투는 시작부터 승리/패배까지 실시간으로 계속 진행됩니다.
 - 플레이어와 적은 같은 combat timeline을 공유하며 교대식 player/enemy turn은 없습니다.
-- 화면 왼쪽 약 60%는 **하나의 큰 Puzzle Surface**, 오른쪽 약 40%는 persistent Combat/Threat/Resource/Skill surface입니다.
+- 화면 왼쪽 약 50%는 **하나의 큰 Puzzle Surface**, 오른쪽 약 50%는 persistent Combat/Threat/Resource/Skill surface입니다.
 - 플레이어는 `LINE ↔ CHAIN`을 자유롭게 전환합니다.
 - LINE과 CHAIN은 서로 독립적인 persistent workspace입니다. 전환해도 보드/queue/randomizer/진행상태를 새로 만들지 않습니다.
 - LINE은 **MP** 회복을 담당합니다. 현재 구현 내부 필드명은 `energy`입니다.
@@ -51,9 +51,12 @@ GitHub repository documents, GitHub issue/PR history, and runtime evidence are t
 7. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — `TETRIS-CHAIN-038`, CHAIN rule and MP-lock contract.
 8. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — `TETRIS-IMAGE-030`, runtime-consumer-first image production.
 9. `docs/design/PRODUCTION_CANON_INDEX.json` — machine-readable routing authority.
-10. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, requiring a `TETRIS-CHAIN-038` Phase 2 amendment before Godot work.
+10. `docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json` — machine-readable Base-adapted work route, protected scope and formal adapter boundary.
+11. `docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md` — current Phase 2 implementation plan, including the `TETRIS-CHAIN-038` alignment work.
 
 Historical provenance:
+
+- `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — retained implementation provenance only; not the current work entrypoint.
 
 - `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` — CORE-024 ordered-turn history.
 - `docs/design/PRODUCTION_TURN_TIME_CANON.md` — TIME-025 Shared Turn Budget history.
@@ -88,7 +91,7 @@ CORE-029 baseline에는 `TETRIS-IMG-031` StageBackdrop이라는 실제 runtime c
 - CORE-029 written canon/spec/implementation plan: **main 구현과 함께 유지**.
 - CORE-029 Production runtime: **main에 구현됨**; `AUTOMATED_VERTICAL_SLICE_READY` 근거는 runtime baseline main `1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a`와 tree-equivalent인 source head `92b59bccd2ea45f772003b4abac2d9aa84672307`의 CI/runtime 증거입니다. 이 문서 정정 PR의 기준 main은 `fb55b96f2612497f356bae6586429b944d35d7a8`이며, 별도 main-commit runtime 영수증은 아직 없습니다.
 - Draft PR #19 ordered-turn implementation: **READ_ONLY source snapshot**, wholesale merge/cherry-pick 금지.
-- Production Line/Chain reusable deterministic components, full tactical pause runtime, realtime enemy scheduler, persistent workspace manager, 60/40 production scene: **main에 구현됨**.
+- Production Line/Chain reusable deterministic components, full tactical pause runtime, realtime enemy scheduler and persistent workspace manager: **main에 구현됨**. The current worktree additionally contains the user-directed 50/50 battle composition, all-axis CHAIN alignment, category-resolved Skill confirmation, and Title → full-rule Briefing entry; these additions are not yet merged or Human/player validated.
 - CORE-029 runtime-consumed image assets: `TETRIS-IMG-031` StageBackdrop이 main에서 소비됩니다. Draft PR #33의 Gatebreaker composition은 branch-only evidence이며 병합 전 main 사실을 바꾸지 않습니다.
 - 사용자 Windows Production runtime / first-exposure Human playtest: **NOT_RUN**.
 
@@ -98,7 +101,7 @@ Human validation contract:
 
 `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md`
 
-첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, MP vs Combo와 MP-lock 이해, Technique decision quality, 60/40 layout readability, player experience signal을 검증합니다.
+첫 대표 Slice는 real-time threat readability, LINE↔CHAIN switching comprehension, workspace-state persistence, Skill tactical-pause comprehension, MP vs Combo와 MP-lock 이해, Technique decision quality, 50/50 layout readability, player experience signal을 검증합니다.
 
 Positive directional PASS는 세 개의 독립 first-exposure A/B/C receipt가 필요합니다. Concept art나 자동 test를 Human readability/fun evidence로 승격하지 않습니다.
 

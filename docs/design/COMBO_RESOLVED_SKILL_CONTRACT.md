@@ -3,7 +3,7 @@
 - Decision: `TETRIS-SKILL-039 · Category Choice → Combo-Resolved Technique → Explicit Confirm`
 - Balance amendment: `TETRIS-BALANCE-040 · Bounded Combo-to-MP Fallback`
 - Content amendment: [`TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`](COMBO_STAGE_SKILL_CONTENT_GDD.md)
-- Status: `USER_DIRECTED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_DIRECTED / PHASE 1 CANON / IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION`
 - Date: 2026-08-28
 - Scope: one tactical-pause skill decision inside `TETRIS-CORE-029`; it does not alter continuous combat, LINE/CHAIN ownership, the 1-MP CHAIN setup lock, or the Combo cap.
 - Detailed predecessors: `TETRIS-SKILL-026` and `TETRIS-BALANCE-027` are `SUPERSEDED_FOR_MANUAL_TIER_SELECTION_AND_COST_GRAMMAR`. They remain historical evidence for the three lane identities and reusable effect primitives only.
@@ -44,7 +44,7 @@ The three category buttons are a player-facing tactical vocabulary, not three se
 - Combo cap is **10**. A viable current Combo state is `C ∈ [1, 10]`.
 - Each lane owns authored **Stage 1–10 content**: `LaneStage[ATK|DEF|SUP][1..10]`. Stage is a resolved Combo state, not a separately selected player tier.
 - `LaneStage[C]` is the normal preview. It spends `C` Combo and its authored MP cost `MP(lane, C)`.
-- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content, target-separated time-control semantics and Phase 2 content gates. Existing seed data remains legacy manual Tier 1–6 and does not yet implement that content.
+- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content and target-separated time-control semantics. The exact current worktree validates the 30-entry C1–C10 seed and now wires category-only selection, fallback preview/commit and the compact replacement battle presentation; exact-HEAD full verification and target-resolution observation remain pending.
 - Stage content must remain data-driven effect composition. This contract does not authorize thirty bespoke scripts, a new currency, cooldown system or a new enemy roster.
 
 ## 4. MP-insufficient bounded fallback
@@ -96,16 +96,16 @@ This preserves the user-approved tension: spend the shared Combo now for a timel
 
 ## 6. Actual implementation boundary
 
-This is `DOCUMENTED_NOT_IMPLEMENTED`. Fresh merged-main evidence still has the legacy manual Tier 1–6 flow:
+Fresh merged-main evidence began with the legacy manual Tier 1–6 flow. The exact current worktree is now `IMPLEMENTED_IN_CURRENT_WORKTREE_CATEGORY_PREVIEW_CONFIRM_FALLBACK_PENDING_FULL_VERIFICATION`:
 
-- `src/production/ui/production_battle.gd` binds `TierGrid/Tier1..Tier6` and maps a manually selected lane/tier to an id.
-- `src/production/skill/production_skill_catalog.gd` rejects stages above 6.
-- `src/production/skill/production_skill_session.gd` requires a manually selected technique id and spends its configured `energy`/`stock` cost.
-- `data/production/vanguard_skill_seed.json` contains 18 legacy `ATK/DEF/SUP × T1–T6` entries, no integrated C1–C10 Stage data and no fallback conversion data.
+- `src/production/ui/production_battle.gd` binds `ATK / DEF / SUP`, shows one `ResolvedPreview`, and accepts the selected result only through `ConfirmButton`; the current battle scene has no `TierGrid` consumer.
+- `src/production/skill/production_skill_catalog.gd` and `data/production/vanguard_skill_seed.json` now validate one data-driven C1–C10 definition for each `ATK/DEF/SUP` lane/stage pair, including current-action packages without an unimplemented multiplier.
+- `src/production/skill/production_skill_session.gd` resolves a category from the current Combo, preserves preview-only selection, and commits the aligned `mp_cost` / `combo_cost` transaction only after an explicit confirmation.
+- The exact 5-MP fallback preview/commit, target-separated time primitives and replacement presentation are wired in this worktree. The remaining evidence is exact-HEAD full regression, target-resolution runtime observation and Human/player review; no current implementation claim includes those gates.
 
-No Godot code, scene, resource, runtime asset or Human/player evidence is promoted by this contract. Phase 2 implementation must replace the manual-grid data/UI/session path with a deterministic resolver, use RED→GREEN tests for the formula above, and obtain target-resolution plus first-exposure evidence before a usability/pass claim.
+No target-device runtime or Human/player evidence is promoted by this implementation. The legacy manual-grid evidence remains historical only; the current category resolver must pass exact-HEAD regression and obtain target-resolution plus first-exposure evidence before a usability/pass claim.
 
-## 7. Acceptance contract for the later implementation issue
+## 7. Acceptance contract for current implementation verification
 
 - A player can select only `ATK / DEF / SUP` while Skill is paused.
 - The selected category shows the exact current-stage technique and its full cost/effect preview before any spend.
@@ -113,4 +113,4 @@ No Godot code, scene, resource, runtime asset or Human/player evidence is promot
 - When the current stage lacks MP, the system selects the highest feasible lower Stage after the exact 5-MP-per-Combo conversion; it never changes resources during preview.
 - Combo never exceeds 10; all fallback math honors MP cap 60 and never creates a Stage 0 cast.
 - Cancel returns to the exact paused battle state without any conversion, spend or board mutation.
-- Current runtime/manual Tier 1–6 evidence remains labeled legacy until the replacement exact HEAD passes automated and target-device runtime validation.
+- Manual Tier 1–6 evidence remains labeled historical; the current category-only replacement still needs exact-HEAD automated and target-device runtime validation.

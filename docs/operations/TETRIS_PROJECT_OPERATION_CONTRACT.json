@@ -1,0 +1,186 @@
+{
+  "schema_version": 1,
+  "project": "TETRIS",
+  "status": "CURRENT_PROJECT_ADAPTED_OPERATION_CONTRACT",
+  "workspace_authority": "REPOSITORY_PRIMARY_CANON",
+  "human_facing_view": "HUMAN_GDD_PDF_DERIVED_VIEW",
+  "base_reference": {
+    "repository": "C:/Users/user/Documents/GitHub/Base",
+    "observed_origin_main_sha": "19355b7ef065a21d0f2b685c7d9be64a4a3970f8",
+    "use_mode": "ADAPT_PROJECT_ROUTE_DO_NOT_COPY_BASE_SKILL_BODIES"
+  },
+  "project_observation": {
+    "branch": "codex/tetris-phase2-runtime-resume",
+    "observed_worktree_head_before_contract": "78903ef475e840f5b891dc6faf593784dfd71af1",
+    "observed_origin_main_sha": "5df7d359b89074c7997b6f9b155c064a311db217",
+    "current_core": "TETRIS-CORE-029",
+    "current_machine_index": "docs/design/PRODUCTION_CANON_INDEX.json"
+  },
+  "approval": {
+    "state": "REUSED_APPROVAL",
+    "reference": "User direction in the current Codex task: fresh-read Base in detail and update work order, structure and contracts; prior standing direction allows plan execution without routine plan approval.",
+    "continuous_work_state": "CONTINUOUS_WORK_ACTIVE",
+    "scope_boundary": "Repository routing, execution sequencing and contract freshness only; no gameplay rule, balance, runtime asset, scene, script or user-approved visual replacement."
+  },
+  "work_classification": {
+    "level": "L3",
+    "work_mode": "NONCODING_BUILD",
+    "primary_discipline": "PROJECT_OPERATING_SYSTEM",
+    "affected_disciplines": [
+      "CANONICAL_DOCUMENTATION",
+      "VALIDATION"
+    ],
+    "mechanical_no_external_dependency": {
+      "status": "APPLIED",
+      "scope": "Correcting repository-owned route and execution-contract references from current Base and current Tetris authority.",
+      "reason": "No gameplay, player-facing UX, runtime asset, dependency, platform, security, rights or implementation direction is being selected; external information cannot alter the current repository-owner paths or the formal-adapter blocker."
+    }
+  },
+  "authority_order": [
+    "latest user direction",
+    "AGENTS.md and docs/design/PRODUCTION_CANON_INDEX.json",
+    "active TETRIS-CORE-029 and related project canon",
+    "actual code, data, scenes, assets, tests and exact-head evidence",
+    "this project-adapted operation contract",
+    "Base at the observed exact revision",
+    "historical plans, external workspace material and legacy evidence"
+  ],
+  "current_implementation_plan": "docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md",
+  "historical_implementation_plan": "docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md",
+  "reuse_and_alternative_study": {
+    "preflight_state": "NOT_APPLICABLE_MECHANICAL_ROUTE_CORRECTION",
+    "reason": "This task adds no new product mechanism, asset, tool, workflow engine or runtime implementation. Existing Base and project route owners are reused through references only.",
+    "alternatives": [
+      {
+        "id": "A",
+        "approach": "Install the current formal Base adapter immediately",
+        "disposition": "BLOCKED_UNVERIFIED",
+        "reason": "The first-migration protected policy source is absent from target origin/main, and the current Base checker does not support the latest documented Base release-lock family."
+      },
+      {
+        "id": "B",
+        "approach": "Copy Base Skills or a stale adapter into the project",
+        "disposition": "REJECT",
+        "reason": "This would duplicate Base-owned procedures, conceal version drift and falsely imply validator-backed formal adoption."
+      },
+      {
+        "id": "C",
+        "approach": "Add a thin project-owned operation contract that links actual Tetris owners and records the formal-bootstrap gate",
+        "disposition": "ADOPT",
+        "reason": "It restores a single current route now, preserves project-specific gameplay canon and makes the remaining Base integration condition testable without pretending it is complete."
+      },
+      {
+        "id": "D",
+        "approach": "Pin an older Base adapter release only because the current checker accepts it",
+        "disposition": "REJECT",
+        "reason": "A silent downgrade would conflict with the current Base documentation and create a stale governance baseline."
+      }
+    ]
+  },
+  "base_adaptation": {
+    "adopt": [
+      "repository-first canon and exact-head evidence separation",
+      "fresh read of current main, open PRs as read-only, active owners and actual implementation before material work",
+      "work mode routing, bounded continuous work, recovery-first handling and exact destination readback",
+      "consumer-first runtime asset evidence and separate machine/runtime/Human evidence classes",
+      "no direct main push, force push, ruleset bypass or mutation of unrelated open PRs"
+    ],
+    "adapt": [
+      "TETRIS-CORE-029 remains the project-specific authority: continuous realtime, freely switchable persistent LINE and CHAIN workspaces, full tactical Skill pause and no Shared Player Turn Budget.",
+      "The visible shared action timer remains a presentation of the current enemy ETA and player reaction window, not a restored ordered-turn or timeout system.",
+      "Current active implementation sequencing is the 2026-08-29 Phase 2 plan; the 2026-08-26 plan is historical provenance only.",
+      "A material Godot change must use the project evidence gate and target the actual worktree/editor identity rather than a fixed port or another project process."
+    ],
+    "defer": [
+      "Formal PROJECT_BASE_ADAPTER bootstrap until its verified prerequisites are present.",
+      "Human/player first-exposure, device, release, economy and final UX acceptance; all remain separate from document or automated-test results."
+    ],
+    "reject": [
+      "Replacing project canon with generic Base gameplay, UI, visual or asset rules.",
+      "Treating a document route, a generated candidate, a test pass or a captured image as Human or release approval.",
+      "Deleting unknown worktree files, user changes, draft PRs or Base worktrees as part of this contract refresh."
+    ]
+  },
+  "formal_base_adapter": {
+    "status": "BLOCKED_UNVERIFIED",
+    "installed": false,
+    "blockers": [
+      "first-migration protected policy source is absent from target origin/main",
+      "Base checker release-lock support is behind current Base release documentation"
+    ],
+    "observed_detail": {
+      "target_origin_main_has_project_base_adapter": false,
+      "target_origin_main_has_json_protected_paths_policy": false,
+      "base_documented_release_family": "v9.4.4",
+      "base_checker_supported_release_families": [
+        "v9.1.0",
+        "v9.2.0",
+        "v9.3.0"
+      ]
+    },
+    "resume_when": [
+      "A versioned first-migration protected-path policy source exists on the target baseline or an approved migration source is supplied.",
+      "The exact selected Base checker supports the selected current Base release-lock family.",
+      "A fresh isolated implementation branch and explicit formal-adapter scope are prepared; validate the exact target revision before claiming adoption."
+    ],
+    "safe_current_behavior": "Use this thin project operation contract plus project AGENTS/canon routing; do not create skills/PROJECT_BASE_ADAPTER.json or claim formal validator-backed adoption."
+  },
+  "execution_sequence": [
+    {
+      "id": "O0",
+      "outcome": "Restore one current project route and record Base adaptation limits.",
+      "work_mode": "NONCODING_BUILD",
+      "status": "IMPLEMENTED_BY_THIS_CHANGE_EXACT_HEAD_VALIDATION_REQUIRED",
+      "acceptance": "Machine index, AGENTS, README and workspace index identify the same 2026-08-29 current plan and this contract."
+    },
+    {
+      "id": "O1",
+      "outcome": "Formal Base adapter bootstrap.",
+      "work_mode": "PLAN",
+      "status": "BLOCKED_UNVERIFIED",
+      "dependency": "formal_base_adapter.resume_when"
+    },
+    {
+      "id": "O2",
+      "outcome": "Material Tetris product or Godot change.",
+      "work_mode": "GODOT_PRODUCT_BUILD",
+      "status": "READY_ONLY_AFTER_FRESH_TASK_INTAKE",
+      "required_inputs": [
+        "active project canon and actual implementation read",
+        "open PR read-only audit",
+        "reuse-first preflight when the change is not purely mechanical",
+        "project evidence gate and a current feasibility classification"
+      ]
+    },
+    {
+      "id": "O3",
+      "outcome": "Exact-head deterministic, import and runtime verification for product changes.",
+      "work_mode": "REVIEW",
+      "status": "NOT_RUN_FOR_THIS_DOCUMENT_ONLY_CHANGE"
+    },
+    {
+      "id": "O4",
+      "outcome": "Human first-exposure and final UX acceptance.",
+      "work_mode": "REVIEW",
+      "status": "NOT_RUN"
+    }
+  ],
+  "protected_scope": [
+    "resources/production/production_battle_theme.tres is a pre-existing unowned local change and must remain untouched.",
+    "Open/draft PRs #46, #33, #23 and #19 remain read-only external workstreams.",
+    "Base worktree artifacts are outside the target project scope and remain untouched.",
+    "Current runtime images, scene consumers, Chain rules, Skill rules, shared ETA presentation and approved title/visual assets are not modified by this contract-only task."
+  ],
+  "validation_plan": [
+    "Run the Tetris production canon contract tests after the machine index and route owners are updated.",
+    "Run the complete repository tooling test suite and git diff --check.",
+    "Read back the exact destination paths and verify that the pre-existing theme change is not staged.",
+    "Run the Base project-operating-contract checker only as evidence of the explicitly recorded formal-adapter blocker; a nonzero result is not a pass.",
+    "Do not claim Godot runtime, Human/player UX, device, release or formal Base adapter PASS for this document-only task."
+  ],
+  "rollback": "Revert only the contract-routing commit; do not reset, clean or alter the pre-existing theme resource change or unrelated branches/PRs.",
+  "reuse_learning_handoff": {
+    "status": "NO_NEW_REUSE_LEARNING",
+    "reason": "One project-specific adapter gap and a Base checker/documentation drift were observed, but a single project observation is not sufficient evidence for Base promotion."
+  }
+}

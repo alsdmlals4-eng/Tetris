@@ -1,138 +1,107 @@
-## 전술 스킬 세션이 full tactical pause와 explicit USE 경계를 지키는지 검증한다.
+## 현재 Combo로 스킬을 자동 해석하고 CONFIRM에서만 원자적으로 소비하는지 검증한다.
 extends GutTest
 
-const PAUSE_CONTROLLER_PATH := "res://src/production/runtime/simulation_pause_controller.gd"
-const COMBAT_STATE_PATH := "res://src/production/combat/production_combat_state.gd"
+const PAUSE_PATH := "res://src/production/runtime/simulation_pause_controller.gd"
+const COMBAT_PATH := "res://src/production/combat/production_combat_state.gd"
 const CATALOG_PATH := "res://src/production/skill/production_skill_catalog.gd"
-const EFFECT_EXECUTOR_PATH := "res://src/production/skill/production_effect_executor.gd"
-const TECHNIQUE_RESOLVER_PATH := "res://src/production/skill/production_technique_resolver.gd"
-const SKILL_SESSION_PATH := "res://src/production/skill/production_skill_session.gd"
-const SKILL_DATA_PATH := "res://data/production/vanguard_skill_seed.json"
+const EXECUTOR_PATH := "res://src/production/skill/production_effect_executor.gd"
+const RESOLVER_PATH := "res://src/production/skill/production_technique_resolver.gd"
+const SESSION_PATH := "res://src/production/skill/production_skill_session.gd"
+const SKILL_DATA := "res://data/production/vanguard_skill_seed.json"
 
-func _read_json(path: String):
-	return JSON.parse_string(FileAccess.get_file_as_string(path))
-
-func _required_paths_exist() -> bool:
-	var ready := true
-	for path in [
-		PAUSE_CONTROLLER_PATH,
-		COMBAT_STATE_PATH,
-		CATALOG_PATH,
-		EFFECT_EXECUTOR_PATH,
-		TECHNIQUE_RESOLVER_PATH,
-		SKILL_SESSION_PATH,
-	]:
-		var exists := ResourceLoader.exists(path)
-		assert_true(exists, "%s must exist for the tactical Skill session contract" % path)
-		ready = ready and exists
-	var data_exists := FileAccess.file_exists(SKILL_DATA_PATH)
-	assert_true(data_exists, "%s must exist for the tactical Skill session contract" % SKILL_DATA_PATH)
-	return ready and data_exists
-
-func _make_fixture() -> Dictionary:
-	if not _required_paths_exist():
-		return {}
-	var catalog = load(CATALOG_PATH).from_dictionary(_read_json(SKILL_DATA_PATH))
-	assert_not_null(catalog)
+func _fixture() -> Dictionary:
+	var catalog = load(CATALOG_PATH).from_dictionary(JSON.parse_string(FileAccess.get_file_as_string(SKILL_DATA)))
 	if catalog == null:
 		return {}
-	var pause_controller = load(PAUSE_CONTROLLER_PATH).new()
-	var player = load(COMBAT_STATE_PATH).new(100)
-	var enemy = load(COMBAT_STATE_PATH).new(100)
-	player.energy = 30
-	player.stock = 3
-	var resolver = load(TECHNIQUE_RESOLVER_PATH).new(load(EFFECT_EXECUTOR_PATH).new())
-	var session = load(SKILL_SESSION_PATH).new(pause_controller, player, catalog, resolver)
-	return {
-		"controller": pause_controller,
-		"player": player,
-		"enemy": enemy,
-		"session": session,
-	}
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_PATH).new(100)
+	var enemy = load(COMBAT_PATH).new(100)
+	var board_opportunity = load("res://src/production/runtime/player_board_opportunity_state.gd").new()
+	var resolver = load(RESOLVER_PATH).new(load(EXECUTOR_PATH).new())
+	return {"pause": pause, "player": player, "enemy": enemy, "board_opportunity": board_opportunity, "session": load(SESSION_PATH).new(pause, player, catalog, resolver)}
 
 func _context(fixture: Dictionary) -> Dictionary:
-	return {
-		"player": fixture["player"],
-		"enemy": fixture["enemy"],
-	}
+	return {"player": fixture["player"], "enemy": fixture["enemy"], "board_opportunity": fixture["board_opportunity"], "current_action_kind": "DIRECT_HP_RATIO"}
 
-func test_tactical_browse_composes_pause_tokens_and_row_selection_never_spends() -> void:
-	var fixture := _make_fixture()
+func test_category_preview_uses_opening_c5_without_manual_lower_stage_selection_or_spend() -> void:
+	var fixture := _fixture()
 	if fixture.is_empty():
 		return
-	var controller = fixture["controller"]
 	var player = fixture["player"]
 	var session = fixture["session"]
-	var context := _context(fixture)
-
+	player.energy = 20
+	player.stock = 5
 	assert_true(session.open())
-	assert_true(controller.is_paused())
-	assert_true(controller.has_reason("TACTICAL_SKILL"))
-	assert_true(session.select_category("ATTACK"))
-	var selected: Dictionary = session.select_technique("atk_t1_quick_cut")
-	assert_true(bool(selected.get("selected", false)))
-	assert_eq(int(player.energy), 30, "selecting a row must not spend Energy")
-	assert_eq(int(player.stock), 3, "selecting a row must not spend Stock")
-	assert_eq(int(fixture["enemy"].hp), 100, "selecting a row must not apply an effect")
-	assert_eq(String(session.selected_detail().get("id", "")), "atk_t1_quick_cut")
-	assert_true(bool(session.readiness("atk_t1_quick_cut", context).get("ready", false)))
+	assert_false(session.has_method("select_technique"))
+	var preview: Dictionary = session.select_category("ATTACK", _context(fixture))
+	assert_true(bool(preview.get("ready", false)))
+	assert_eq(int(preview.get("opening_combo", 0)), 5)
+	assert_eq(int(preview.get("resolved_stage", 0)), 5)
+	assert_eq(int(preview.get("converted_combo", -1)), 0)
+	assert_eq(String(preview.get("display_name", "")), "Severing Drive")
+	assert_eq(player.energy, 20)
+	assert_eq(player.stock, 5)
 
-	var system_token: int = controller.acquire("SYSTEM_MENU")
-	assert_gt(system_token, 0)
-	var cancelled: Dictionary = session.cancel()
-	assert_true(bool(cancelled.get("cancelled", false)))
-	assert_true(controller.is_paused(), "SYSTEM_MENU must keep pause active after Skill cancel")
-	assert_false(controller.has_reason("TACTICAL_SKILL"))
-	assert_eq(int(player.energy), 30)
-	assert_eq(int(player.stock), 3)
-	assert_true(controller.release(system_token))
-	assert_false(controller.is_paused())
-
-func test_explicit_use_commits_once_and_releases_only_the_tactical_pause() -> void:
-	var fixture := _make_fixture()
+func test_shortage_preview_uses_highest_feasible_lower_stage_only_on_confirm() -> void:
+	var fixture := _fixture()
 	if fixture.is_empty():
 		return
-	var controller = fixture["controller"]
 	var player = fixture["player"]
 	var enemy = fixture["enemy"]
 	var session = fixture["session"]
-	var context := _context(fixture)
-
+	player.energy = 8
+	player.stock = 5
 	assert_true(session.open())
-	assert_true(session.select_category("ATTACK"))
-	assert_true(bool(session.select_technique("atk_t1_quick_cut").get("selected", false)))
-	var committed: Dictionary = session.commit_selected(context)
-	assert_true(bool(committed.get("committed", false)))
-	assert_eq(int(player.energy), 20)
-	assert_eq(int(player.stock), 2)
-	assert_eq(int(enemy.hp), 88)
-	assert_false(controller.is_paused())
+	var preview: Dictionary = session.select_category("ATTACK", _context(fixture))
+	assert_true(bool(preview.get("ready", false)))
+	assert_eq(int(preview.get("resolved_stage", 0)), 3)
+	assert_eq(int(preview.get("converted_combo", -1)), 2)
+	assert_eq(player.energy, 8)
+	assert_eq(player.stock, 5)
+	assert_true(bool(session.commit_selected(_context(fixture)).get("committed", false)))
+	assert_eq(player.energy, 4)
+	assert_eq(player.stock, 0)
+	assert_eq(enemy.hp, 72)
 
-	var second_commit: Dictionary = session.commit_selected(context)
-	assert_false(bool(second_commit.get("committed", false)))
-	assert_eq(int(player.energy), 20, "USE may spend a selected Technique only once")
-	assert_eq(int(player.stock), 2, "USE may spend a selected Technique only once")
-	assert_eq(int(enemy.hp), 88, "USE may apply a selected Technique only once")
+func test_cancel_and_second_confirm_do_not_spend_or_apply_twice() -> void:
+	var fixture := _fixture()
+	if fixture.is_empty():
+		return
+	var player = fixture["player"]
+	var enemy = fixture["enemy"]
+	var session = fixture["session"]
+	player.energy = 8
+	player.stock = 1
+	assert_true(session.open())
+	assert_true(bool(session.select_category("ATTACK", _context(fixture)).get("ready", false)))
+	assert_true(bool(session.cancel().get("canceled", false)))
+	assert_eq(player.energy, 8)
+	assert_eq(player.stock, 1)
+	assert_eq(enemy.hp, 100)
+	assert_true(session.open())
+	assert_true(bool(session.select_category("ATTACK", _context(fixture)).get("ready", false)))
+	assert_true(bool(session.commit_selected(_context(fixture)).get("committed", false)))
+	assert_false(bool(session.commit_selected(_context(fixture)).get("committed", false)))
+	assert_eq(player.energy, 0)
+	assert_eq(player.stock, 0)
+	assert_eq(enemy.hp, 86)
 
-func test_realtime_migration_required_techniques_fail_closed_without_partial_spend() -> void:
-	var fixture := _make_fixture()
+func test_stage_inspection_prebrowses_a_technique_without_opening_the_pause_or_spending_resources() -> void:
+	var fixture := _fixture()
 	if fixture.is_empty():
 		return
 	var player = fixture["player"]
 	var session = fixture["session"]
-	var context := _context(fixture)
-	player.energy = 30
-	player.stock = 6
-
-	assert_true(session.open())
-	assert_true(session.select_category("SUPPORT"))
-	var selected: Dictionary = session.select_technique("sup_t3_haste")
-	assert_true(bool(selected.get("selected", false)))
-	var readiness: Dictionary = session.readiness("sup_t3_haste", context)
-	assert_false(bool(readiness.get("ready", true)))
-	assert_eq(String(readiness.get("reason", "")), "REALTIME_MIGRATION_REQUIRED")
-	var committed: Dictionary = session.commit_selected(context)
-	assert_false(bool(committed.get("committed", false)))
-	assert_eq(String(committed.get("reason", "")), "REALTIME_MIGRATION_REQUIRED")
-	assert_eq(int(player.energy), 30)
-	assert_eq(int(player.stock), 6)
+	player.energy = 7
+	player.stock = 0
+	assert_false(session.is_open())
+	assert_false(session.has_method("select_technique"))
+	var detail: Dictionary = session.inspect_stage("DEFENSE", 1, _context(fixture))
+	assert_true(bool(detail.get("inspectable", false)))
+	assert_eq(int(detail.get("stage", 0)), 1)
+	assert_eq(String(detail.get("display_name", "")), "Brace")
+	assert_eq(int(detail.get("combo_cost", 0)), 1)
+	assert_eq(int(detail.get("mp_cost", 0)), 8)
+	assert_eq(player.energy, 7)
+	assert_eq(player.stock, 0)
+	assert_false(session.is_open(), "prebrowsing must not enter tactical pause or select a payable technique")

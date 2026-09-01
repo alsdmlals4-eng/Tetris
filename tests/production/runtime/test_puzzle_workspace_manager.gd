@@ -77,7 +77,7 @@ func _make_chain_session():
     ]), "fixture must start with the committed Chain swap used by the contract")
     var randomizer = load(CHAIN_RANDOMIZER_PATH).new(20260826, config.palette)
     var resolver = load(CHAIN_RESOLVER_PATH).new(board, randomizer)
-    return load(CHAIN_SESSION_PATH).new(board, resolver, config)
+    return load(CHAIN_SESSION_PATH).new(board, resolver)
 
 func _make_manager(line_session, chain_session):
     var manager_exists := ResourceLoader.exists(MANAGER_PATH)
@@ -346,3 +346,29 @@ func test_switch_away_from_committed_chain_resolution_stays_pending_until_the_bo
     assert_false(manager.is_switch_pending())
     assert_true(line_session.can_accept_input())
     assert_false(chain_session.can_accept_input())
+
+func test_failed_chain_swap_choice_keeps_the_workspace_pending_until_discarded() -> void:
+    var fixture := _make_workspace_fixture()
+    if fixture.is_empty():
+        return
+    var manager = fixture["manager"]
+    var line_session = fixture["line"]
+    var chain_session = fixture["chain"]
+
+    assert_true(bool(_switch_and_handoff(manager, CHAIN).get("switched", false)))
+    var failed_swap: Dictionary = chain_session.begin_swap(Vector2i(0, 1), Vector2i(1, 1))
+    assert_eq(String(failed_swap.get("reason", "")), "NO_MATCH")
+    assert_true(chain_session.has_pending_failed_swap())
+
+    assert_true(bool(manager.request_switch(LINE).get("accepted", false)))
+    var deferred: Dictionary = manager.process_safe_handoff()
+    assert_false(bool(deferred.get("switched", false)))
+    assert_eq(String(deferred.get("reason", "")), "CHAIN_LOCK_CHOICE_PENDING")
+    assert_eq(manager.active_workspace(), CHAIN)
+    assert_false(line_session.can_accept_input())
+    assert_false(chain_session.can_accept_input())
+
+    assert_true(chain_session.discard_pending_failed_swap())
+    var committed: Dictionary = manager.process_safe_handoff()
+    assert_true(bool(committed.get("switched", false)))
+    assert_eq(manager.active_workspace(), LINE)

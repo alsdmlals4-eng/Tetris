@@ -23,12 +23,12 @@ AGENTS = ROOT / "AGENTS.md"
 
 
 class ComboResolvedSkillContractTests(unittest.TestCase):
-    def test_current_decisions_route_to_category_resolved_skill_and_parchment_visual(self) -> None:
+    def test_current_decisions_route_to_category_resolved_skill_and_obsidian_visual(self) -> None:
         index = json.loads(INDEX.read_text(encoding="utf-8"))
 
         self.assertEqual("TETRIS-SKILL-039", index["current_skill_decision"])
         self.assertEqual("TETRIS-BALANCE-040", index["current_balance_decision"])
-        self.assertEqual("TETRIS-VISUAL-041", index["current_visual_decision"])
+        self.assertEqual("TETRIS-VISUAL-043", index["current_visual_decision"])
         self.assertEqual("docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md", index["combo_resolved_skill_contract"])
 
     def test_category_preview_confirm_and_bounded_fallback_are_exact(self) -> None:
@@ -81,23 +81,32 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
-    def test_actual_runtime_is_not_misreported_as_the_new_skill_flow(self) -> None:
+    def test_current_catalog_adoption_keeps_category_resolved_selection_flow_honest(self) -> None:
         contract = CONTRACT.read_text(encoding="utf-8")
-        self.assertIn("DOCUMENTED_NOT_IMPLEMENTED", contract)
-        self.assertIn("legacy manual Tier 1–6", contract)
-        self.assertIn("tier < 1 or tier > 6", CATALOG.read_text(encoding="utf-8"))
-        self.assertIn("TierGrid", BATTLE_UI.read_text(encoding="utf-8"))
-        self.assertIn("select_technique", SKILL_SESSION.read_text(encoding="utf-8"))
+        battle_ui = BATTLE_UI.read_text(encoding="utf-8")
+        skill_session = SKILL_SESSION.read_text(encoding="utf-8")
+        self.assertIn(
+            "IMPLEMENTED_IN_CURRENT_WORKTREE_CATEGORY_PREVIEW_CONFIRM_FALLBACK_PENDING_FULL_VERIFICATION",
+            contract,
+        )
+        self.assertIn("stage < 1 or stage > 10", CATALOG.read_text(encoding="utf-8"))
+        self.assertIn("combo_cost", CATALOG.read_text(encoding="utf-8"))
+        self.assertNotIn("TierGrid", battle_ui)
+        self.assertIn("ResolvedPreview", battle_ui)
+        self.assertIn("ConfirmButton", battle_ui)
+        self.assertIn("select_skill_category", battle_ui)
+        self.assertIn("select_category", skill_session)
+        self.assertNotIn("select_technique", skill_session)
 
-    def test_visual_direction_rejects_the_old_dark_matrix_and_uses_the_user_reference_language(self) -> None:
+    def test_visual_direction_adopts_the_current_obsidian_rift_combat_language(self) -> None:
         bible = VISUAL_BIBLE.read_text(encoding="utf-8")
         for required in (
-            "TETRIS-VISUAL-041",
-            "warm ivory parchment",
-            "sepia ink",
-            "watercolor violet rift",
-            "permanent 3×6 skill wall",
-            "dark metal-card",
+            "TETRIS-VISUAL-043",
+            "obsidian-black",
+            "antique-gold",
+            "violet-rift",
+            "large boss silhouette",
+            "non-interactive C1–C10 stage rail",
         ):
             self.assertIn(required, bible)
 

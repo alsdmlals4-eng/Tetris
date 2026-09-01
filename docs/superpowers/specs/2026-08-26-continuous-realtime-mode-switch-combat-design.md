@@ -1,6 +1,7 @@
 # Continuous Real-Time Mode-Switch Combat Design
 
 - Status: **USER-APPROVED CORE DIRECTION / WRITTEN SPEC REVIEW REQUIRED / RUNTIME NOT AUTHORIZED**
+- Layout amendment: The original 60:40 layout passages below are superseded by the user-approved **50:50 puzzle/combat split** in `docs/design/PRODUCTION_CANON_INDEX.json` and the current `AGENTS.md`. The updated terms below preserve the continuous-combat decision while preventing the older layout target from silently regressing the implemented scene.
 - Decision: `TETRIS-CORE-029 · Continuous Real-Time Mode-Switch Combat + Full Tactical Pause`
 - Date: 2026-08-26
 - Repository: `alsdmlals4-eng/Tetris`
@@ -311,14 +312,14 @@ These are not silently ported to real-time seconds. Each needs a separate bounde
 
 ## 11. UI / UX contract
 
-### 11.1 Primary 60/40 composition
+### 11.1 Primary 50/50 composition
 
 Target desktop battle composition:
 
-- **Left ≈ 60%: one large Puzzle Surface**;
-- **Right ≈ 40%: persistent Combat Stage + enemy threat + resources + Skill surface**.
+- **Left ≈ 50%: one large Puzzle Surface**;
+- **Right ≈ 50%: persistent Combat Stage + enemy threat + resources + Skill surface**.
 
-This is a compositional target, not a fixed pixel law. 1280×720 readability testing may adjust the exact ratio, but the large single puzzle surface must remain dominant.
+This is a compositional target, not a fixed pixel law. 1280×720 readability testing may adjust the exact ratio, but each half must preserve its single decisive job: one active puzzle surface on the left and the boss/threat/resource/skill decision stack on the right.
 
 ### 11.2 Puzzle surface
 
@@ -607,7 +608,7 @@ The implementation is not considered CORE-029-compliant unless all are demonstra
 9. confirmed Skill spends resources/effects atomically and resumes combat deterministically;
 10. manual Pause fully stops simulation independently of Skill pause;
 11. Current enemy Telegraph/ETA remains readable during both puzzle modes;
-12. desktop UI is approximately `60% large single Puzzle Surface / 40% persistent Combat surface` and does not require a second full board sidecar;
+12. desktop UI is approximately `50% large single Puzzle Surface / 50% persistent Combat surface` and does not require a second full board sidecar;
 13. old Shared Turn Budget / READY / ordered Phase / Tempo semantics are absent from the current runtime path;
 14. deterministic tests cover safe switching, pause ownership, same-frame enemy commit boundary, resource commits, and workspace restoration;
 15. actual human test confirms the player understands `switch workspace vs pause-and-spend Skill` without relying on old phase terminology.

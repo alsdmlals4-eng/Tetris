@@ -16,11 +16,11 @@ This contract defines how a representative 6–10 minute CORE-029 Vertical Slice
 
 Current authorities:
 
-1. `TETRIS-CORE-029` — continuous real-time combat, persistent LINE↔CHAIN switching, full Skill tactical pause, enemy ETA/commit scheduling, 60/40 battle composition.
+1. `TETRIS-CORE-029` — continuous real-time combat, persistent LINE↔CHAIN switching, full Skill tactical pause, enemy ETA/commit scheduling, 50/50 battle composition.
 2. `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` — ATK / DEF / SUP category-only, current-Combo-resolved preview/CONFIRM and bounded fallback.
 3. `TETRIS-SKILL-042` — deliberate lower-Combo resolution and target-separated player board-play / visible-current-Telegraph ETA semantics.
 4. `TETRIS-CHAIN-038` — straight-3+ horizontal/vertical/diagonal CHAIN rule and optional MP lock.
-5. `TETRIS-VISUAL-041` — Parchment Field Manual + Readable Puzzle Tactics.
+5. `TETRIS-VISUAL-043` — Obsidian Rift Tactics + Readable Puzzle Combat.
 6. `TETRIS-IMAGE-030` — production images require a real runtime consumer.
 
 `TETRIS-CORE-024` and `TETRIS-TIME-025` are historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
@@ -177,9 +177,9 @@ Check:
 
 No Human claim may treat player board-play opportunity and visible-current-Telegraph ETA as one generic speed stat; each must be understood as changing only its named target/time domain.
 
-### G. SIXTY_FORTY_LAYOUT_READABILITY
+### G. BALANCED_50_50_LAYOUT_READABILITY
 
-`TETRIS-VISUAL-041` is evaluated as gameplay readability, not taste polling.
+`TETRIS-VISUAL-043` is evaluated as gameplay readability, not taste polling.
 
 Target hierarchy:
 
@@ -191,7 +191,7 @@ Target hierarchy:
 6. Skill-open state prioritizes ATK / DEF / SUP → one current-Combo-resolved preview → explicit CONFIRM while frozen puzzle/threat context remains visible;
 7. decorative character, boss, VFX, and background never obscure critical puzzle or threat information.
 
-Target desktop composition is approximately **60/40**. This is a readability target, not a fixed pixel law.
+Target desktop composition is approximately **50/50**. This is a user-directed readability target, not a fixed pixel law.
 
 Visual evidence must use actual runtime-consumed assets when making runtime-readability claims. A concept or explanation sheet cannot substitute for the screen the game actually renders.
 
@@ -247,7 +247,7 @@ Examples:
 - switching appears to reset/reroll state or is repeatedly misunderstood as stage progression;
 - Skill appears paused visually but hidden enemy/puzzle/status time continues;
 - player cannot distinguish MP and Combo, or mistakes MP lock for an immediate Combo reward;
-- critical 60/40 UI information is obscured;
+- critical 50/50 UI information is obscured;
 - the build under test does not actually implement CORE-029;
 - a concept/reference image is presented instead of the runtime screen whose readability is being claimed.
 
@@ -263,7 +263,7 @@ Use directional PASS only when:
 - no BLOCK remains;
 - core flow is completable without mechanic coaching;
 - real-time threat, free switching, persistent state, tactical pause, dual resources, and Technique commit are demonstrated by behavior plus explanation;
-- the 60/40 screen remains readable during representative pressure;
+- the 50/50 screen remains readable during representative pressure;
 - at least one pressure → deliberate choice → readable payoff candidate is observed.
 
 The gate is **PASS / REVISE / BLOCK**.

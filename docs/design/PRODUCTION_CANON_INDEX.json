@@ -2,16 +2,23 @@
   "schema_version": 3,
   "project": "TETRIS",
   "status": "CURRENT_PRODUCTION_CANON",
+  "public_identity": {
+    "game_title": "FRACTURE FRONTIER",
+    "game_title_status": "USER_APPROVED_TEXTUAL_TITLE / TITLE_LOGO_USER_LOCKED_CANON_REGISTERED_IMPLEMENTED_ON_BRANCH / RUNTIME_RENDER_CAPTURE_NOT_RUN",
+    "title_does_not_define": ["NEW_FACTION", "HISTORY", "GEOGRAPHY", "NAMED_CHARACTER"]
+  },
   "current_core_decision": "TETRIS-CORE-029",
   "current_skill_decision": "TETRIS-SKILL-039",
   "current_skill_content_decision": "TETRIS-SKILL-042",
   "current_balance_decision": "TETRIS-BALANCE-040",
-  "current_visual_decision": "TETRIS-VISUAL-041",
+  "current_visual_decision": "TETRIS-VISUAL-043",
   "current_image_decision": "TETRIS-IMAGE-030",
   "current_onboarding_decision": "TETRIS-ONBOARDING-037",
   "current_chain_decision": "TETRIS-CHAIN-038",
   "project_human_facing_owner": "REPOSITORY_ONLY",
   "project_workspace_index": "docs/design/PROJECT_WORKSPACE_INDEX.md",
+  "project_operation_contract": "docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.json",
+  "project_operation_contract_human_view": "docs/operations/TETRIS_PROJECT_OPERATION_CONTRACT.md",
   "project_master_gdd": "docs/design/PROJECT_MASTER_GDD.md",
   "visual_bible": "docs/design/VISUAL_BIBLE.md",
   "external_workspace_migration_record": "docs/operations/TETRIS_CURRENT_WORKSPACE_MIGRATION_2026-08-28.json",
@@ -56,6 +63,7 @@
     "TETRIS-UX-023",
     "TETRIS-VISUAL-028",
     "TETRIS-VISUAL-041",
+    "TETRIS-VISUAL-043",
     "TETRIS-ENCOUNTER-006",
     "TETRIS-WORLD-004",
     "TETRIS-AUDIO-014",
@@ -65,7 +73,8 @@
   ],
   "superseded_decisions": [
     "TETRIS-CORE-024",
-    "TETRIS-TIME-025"
+    "TETRIS-TIME-025",
+    "TETRIS-VISUAL-041"
   ],
   "superseded_contracts": [
     "ordered_line_chain_action_enemy_turn",
@@ -117,8 +126,8 @@
     "enemy_action_commit_point_explicit": true
   },
   "ui": {
-    "puzzle_surface_target_ratio": 0.6,
-    "combat_surface_target_ratio": 0.4,
+    "puzzle_surface_target_ratio": 0.5,
+    "combat_surface_target_ratio": 0.5,
     "mandatory_sidecar": false,
     "single_large_mode_switch_puzzle_surface": true,
     "persistent_right_combat_surface": true,
@@ -149,7 +158,7 @@
   "onboarding": {
     "rule_delivery": "FULL_PRE_DEPLOY_BRIEFING",
     "first_visit_deploy_gate": "RULES_REGION_END_OR_ACCESSIBLE_EQUIVALENT",
-    "later_visit_deploy_behavior": "IMMEDIATELY_ENABLED_WITH_REOPENABLE_RULE_SUMMARY",
+    "later_visit_deploy_behavior": "PER_LAUNCH_RULE_ACKNOWLEDGEMENT_UNTIL_PERSISTENCE_IS_SPECIFIED",
     "pre_deploy_rule_scope": [
       "LINE_MP_CAP_AND_INITIAL_REWARDS",
       "CHAIN_ORTHOGONAL_SWAP_STRAIGHT_3PLUS_ALL_AXES",
@@ -163,9 +172,10 @@
     "post_deploy_tutorial_handoff": "SHORT_GUIDED_LIVE_PRACTICE_THEN_SEAMLESS_CONTINUOUS_ENCOUNTER",
     "tutorial_pressure_mode": "SAFE_LIVE_AUTHORED_OPENING",
     "tutorial_clock_behavior": "CONTINUOUS_FROM_DEPLOY",
+    "guided_opening_eta_seconds": 28.0,
     "tutorial_opening_guardrail": "SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM",
     "tutorial_handoff_pressure": "NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF",
-    "implementation_status": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED"
+    "implementation_status": "TITLE_FULL_RULE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION"
   },
   "production_skill": {
     "lanes": ["ATTACK", "DEFENSE", "SUPPORT"],
@@ -180,7 +190,7 @@
     "unattended_autocast": false,
     "fallback_model": "HIGHEST_FEASIBLE_LOWER_STAGE_AFTER_BOUNDED_COMBO_TO_MP_CONVERSION",
     "content_gdd": "docs/design/COMBO_STAGE_SKILL_CONTENT_GDD.md",
-    "stage_1_to_10_content": "USER_APPROVED_CONTENT_CANON_DOCUMENTED_NOT_IMPLEMENTED",
+    "stage_1_to_10_content": "USER_APPROVED_CONTENT_CANON_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
     "deliberate_lower_combo_cast": "STOP_CHAIN_AT_DESIRED_CURRENT_COMBO_NO_MANUAL_DOWNSELECT",
     "implementation_model": "DATA_DRIVEN_EFFECT_PRIMITIVES",
     "skill_open_pause": "FULL_TACTICAL_PAUSE",
@@ -199,7 +209,7 @@
       "enemy_acceleration": "SHORTENS_CURRENT_PATTERN_ETA_ONLY",
       "enemy_deceleration": "LENGTHENS_CURRENT_PATTERN_ETA_ONLY",
       "global_engine_time_scale": "FORBIDDEN",
-      "implementation_status": "DOCUMENTED_NOT_IMPLEMENTED"
+      "implementation_status": "IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION"
     },
     "forecast_control": {
       "future_control_requires_visible_forecast": true,
@@ -266,13 +276,13 @@
     "simulation_pause_controller": "IMPLEMENTED_ON_MERGED_MAIN",
     "enemy_realtime_scheduler": "IMPLEMENTED_ON_MERGED_MAIN",
     "skill_tactical_pause_runtime": "IMPLEMENTED_ON_MERGED_MAIN",
-    "category_resolved_skill_039_runtime": "DOCUMENTED_NOT_IMPLEMENTED_LEGACY_MANUAL_TIER_1_TO_6_REMAINS",
-    "production_60_40_ui": "IMPLEMENTED_ON_MERGED_MAIN",
+    "category_resolved_skill_039_runtime": "IMPLEMENTED_IN_CURRENT_WORKTREE_CATEGORY_PREVIEW_CONFIRM_FALLBACK_PENDING_FULL_VERIFICATION",
+    "production_50_50_ui": "IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
     "runtime_image_consumers": "IMPLEMENTED_ON_MERGED_MAIN",
     "production_human_playtest": "NOT_RUN",
-    "chain_038_runtime_alignment": "PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD",
-    "chain_038_phase_2_plan_gate": "REQUIRES_IMPLEMENTATION_REVIEW_BEFORE_GODOT_BUILD",
-    "first_session_briefing_and_tutorial": "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+    "chain_038_runtime_alignment": "IMPLEMENTED_IN_CURRENT_WORKTREE_ALL_AXES_MP_LOCK_CAP10_PER_WAVE_RECOVERY_PENDING_FULL_VERIFICATION",
+    "chain_038_phase_2_plan_gate": "IMPLEMENTATION_REQUIRES_EXACT_HEAD_FULL_VERIFICATION",
+    "first_session_briefing_and_tutorial": "TITLE_BRIEFING_AND_SAFE_GUIDED_PRACTICE_IMPLEMENTED_IN_CURRENT_WORKTREE_PENDING_FULL_VERIFICATION",
     "merged_main_runtime": "RUNTIME_BASELINE_1A5C5AA_AUTOMATED_READY_TREE_EQUIVALENT_SOURCE_HEAD",
     "runtime_evidence_identity": "RUNTIME_BASELINE_1A5C5AA_SOURCE_HEAD_CI_AND_RUNTIME_EVIDENCE",
     "runtime_baseline_main_sha": "1a5c5aab84d7b6e11c3a4431a71eecb27b0ea55a",

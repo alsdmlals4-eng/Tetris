@@ -6,13 +6,14 @@ func _board_signature(board: ChainBoard) -> Array:
 func test_board_can_detect_whether_any_legal_match_swap_exists_without_mutation() -> void:
     var board := ChainBoard.new(3, 3)
     var values := [
-        "A", "B", "A",
-        "B", "A", "C",
-        "C", "A", "B",
+        "A", "A", "B",
+        "B", "C", "A",
+        "C", "B", "C",
     ]
     assert_true(board.restore(values))
     var before := board.snapshot()
 
+    assert_true(board.find_match_groups().is_empty())
     assert_true(board.has_available_swap())
     assert_eq(board.snapshot(), before, "Availability inspection must never mutate the board")
 
@@ -20,8 +21,8 @@ func test_board_reports_no_available_swap_for_dead_pattern_without_mutation() ->
     var board := ChainBoard.new(3, 3)
     var values := [
         "A", "B", "C",
-        "B", "C", "A",
-        "C", "A", "B",
+        "D", "E", "F",
+        "G", "H", "I",
     ]
     assert_true(board.restore(values))
     var before := board.snapshot()

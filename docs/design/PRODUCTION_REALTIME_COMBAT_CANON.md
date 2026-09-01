@@ -8,7 +8,7 @@
 
 ## 1. Authority and supersession boundary
 
-This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the 60/40 battle composition.
+This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the user-directed 50/50 battle composition.
 
 The following production documents are **HISTORICAL / SUPERSEDED** where they define ordered player/enemy turns or turn-budget timing:
 
@@ -22,7 +22,7 @@ Retained authorities:
 - `TETRIS-CORE-021` where it defines production Swap-Match Chain grammar;
 - `TETRIS-CHAIN-038` for the current orthogonal-swap, straight-3+ horizontal/vertical/diagonal match grammar and optional MP lock;
 - `TETRIS-SKILL-039` / `TETRIS-BALANCE-040` for Vanguard category-only Combo-Resolved Technique preview/confirm and bounded skill-only Combo-to-MP fallback;
-- `TETRIS-VISUAL-041` for Parchment Field Manual + Readable Puzzle Tactics direction;
+- `TETRIS-VISUAL-043` for Obsidian Rift Tactics + Readable Puzzle Combat direction;
 - authored Telegraph / visible Next Forecast principles where compatible with continuous combat.
 
 Machine routing authority is `docs/design/PRODUCTION_CANON_INDEX.json`.
@@ -260,10 +260,10 @@ Retained non-turn-bound families include direct damage, healing, mitigation, cou
 
 Target desktop composition:
 
-- left ≈ **60%**: one large Puzzle Surface;
-- right ≈ **40%**: persistent Combat Stage + enemy threat + resources + Skill surface.
+- left ≈ **50%**: one large Puzzle Surface;
+- right ≈ **50%**: persistent Combat Stage + enemy threat + resources + Skill surface.
 
-The ratio is a readability target, not a fixed pixel law. 1280×720 validation may adjust the exact split without making the puzzle secondary.
+The ratio is a user-directed readability target, not a fixed pixel law. The Gatebreaker occupies the dominant CombatStage silhouette; the separate Vanguard portrait keeps player identity readable without shrinking the boss. 1280×720 validation may adjust small gutters without making either primary surface secondary.
 
 The left surface shows only the active full puzzle workspace:
 
@@ -282,6 +282,8 @@ The right surface keeps at least:
 - lower-priority Next Forecast when known;
 - player HP / MP / Combo;
 - mode controls `LINE / CHAIN / SKILL`.
+
+`Shared Action Timer` is a presentation alias for the exact current `enemy_eta_seconds`: the central visual counter, Current ETA and player reaction window must show the same continuous scheduler value. It is not a Shared Player Turn Budget and must not restore historical turn rails, READY, timeout, PASS, or any ordered player/enemy loop.
 
 Skill-open state visibly communicates `TACTICAL PAUSE`, preserves the frozen puzzle as context, and prioritizes `ATK / DEF / SUP → one Combo-Resolved preview → explicit CONFIRM` while keeping the motivating enemy threat readable.
 
