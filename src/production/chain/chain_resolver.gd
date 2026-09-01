@@ -41,10 +41,14 @@ func resolve_existing_matches() -> Dictionary:
                 symbols.append(symbol)
 
         var cleared_count: int = board.clear_cells(matched)
+        var qualified_line_lengths: Array[int] = []
+        for group in groups:
+            qualified_line_lengths.append((group["cells"] as Array).size())
         waves.append({
             "depth": depth,
             "groups": groups.duplicate(true),
             "cleared_count": cleared_count,
+            "qualified_line_lengths": qualified_line_lengths,
             "symbols": symbols,
         })
 

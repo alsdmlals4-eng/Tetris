@@ -1,14 +1,14 @@
 # CHAIN Combo and MP Lock Contract
 
 - Decision: `TETRIS-CHAIN-038`
-- Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / RUNTIME_IMPLEMENTED / MACHINE_VERIFIED / BALANCE_AND_HUMAN_EVIDENCE_NOT_RUN`
 - Issue: #56
 - Cost approval: fixed **1 MP** failed-swap lock, Issue #58
 - MP-cap approval: hard cap of **60 MP**, Issue #60
 - Combo / CHAIN MP recovery approval: Issue #64
 - Date: 2026-08-28
 - Authority: latest user decision, `TETRIS-CORE-029`, `TETRIS-BALANCE-040`, `TETRIS-SKILL-039`, and `PRODUCTION_CANON_INDEX.json`.
-- Scope: player-facing resource language and CHAIN interaction grammar. This is not a Godot implementation, balance lock, runtime capture, or Human/player-experience result.
+- Scope: player-facing resource language and CHAIN interaction grammar. The deterministic board, resolver, resource bridge and in-battle lock prompt are implemented and machine-verified. This remains neither a balance lock nor a target-device runtime capture or Human/player-experience result.
 
 ## 1. Resource ownership
 
@@ -74,8 +74,8 @@ MP recovery = (sum of all qualified maximal group lengths − 3) + Combo after t
 
 - The failed-swap MP lock cost is fixed at **1 MP** and MP has a hard cap of **60 MP** for the vertical slice. Initial LINE recovery is fixed to the existing data seed: no clear/Single/Double/Triple/Four = **0 / 10 / 22 / 36 / 52 MP**. The Combo/CHAIN-MP rule is structurally approved; its numerical balance remains `TUNE_REQUIRED` until Human evidence exists.
 - MP overflow creates no combat resource. The UI must expose a full MP state before another LINE reward, and explain this rule with structured text/interaction feedback, not image-only labels: `No straight 3+ match — revert`, `Spend 1 MP to keep this swap for a later Combo`, and `MP full — spend MP before the next LINE reward`.
-- Current merged runtime uses internal `energy` / `stock` names, only tests horizontal and vertical match runs, always restores a non-match, does not cap energy, and has no MP-lock path. Its legacy CHAIN reward data maps total cascade depth 1–6 to Combo 1–6 with a cap of 6, and grants no CHAIN MP. Its alignment is therefore `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD`.
-- Phase 2 implementation must update the deterministic board/resolver/session/resource bridge, input feedback, configuration, telemetry, and regression tests together. It must expose each wave's `line term + post-wave Combo = MP recovery`, raise the stored Combo cap to 10, and replace the legacy manual Tier 1–6 path with the `TETRIS-SKILL-039` category-resolved Stage 1–10 path. It must not claim balance or Human/player validation before runtime evidence exists.
+- The runtime keeps internal `energy` / `stock` names while exposing `MP` / `COMBO` labels. `ChainBoard` detects horizontal, vertical and both diagonal maximal straight groups; `ChainResolver` emits each wave's qualified line lengths; `ProductionCombatState` enforces MP 60 / Combo 10 and computes each wave's formula; the session preserves an invalid-swap snapshot until the player reverts or pays 1 MP to keep it. `ProductionCombatRuntime` commits every emitted wave exactly once. Its alignment is `CHAIN_RESOURCE_ALIGNMENT_IMPLEMENTED_MACHINE_VERIFIED`.
+- The remaining Phase 2 Skill PR must replace the legacy manual Tier 1–6 path with the `TETRIS-SKILL-039` category-resolved Stage 1–10 path and bind its approved shortage fallback to the same atomic resource owner. The present CHAIN/resource implementation must not be represented as balance, target-device runtime, or Human/player validation.
 
 ## 6. Tutorial and visual rule
 

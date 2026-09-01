@@ -70,4 +70,10 @@ func _would_create_starting_match(board: ChainBoard, position: Vector2i, symbol:
     if position.y >= 2:
         if board.get_cell(position + Vector2i(0, -1)) == symbol and board.get_cell(position + Vector2i(0, -2)) == symbol:
             return true
+    if position.x >= 2 and position.y >= 2:
+        if board.get_cell(position + Vector2i(-1, -1)) == symbol and board.get_cell(position + Vector2i(-2, -2)) == symbol:
+            return true
+    if position.x <= board.width - 3 and position.y >= 2:
+        if board.get_cell(position + Vector2i(1, -1)) == symbol and board.get_cell(position + Vector2i(2, -2)) == symbol:
+            return true
     return false

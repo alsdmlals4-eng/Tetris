@@ -90,6 +90,35 @@ grow_vertical = 2
 color = Color(0.06, 0.045, 0.09, 1)
 script = ExtResource("3_chain")
 
+[node name="ChainLockFrame" type="PanelContainer" parent="MainRow/PuzzleColumn"]
+process_mode = 3
+visible = false
+layout_mode = 2
+
+[node name="ChainLockPanel" type="VBoxContainer" parent="MainRow/PuzzleColumn/ChainLockFrame"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Prompt" type="Label" parent="MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.76, 0.42, 1)
+horizontal_alignment = 1
+text = "NO STRAIGHT 3+ MATCH · COMBO RESET\nKEEP THIS SETUP FOR 1 MP?"
+
+[node name="LockActions" type="HBoxContainer" parent="MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="KeepSwapButton" type="Button" parent="MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "KEEP SWAP · 1 MP"
+
+[node name="DiscardSwapButton" type="Button" parent="MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "REVERT SWAP · FREE"
+
 [node name="CombatColumn" type="VBoxContainer" parent="MainRow"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -246,7 +275,7 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.66, 0.84, 1, 1)
-text = "HP -- / --    ENERGY --    STOCK -- / 6"
+text = "HP -- / --    MP -- / 60    COMBO -- / 10"
 
 [node name="SkillFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 process_mode = 2

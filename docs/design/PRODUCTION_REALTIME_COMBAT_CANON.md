@@ -131,7 +131,7 @@ Only one is visible and input-active at a time inside the large Puzzle Surface.
 - board, refill/randomizer state, selection/history required for legal continuation, and pending deterministic resolution persist when leaving CHAIN;
 - switching away does not grant free progress or reroll state.
 
-`TETRIS-CHAIN-038` is current approved design, not a claim that its whole grammar is in the merged runtime: current code detects only horizontal/vertical runs, has no MP-lock path, and retains a legacy cap-6 cascade-depth Combo reward without CHAIN MP recovery. Exact implementation alignment is `PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD` until its Phase 2 review and exact-head verification complete.
+`TETRIS-CHAIN-038` is implemented through the deterministic all-axis board/resolver/session/resource/runtime bridge: horizontal, vertical and both diagonal maximal runs; per-wave Combo-before-MP recovery; MP 60 / Combo 10 caps; default restore; and the fixed-1-MP optional pending-swap lock. Exact implementation alignment is `CHAIN_RESOURCE_ALIGNMENT_IMPLEMENTED_MACHINE_VERIFIED`. This is not target-device runtime, balance, Human comprehension or player-fun evidence, and the category-resolved Skill/onboarding work remains separately pending.
 
 Required return invariant:
 
@@ -260,8 +260,8 @@ Retained non-turn-bound families include direct damage, healing, mitigation, cou
 
 Target desktop composition:
 
-- left ≈ **60%**: one large Puzzle Surface;
-- right ≈ **40%**: persistent Combat Stage + enemy threat + resources + Skill surface.
+- left ≈ **50%**: one large Puzzle Surface;
+- right ≈ **50%**: persistent Combat Stage + enemy threat + resources + Skill surface.
 
 The ratio is a readability target, not a fixed pixel law. 1280×720 validation may adjust the exact split without making the puzzle secondary.
 

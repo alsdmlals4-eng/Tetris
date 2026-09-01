@@ -1,18 +1,10 @@
 {
   "balance_status": "TUNING_SEED_NOT_FINAL",
-  "seed_source": "HISTORICAL_FOUNDATION_CHAIN_DEPTH_MAPPING_ADAPTED_TO_PRODUCTION_CAP_6",
+  "seed_source": "TETRIS_CHAIN_038_WAVE_FORMULA_RUNTIME_SEED",
   "board": {
     "width": 8,
     "height": 8,
     "palette": ["R", "G", "B", "Y", "P", "C"],
     "random_seed": 54321
-  },
-  "stock_by_chain_depth": {
-    "1": 1,
-    "2": 2,
-    "3": 3,
-    "4": 4,
-    "5": 5,
-    "6": 6
   }
 }

@@ -20,8 +20,8 @@ func test_board_reports_no_available_swap_for_dead_pattern_without_mutation() ->
     var board := ChainBoard.new(3, 3)
     var values := [
         "A", "B", "C",
-        "B", "C", "A",
-        "C", "A", "B",
+        "D", "E", "F",
+        "G", "H", "I",
     ]
     assert_true(board.restore(values))
     var before := board.snapshot()

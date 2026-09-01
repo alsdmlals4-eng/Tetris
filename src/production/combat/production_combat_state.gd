@@ -2,7 +2,9 @@
 class_name ProductionCombatState
 extends RefCounted
 
-const STOCK_CAP: int = 6
+const MP_CAP: int = 60
+const COMBO_CAP: int = 10
+const STOCK_CAP: int = COMBO_CAP
 
 var max_hp: int
 var hp: int
@@ -20,7 +22,7 @@ func gain_stock(amount: int) -> Dictionary:
             "lost_at_cap": 0,
         }
 
-    var capacity: int = maxi(0, STOCK_CAP - stock)
+    var capacity: int = maxi(0, COMBO_CAP - stock)
     var applied: int = mini(amount, capacity)
     stock += applied
     return {
@@ -37,11 +39,68 @@ func lose_stock(amount: int) -> int:
 
 func apply_energy_delta(delta: int) -> int:
     var before: int = energy
-    energy = maxi(0, energy + delta)
+    energy = clampi(energy + delta, 0, MP_CAP)
     return energy - before
 
+func try_spend_mp(amount: int) -> bool:
+    if amount < 0 or energy < amount:
+        return false
+    energy -= amount
+    return true
+
+func reset_combo() -> int:
+    var before := stock
+    stock = 0
+    return before
+
+func apply_chain_wave(line_lengths: Array) -> Dictionary:
+    var qualified_total := 0
+    for raw_length in line_lengths:
+        var length: int = int(raw_length)
+        if length >= 3:
+            qualified_total += length
+    if qualified_total == 0:
+        return {
+            "combo_before": stock,
+            "combo_after": stock,
+            "mp_requested": 0,
+            "mp_applied": 0,
+            "mp_lost_at_cap": 0,
+        }
+
+    var combo_before := stock
+    stock = mini(COMBO_CAP, stock + 1)
+    var requested := qualified_total - 3 + stock
+    var before_mp := energy
+    energy = clampi(energy + requested, 0, MP_CAP)
+    var applied := energy - before_mp
+    return {
+        "combo_before": combo_before,
+        "combo_after": stock,
+        "mp_requested": requested,
+        "mp_applied": applied,
+        "mp_lost_at_cap": requested - applied,
+    }
+
+func try_commit_combo_skill(mp_cost: int, opening_combo: int, resolved_stage: int) -> Dictionary:
+    var converted := opening_combo - resolved_stage
+    if mp_cost < 0 or opening_combo != stock or resolved_stage < 1 or converted < 0:
+        return {"committed": false, "reason": "INVALID_COMBO_TRANSACTION"}
+    var available := mini(MP_CAP, energy + converted * 5)
+    if available < mp_cost:
+        return {"committed": false, "reason": "INSUFFICIENT_RESOURCE"}
+    energy = available - mp_cost
+    stock = 0
+    return {
+        "committed": true,
+        "resolved_stage": resolved_stage,
+        "converted_combo": converted,
+        "mp_spent": mp_cost,
+        "combo_spent": opening_combo,
+    }
+
 func try_spend_skill_cost(energy_cost: int, stock_cost: int) -> bool:
-    if energy_cost < 0 or stock_cost < 0 or stock_cost > STOCK_CAP:
+    if energy_cost < 0 or stock_cost < 0 or stock_cost > COMBO_CAP:
         return false
     if energy < energy_cost or stock < stock_cost:
         return false
@@ -51,7 +110,7 @@ func try_spend_skill_cost(energy_cost: int, stock_cost: int) -> bool:
     return true
 
 func stock_cost_for_tier(tier: int) -> int:
-    if tier < 1 or tier > STOCK_CAP:
+    if tier < 1 or tier > COMBO_CAP:
         return -1
     return tier
 

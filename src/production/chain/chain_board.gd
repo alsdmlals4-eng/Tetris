@@ -5,6 +5,13 @@ var width: int
 var height: int
 var _cells: Array[String] = []
 
+const MATCH_DIRECTIONS: Array[Dictionary] = [
+    {"axis": "H", "step": Vector2i.RIGHT},
+    {"axis": "V", "step": Vector2i.DOWN},
+    {"axis": "D_DOWN_RIGHT", "step": Vector2i(1, 1)},
+    {"axis": "D_DOWN_LEFT", "step": Vector2i(-1, 1)},
+]
+
 func _init(p_width: int = 3, p_height: int = 3) -> void:
     width = maxi(1, p_width)
     height = maxi(1, p_height)
@@ -49,51 +56,34 @@ func _swap_cells(first: Vector2i, second: Vector2i) -> void:
     set_cell(first, second_value)
     set_cell(second, first_value)
 
+func _is_run_start(position: Vector2i, step: Vector2i, symbol: String) -> bool:
+    var previous := position - step
+    return not _inside(previous) or get_cell(previous) != symbol
+
 func find_match_groups(minimum_run: int = 3) -> Array:
     var groups: Array = []
     var threshold: int = maxi(3, minimum_run)
 
-    for y in range(height):
-        var x: int = 0
-        while x < width:
-            var symbol: String = get_cell(Vector2i(x, y))
-            if symbol == "":
-                x += 1
-                continue
-            var end_x: int = x + 1
-            while end_x < width and get_cell(Vector2i(end_x, y)) == symbol:
-                end_x += 1
-            if end_x - x >= threshold:
+    for direction in MATCH_DIRECTIONS:
+        var axis := String(direction["axis"])
+        var step := Vector2i(direction["step"])
+        for y in range(height):
+            for x in range(width):
+                var start := Vector2i(x, y)
+                var symbol: String = get_cell(start)
+                if symbol == "" or not _is_run_start(start, step, symbol):
+                    continue
                 var cells: Array = []
-                for matched_x in range(x, end_x):
-                    cells.append(Vector2i(matched_x, y))
-                groups.append({
-                    "axis": "H",
-                    "symbol": symbol,
-                    "cells": cells,
-                })
-            x = end_x
-
-    for x in range(width):
-        var y: int = 0
-        while y < height:
-            var symbol: String = get_cell(Vector2i(x, y))
-            if symbol == "":
-                y += 1
-                continue
-            var end_y: int = y + 1
-            while end_y < height and get_cell(Vector2i(x, end_y)) == symbol:
-                end_y += 1
-            if end_y - y >= threshold:
-                var cells: Array = []
-                for matched_y in range(y, end_y):
-                    cells.append(Vector2i(x, matched_y))
-                groups.append({
-                    "axis": "V",
-                    "symbol": symbol,
-                    "cells": cells,
-                })
-            y = end_y
+                var cursor := start
+                while _inside(cursor) and get_cell(cursor) == symbol:
+                    cells.append(cursor)
+                    cursor += step
+                if cells.size() >= threshold:
+                    groups.append({
+                        "axis": axis,
+                        "symbol": symbol,
+                        "cells": cells,
+                    })
 
     return groups
 
@@ -148,11 +138,14 @@ func try_swap_for_match(first: Vector2i, second: Vector2i) -> Dictionary:
     _swap_cells(first, second)
     var groups: Array = find_match_groups()
     if groups.is_empty():
+        var swapped: Array = snapshot()
         restore(before)
         return {
             "accepted": false,
             "reason": "NO_MATCH",
             "groups": [],
+            "before_snapshot": before,
+            "swapped_snapshot": swapped,
         }
 
     return {

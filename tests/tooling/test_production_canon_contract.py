@@ -180,16 +180,14 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertEqual(chain["combo_cap"], 10)
         self.assertEqual(
             chain["actual_merged_runtime_combo_model"],
-            "LEGACY_CASCADE_DEPTH_MAPPING_CAP_6_NOT_ALIGNED",
+            "PER_WAVE_FORMULA_CAP_10_ALL_AXES_MP_LOCK_IMPLEMENTED_MACHINE_VERIFIED",
         )
         self.assertEqual(
             reality["chain_038_runtime_alignment"],
-            "PARTIAL_HV_ONLY_NO_MP_LOCK_NO_MP_CAP_LEGACY_DEPTH_REWARD",
+            "CHAIN_RESOURCE_ALIGNMENT_IMPLEMENTED_MACHINE_VERIFIED_NO_TARGET_RUNTIME_OR_HUMAN_EVIDENCE",
         )
-        self.assertEqual(
-            chain_reward_data["stock_by_chain_depth"],
-            {"1": 1, "2": 2, "3": 3, "4": 4, "5": 5, "6": 6},
-        )
+        self.assertEqual(chain_reward_data["seed_source"], "TETRIS_CHAIN_038_WAVE_FORMULA_RUNTIME_SEED")
+        self.assertNotIn("stock_by_chain_depth", chain_reward_data)
         self.assertEqual(economy["mp_lock_cost_status"], "USER_APPROVED_FIXED_1_MP")
         self.assertEqual(economy["mp_cap"], 60)
         self.assertEqual(economy["mp_cap_status"], "USER_APPROVED_FIXED_60_MP_HARD_CAP")
@@ -341,7 +339,7 @@ class ProductionCanonContractTests(unittest.TestCase):
             "simulation_pause_controller",
             "enemy_realtime_scheduler",
             "skill_tactical_pause_runtime",
-            "production_60_40_ui",
+            "production_50_50_ui",
             "runtime_image_consumers",
         ):
             self.assertEqual(reality[key], "IMPLEMENTED_ON_MERGED_MAIN")

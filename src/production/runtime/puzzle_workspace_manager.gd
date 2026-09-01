@@ -63,11 +63,11 @@ func process_safe_handoff() -> Dictionary:
             "reason": "NO_PENDING_SWITCH",
         }
 
-    if _active_workspace == CHAIN and chain_session != null and chain_session.is_resolving():
+    if _active_workspace == CHAIN and chain_session != null and (chain_session.is_resolving() or chain_session.has_pending_failed_swap()):
         _sync_input_ownership()
         return {
             "switched": false,
-            "reason": "CHAIN_RESOLVING",
+            "reason": "CHAIN_RESOLVING" if chain_session.is_resolving() else "CHAIN_FAILED_SWAP_PENDING",
         }
 
     _active_workspace = _pending_workspace
@@ -100,5 +100,5 @@ func _sync_input_ownership() -> void:
     if line_session != null:
         line_session.set_input_enabled(_active_workspace == LINE)
     if chain_session != null:
-        var chain_can_receive_input := _active_workspace == CHAIN and not chain_session.is_resolving()
+        var chain_can_receive_input := _active_workspace == CHAIN and not chain_session.is_resolving() and not chain_session.has_pending_failed_swap()
         chain_session.set_input_enabled(chain_can_receive_input)

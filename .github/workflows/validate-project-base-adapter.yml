@@ -6,8 +6,10 @@ on:
       - "AGENTS.md"
       - "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json"
       - "docs/operations/TETRIS_RUNTIME_SURFACE_RECOVERY_PROTECTED_CHANGE_APPROVAL.json"
+      - "docs/operations/TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json"
       - "docs/PROJECT_OPERATING_HEALTH.json"
       - "docs/design/PRODUCTION_CANON_INDEX.json"
+      - "docs/design/CHAIN_COMBO_MP_CONTRACT.md"
       - "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md"
       - "docs/design/PROJECT_MASTER_GDD.md"
       - "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
@@ -67,6 +69,6 @@ jobs:
             --project-root . \
             --base-repository .base-contract \
             --protected-base "$PROTECTED_BASE_SHA" \
-            --approval docs/operations/TETRIS_RUNTIME_SURFACE_RECOVERY_PROTECTED_CHANGE_APPROVAL.json \
+            --approval docs/operations/TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json \
             --external-approval true \
             --check

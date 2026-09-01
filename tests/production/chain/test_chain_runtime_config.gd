@@ -21,32 +21,26 @@ func test_runtime_seed_is_explicitly_non_final_and_traceable() -> void:
         return
 
     assert_eq(config.balance_status, "TUNING_SEED_NOT_FINAL")
-    assert_eq(config.seed_source, "HISTORICAL_FOUNDATION_CHAIN_DEPTH_MAPPING_ADAPTED_TO_PRODUCTION_CAP_6")
+    assert_eq(config.seed_source, "TETRIS_CHAIN_038_WAVE_FORMULA_RUNTIME_SEED")
     assert_eq(config.board_width, 8)
     assert_eq(config.board_height, 8)
     assert_eq(config.palette.size(), 6)
     assert_eq(config.random_seed, 54321)
 
-func test_stock_reward_uses_data_driven_chain_depth_seed_and_production_cap_six() -> void:
+func test_runtime_config_owns_board_generation_only_not_legacy_depth_rewards() -> void:
     var config = _config()
     if config == null:
         return
 
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": 0}), 0)
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": 1}), 1)
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": 2}), 2)
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": 5}), 5)
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": 6}), 6)
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": 99}), 6)
+    assert_false(config.get_property_list().any(func(property): return String(property.get("name", "")) == "stock_by_chain_depth"))
+    assert_false(config.has_method("stock_for_resolution"))
 
-func test_failed_or_invalid_resolution_never_mints_stock() -> void:
+func test_runtime_config_cannot_mint_legacy_depth_rewards() -> void:
     var config = _config()
     if config == null:
         return
 
-    assert_eq(config.stock_for_resolution({"success": false, "chain_depth": 3}), 0)
-    assert_eq(config.stock_for_resolution({"chain_depth": 3}), 0)
-    assert_eq(config.stock_for_resolution({"success": true, "chain_depth": -1}), 0)
+    assert_false(config.has_method("stock_for_resolution"))
 
 func test_invalid_seed_shape_fails_closed() -> void:
     var script = load(CONFIG_SCRIPT_PATH)
@@ -59,5 +53,4 @@ func test_invalid_seed_shape_fails_closed() -> void:
         "balance_status": "TUNING_SEED_NOT_FINAL",
         "seed_source": "TEST",
         "board": {"width": 2, "height": 2, "palette": ["A", "B"], "random_seed": 1},
-        "stock_by_chain_depth": {"1": 1},
     }))

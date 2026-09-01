@@ -4,9 +4,9 @@
 
 Read current production gameplay in this order:
 
-1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 60:40 battle composition authority (`TETRIS-CORE-029`).
+1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 50:50 battle composition authority (`TETRIS-CORE-029`).
 2. `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` — current `ATK / DEF / SUP` category-only, Combo-Resolved preview/explicit CONFIRM and bounded 5-MP fallback authority (`TETRIS-SKILL-039` / `TETRIS-BALANCE-040`).
-3. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar, optional MP lock, Combo recovery and preserved opportunity cost (`TETRIS-CHAIN-038`); its Phase 2 implementation review is still required.
+3. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar, optional MP lock, Combo recovery and preserved opportunity cost (`TETRIS-CHAIN-038`); CHAIN/resource alignment is implemented and machine-verified, while the separate Skill/onboarding PRs remain required.
 5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
 6. `docs/design/PROJECT_WORKSPACE_INDEX.md`, `PROJECT_MASTER_GDD.md`, and `VISUAL_BIBLE.md` — repository-owned project-home structure, current picture, and visual direction.
 7. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
@@ -78,7 +78,7 @@ For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, da
 - LINE remains the primary MP source (current internal field: `energy`).
 - CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; every resolved wave adds Combo +1 and then recovers MP from `(sum maximal qualified line lengths − 3) + post-wave Combo`. Combo is the shared Tier/CHAIN-MP resource (current internal field: `stock`).
 - A no-match restores by default and resets Combo; fixed **1 MP** may keep that swapped board for later setup, but also resets Combo and grants no immediate clear, Combo, or CHAIN MP recovery.
-- Combo cap is **10**. Selecting a Skill category resolves the current Combo Stage; when current-stage MP is insufficient, surplus Combo converts at **5 MP each** only to reach the highest feasible lower Stage. This intentionally lowers later CHAIN MP recovery. Current merged runtime remains legacy cap-6/no-CHAIN-MP/manual-Tier-1–6 until Phase 2 implementation.
+- Combo cap is **10**. Selecting a Skill category resolves the current Combo Stage; when current-stage MP is insufficient, surplus Combo converts at **5 MP each** only to reach the highest feasible lower Stage. This intentionally lowers later CHAIN MP recovery. The CHAIN/resource cap, all-axis matcher, per-wave recovery and MP-lock boundary are implemented and machine-verified; the legacy manual Tier 1–6 Skill selection remains until the separate Phase 2 Skill PR.
 - Enemy Current Telegraph + ETA continues while the player solves LINE/CHAIN.
 - Visible Next Forecast remains lower priority than Current.
 - Opening SKILL enters `TACTICAL_PAUSE_SKILL` and fully stops combat simulation.

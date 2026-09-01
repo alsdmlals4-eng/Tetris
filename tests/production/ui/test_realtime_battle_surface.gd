@@ -15,6 +15,20 @@ class TerminalRuntime:
 	func is_skill_open() -> bool:
 		return false
 
+class PausedRuntime:
+	func snapshot() -> Dictionary:
+		return {"player_energy": 7}
+
+	func is_simulation_paused() -> bool:
+		return true
+
+class PendingChainSession:
+	func has_pending_failed_swap() -> bool:
+		return true
+
+class PendingChainWorkspace:
+	var chain_session := PendingChainSession.new()
+
 func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey and event.physical_keycode == expected_key:
@@ -32,6 +46,7 @@ func test_battle_surface_has_required_50_50_hierarchy_without_a_turn_rail() -> v
 		"MainRow/PuzzleColumn/ModeFrame/ModeBar",
 		"MainRow/PuzzleColumn/PuzzleHost/LineBoardView",
 		"MainRow/PuzzleColumn/PuzzleHost/ChainBoardView",
+		"MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel",
 		"MainRow/CombatColumn/ThreatFrame/ThreatPanel",
 		"MainRow/CombatColumn/CombatStage",
 		"MainRow/CombatColumn/SharedActionFrame",
@@ -89,6 +104,41 @@ func test_shared_action_timer_is_a_presentation_alias_for_the_current_enemy_eta(
 	assert_string_contains(current.text, "8.5")
 	assert_eq(shared_value.text, "8.5")
 	assert_string_contains(current_frame.text, "8.5")
+	var resources = battle.get_node("MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar") as Label
+	assert_string_contains(resources.text, "MP 31 / 60")
+	assert_string_contains(resources.text, "COMBO 4 / 10")
+
+func test_chain_lock_prompt_exposes_visible_keep_or_revert_controls_without_overlaying_the_board() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var frame = battle.get_node_or_null("MainRow/PuzzleColumn/ChainLockFrame") as Control
+	var prompt = battle.get_node_or_null("MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/Prompt") as Label
+	var keep = battle.get_node_or_null("MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions/KeepSwapButton") as Button
+	var discard = battle.get_node_or_null("MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions/DiscardSwapButton") as Button
+	assert_not_null(frame)
+	assert_not_null(prompt)
+	assert_not_null(keep)
+	assert_not_null(discard)
+	if frame != null:
+		assert_false(frame.visible, "the no-match decision must not occupy board space until an invalid swap occurs")
+		assert_eq(frame.process_mode, Node.PROCESS_MODE_ALWAYS, "the no-match decision must accept Keep/Revert clicks while normal combat is running")
+	if prompt != null:
+		assert_string_contains(prompt.text, "1 MP")
+	if keep != null:
+		assert_string_contains(keep.text, "KEEP")
+	if discard != null:
+		assert_string_contains(discard.text, "REVERT")
+
+func test_chain_lock_prompt_hides_a_pending_swap_while_tactical_pause_owns_input() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	battle._runtime = PausedRuntime.new()
+	battle._workspace_manager = PendingChainWorkspace.new()
+	battle._refresh_chain_lock_prompt()
+	var frame = battle.get_node_or_null("MainRow/PuzzleColumn/ChainLockFrame") as Control
+	assert_not_null(frame)
+	if frame != null:
+		assert_false(frame.visible, "tactical pause must not expose a chain-board choice that runtime rejects")
 
 func test_skill_panel_is_pause_capable_and_chain_board_starts_hidden() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):

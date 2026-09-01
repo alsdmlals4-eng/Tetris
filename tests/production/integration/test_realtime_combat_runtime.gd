@@ -34,9 +34,33 @@ class FakeChainSession:
 		events.clear()
 		return drained
 
+class LockableChainSession:
+	var _pending := false
+	func begin_swap(_first: Vector2i, _second: Vector2i) -> Dictionary:
+		_pending = true
+		return {"accepted": false, "reason": "NO_MATCH_PENDING_LOCK"}
+	func has_pending_failed_swap() -> bool:
+		return _pending
+	func keep_pending_failed_swap() -> Dictionary:
+		if not _pending:
+			return {"accepted": false}
+		_pending = false
+		return {"accepted": true, "reason": "SWAP_LOCKED"}
+	func discard_pending_failed_swap() -> Dictionary:
+		if not _pending:
+			return {"accepted": false}
+		_pending = false
+		return {"accepted": true, "reason": "SWAP_RESTORED"}
+	func is_resolving() -> bool:
+		return false
+	func complete_pending_resolution() -> Dictionary:
+		return {"success": false}
+	func drain_events() -> Array[Dictionary]:
+		return []
+
 class FakeWorkspaceManager:
 	var line_session := FakeLineSession.new()
-	var chain_session := FakeChainSession.new()
+	var chain_session: Variant = FakeChainSession.new()
 	var _active := "LINE"
 	func active_workspace() -> String:
 		return _active
@@ -133,6 +157,70 @@ func test_workspace_switch_keeps_only_the_active_puzzle_simulating() -> void:
 	assert_true(bool(runtime.process_player_command({"kind": "SWITCH_WORKSPACE", "target": "CHAIN"}).get("accepted", false)))
 	runtime.tick(0.25)
 	assert_eq(workspace.line_session.tick_count, 1, "inactive Line workspace must not receive a simulation tick")
+
+func test_no_match_resets_combo_once_and_confirmed_lock_spends_exactly_one_mp() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	player.energy = 7
+	player.stock = 6
+	var workspace = FakeWorkspaceManager.new()
+	workspace._active = "CHAIN"
+	workspace.chain_session = LockableChainSession.new()
+	var runtime = load(RUNTIME_PATH).new(player, load(COMBAT_STATE_PATH).new(100), workspace, _scheduler(), _skill_session(pause, player), pause, null)
+	var swap: Dictionary = runtime.try_chain_swap(Vector2i(0, 0), Vector2i(0, 1))
+	assert_false(bool(swap.get("accepted", true)))
+	assert_eq(String(swap.get("reason", "")), "NO_MATCH_PENDING_LOCK")
+	assert_eq(int(swap.get("combo_reset", -1)), 6)
+	assert_eq(player.stock, 0)
+	var locked: Dictionary = runtime.confirm_chain_mp_lock()
+	assert_true(bool(locked.get("accepted", false)))
+	assert_eq(int(locked.get("mp_cost", 0)), 1)
+	assert_eq(player.energy, 6)
+
+func test_pending_chain_lock_cannot_mutate_board_or_mp_during_tactical_pause() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	player.energy = 7
+	player.stock = 6
+	var workspace = FakeWorkspaceManager.new()
+	workspace._active = "CHAIN"
+	workspace.chain_session = LockableChainSession.new()
+	var runtime = load(RUNTIME_PATH).new(player, load(COMBAT_STATE_PATH).new(100), workspace, _scheduler(), _skill_session(pause, player), pause, null)
+	assert_eq(String(runtime.try_chain_swap(Vector2i(0, 0), Vector2i(0, 1)).get("reason", "")), "NO_MATCH_PENDING_LOCK")
+	assert_true(bool(runtime.open_skill().get("opened", false)))
+	assert_true(runtime.is_simulation_paused())
+	var before_mp: int = player.energy
+	assert_eq(String(runtime.confirm_chain_mp_lock().get("reason", "")), "CHAIN_LOCK_INPUT_UNAVAILABLE")
+	assert_eq(String(runtime.discard_chain_mp_lock().get("reason", "")), "CHAIN_LOCK_INPUT_UNAVAILABLE")
+	assert_eq(player.energy, before_mp)
+	assert_true(workspace.chain_session.has_pending_failed_swap())
+	assert_true(bool(runtime.close_skill_without_use().get("closed", false)))
+	assert_true(bool(runtime.discard_chain_mp_lock().get("accepted", false)))
+
+func test_runtime_commits_each_chain_wave_once_with_post_wave_combo_formula() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var workspace = FakeWorkspaceManager.new()
+	workspace._active = "CHAIN"
+	workspace.chain_session.events.append({
+		"kind": "production_chain_resolved",
+		"waves": [
+			{"qualified_line_lengths": [3]},
+			{"qualified_line_lengths": [4]},
+		],
+	})
+	var runtime = load(RUNTIME_PATH).new(player, load(COMBAT_STATE_PATH).new(100), workspace, _scheduler(), _skill_session(pause, player), pause, null)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	var events: Array = runtime.tick(0.1)
+	assert_eq(player.stock, 2)
+	assert_eq(player.energy, 4, "(3 - 3 + Combo 1) + (4 - 3 + Combo 2) must equal 4 MP")
+	var chain_events: Array = events.filter(func(event): return String(event.get("kind", "")) == "production_chain_resolved")
+	assert_eq(chain_events.size(), 1)
+	if chain_events.size() == 1:
+		assert_eq((chain_events[0].get("wave_rewards", []) as Array).size(), 2)
+	runtime.tick(0.1)
+	assert_eq(player.stock, 2, "drained CHAIN events must not mint Combo twice")
+	assert_eq(player.energy, 4, "drained CHAIN events must not mint MP twice")
 
 func _read_json(path: String):
 	return JSON.parse_string(FileAccess.get_file_as_string(path))
