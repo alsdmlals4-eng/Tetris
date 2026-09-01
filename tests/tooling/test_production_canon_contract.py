@@ -91,8 +91,8 @@ class ProductionCanonContractTests(unittest.TestCase):
         data = self._index()
         ui = data["ui"]
 
-        self.assertEqual(ui["puzzle_surface_target_ratio"], 0.60)
-        self.assertEqual(ui["combat_surface_target_ratio"], 0.40)
+        self.assertEqual(ui["puzzle_surface_target_ratio"], 0.50)
+        self.assertEqual(ui["combat_surface_target_ratio"], 0.50)
         self.assertFalse(ui["mandatory_sidecar"])
 
     def test_supersession_contract_reenables_realtime_clock_and_free_switching(self) -> None:

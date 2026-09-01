@@ -5,7 +5,14 @@ on:
     paths:
       - "AGENTS.md"
       - "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json"
+      - "docs/operations/TETRIS_RUNTIME_SURFACE_RECOVERY_PROTECTED_CHANGE_APPROVAL.json"
       - "docs/PROJECT_OPERATING_HEALTH.json"
+      - "docs/design/PRODUCTION_CANON_INDEX.json"
+      - "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md"
+      - "docs/design/PROJECT_MASTER_GDD.md"
+      - "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
+      - "docs/design/VISUAL_BIBLE.md"
+      - "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
       - "skills/**"
       - ".github/workflows/validate-project-base-adapter.yml"
 
@@ -54,10 +61,12 @@ jobs:
           git merge-base --is-ancestor "$PROTECTED_BASE_SHA" "$PR_BASE_SHA"
           printf 'PROTECTED_BASE_SHA=%s\n' "$PROTECTED_BASE_SHA" >> "$GITHUB_ENV"
 
-      - name: Validate adapter against the trusted protected baseline
+      - name: Validate adapter and approved protected recovery against the trusted baseline
         run: |
-          python .base-contract/tools/check_project_operating_contract.py \
+          python .base-contract/tools/check_approved_project_operating_contract.py \
             --project-root . \
             --base-repository .base-contract \
             --protected-base "$PROTECTED_BASE_SHA" \
+            --approval docs/operations/TETRIS_RUNTIME_SURFACE_RECOVERY_PROTECTED_CHANGE_APPROVAL.json \
+            --external-approval true \
             --check

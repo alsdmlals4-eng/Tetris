@@ -93,11 +93,11 @@ For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, da
 
 ## UI / UX invariants
 
-- Target desktop composition: approximately `60% large Puzzle Surface / 40% persistent Combat-Threat-Resource-Skill surface`.
-- The ratio is a readability target, not a fixed pixel law.
-- Right-side surface keeps enemy HP/phase, Current Telegraph + ETA, lower-priority Next Forecast when known, player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
+- Target desktop composition: a balanced `50% large Puzzle Surface / 50% persistent Combat-Threat-Resource-Skill surface`.
+- The ratio is a readability target, not a fixed pixel law; preserve equal manipulation and combat-reading priority at the reference desktop surface.
+- Right-side surface keeps enemy HP/phase, a boss-dominant CombatStage, Current Telegraph + ETA, a visible **shared action timer** that presents that same ETA as the player reaction window, lower-priority Next Forecast when known, a readable Vanguard HUD portrait with player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
 - Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context and a category-resolved preview.
-- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, Shared Turn Timer, READY, turn timeout/PASS, Tempo UI, manual Tier buttons or an unconfirmed skill auto-cast as current production behavior.
+- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, a Shared **Turn** Timer, READY, turn timeout/PASS, Tempo UI, manual Tier buttons or an unconfirmed skill auto-cast as current production behavior. The shared action timer is only the current enemy ETA and player reaction window; it is not a restored player-turn budget.
 - Puzzle/HUD readability outranks decorative character, environment, and VFX detail.
 
 ## Image production contract

@@ -1,4 +1,4 @@
-## CORE-029 전투 화면이 단일 60/40 퍼즐·전투 표면과 pause 가능한 스킬 문맥을 제공하는지 검증한다.
+## CORE-029 전투 화면이 단일 50/50 퍼즐·전투 표면과 pause 가능한 스킬 문맥을 제공하는지 검증한다.
 extends GutTest
 
 const BATTLE_SCENE_PATH := "res://scenes/production/battle.tscn"
@@ -21,7 +21,7 @@ func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 			return true
 	return false
 
-func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> void:
+func test_battle_surface_has_required_50_50_hierarchy_without_a_turn_rail() -> void:
 	assert_true(ResourceLoader.exists(BATTLE_SCENE_PATH), "CORE-029 production battle scene must exist")
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
 		return
@@ -34,14 +34,16 @@ func test_battle_surface_has_required_60_40_hierarchy_without_a_turn_rail() -> v
 		"MainRow/PuzzleColumn/PuzzleHost/ChainBoardView",
 		"MainRow/CombatColumn/ThreatFrame/ThreatPanel",
 		"MainRow/CombatColumn/CombatStage",
-		"MainRow/CombatColumn/ResourceFrame/ResourceBar",
+		"MainRow/CombatColumn/SharedActionFrame",
+		"MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar",
+		"MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait",
 		"MainRow/CombatColumn/SkillFrame/SkillPanel",
 	]:
-		assert_not_null(battle.get_node_or_null(node_path), "%s is required by the 60/40 battle composition" % node_path)
+		assert_not_null(battle.get_node_or_null(node_path), "%s is required by the 50/50 battle composition" % node_path)
 	var puzzle_column: Control = battle.get_node_or_null("MainRow/PuzzleColumn")
 	var combat_column: Control = battle.get_node_or_null("MainRow/CombatColumn")
-	assert_almost_eq(puzzle_column.size_flags_stretch_ratio, 0.6, 0.01)
-	assert_almost_eq(combat_column.size_flags_stretch_ratio, 0.4, 0.01)
+	assert_almost_eq(puzzle_column.size_flags_stretch_ratio, 0.5, 0.01)
+	assert_almost_eq(combat_column.size_flags_stretch_ratio, 0.5, 0.01)
 	assert_eq(battle.find_children("*Turn*", "", true, false).size(), 0, "CORE-029 must not restore a turn rail")
 
 func test_battle_surface_uses_named_theme_and_semantic_visual_frames() -> void:
@@ -51,10 +53,42 @@ func test_battle_surface_uses_named_theme_and_semantic_visual_frames() -> void:
 	for node_path in [
 		"MainRow/PuzzleColumn/ModeFrame",
 		"MainRow/CombatColumn/ThreatFrame",
+		"MainRow/CombatColumn/SharedActionFrame",
 		"MainRow/CombatColumn/ResourceFrame",
 		"MainRow/CombatColumn/SkillFrame",
 	]:
 		assert_not_null(battle.get_node_or_null(node_path), "%s must provide a semantic visual hierarchy frame" % node_path)
+
+func test_combat_stage_keeps_the_boss_large_and_moves_vanguard_to_the_resource_hud() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var stage = battle.get_node_or_null("MainRow/CombatColumn/CombatStage")
+	var gatebreaker = battle.get_node_or_null("MainRow/CombatColumn/CombatStage/GatebreakerReference")
+	var vanguard = battle.get_node_or_null("MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait")
+	assert_not_null(stage)
+	assert_not_null(gatebreaker)
+	assert_not_null(vanguard)
+	assert_null(battle.get_node_or_null("MainRow/CombatColumn/CombatStage/VanguardReference"), "Vanguard must not share the enemy presentation stage")
+	if stage != null:
+		assert_true(stage.clip_contents, "the enlarged boss crop must not spill over threat or skill controls")
+	if gatebreaker != null:
+		assert_eq(gatebreaker.stretch_mode, TextureRect.STRETCH_KEEP_ASPECT_COVERED)
+		assert_true(gatebreaker.texture is AtlasTexture, "the boss must use a deterministic stage crop")
+	if vanguard != null:
+		assert_true(vanguard.texture is AtlasTexture, "the HUD portrait must crop the existing Vanguard cutout")
+		assert_gte(vanguard.custom_minimum_size.x, 110.0)
+
+func test_shared_action_timer_is_a_presentation_alias_for_the_current_enemy_eta() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	battle._runtime = TerminalRuntime.new({"terminal": false, "paused": false, "player_hp": 72, "player_energy": 31, "player_stock": 4, "enemy_hp": 100, "enemy_eta_seconds": 8.5})
+	battle._refresh_runtime_labels()
+	var current = battle.get_node("MainRow/CombatColumn/ThreatFrame/ThreatPanel/CurrentTelegraph") as Label
+	var shared_value = battle.get_node("MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/SharedTimerCore/SharedTimerValue") as Label
+	var current_frame = battle.get_node("MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/CurrentActionFrame") as Label
+	assert_string_contains(current.text, "8.5")
+	assert_eq(shared_value.text, "8.5")
+	assert_string_contains(current_frame.text, "8.5")
 
 func test_skill_panel_is_pause_capable_and_chain_board_starts_hidden() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):

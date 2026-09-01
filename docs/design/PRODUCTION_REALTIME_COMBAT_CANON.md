@@ -8,7 +8,7 @@
 
 ## 1. Authority and supersession boundary
 
-This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the 60/40 battle composition.
+This document is the primary production gameplay authority for combat lifecycle, continuous simulation time, LINE↔CHAIN workspace switching, Skill tactical pause, enemy ETA/commit scheduling, workspace persistence, and the balanced 50/50 battle composition.
 
 The following production documents are **HISTORICAL / SUPERSEDED** where they define ordered player/enemy turns or turn-budget timing:
 
