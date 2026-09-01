@@ -196,16 +196,16 @@ Before a first Deploy, the user-approved rules disclose LINE MP recovery/cap, CH
 | --- | --- | --- | --- | --- |
 | 1 | Frontier Gate / live combat context | Read Gatebreaker threat and ETA in the same field-manual composition as the board. | Context leads to current resource/board decision. | Wider lore is unknown. |
 | 2 | CHAIN workspace | Swap two orthogonally adjacent symbols to make a straight line of three or more. | Combo and per-wave MP feedback establish a current Combo state; a no-match offers a visible 1-MP keep-or-revert choice. | CHAIN/resource behavior is machine-verified; target-resolution readability and balance are unknown. |
-| 3 | Tactical Skill | Pause, choose only ATK, DEF or SUP. | The chosen category opens one resolved current-Combo preview; selection is free. | `TETRIS-SKILL-039` documented, not implemented. |
-| 4 | Resolved preview / confirm | Inspect one purpose, effect, target and resource result. | Explicit CONFIRM commits; no manual tier/card browse. | Legacy runtime still uses manual Tier 1–6. |
-| 5 | MP-shortage fallback | Understand the lower stage before committing. | Surplus Combo converts at 5 MP each only to show the highest legal lower Stage. | Current design only; no runtime/data proof. |
+| 3 | Tactical Skill | Pause, choose only ATK, DEF or SUP. | The chosen category opens one resolved current-Combo preview; selection is free. | `TETRIS-SKILL-039` is implemented and machine-verified; target-device and Human evidence remain pending. |
+| 4 | Resolved preview / confirm | Inspect one purpose, effect, target and resource result. | Explicit CONFIRM commits; no manual tier/card browse. | Category-only preview, atomic confirmation and rollback are implemented and machine-verified. |
+| 5 | MP-shortage fallback | Understand the lower stage before committing. | Surplus Combo converts at 5 MP each only to show the highest legal lower Stage. | C1–C10 fallback runtime is implemented and machine-verified; balance and Human evidence remain pending. |
 | 6 | Return to threat | See impact and changed state before the live battle resumes. | The next telegraph starts the next Line/Chain/Skill decision. | Human learning, balance and fun unknown. |
 
 ### Generated visual workflow
 
-Current user direction is `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`: do not pause to ask whether a bounded visual should be generated; generate it, inspect it against the current anchor and consumer (where applicable), then ask only whether to lock it. `TETRIS-VIS-BOARD-002` is now `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`.
+Current user direction is `USER_STANDING_IMAGE_APPROVAL_2026-09-02`: do not pause to ask whether a necessary bounded visual should be generated or separately locked. Generate it, inspect it against the current anchor and consumer (where applicable), preserve earlier approved sources, and record exact provenance. `TETRIS-VIS-BOARD-002` remains a historical `USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME`.
 
-Locking a planning board means **approved project planning reference**, not runtime asset, scene/UI implementation or human-readability proof. A runtime asset still requires its exact target `res://` path, scene/node consumer, geometry and import/use contract before generation, then user lock and runtime verification before promotion.
+The older planning-board lock remains a planning-reference classification, not runtime asset, scene/UI implementation or human-readability proof. A runtime asset still requires its exact target `res://` path, scene/node consumer, geometry and import/use contract before generation, then inspected versioned registration, scene binding and runtime verification before promotion.
 
 ## 6. Actual Godot architecture and evidence
 
@@ -249,7 +249,7 @@ These prove scene binding, not composition readability or art approval at a play
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | The live telegraph + persistent two-workspace + full tactical-pause structure is specific and readable as a design contract. | `STRENGTH` | CORE-029, scene/code path and automated contracts. | `VERIFIED` for structure; not fun. | Gives a memorable decision vocabulary. | Focuses the slice. | `PROTECT` | Observe an uncoached first player. |
 | The project now has a user-supplied parchment/ink/watercolor reference and a concrete rule for what stays readable. | `STRENGTH` | `TETRIS-VISUAL-041`, two user-provided comparison images and Visual Bible. | `PARTIAL` | Makes the intended mood and UI hierarchy easier to distinguish. | Gives later art/UI work a narrower style target. | `PROTECT` | Inspect the new planning board, then target-resolution runtime composite after a consumer-specific art pass. |
-| The manual Tier wall and dark runtime presentation conflict with current approved flow/direction. | `WEAKNESS` | Fresh merged `production_battle.gd`, skill catalog/seed, actual runtime image files versus SKILL-039/VISUAL-041. | `VERIFIED` | Current player cannot yet experience or read the approved choice grammar. | Replacement touches UI/session/catalog/data and later art consumers. | `IMPROVE` | One bounded Phase 2 implementation contract with visual target-resolution capture. |
+| The category Skill grammar is implemented, but target-resolution visual hierarchy and player readability are unobserved. | `WEAKNESS` | Fresh merged `production_battle.gd`, skill catalog/seed, actual runtime image files versus SKILL-039/VISUAL-041. | `MACHINE_VERIFIED`; target-device/Human evidence not run. | The current player-facing hierarchy may still need correction after observation. | Preserve mechanics and prioritize bounded presentation evidence before new feature expansion. | `TEST` | Capture target-resolution category preview/confirm and observe first exposure. |
 | The CHAIN resource implementation now matches its core board/economy promise, but its player-facing readability and balance have not been observed. | `PARTIAL_STRENGTH` | All-axis board/session/resource/UI prompt tests and the Phase 2 PR-A implementation. | `MACHINE_VERIFIED`; not Human-verified. | Players can use the promised all-axis/setup/combo strategy in source/runtime logic. | Preserves a bounded next step: target-resolution observation before balance changes. | `TEST` | Capture and observe the actual prompt, rewards and overflow state at target resolution. |
 | Human/player evidence is absent. | `WEAKNESS` | Human evidence index and reconciliation record. | `VERIFIED` | No reliable claim about comprehension, tension or balance. | Blocks safe polish prioritization. | `TEST` | Three first-exposure receipts at target resolution. |
 | A concise explanation plus safe live practice can make the unusual economy marketable without a long lore layer. | `OPPORTUNITY` | Approved onboarding logic; inference, not market research. | `INFERENCE` | Could make the hook understandable in one session. | Reuses existing battle rather than creating a tutorial mode. | `TEST` | Compare comprehension after real onboarding runtime exists. |
@@ -286,7 +286,7 @@ The preflight is implementation-feasibility evidence, not a runtime/UX pass. The
 ### Incident / Solution / Lesson
 
 - **Incident:** the previous image contract asked for pre-generation approval, while the user’s current workflow direction is generate-first and lock-after-inspection. That timing conflict would slow visual review and leave future agents uncertain.
-- **Solution:** `TETRIS-IMAGE-030` now records `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`. Runtime consumer-first requirements remain non-negotiable, and generated explorations remain non-runtime until explicitly locked and integrated.
+- **Solution:** `TETRIS-IMAGE-030` first recorded `AUTO_GENERATE_THEN_USER_LOCK_CONFIRMATION`; the newer `USER_STANDING_IMAGE_APPROVAL_2026-09-02` removes the per-candidate lock request while preserving runtime consumer, provenance, scene-binding and evidence gates.
 - **Lesson:** `NO_BASE_PROMOTION`. The timing preference is a project/user collaboration policy; it is not evidence that every project should bypass its own art-production approval gate.
 
 ## 9. Validation and change log
@@ -312,6 +312,7 @@ The preflight is implementation-feasibility evidence, not a runtime/UX pass. The
 | 2026-09-01 | Replaced legacy Skill seed data with validated C1–C10 lane/stage definitions and adaptive current-threat packages; the player-facing resolver remains pending. | `TETRIS-SKILL-039 / PARTIALLY_IMPLEMENTED_DATA_ONLY / MACHINE_VERIFIED` |
 | 2026-09-01 | Implemented the capped LINE-only board-opportunity reserve and exact-current-ETA adjustment, with full scheduler delta preserved and temporary Skill-executor wiring. | `TETRIS-SKILL-042 / PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES / MACHINE_VERIFIED` |
 | 2026-09-02 | Replaced manual Tier selection with category-only Combo preview/atomic confirm, then added BattleBriefing, one-bit rule review and a safe real-time first-session handoff. | `TETRIS-SKILL-039 / TETRIS-BALANCE-040 / TETRIS-SKILL-042 / TETRIS-ONBOARDING-037 / IMPLEMENTED_MACHINE_VERIFIED_PENDING_RUNTIME_AND_HUMAN_EVIDENCE` |
+| 2026-09-02 | Reconciled the human-facing visual legend with the merged category-only Skill runtime and adopted user-standing approval for necessary bounded images; consumer/provenance/runtime evidence gates remain separate. | `TETRIS-IMAGE-030 / USER_STANDING_IMAGE_APPROVAL_2026-09-02 / CURRENT SYNTHESIS` |
 
 ### Rollback
 

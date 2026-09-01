@@ -1,0 +1,107 @@
+{
+  "work_level": "L2",
+  "work_title": "Tetris runtime boss-art revision and human blueprint PDF",
+  "direction_anchor": "Keep the approved 50/50 LINE-or-CHAIN versus combat composition and its category-resolved Skill flow intact; add only a consumer-bound Gatebreaker v2 presentation asset, bounded motion feedback, and a repository-derived human blueprint PDF.",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "2026-09-02 user direction: generate images when needed without per-image approval; proceed with the recommended option; make the blueprint viewable as PDF.",
+  "continuous_work_state": "CONTINUOUS_WORK_ACTIVE",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "origin/main at 590b209e6391faef9058f9a12eb85c63d06aaa08; PRODUCTION_REALTIME_COMBAT_CANON.md, COMBO_RESOLVED_SKILL_CONTRACT.md, RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md, battle.tscn, production_battle.gd, and the approved asset manifest were read from the exact fresh worktree.",
+        "observed_pattern": "The current battle already owns a balanced 50/50 split, one active puzzle board, a boss-only CombatStage, Vanguard HUD portrait, shared action-window ETA, category-only preview/CONFIRM Skill flow, and named TextureRect consumers.",
+        "project_fit_and_difference": "ADOPT the existing runtime consumer and preserve its combat ownership; add a versioned boss asset only at GatebreakerReference instead of rebuilding the layout, returning to a manual Tier matrix, or moving the Vanguard into the boss stage.",
+        "disposition": "ADOPT"
+      },
+      {
+        "source_and_evidence": "Godot 4.7 official TextureRect and importing-images documentation checked on 2026-09-02: https://docs.godotengine.org/en/4.7/classes/class_texturerect.html and https://docs.godotengine.org/en/latest/tutorials/assets_pipeline/importing_images.html.",
+        "observed_pattern": "TextureRect supports aspect-covered clipping for an oversized stage crop, while PNG is a supported 2D texture format and lossless import is the normal 2D choice when transparency and edge quality matter.",
+        "project_fit_and_difference": "ADAPT the existing TextureRect with EXPAND_IGNORE_SIZE and STRETCH_KEEP_ASPECT_COVERED; keep the new image as a lossless RGBA PNG with explicit crop/anchor metadata rather than adding an addon, shader framework, or a new paid image path.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "docs/knowledge/game-development/reuse/adoption/PROJECT_WORK_REUSE_HANDOFF.json and REUSABLE_MODULE_REGISTRY.md were read from current Base; their Tetris rows still describe superseded ordered-turn vocabulary and mark the old line/chain modules as pattern seeds.",
+        "observed_pattern": "The Base reuse records retain useful consumer-first and rights-boundary practice, but their historical Tetris turn model is not current project gameplay authority.",
+        "project_fit_and_difference": "REJECT importing old turn-budget, READY, Tempo, Tetris trade dress, title, or visual treatment; reuse only the documented consumer/provenance and rollback discipline.",
+        "disposition": "REJECT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Only the current Tetris battle presentation, production image policy, human-facing derived blueprint publication, and their direct tests are in scope. Open PRs are read-only; old turn documents, approved v1 images, historical planning references, and unrelated worktrees are preserved.",
+    "inventory": [
+      {
+        "path": "AGENTS.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Current project entry rules and material-task evidence gate.",
+        "references_and_consumers": "All current task execution, current canon read order, testing and protected-path decisions. Its old per-image lock wording needs an explicit user-standing-approval amendment, not deletion."
+      },
+      {
+        "path": "skills/PROJECT_BASE_ADAPTER.json",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Installed project Base adapter pinned to Base 9.4.4.",
+        "references_and_consumers": "Project routing, protected paths, current repository authority and validation boundaries."
+      },
+      {
+        "path": "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "Pre-adapter policy source retained as the provenance for the installed adapter.",
+        "references_and_consumers": "Protected-baseline SHA and adapter provenance; it is not the active claim that the adapter is absent."
+      },
+      {
+        "path": "docs/design/PRODUCTION_CANON_INDEX.json",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Machine-readable current production routing, image policy and evidence ceiling.",
+        "references_and_consumers": "AGENTS read order, tooling contracts, human-facing workspace index and battle implementation route."
+      },
+      {
+        "path": "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "TETRIS-IMAGE-030 consumer-first image policy.",
+        "references_and_consumers": "Approved asset manifest, Visual Bible, battle scene consumer records and image tooling tests; its lock-after-generation wording is the direct target of the user's standing-approval amendment."
+      },
+      {
+        "path": "docs/design/VISUAL_BIBLE.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "TETRIS-VISUAL-041 visual authority.",
+        "references_and_consumers": "PROJECT_MASTER_GDD.md, image contract, asset manifests and any new runtime art brief. Its historical manual-tier implementation statements require a narrow current-state correction before a derived blueprint is issued."
+      },
+      {
+        "path": "docs/design/PRODUCTION_TURN_COMBAT_CANON.md and docs/design/PRODUCTION_TURN_TIME_CANON.md",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "Superseded ordered-turn provenance retained by PRODUCTION_CANON_INDEX.json.",
+        "references_and_consumers": "Historical traceability only; no active runtime or blueprint rule is sourced from them."
+      },
+      {
+        "path": "docs/assets/reference/approved/TETRIS-IMG-P0-003-asymmetric-breach-colossus-master.png and assets/production/bosses/gatebreaker_combat_cutout_v1.png",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Approved source master and retained v1 runtime-source candidate.",
+        "references_and_consumers": "Asset manifest, Visual Bible and historical v1 consumer records; neither file is deleted or overwritten by the versioned v2 addition."
+      },
+      {
+        "path": "docs/superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Current Phase 2 tactical-core implementation plan with historical task checkboxes and exact evidence boundary.",
+        "references_and_consumers": "PRODUCTION_CANON_INDEX.json and current completed main; this work adds a separate presentation/publication plan rather than reopening its completed mechanics tasks."
+      },
+      {
+        "path": "docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md and docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md",
+        "classification": "ARCHIVE",
+        "owner_or_provenance": "Superseded manual Tier provenance.",
+        "references_and_consumers": "Retained by AGENTS and canon index for effect-family history; no removal is proposed and current blueprint text must not use their selection grammar."
+      }
+    ]
+  },
+  "preimplementation_feasibility": {
+    "classification": "FEASIBLE",
+    "affected_consumers": [
+      "scenes/production/battle.tscn → MainRow/CombatColumn/CombatStage/GatebreakerReference",
+      "src/production/ui/production_battle.gd → bounded stage motion presentation",
+      "docs/design/PROJECT_MASTER_GDD.md and linked current canon → derived human blueprint PDF"
+    ],
+    "dependency_boundary": "No addon, API, account, paid service, save schema, enemy scheduler, puzzle rule, skill resolver, or title decision is added. Godot scene binding follows the existing TextureRect consumer pattern.",
+    "rollback": "Restore the existing GatebreakerReference resource binding and remove only the versioned v2 asset/manifest record plus the derived PDF files; preserve the master, v1 asset, current mechanics and all historical references.",
+    "evidence_ceiling": "Contract tests and headless parse can prove file/scene wiring; live target-device render, Human readability, player appeal, balance and release approval remain NOT_RUN until independently observed."
+  }
+}

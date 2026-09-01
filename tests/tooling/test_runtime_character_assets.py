@@ -14,7 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = REPO_ROOT / "docs/assets/reference/approved/APPROVED_REFERENCE_MANIFEST.json"
 CONTRACT_PATH = REPO_ROOT / "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
 BATTLE_SCENE_PATH = REPO_ROOT / "scenes/production/battle.tscn"
-EXPECTED_ASSETS = {
+EXPECTED_CURRENT_RUNTIME_ASSETS = {
     "TETRIS-IMG-033": {
         "path": "assets/production/characters/vanguard_combat_cutout_v1.png",
         "source": "IMG-P0-002",
@@ -30,14 +30,14 @@ EXPECTED_ASSETS = {
             "stretch_mode = 5",
         ],
     },
-    "TETRIS-IMG-034": {
-        "path": "assets/production/bosses/gatebreaker_combat_cutout_v1.png",
-        "source": "IMG-P0-003",
+    "TETRIS-IMG-037": {
+        "path": "assets/production/bosses/gatebreaker_combat_cutout_v2.png",
+        "source": "USER_STANDING_IMAGE_APPROVAL_2026-09-02",
         "consumer": "MainRow/CombatColumn/CombatStage/GatebreakerReference",
-        "resource_id": "7_gatebreaker_cutout",
+        "resource_id": "7_gatebreaker_cutout_v2",
         "node_name": "GatebreakerReference",
         "parent": "MainRow/CombatColumn/CombatStage",
-        "texture_binding": 'texture = SubResource("AtlasTexture_gatebreaker_stage")',
+        "texture_binding": 'texture = SubResource("AtlasTexture_gatebreaker_stage_v2")',
         "required_properties": [
             "anchor_top = -0.16",
             "anchor_bottom = 1.16",
@@ -145,21 +145,29 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     sha256(REPO_ROOT / source["local_path"]), source["sha256"]
                 )
 
-        for asset_id, expected in EXPECTED_ASSETS.items():
+        for asset_id, expected in EXPECTED_CURRENT_RUNTIME_ASSETS.items():
             with self.subTest(asset_id=asset_id):
                 self.assertIn(asset_id, assets_by_id)
                 asset = assets_by_id[asset_id]
                 self.assertEqual(asset["local_path"], expected["path"])
-                self.assertEqual(asset["derived_from"], expected["source"])
+                if asset_id == "TETRIS-IMG-037":
+                    self.assertEqual(asset["approval_status"], "USER_STANDING_APPROVED_RUNTIME_CANDIDATE")
+                    self.assertEqual(asset["art_direction_anchor"], "TETRIS-VISUAL-041")
+                    self.assertEqual(asset["approval_basis"], expected["source"])
+                else:
+                    self.assertEqual(asset["derived_from"], expected["source"])
                 self.assertEqual(asset["planned_consumer_node"], expected["consumer"])
-                self.assertEqual(asset["approval_status"], "SOURCE_ASSET_CANDIDATE")
                 self.assertEqual(asset["runtime_integration"], "IMPLEMENTED_ON_BRANCH")
                 self.assertEqual(asset["runtime_verification"], "PENDING_EXACT_HEAD_RENDER")
                 self.assertNotIn("bottom anchor", asset["geometry_contract"])
-                self.assertIn("StageBackdrop and both cutouts visible", asset["runtime_render_evidence"])
-                self.assertIn("non-retained local test result", asset["runtime_render_evidence"])
-                self.assertNotIn("direct branch render", asset["runtime_render_evidence"])
-                self.assertNotIn("screenshot SHA-256", asset["runtime_render_evidence"])
+                if asset_id == "TETRIS-IMG-037":
+                    self.assertIn("exact scene-binding contract validated locally", asset["runtime_render_evidence"])
+                    self.assertIn("No exact-head Godot render", asset["runtime_render_evidence"])
+                else:
+                    self.assertIn("StageBackdrop and both cutouts visible", asset["runtime_render_evidence"])
+                    self.assertIn("non-retained local test result", asset["runtime_render_evidence"])
+                    self.assertNotIn("direct branch render", asset["runtime_render_evidence"])
+                    self.assertNotIn("screenshot SHA-256", asset["runtime_render_evidence"])
                 self.assertIn(asset_id, contract)
                 self.assertIn(expected["consumer"], contract)
 
@@ -178,8 +186,20 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
                     "PNG must contain at least one actually transparent pixel",
                 )
 
+        legacy_boss = assets_by_id["TETRIS-IMG-034"]
+        legacy_boss_path = REPO_ROOT / legacy_boss["local_path"]
+        self.assertTrue(legacy_boss_path.is_file())
+        self.assertEqual(legacy_boss["derived_from"], "IMG-P0-003")
+        self.assertEqual(legacy_boss["runtime_integration"], "RETAINED_ROLLBACK_SOURCE")
+        self.assertEqual(
+            legacy_boss["runtime_consumer"],
+            "RETAINED_ROLLBACK_SOURCE_NO_CURRENT_SCENE_BINDING",
+        )
+        self.assertEqual(sha256(legacy_boss_path), legacy_boss["sha256"])
+        self.assertEqual(legacy_boss["replacement_by"], "TETRIS-IMG-037")
+
         self.assertIn("HUD portrait", contract)
-        self.assertIn("boss-focused stage crop", contract)
+        self.assertIn("boss-focused", contract)
         self.assertNotIn("centered bottom", contract)
 
     def test_cutouts_use_their_separate_boss_stage_and_vanguard_hud_consumers(self) -> None:
@@ -188,7 +208,7 @@ class RuntimeCharacterAssetContractTests(unittest.TestCase):
         assets_by_id = {asset["asset_id"]: asset for asset in manifest["assets"]}
 
         self.assertIn('[node name="StageBackdrop" type="TextureRect" parent="MainRow/CombatColumn/CombatStage"]', scene)
-        for asset_id, expected in EXPECTED_ASSETS.items():
+        for asset_id, expected in EXPECTED_CURRENT_RUNTIME_ASSETS.items():
             with self.subTest(asset_id=asset_id):
                 asset = assets_by_id[asset_id]
                 self.assertIn(

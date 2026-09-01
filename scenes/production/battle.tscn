@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="4_stage_backdrop"]
 [ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="5_theme"]
 [ext_resource type="Texture2D" path="res://assets/production/characters/vanguard_combat_cutout_v1.png" id="6_vanguard_cutout"]
-[ext_resource type="Texture2D" path="res://assets/production/bosses/gatebreaker_combat_cutout_v1.png" id="7_gatebreaker_cutout"]
+[ext_resource type="Texture2D" path="res://assets/production/bosses/gatebreaker_combat_cutout_v2.png" id="7_gatebreaker_cutout_v2"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/vanguard_attack_accent_v1.png" id="8_vanguard_attack_fx"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png" id="9_gatebreaker_telegraph_fx"]
 [ext_resource type="PackedScene" path="res://scenes/production/battle_briefing.tscn" id="10_briefing"]
@@ -15,9 +15,9 @@
 atlas = ExtResource("6_vanguard_cutout")
 region = Rect2(312, 154, 400, 400)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gatebreaker_stage"]
-atlas = ExtResource("7_gatebreaker_cutout")
-region = Rect2(46, 76, 932, 1128)
+[sub_resource type="AtlasTexture" id="AtlasTexture_gatebreaker_stage_v2"]
+atlas = ExtResource("7_gatebreaker_cutout_v2")
+region = Rect2(0, 64, 1024, 1408)
 
 [node name="Battle" type="Control"]
 process_mode = 3
@@ -194,7 +194,7 @@ anchor_bottom = 1.16
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-texture = SubResource("AtlasTexture_gatebreaker_stage")
+texture = SubResource("AtlasTexture_gatebreaker_stage_v2")
 expand_mode = 1
 stretch_mode = 6
 
