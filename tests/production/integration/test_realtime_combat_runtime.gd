@@ -10,6 +10,7 @@ const SCHEDULER_PATH := "res://src/production/runtime/enemy_action_scheduler.gd"
 const SKILL_SESSION_PATH := "res://src/production/skill/production_skill_session.gd"
 const COMBAT_STATE_PATH := "res://src/production/combat/production_combat_state.gd"
 const BOARD_OPPORTUNITY_PATH := "res://src/production/runtime/player_board_opportunity_state.gd"
+const TUTORIAL_PATH := "res://src/production/session/first_session_tutorial_state.gd"
 
 class FakeLineSession:
 	var input_enabled := true
@@ -107,6 +108,47 @@ func test_runtime_does_not_tick_enemy_or_active_puzzle_while_tactical_skill_is_o
 	assert_false(runtime.is_simulation_paused())
 	runtime.tick(1.0)
 	assert_almost_eq(scheduler.remaining_seconds(), before_eta - 1.0, 0.001)
+
+func test_runtime_rejects_opening_skill_after_the_current_enemy_action_is_committed() -> void:
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var skill = _skill_session(pause, player)
+	var runtime = load(RUNTIME_PATH).new(player, enemy, null, scheduler, skill, pause, null)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	assert_true(bool(scheduler.adjust_current_eta(scheduler.current_action_id(), -scheduler.remaining_seconds()).get("adjusted", false)))
+	assert_true(scheduler.is_action_committed())
+	var opened: Dictionary = runtime.open_skill()
+	assert_false(bool(opened.get("opened", true)))
+	assert_eq(String(opened.get("reason", "")), "ENEMY_ACTION_COMMITTED")
+	assert_false(runtime.is_simulation_paused())
+
+func test_safe_opening_uses_a_live_45_second_eta_and_first_confirm_hands_off_without_resetting_the_encounter() -> void:
+	assert_true(ResourceLoader.exists(TUTORIAL_PATH))
+	if not ResourceLoader.exists(TUTORIAL_PATH):
+		return
+	var pause = load(PAUSE_PATH).new()
+	var player = load(COMBAT_STATE_PATH).new(100)
+	player.energy = 10
+	player.stock = 1
+	var enemy = load(COMBAT_STATE_PATH).new(100)
+	var scheduler = _scheduler()
+	var workspace = FakeWorkspaceManager.new()
+	var tutorial = load(TUTORIAL_PATH).new()
+	var runtime = load(RUNTIME_PATH).new(player, enemy, workspace, scheduler, _skill_session(pause, player), pause, null, null, null, tutorial)
+	assert_true(bool(runtime.start_battle().get("started", false)))
+	assert_almost_eq(float(runtime.snapshot().get("enemy_eta_seconds", -1.0)), 45.0, 0.001)
+	runtime.tick(45.0)
+	assert_false(runtime.is_terminal())
+	assert_gte(player.hp, 1)
+	var board_before: int = workspace.line_session.tick_count
+	assert_true(bool(runtime.open_skill().get("opened", false)))
+	assert_true(bool(runtime.select_skill_category("ATTACK").get("ready", false)))
+	assert_true(bool(runtime.use_selected_skill().get("committed", false)))
+	assert_true(bool(runtime.snapshot().get("tutorial_free_play", false)))
+	assert_false(bool(runtime.snapshot().get("tutorial_nonterminal_guard", true)))
+	assert_eq(workspace.line_session.tick_count, board_before)
 
 func test_manual_and_tactical_pause_tokens_compose_without_resuming_enemy_time_early() -> void:
 	var pause = load(PAUSE_PATH).new()
@@ -229,13 +271,18 @@ func test_skill_time_effects_use_the_separate_board_and_current_eta_owners() -> 
 		return
 	assert_true(bool(runtime.start_battle().get("started", false)))
 	assert_true(bool(runtime.open_skill().get("opened", false)))
-	assert_true(runtime.select_skill_category("SUPPORT"))
-	assert_true(bool(runtime.select_skill_technique("sup_c6_breather").get("selected", false)))
+	var preview: Dictionary = runtime.select_skill_category("SUPPORT")
+	assert_true(bool(preview.get("ready", false)))
+	assert_eq(int(preview.get("resolved_stage", -1)), 6)
 	var committed: Dictionary = runtime.use_selected_skill()
 	assert_true(bool(committed.get("committed", false)))
 	assert_false(runtime.is_simulation_paused())
 	assert_almost_eq(float(runtime.snapshot().get("player_board_opportunity_seconds", -1.0)), 3.0, 0.001)
 	assert_almost_eq(scheduler.remaining_seconds(), 10.0, 0.001, "current ETA delay may not change the authored next action")
+	var feedback: Dictionary = runtime.snapshot().get("last_time_feedback", {})
+	assert_eq(String(feedback.get("target", "")), "PLAYER LINE BOARD / CURRENT ENEMY ETA")
+	assert_string_contains(String(feedback.get("changed", "")), "Board opportunity +3.0 s")
+	assert_string_contains(String(feedback.get("unchanged", "")), "Next action ETA")
 
 func test_no_match_resets_combo_once_and_confirmed_lock_spends_exactly_one_mp() -> void:
 	var pause = load(PAUSE_PATH).new()

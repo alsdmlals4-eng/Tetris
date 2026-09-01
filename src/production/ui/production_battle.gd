@@ -13,6 +13,7 @@ const CHAIN := "CHAIN"
 @onready var _shared_timer_caption: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/SharedTimerCore/SharedTimerCaption
 @onready var _current_action_frame: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/CurrentActionFrame
 @onready var _next_action_frame: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/NextActionFrame
+@onready var _tutorial_prompt: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/TutorialPrompt
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar
 @onready var _chain_lock_frame: Control = $MainRow/PuzzleColumn/ChainLockFrame
 @onready var _chain_lock_prompt: Label = $MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/Prompt
@@ -20,6 +21,12 @@ const CHAIN := "CHAIN"
 @onready var _discard_chain_swap_button: Button = $MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions/DiscardSwapButton
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
 @onready var _retry_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton
+@onready var _skill_preview: RichTextLabel = $MainRow/CombatColumn/SkillFrame/SkillPanel/SkillPreview
+@onready var _confirm_skill_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/ConfirmButton
+@onready var _cancel_skill_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/CancelButton
+@onready var _timing_feedback: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/TimingFeedback
+@onready var _rules_popup: PopupPanel = $RulesReferencePopup
+@onready var _rules_briefing = $RulesReferencePopup/BattleBriefing
 @onready var _vanguard_attack_accent: TextureRect = $MainRow/CombatColumn/CombatStage/VanguardAttackAccent
 @onready var _gatebreaker_threat_telegraph: TextureRect = $MainRow/CombatColumn/CombatStage/GatebreakerThreatTelegraph
 
@@ -30,19 +37,22 @@ var _selected_skill_lane := ""
 var _selected_chain_cell := Vector2i(-1, -1)
 var _stage_vfx_elapsed := 0.0
 var _vanguard_attack_fx_remaining := 0.0
+var _timing_feedback_remaining := 0.0
+var _last_timing_feedback: Dictionary = {}
 
 func _ready() -> void:
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/ChainButton.pressed.connect(func(): _request_workspace(CHAIN))
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/SkillButton.pressed.connect(_toggle_skill)
+	$MainRow/PuzzleColumn/ModeFrame/ModeBar/RulesButton.pressed.connect(_open_rules_reference)
 	_keep_chain_swap_button.pressed.connect(_keep_chain_swap)
 	_discard_chain_swap_button.pressed.connect(_discard_chain_swap)
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Attack.pressed.connect(func(): select_skill_category("ATTACK"))
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Defense.pressed.connect(func(): select_skill_category("DEFENSE"))
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Support.pressed.connect(func(): select_skill_category("SUPPORT"))
-	for tier in range(1, 7):
-		get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier).pressed.connect(func(): select_skill_tier(tier))
-	$MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton.pressed.connect(_use_selected_skill)
+	_confirm_skill_button.pressed.connect(_use_selected_skill)
+	_cancel_skill_button.pressed.connect(_cancel_skill)
+	_rules_briefing.dismissed.connect(func(): _rules_popup.hide())
 	_retry_button.pressed.connect(_retry_encounter)
 	var bootstrap = load("res://src/production/session/production_battle_bootstrap.gd").new()
 	var result: Dictionary = bootstrap.build_runtime()
@@ -67,6 +77,10 @@ func _process(delta: float) -> void:
 		_chain_view.bind_chain_session(_workspace_manager.chain_session)
 	_refresh_runtime_labels()
 	_refresh_stage_vfx(delta)
+	if _timing_feedback_remaining > 0.0:
+		_timing_feedback_remaining = maxf(0.0, _timing_feedback_remaining - delta)
+		if is_zero_approx(_timing_feedback_remaining):
+			_timing_feedback.text = ""
 
 func set_active_workspace(workspace: String) -> bool:
 	if workspace != LINE and workspace != CHAIN:
@@ -163,30 +177,100 @@ func _toggle_skill() -> void:
 	if _runtime.is_skill_open():
 		_runtime.close_skill_without_use()
 	else:
-		_runtime.open_skill()
+		var opened: Dictionary = _runtime.open_skill()
+		if bool(opened.get("opened", false)):
+			_selected_skill_lane = ""
+			_skill_preview.text = "[color=#aeb7cb]Select ATK, DEF, or SUP to inspect the current Combo skill.[/color]"
+			_confirm_skill_button.disabled = true
 	_refresh_runtime_labels()
 
-func select_skill_category(category: String) -> bool:
-	if _runtime == null or not _runtime.is_simulation_paused():
-		return false
-	_selected_skill_lane = category
-	return _runtime.select_skill_category(category)
-
-func select_skill_tier(tier: int) -> Dictionary:
-	if _runtime == null or _selected_skill_lane == "" or tier < 1 or tier > 6:
-		return {"selected": false, "reason": "INVALID_SELECTION"}
-	var prefix: String = String({"ATTACK": "atk", "DEFENSE": "def", "SUPPORT": "sup"}.get(_selected_skill_lane, ""))
-	if prefix == "":
-		return {"selected": false, "reason": "INVALID_SELECTION"}
-	var ids := {"atk": ["first_edge", "rift_snare", "fracture_cut", "shieldbreaker", "severing_drive", "execution_edge"], "def": ["brace", "supply_guard", "riposte_guard", "bulwark", "last_guard", "aegis_relay"], "sup": ["first_aid", "rally_step", "second_wind", "anchor_pulse", "field_mend", "breather"]}
-	return _runtime.select_skill_technique("%s_c%d_%s" % [prefix, tier, ids[prefix][tier - 1]])
+func select_skill_category(category: String) -> Dictionary:
+	if _runtime == null or not _runtime.is_skill_open():
+		return {"selected": false, "ready": false, "reason": "SKILL_NOT_OPEN"}
+	var preview: Dictionary = _runtime.select_skill_category(category)
+	_selected_skill_lane = category if bool(preview.get("selected", false)) else ""
+	_skill_preview.text = _format_skill_preview(preview)
+	_confirm_skill_button.disabled = not bool(preview.get("ready", false))
+	return preview
 
 func _use_selected_skill() -> void:
 	if _runtime != null and _runtime.is_simulation_paused():
 		var result: Dictionary = _runtime.use_selected_skill()
 		if bool(result.get("committed", false)) and _selected_skill_lane == "ATTACK":
 			_trigger_vanguard_attack_fx()
+		if bool(result.get("committed", false)):
+			_confirm_skill_button.disabled = true
+			_skill_preview.text = "[color=#8fcfff]Confirmed. Combat time resumes.[/color]"
 	_refresh_runtime_labels()
+
+func _cancel_skill() -> void:
+	if _runtime != null and _runtime.is_skill_open():
+		_runtime.close_skill_without_use()
+	_selected_skill_lane = ""
+	_confirm_skill_button.disabled = true
+	_skill_preview.text = "[color=#aeb7cb]Tactical pause cancelled. Combat time resumes.[/color]"
+	_refresh_runtime_labels()
+
+func _open_rules_reference() -> void:
+	_rules_briefing.configure(true)
+	_rules_popup.popup_centered_ratio(0.9)
+
+func _format_skill_preview(preview: Dictionary) -> String:
+	if not bool(preview.get("selected", false)):
+		return "[color=#ff8f8f]Skill preview unavailable · %s[/color]" % String(preview.get("reason", "INVALID_SELECTION"))
+	if not bool(preview.get("ready", false)):
+		return "[color=#ffcc78]Current Combo C%d cannot confirm · %s[/color]" % [int(preview.get("opening_combo", 0)), String(preview.get("reason", "NOT_READY"))]
+	var resolved_stage := int(preview.get("resolved_stage", 0))
+	var opening_combo := int(preview.get("opening_combo", 0))
+	var converted_combo := int(preview.get("converted_combo", 0))
+	var lines: Array[String] = []
+	lines.append("[b]%s · C%d[/b]" % [String(preview.get("display_name", "Unknown Technique")), resolved_stage])
+	lines.append("Target · %s" % _preview_target(Array(preview.get("effects", []))))
+	for preview_line in Array(preview.get("preview_lines", [])):
+		lines.append("Effect · %s" % String(preview_line))
+	if converted_combo > 0:
+		lines.append("Fallback · C%d → C%d  (%d Combo converted)" % [opening_combo, resolved_stage, converted_combo])
+	else:
+		lines.append("Stage · C%d held (no Combo conversion)" % resolved_stage)
+	lines.append("Cost · %d MP · %d Combo" % [int(preview.get("mp_cost", 0)), opening_combo])
+	lines.append("Unchanged · %s" % _preview_unchanged_domain(Array(preview.get("effects", []))))
+	return "\n".join(lines)
+
+func _preview_target(effects: Array) -> String:
+	var targets: Array[String] = []
+	for effect_variant in effects:
+		if not (effect_variant is Dictionary):
+			continue
+		var op := String(Dictionary(effect_variant).get("op", ""))
+		var target := ""
+		if op == "DAMAGE_SINGLE":
+			target = "Gatebreaker"
+		elif op == "HEAL_SELF":
+			target = "Vanguard"
+		elif op in ["MITIGATE_CURRENT_DIRECT", "COUNTER_FROM_PREVENTED_DAMAGE", "PROTECT_RESOURCE_LOSS", "LETHAL_SAFETY", "ADJUST_CURRENT_ENEMY_ETA"]:
+			target = "Current enemy action"
+		elif op == "GRANT_PLAYER_BOARD_OPPORTUNITY":
+			target = "Player LINE board"
+		if target != "" and not targets.has(target):
+			targets.append(target)
+	return " / ".join(targets) if not targets.is_empty() else "Current battle state"
+
+func _preview_unchanged_domain(effects: Array) -> String:
+	var changes_board := false
+	var changes_eta := false
+	for effect_variant in effects:
+		if not (effect_variant is Dictionary):
+			continue
+		var op := String(Dictionary(effect_variant).get("op", ""))
+		changes_board = changes_board or op == "GRANT_PLAYER_BOARD_OPPORTUNITY"
+		changes_eta = changes_eta or op == "ADJUST_CURRENT_ENEMY_ETA"
+	if changes_board and changes_eta:
+		return "next action ETA and non-targeted board state"
+	if changes_board:
+		return "Enemy ETA unchanged"
+	if changes_eta:
+		return "LINE board timing unchanged"
+	return "shared timer and non-targeted rules"
 
 func _trigger_vanguard_attack_fx() -> void:
 	_vanguard_attack_fx_remaining = 0.42
@@ -232,6 +316,7 @@ func _refresh_runtime_labels() -> void:
 	_shared_timer_caption.text = "BOSS / PLAYER ETA · SAME WINDOW"
 	_current_action_frame.text = "CURRENT · ETA %.1fs" % eta_seconds
 	_next_action_frame.text = "NEXT · authored forecast"
+	_tutorial_prompt.text = _tutorial_prompt_text(String(snapshot.get("tutorial_step", "")), bool(snapshot.get("tutorial_free_play", false)))
 	_resource_bar.text = "HP %d / 100    MP %d / 60    COMBO %d / 10" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
 	_retry_button.visible = is_terminal
 	if is_terminal:
@@ -242,7 +327,37 @@ func _refresh_runtime_labels() -> void:
 		_pause_state.text = "SYSTEM PAUSE"
 	else:
 		_pause_state.text = "COMBAT RUNNING"
+	_refresh_timing_feedback(snapshot)
 	_refresh_chain_lock_prompt()
+
+func _refresh_timing_feedback(snapshot: Dictionary) -> void:
+	var feedback_value = snapshot.get("last_time_feedback", {})
+	if not (feedback_value is Dictionary):
+		return
+	var feedback: Dictionary = feedback_value
+	if String(feedback.get("target", "")) == "" or String(feedback.get("changed", "")) == "" or String(feedback.get("unchanged", "")) == "":
+		return
+	if feedback != _last_timing_feedback:
+		_last_timing_feedback = feedback.duplicate(true)
+		_timing_feedback_remaining = 4.0
+	if _timing_feedback_remaining > 0.0:
+		_timing_feedback.text = "%s · %s\nUnchanged · %s" % [String(feedback["target"]), String(feedback["changed"]), String(feedback["unchanged"])]
+
+func _tutorial_prompt_text(step: String, free_play: bool) -> String:
+	if free_play:
+		return "FREE PLAY · THE AUTHORED ENCOUNTER CONTINUES"
+	match step:
+		"READ_THREAT":
+			return "LIVE PRACTICE · READ THE CURRENT TELEGRAPH AND ETA"
+		"LINE_REWARD":
+			return "LIVE PRACTICE · CLEAR LINE TO RECOVER MP"
+		"CHAIN_REWARD":
+			return "LIVE PRACTICE · MAKE A STRAIGHT 3+ CHAIN FOR COMBO"
+		"SKILL_PREVIEW":
+			return "LIVE PRACTICE · OPEN SKILL AND INSPECT A CATEGORY PREVIEW"
+		"SKILL_CONFIRM":
+			return "LIVE PRACTICE · CONFIRM ONE DISPLAYED COMBO SKILL"
+	return ""
 
 func _refresh_chain_lock_prompt() -> void:
 	var pending := false

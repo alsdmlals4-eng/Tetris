@@ -82,19 +82,20 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
-    def test_current_partial_skill_delivery_distinguishes_time_primitives_from_unreplaced_runtime_flow(self) -> None:
+    def test_current_skill_delivery_connects_time_primitives_to_the_category_only_runtime_flow(self) -> None:
         contract = CONTRACT.read_text(encoding="utf-8")
-        self.assertIn("PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES", contract)
+        self.assertIn("IMPLEMENTED_MACHINE_VERIFIED_PENDING_RUNTIME_AND_HUMAN_EVIDENCE", contract)
         self.assertIn("PlayerBoardOpportunityState", contract)
         self.assertIn("EnemyActionScheduler", contract)
-        self.assertIn("temporary legacy Tier 1–6", contract)
+        self.assertIn("TierGrid` and manual Tier selection are absent", contract)
         self.assertIn("stage < 1 or stage > 10", CATALOG.read_text(encoding="utf-8"))
         self.assertIn("definition_for_lane_stage", CATALOG.read_text(encoding="utf-8"))
         seed = json.loads(SKILL_SEED.read_text(encoding="utf-8"))
         self.assertEqual(2, seed["schema_version"])
         self.assertEqual(30, len(seed["techniques"]))
-        self.assertIn("TierGrid", BATTLE_UI.read_text(encoding="utf-8"))
-        self.assertIn("select_technique", SKILL_SESSION.read_text(encoding="utf-8"))
+        self.assertNotIn("TierGrid", BATTLE_UI.read_text(encoding="utf-8"))
+        self.assertIn("select_category", SKILL_SESSION.read_text(encoding="utf-8"))
+        self.assertNotIn("select_technique", SKILL_SESSION.read_text(encoding="utf-8"))
 
     def test_visual_direction_rejects_the_old_dark_matrix_and_uses_the_user_reference_language(self) -> None:
         bible = VISUAL_BIBLE.read_text(encoding="utf-8")

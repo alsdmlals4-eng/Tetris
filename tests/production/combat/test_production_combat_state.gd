@@ -58,3 +58,22 @@ func test_shortage_fallback_converts_surplus_combo_once_and_rejects_invalid_tran
     assert_eq(rejected["reason"], "INSUFFICIENT_RESOURCE")
     assert_eq(state.energy, 4)
     assert_eq(state.stock, 3)
+
+func test_checked_state_snapshot_restores_atomic_resources_and_rejects_invalid_data_without_mutation() -> void:
+    var state = _state()
+    if state == null:
+        return
+    state.hp = 73
+    state.energy = 21
+    state.stock = 4
+    var snapshot: Dictionary = state.snapshot_state()
+    state.hp = 10
+    state.energy = 1
+    state.stock = 0
+    assert_true(state.restore_state(snapshot))
+    assert_eq(state.hp, 73)
+    assert_eq(state.energy, 21)
+    assert_eq(state.stock, 4)
+    var before_invalid: Dictionary = state.snapshot_state()
+    assert_false(state.restore_state({"hp": 73, "energy": 61, "stock": 4}))
+    assert_eq(state.snapshot_state(), before_invalid)

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "status": "USER_APPROVED_IMPLEMENTATION_COPY_NOT_LOCALIZED_FINAL",
+  "title": "FRONTIER GATE · BATTLE BRIEFING",
+  "threat": "A Gatebreaker is pressing through the Frontier Gate. The Vanguard deploys only when you choose Deploy; the live ETA begins then.",
+  "rule_sections": [
+    {
+      "heading": "1 · LINE MAKES MP",
+      "body": "Clear LINE rows to recover MP: no clear / Single / Double / Triple / Four = 0 / 10 / 22 / 36 / 52 MP. MP caps at 60; overflow does not convert."
+    },
+    {
+      "heading": "2 · CHAIN MAKES COMBO",
+      "body": "Swap orthogonally adjacent symbols. A valid CHAIN is a straight same-symbol 3+ line horizontally, vertically, or on either diagonal. Each resolved wave grants Combo +1 (cap 10), then MP = (sum of maximal qualified line lengths − 3) + post-wave Combo."
+    },
+    {
+      "heading": "3 · FAILED CHAIN CHOICE",
+      "body": "A no-match normally reverts the board and resets Combo. You may instead pay fixed 1 MP to keep that swap for a later setup. The lock still resets Combo and grants no clear, cascade, Combo, or MP reward."
+    },
+    {
+      "heading": "4 · CURRENT COMBO SKILL",
+      "body": "Open Skill to pause the simulation. Choose ATK, DEF, or SUP: your current Combo resolves one stage in that category. If MP is short, only surplus Combo may convert at 5 MP each to the highest feasible lower stage. Preview is free; only CONFIRM spends the displayed MP and Combo."
+    },
+    {
+      "heading": "5 · TWO DIFFERENT TIME EFFECTS",
+      "body": "Player board opportunity affects only LINE gravity and lock. Current enemy ETA affects only the visible current Gatebreaker action. The preview always names what changes and what stays unchanged."
+    },
+    {
+      "heading": "DEPLOY",
+      "body": "After Deploy, this is the real continuous encounter: read the Telegraph and ETA, earn MP in LINE, make Combo in CHAIN, then make one deliberate CONFIRM. No separate tutorial board or economy replaces the encounter."
+    }
+  ]
+}

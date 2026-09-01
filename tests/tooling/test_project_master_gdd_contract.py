@@ -29,7 +29,7 @@ class ProjectMasterGddContractTests(unittest.TestCase):
             "CONTINUOUS_REALTIME",
             "CHAIN_RESOURCE_ALIGNMENT_IMPLEMENTED_MACHINE_VERIFIED",
             "MP 60 / Combo 10",
-            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
+            "IMPLEMENTED_MACHINE_VERIFIED_PENDING_RUNTIME_AND_HUMAN_EVIDENCE",
             "Human/player evidence: NOT_RUN",
             "CURRENT",
             "HISTORICAL",

@@ -1,7 +1,7 @@
 # First-Session Briefing and Embedded Tutorial Contract
 
 - Decision: `TETRIS-ONBOARDING-037`
-- Status: `USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED`
+- Status: `USER_APPROVED / PHASE 2 IMPLEMENTED_MACHINE_VERIFIED / RUNTIME_AND_HUMAN_EVIDENCE_PENDING`
 - Issue: #54
 - Rule-delivery amendment: **Full rules before Deploy**, Issue #66
 - Rule-delivery mode: `FULL_PRE_DEPLOY_BRIEFING`
@@ -11,7 +11,7 @@
 - Tutorial clock: `CONTINUOUS_FROM_DEPLOY`; opening guardrail: `SUFFICIENT_ETA_AND_NONTERMINAL_UNTIL_FIRST_EXPLICIT_CONFIRM`, Issue #70
 - Post-tutorial pressure: `NORMAL_AUTHORED_ENCOUNTER_AFTER_GUIDED_HANDOFF`, Issue #70
 - Authority: `TETRIS-CORE-029`, `TETRIS-CHAIN-038`, the current Screen Surface Inventory, and the user's 2026-08-28 approvals.
-- Scope boundary: this is the intended first-session learning contract. It does not claim a Godot scene, runtime asset, localized final copy, Human/player validation, or a broader world-history canon.
+- Scope boundary: this contract now has a Godot briefing, one-bit local read record, live safe-opening handoff and automated evidence. It still does not claim localized final copy, target-device visual readability, Human/player validation, or a broader world-history canon.
 
 ## Player promise at first contact
 
@@ -30,7 +30,7 @@ Start
 → Result / Retry
 ```
 
-The present direct-entry runtime slice still begins at `CONTINUOUS_BATTLE`; that is an implementation fact, not the intended full first-session entry. The briefing is a planned `BattleBriefing` consumer and the embedded tutorial is a planned extension of the existing battle surface.
+The current main scene is `BattleBriefing`: it gates the first Deploy on completion of the full rules region, then hands the same encounter to `CONTINUOUS_BATTLE`. The briefing is re-openable from Battle in reference mode. Machine verification does not establish player comprehension or target-device readability.
 
 ## Briefing contract
 
@@ -79,7 +79,7 @@ Deploy starts the real continuous combat clock. Tutorial prompts must not silent
 - Use a **safe live authored opening**: continuous time begins at Deploy, the first authored ETA is sufficient for the guided actions, and its pre-first-CONFIRM result is nonterminal. This does not authorize tutorial-time auto-pause, a separate board/economy, or permanent safety; normal authored pressure resumes after the guided handoff.
 - Preserve `CORE-029`: continuous real-time battle after Deploy, free persistent `LINE ↔ CHAIN`, full tactical pause only through Skill/manual pause, and explicit `CONFIRM` commit.
 - This decision creates no runtime image need. `TETRIS-SREF-003` and `TETRIS-SREF-005` remain approved planning references, not implementation or Human-readability evidence.
-- Phase 2 may create the BattleBriefing scene/data contract and the minimum battle tutorial triggers only after its implementation review. It must not silently add a route, save, progression, production-asset batch, or broader narrative system.
+- Phase 2 created the `BattleBriefing` scene/data contract and minimum battle tutorial triggers without adding a route, progression, production-asset batch, or broader narrative system. The one-bit local progress record only unlocks later Deploy; the one-shot runtime handoff is not persistent progression.
 
 ## Required human validation
 

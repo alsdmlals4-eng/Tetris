@@ -25,11 +25,12 @@ func build_runtime() -> Dictionary:
 	var response = load("res://src/production/combat/production_response_state.gd").new()
 	var telemetry = load("res://src/production/telemetry/production_telemetry.gd").new()
 	var board_opportunity = load("res://src/production/runtime/player_board_opportunity_state.gd").new()
-	var runtime = load("res://src/production/runtime/production_combat_runtime.gd").new(player, enemy, workspace, scheduler, skill, pause, response, telemetry, board_opportunity)
+	var tutorial = load("res://src/production/session/first_session_tutorial_state.gd").new() if _consume_first_session_tutorial_handoff() else null
+	var runtime = load("res://src/production/runtime/production_combat_runtime.gd").new(player, enemy, workspace, scheduler, skill, pause, response, telemetry, board_opportunity, tutorial)
 	var started: Dictionary = runtime.start_battle()
 	if not bool(started.get("started", false)):
 		return {"ready": false, "reason": started.get("reason", "RUNTIME_START_FAILED")}
-	return {"ready": true, "runtime": runtime, "workspace_manager": workspace, "pause_controller": pause, "telemetry": telemetry, "player": player, "enemy": enemy}
+	return {"ready": true, "runtime": runtime, "workspace_manager": workspace, "pause_controller": pause, "telemetry": telemetry, "tutorial": tutorial, "player": player, "enemy": enemy}
 
 func _make_line():
 	var catalog = load("res://src/production/line/tetromino_catalog.gd").from_dictionary(_json(TETROMINO_DATA))
@@ -71,3 +72,10 @@ func _make_skill_session(pause, player):
 
 func _json(path: String):
 	return JSON.parse_string(FileAccess.get_file_as_string(path))
+
+func _consume_first_session_tutorial_handoff() -> bool:
+	var main_loop = Engine.get_main_loop()
+	if not (main_loop is SceneTree):
+		return false
+	var launch_state = main_loop.root.get_node_or_null("FirstSessionLaunch")
+	return launch_state != null and launch_state.has_method("consume_tutorial_handoff") and launch_state.consume_tutorial_handoff()

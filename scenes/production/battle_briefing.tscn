@@ -1,0 +1,97 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/production/ui/battle_briefing.gd" id="1_briefing"]
+[ext_resource type="Theme" path="res://resources/production/production_battle_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" path="res://assets/production/backgrounds/fracture_frontier_combat_stage_v1.png" id="3_backdrop"]
+
+[node name="BattleBriefing" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_briefing")
+
+[node name="Backdrop" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_backdrop")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Veil" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.015, 0.02, 0.05, 0.82)
+
+[node name="BriefingFrame" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.08
+anchor_top = 0.06
+anchor_right = 0.92
+anchor_bottom = 0.94
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BriefingLayout" type="VBoxContainer" parent="BriefingFrame"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="BriefingFrame/BriefingLayout"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.84, 0.54, 1)
+theme_override_font_sizes/font_size = 28
+text = "FRONTIER GATE · BATTLE BRIEFING"
+
+[node name="Threat" type="Label" parent="BriefingFrame/BriefingLayout"]
+layout_mode = 2
+autowrap_mode = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.82, 0.68, 0.9, 1)
+text = "A Gatebreaker is pressing through the Frontier Gate."
+
+[node name="RulesHeading" type="Label" parent="BriefingFrame/BriefingLayout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.66, 0.84, 1, 1)
+text = "FULL RULES BEFORE DEPLOY · SCROLL TO REVIEW"
+
+[node name="RulesScroll" type="ScrollContainer" parent="BriefingFrame/BriefingLayout"]
+custom_minimum_size = Vector2(0, 244)
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="RulesText" type="RichTextLabel" parent="BriefingFrame/BriefingLayout/RulesScroll"]
+custom_minimum_size = Vector2(600, 590)
+layout_mode = 2
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+theme_override_colors/default_color = Color(0.9, 0.91, 0.96, 1)
+theme_override_font_sizes/normal_font_size = 17
+
+[node name="GateStatus" type="Label" parent="BriefingFrame/BriefingLayout"]
+layout_mode = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.66, 0.84, 1, 1)
+text = "FIRST DEPLOY · READ TO THE END TO UNLOCK"
+
+[node name="DeployButton" type="Button" parent="BriefingFrame/BriefingLayout"]
+layout_mode = 2
+disabled = true
+text = "DEPLOY · START LIVE ETA"

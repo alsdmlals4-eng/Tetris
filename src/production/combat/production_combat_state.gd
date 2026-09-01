@@ -99,6 +99,36 @@ func try_commit_combo_skill(mp_cost: int, opening_combo: int, resolved_stage: in
         "combo_spent": opening_combo,
     }
 
+func snapshot_state() -> Dictionary:
+    return {
+        "hp": hp,
+        "energy": energy,
+        "stock": stock,
+    }
+
+func restore_state(snapshot: Dictionary) -> bool:
+    var required_keys := ["hp", "energy", "stock"]
+    if snapshot.size() != required_keys.size():
+        return false
+    for key in required_keys:
+        if not snapshot.has(key) or not (snapshot[key] is int):
+            return false
+    var restored_hp := int(snapshot["hp"])
+    var restored_energy := int(snapshot["energy"])
+    var restored_stock := int(snapshot["stock"])
+    if restored_hp < 0 or restored_hp > max_hp or restored_energy < 0 or restored_energy > MP_CAP or restored_stock < 0 or restored_stock > COMBO_CAP:
+        return false
+    hp = restored_hp
+    energy = restored_energy
+    stock = restored_stock
+    return true
+
+func resource_snapshot() -> Dictionary:
+    return snapshot_state()
+
+func restore_resource_snapshot(snapshot: Dictionary) -> bool:
+    return restore_state(snapshot)
+
 func try_spend_skill_cost(energy_cost: int, stock_cost: int) -> bool:
     if energy_cost < 0 or stock_cost < 0 or stock_cost > COMBO_CAP:
         return false

@@ -32,3 +32,13 @@ func test_telemetry_tracks_manual_pause_and_total_wall_clock_without_charging_re
 	assert_almost_eq(float(summary.get("manual_pause_duration", 0.0)), 3.0, 0.001)
 	assert_almost_eq(float(summary.get("wall_clock_encounter_duration", 0.0)), 5.0, 0.001)
 	assert_eq(telemetry.events().map(func(event): return String(event.get("kind", ""))), ["SYSTEM_PAUSE_OPENED", "SYSTEM_PAUSE_CLOSED"])
+
+func test_telemetry_retains_tutorial_transition_events_at_the_current_simulation_time() -> void:
+	var telemetry = load(TELEMETRY_PATH).new()
+	telemetry.advance_simulation(4.0, "LINE")
+	telemetry.record("TUTORIAL_SAFE_OPENING_STARTED")
+	telemetry.record("TUTORIAL_STEP_COMPLETED", {"step": "LINE_REWARD"})
+	telemetry.record("TUTORIAL_FREE_PLAY_STARTED")
+	var events: Array = telemetry.events()
+	assert_eq(events.map(func(event): return String(event.get("kind", ""))), ["TUTORIAL_SAFE_OPENING_STARTED", "TUTORIAL_STEP_COMPLETED", "TUTORIAL_FREE_PLAY_STARTED"])
+	assert_almost_eq(float(events[0].get("simulation_time_seconds", -1.0)), 4.0, 0.001)
