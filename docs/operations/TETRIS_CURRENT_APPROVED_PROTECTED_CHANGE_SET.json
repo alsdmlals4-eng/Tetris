@@ -6,19 +6,24 @@
   "decision_ids": [
     "TETRIS-CORE-029",
     "TETRIS-VISUAL-041",
-    "TETRIS-CHAIN-038"
+    "TETRIS-CHAIN-038",
+    "TETRIS-SKILL-039",
+    "TETRIS-BALANCE-040",
+    "TETRIS-SKILL-042"
   ],
   "approved_paths": [
     "AGENTS.md",
     "docs/design/CHAIN_COMBO_MP_CONTRACT.md",
+    "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md",
     "docs/design/PRODUCTION_CANON_INDEX.json",
     "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
     "docs/design/PROJECT_MASTER_GDD.md",
+    "docs/design/PROJECT_WORKSPACE_INDEX.md",
     "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md",
     "docs/design/VISUAL_BIBLE.md",
     "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
   ],
-  "approval_source": "USER_CURRENT_SESSION_CONTINUATION_WITH_PRIOR_EXPLICIT_50_50_BOSS_HIERARCHY_VANGUARD_HUD_SHARED_TIMER_AND_CHAIN_SKILL_IMPLEMENTATION_DIRECTION",
-  "approval_time": "2026-09-01T22:10:51+09:00",
-  "scope_summary": "Cumulative externally approved protected-path set from the formal adapter baseline: preserve the completed 50:50 battle-surface recovery and reconcile the user-approved CHAIN all-axis, MP-60, Combo-10, per-wave recovery and fixed-1-MP lock implementation. Category-resolved Skill, onboarding, target-device runtime and Human evidence are excluded."
+  "approval_source": "USER_CURRENT_SESSION_CONTINUATION_WITH_PRIOR_EXPLICIT_50_50_BOSS_HIERARCHY_VANGUARD_HUD_SHARED_TIMER_CHAIN_AND_C1_C10_SKILL_IMPLEMENTATION_DIRECTION",
+  "approval_time": "2026-09-01T23:18:00+09:00",
+  "scope_summary": "Cumulative externally approved protected-path set from the formal adapter baseline: preserve the completed 50:50 battle-surface recovery, reconcile the user-approved CHAIN all-axis, MP-60, Combo-10, per-wave recovery and fixed-1-MP lock, and implement the C1-C10 validated Skill data/catalog boundary with temporary legacy bridge and exact status reporting. Category-only Skill resolver/fallback/CONFIRM UI, onboarding, target-device runtime and Human evidence remain excluded."
 }
