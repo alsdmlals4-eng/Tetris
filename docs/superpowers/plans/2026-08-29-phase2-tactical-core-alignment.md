@@ -307,7 +307,7 @@ Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/pro
 
 Expected: PASS; a failed swap cannot mint a reward, lock failure restores no MP change, two waves get two formula applications, Combo cannot exceed ten, and MP cannot exceed sixty.
 
-- [ ] **Step 5: Commit, exact-head CI, review and merge PR A runtime behavior.**
+- [x] **Step 5: Committed, exact-head CI verified, independently reviewed, and merged PR #89 for PR A runtime behavior.**
 
 ```bash
 git add src/production/chain src/production/runtime data/production/chain_runtime_seed.json tests/production/chain tests/production/runtime tests/production/integration
