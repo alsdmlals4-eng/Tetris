@@ -14,6 +14,10 @@ const CHAIN := "CHAIN"
 @onready var _current_action_frame: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/CurrentActionFrame
 @onready var _next_action_frame: Label = $MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack/SharedTimerRow/NextActionFrame
 @onready var _resource_bar: Label = $MainRow/CombatColumn/ResourceFrame/ResourceRow/ResourceBar
+@onready var _chain_lock_frame: Control = $MainRow/PuzzleColumn/ChainLockFrame
+@onready var _chain_lock_prompt: Label = $MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/Prompt
+@onready var _keep_chain_swap_button: Button = $MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions/KeepSwapButton
+@onready var _discard_chain_swap_button: Button = $MainRow/PuzzleColumn/ChainLockFrame/ChainLockPanel/LockActions/DiscardSwapButton
 @onready var _pause_state: Label = $MainRow/CombatColumn/SkillFrame/SkillPanel/PauseState
 @onready var _retry_button: Button = $MainRow/CombatColumn/SkillFrame/SkillPanel/RetryButton
 @onready var _vanguard_attack_accent: TextureRect = $MainRow/CombatColumn/CombatStage/VanguardAttackAccent
@@ -31,6 +35,8 @@ func _ready() -> void:
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/LineButton.pressed.connect(func(): _request_workspace(LINE))
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/ChainButton.pressed.connect(func(): _request_workspace(CHAIN))
 	$MainRow/PuzzleColumn/ModeFrame/ModeBar/SkillButton.pressed.connect(_toggle_skill)
+	_keep_chain_swap_button.pressed.connect(_keep_chain_swap)
+	_discard_chain_swap_button.pressed.connect(_discard_chain_swap)
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Attack.pressed.connect(func(): select_skill_category("ATTACK"))
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Defense.pressed.connect(func(): select_skill_category("DEFENSE"))
 	$MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/Support.pressed.connect(func(): select_skill_category("SUPPORT"))
@@ -137,7 +143,19 @@ func _handle_chain_click(global_position: Vector2) -> bool:
 	_chain_view.set_selected_cell(_selected_chain_cell)
 	if abs(first.x - selected.x) + abs(first.y - selected.y) != 1:
 		return false
-	return bool(_workspace_manager.chain_session.begin_swap(first, selected).get("accepted", false))
+	var result: Dictionary = _runtime.try_chain_swap(first, selected)
+	_refresh_chain_lock_prompt()
+	return bool(result.get("accepted", false))
+
+func _keep_chain_swap() -> void:
+	if _runtime != null:
+		_runtime.confirm_chain_mp_lock()
+	_refresh_chain_lock_prompt()
+
+func _discard_chain_swap() -> void:
+	if _runtime != null:
+		_runtime.discard_chain_mp_lock()
+	_refresh_chain_lock_prompt()
 
 func _toggle_skill() -> void:
 	if _runtime == null:
@@ -214,7 +232,7 @@ func _refresh_runtime_labels() -> void:
 	_shared_timer_caption.text = "BOSS / PLAYER ETA · SAME WINDOW"
 	_current_action_frame.text = "CURRENT · ETA %.1fs" % eta_seconds
 	_next_action_frame.text = "NEXT · authored forecast"
-	_resource_bar.text = "HP %d / 100    ENERGY %d    STOCK %d / 6" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
+	_resource_bar.text = "HP %d / 100    MP %d / 60    COMBO %d / 10" % [int(snapshot.get("player_hp", 0)), int(snapshot.get("player_energy", 0)), int(snapshot.get("player_stock", 0))]
 	_retry_button.visible = is_terminal
 	if is_terminal:
 		_pause_state.text = "VICTORY" if int(snapshot.get("enemy_hp", 0)) <= 0 else "DEFEAT"
@@ -224,3 +242,22 @@ func _refresh_runtime_labels() -> void:
 		_pause_state.text = "SYSTEM PAUSE"
 	else:
 		_pause_state.text = "COMBAT RUNNING"
+	_refresh_chain_lock_prompt()
+
+func _refresh_chain_lock_prompt() -> void:
+	var pending := false
+	var current_mp := 0
+	var input_available := _runtime != null
+	if input_available and _runtime.has_method("is_simulation_paused"):
+		input_available = not _runtime.is_simulation_paused()
+	if _workspace_manager != null and _workspace_manager.chain_session != null:
+		pending = _workspace_manager.chain_session.has_pending_failed_swap()
+	if _runtime != null:
+		current_mp = int(_runtime.snapshot().get("player_energy", 0))
+	_chain_lock_frame.visible = pending and input_available
+	if not pending or not input_available:
+		return
+	_chain_lock_prompt.text = "NO STRAIGHT 3+ MATCH · COMBO RESET\nKEEP THIS SETUP FOR 1 MP?"
+	_keep_chain_swap_button.disabled = current_mp < 1
+	_keep_chain_swap_button.text = "KEEP SWAP · 1 MP"
+	_discard_chain_swap_button.text = "REVERT SWAP · FREE"

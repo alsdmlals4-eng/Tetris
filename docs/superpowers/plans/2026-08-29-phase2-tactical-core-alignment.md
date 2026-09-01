@@ -121,14 +121,14 @@ func test_shortage_fallback_converts_only_surplus_combo_and_spends_opening_combo
     var state = load(COMBAT_STATE_PATH).new(100)
     state.energy = 8
     state.stock = 5
-    var result: Dictionary = state.try_commit_combo_skill(18, 5, 4)
+    var result: Dictionary = state.try_commit_combo_skill(13, 5, 4)
     assert_true(result["committed"])
     assert_eq(result["converted_combo"], 1)
     assert_eq(state.energy, 0)
     assert_eq(state.stock, 0)
 ```
 
-- [ ] **Step 2: Run the focused test and confirm the old cap-6/depth behavior fails.**
+- [x] **Step 2: Ran the focused test; the old cap-6/depth behavior failed before the minimal implementation.**
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit -ginclude_subdirs -gexit`
 
@@ -259,7 +259,7 @@ git commit -m "feat: add diagonal chain groups and wave lengths"
 - `ProductionCombatRuntime.try_chain_swap(first, second)` resets Combo once for `NO_MATCH`; `confirm_chain_mp_lock()` spends exactly 1 MP through `ProductionCombatState.try_spend_mp(1)` before applying the pending swapped snapshot.
 - Successful `production_chain_resolved` events carry all waves; runtime calls `apply_chain_wave(wave["qualified_line_lengths"])` once per wave.
 
-- [ ] **Step 1: Add failing per-wave/cap/lock tests.**
+- [x] **Step 1: Added failing per-wave/cap/lock tests.**
 
 ```gdscript
 func test_failed_swap_resets_combo_and_keep_choice_costs_one_mp_without_reward() -> void:
@@ -275,16 +275,16 @@ func test_runtime_awards_every_wave_in_order() -> void:
     chain.events.append({"kind": "production_chain_resolved", "waves": [{"qualified_line_lengths": [3]}, {"qualified_line_lengths": [4]}]})
     runtime.tick(0.1)
     assert_eq(player.stock, 2)
-    assert_eq(player.energy, 7) # (3-3+1) + (4-3+2)
+    assert_eq(player.energy, 4) # (3-3+1) + (4-3+2)
 ```
 
-- [ ] **Step 2: Run the focused chain/runtime suite and confirm map-depth rewards and lock APIs fail.**
+- [x] **Step 2: Ran the focused chain/runtime suite; legacy depth rewards and lock APIs failed before implementation.**
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
 Expected: FAIL because the old session restores without a pending choice and runtime calls `gain_stock(stock_requested)` once after all waves.
 
-- [ ] **Step 3: Implement snapshot-only pending lock and runtime-owned resource operations.**
+- [x] **Step 3: Implemented snapshot-only pending lock and runtime-owned resource operations.**
 
 ```gdscript
 func confirm_chain_mp_lock() -> Dictionary:
@@ -301,13 +301,13 @@ func confirm_chain_mp_lock() -> Dictionary:
 
 `PuzzleWorkspaceManager.process_safe_handoff()` must return `CHAIN_LOCK_CHOICE_PENDING` while a failed-swap choice exists; enemy time continues and neither board resets.
 
-- [ ] **Step 4: Run focused suite and inspect serialized event payloads.**
+- [x] **Step 4: Ran focused suite and inspected wave-length payload ownership.**
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
 Expected: PASS; a failed swap cannot mint a reward, lock failure restores no MP change, two waves get two formula applications, Combo cannot exceed ten, and MP cannot exceed sixty.
 
-- [ ] **Step 5: Commit PR A runtime behavior.**
+- [ ] **Step 5: Commit, exact-head CI, review and merge PR A runtime behavior.**
 
 ```bash
 git add src/production/chain src/production/runtime data/production/chain_runtime_seed.json tests/production/chain tests/production/runtime tests/production/integration

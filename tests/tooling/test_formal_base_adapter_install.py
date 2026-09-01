@@ -51,7 +51,7 @@ class FormalBaseAdapterInstallTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/validate-project-base-adapter.yml").read_text(encoding="utf-8")
         self.assertIn("ref: 5adc196c0185951f50e49ab5e51586eff8d60886", workflow)
         self.assertIn("check_approved_project_operating_contract.py", workflow)
-        self.assertIn("TETRIS_RUNTIME_SURFACE_RECOVERY_PROTECTED_CHANGE_APPROVAL.json", workflow)
+        self.assertIn("TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json", workflow)
         self.assertIn("--protected-base \"$PROTECTED_BASE_SHA\"", workflow)
 
 

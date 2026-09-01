@@ -117,9 +117,9 @@ func test_committed_swap_settles_once_after_input_closes_and_emits_resource_requ
         var event: Dictionary = events[0]
         assert_eq(String(event.get("kind", "")), "production_chain_resolved")
         assert_eq(int(event.get("chain_depth", 0)), int(resolution.get("chain_depth", 0)))
-        assert_eq(int(event.get("stock_requested", -1)), session.reward_policy.stock_for_resolution(resolution))
-        assert_false(event.has("stock_applied"), "Chain workspace must not mutate combat Stock directly")
-        assert_false(event.has("stock_lost_at_cap"))
+        assert_false(event.has("stock_requested"), "Chain rewards are calculated per wave only by ProductionCombatState")
+        assert_true(event.has("waves"))
+        assert_true((event["waves"] as Array)[0].has("qualified_line_lengths"))
 
     var duplicate: Dictionary = session.complete_pending_resolution()
     assert_false(bool(duplicate.get("success", false)))
@@ -132,3 +132,33 @@ func test_committed_swap_settles_once_after_input_closes_and_emits_resource_requ
     assert_eq(resumed["board"], frozen_after_settle["board"])
     assert_eq(resumed["rng_state"], frozen_after_settle["rng_state"])
     assert_true(session.can_accept_input())
+
+func test_failed_swap_keeps_a_pending_snapshot_until_runtime_accepts_or_discards_lock() -> void:
+    var session = _make_session()
+    if session == null:
+        return
+    var before: Array = session.board.snapshot()
+    var failed: Dictionary = session.begin_swap(Vector2i(0, 0), Vector2i(0, 1))
+    assert_false(failed["accepted"])
+    assert_eq(failed["reason"], "NO_MATCH_PENDING_LOCK")
+    assert_true(session.has_pending_failed_swap())
+    assert_eq(session.board.snapshot(), before)
+    var kept: Dictionary = session.keep_pending_failed_swap()
+    assert_true(kept["accepted"])
+    assert_true(kept["swapped"])
+    assert_false(session.has_pending_failed_swap())
+    assert_ne(session.board.snapshot(), before)
+    assert_true(session.can_accept_input(), "keep-or-revert resolution must reopen CHAIN input for the next deliberate swap")
+
+func test_discarded_failed_swap_restores_the_exact_board_and_reopens_input() -> void:
+    var session = _make_session()
+    if session == null:
+        return
+    var before: Array = session.board.snapshot()
+    var failed: Dictionary = session.begin_swap(Vector2i(0, 0), Vector2i(0, 1))
+    assert_eq(failed["reason"], "NO_MATCH_PENDING_LOCK")
+    var discarded: Dictionary = session.discard_pending_failed_swap()
+    assert_true(discarded["accepted"])
+    assert_false(discarded["swapped"])
+    assert_eq(session.board.snapshot(), before)
+    assert_true(session.can_accept_input(), "reverting must also reopen CHAIN input")

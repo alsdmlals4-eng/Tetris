@@ -53,6 +53,12 @@ func process_player_command(command: Dictionary) -> Dictionary:
 			return switch_result
 		"TOGGLE_SYSTEM_PAUSE":
 			return toggle_system_pause()
+		"CHAIN_SWAP":
+			return try_chain_swap(Vector2i(command.get("first", Vector2i(-1, -1))), Vector2i(command.get("second", Vector2i(-1, -1))))
+		"CONFIRM_CHAIN_MP_LOCK":
+			return confirm_chain_mp_lock()
+		"DISCARD_CHAIN_MP_LOCK":
+			return discard_chain_mp_lock()
 	return {"accepted": false, "reason": "UNKNOWN_COMMAND"}
 
 func tick(delta: float) -> Array[Dictionary]:
@@ -136,6 +142,38 @@ func use_selected_skill() -> Dictionary:
 		_telemetry.end_tactical_pause()
 	return result
 
+func try_chain_swap(first: Vector2i, second: Vector2i) -> Dictionary:
+	if _terminal or is_simulation_paused() or _workspace_manager == null or _workspace_manager.active_workspace() != "CHAIN" or _workspace_manager.chain_session == null:
+		return {"accepted": false, "reason": "CHAIN_INPUT_UNAVAILABLE"}
+	var result: Dictionary = _workspace_manager.chain_session.begin_swap(first, second)
+	if String(result.get("reason", "")) == "NO_MATCH_PENDING_LOCK":
+		var combo_before := _player.reset_combo() if _player != null else 0
+		result["combo_reset"] = combo_before
+	return result
+
+func confirm_chain_mp_lock() -> Dictionary:
+	if _terminal or is_simulation_paused():
+		return {"accepted": false, "reason": "CHAIN_LOCK_INPUT_UNAVAILABLE"}
+	if _player == null or _workspace_manager == null or _workspace_manager.chain_session == null:
+		return {"accepted": false, "reason": "CHAIN_LOCK_UNAVAILABLE"}
+	if not _workspace_manager.chain_session.has_pending_failed_swap():
+		return {"accepted": false, "reason": "NO_PENDING_FAILED_SWAP"}
+	if not _player.try_spend_mp(1):
+		return {"accepted": false, "reason": "INSUFFICIENT_MP", "mp_cost": 1}
+	var locked: Dictionary = _workspace_manager.chain_session.keep_pending_failed_swap()
+	if not bool(locked.get("accepted", false)):
+		_player.apply_energy_delta(1)
+		return locked
+	locked["mp_cost"] = 1
+	return locked
+
+func discard_chain_mp_lock() -> Dictionary:
+	if _terminal or is_simulation_paused():
+		return {"accepted": false, "reason": "CHAIN_LOCK_INPUT_UNAVAILABLE"}
+	if _workspace_manager == null or _workspace_manager.chain_session == null:
+		return {"accepted": false, "reason": "CHAIN_LOCK_UNAVAILABLE"}
+	return _workspace_manager.chain_session.discard_pending_failed_swap()
+
 func is_simulation_paused() -> bool:
 	return _pause_controller != null and _pause_controller.is_paused()
 
@@ -168,7 +206,14 @@ func _commit_puzzle_events(events: Array[Dictionary]) -> void:
 				_telemetry.record("BOARD_BREAK", event)
 	for event in _workspace_manager.chain_session.drain_events():
 		if String(event.get("kind", "")) == "production_chain_resolved":
-			_player.gain_stock(int(event.get("stock_requested", 0)))
+			var wave_rewards: Array = []
+			for raw_wave in event.get("waves", []):
+				if raw_wave is Dictionary:
+					var lengths: Array[int] = []
+					for raw_length in raw_wave.get("qualified_line_lengths", []):
+						lengths.append(int(raw_length))
+					wave_rewards.append(_player.apply_chain_wave(lengths))
+			event["wave_rewards"] = wave_rewards
 			events.append(event)
 			if _telemetry != null:
 				_telemetry.record("CHAIN_REWARD", event)

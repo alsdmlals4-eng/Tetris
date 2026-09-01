@@ -36,8 +36,8 @@ func _board(width: int, height: int, rows: Array):
 func test_stable_board_resolves_zero_waves_without_consuming_refill_stream() -> void:
     var board = _board(3, 3, [
         ["A", "B", "C"],
-        ["B", "C", "A"],
-        ["C", "A", "B"],
+        ["D", "E", "F"],
+        ["G", "H", "I"],
     ])
     var randomizer := ScriptedRandomizer.new(["X"])
     var resolver = _resolver(board, randomizer)

@@ -1,6 +1,8 @@
 extends GutTest
 
 const BOARD_PATH := "res://src/production/chain/chain_board.gd"
+const RANDOMIZER_PATH := "res://src/production/chain/chain_randomizer.gd"
+const RESOLVER_PATH := "res://src/production/chain/chain_resolver.gd"
 
 func _board(width: int = 4, height: int = 5):
     return load(BOARD_PATH).new(width, height)
@@ -61,9 +63,9 @@ func test_clear_current_matches_then_gravity_leaves_no_floating_symbol() -> void
         ["R", "X", "G", "Y"],
     ])
     var matched: Array = board.matched_cells()
-    assert_eq(matched.size(), 3)
+    assert_eq(matched.size(), 6)
 
-    assert_eq(board.clear_cells(matched), 3)
+    assert_eq(board.clear_cells(matched), 6)
     board.apply_gravity()
 
     for x in range(board.width):
@@ -74,3 +76,19 @@ func test_clear_current_matches_then_gravity_leaves_no_floating_symbol() -> void
                 seen_symbol = true
             elif seen_symbol:
                 fail_test("Gravity left an empty cell below a symbol in column %d" % x)
+
+func test_crossing_groups_clear_once_but_report_both_qualified_line_lengths() -> void:
+    var board = _board(3, 3)
+    _fill(board, [
+        ["A", "X", "B"],
+        ["X", "X", "X"],
+        ["C", "X", "D"],
+    ])
+    var randomizer = load(RANDOMIZER_PATH).new(7, ["R", "G", "B"])
+    var resolver = load(RESOLVER_PATH).new(board, randomizer)
+    var resolution: Dictionary = resolver.resolve_existing_matches()
+    assert_true(resolution["success"])
+    assert_eq(resolution["waves"].size(), 1)
+    var wave: Dictionary = resolution["waves"][0]
+    assert_eq(wave["qualified_line_lengths"], [3, 3])
+    assert_eq(wave["cleared_count"], 5)
