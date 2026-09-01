@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PDF_PATH = ROOT / "docs" / "blueprints" / "TETRIS_HUMAN_GAME_BLUEPRINT.pdf"
 MANIFEST_PATH = ROOT / "docs" / "blueprints" / "TETRIS_HUMAN_GAME_BLUEPRINT.manifest.json"
 CORE_CI_PATH = ROOT / ".github" / "workflows" / "core-poc-ci.yml"
+HERO_PATH = ROOT / "docs" / "blueprints" / "assets" / "tetris_blueprint_battle_flow_v1.png"
 
 
 class HumanGameBlueprintPdfTests(unittest.TestCase):
@@ -60,6 +61,23 @@ class HumanGameBlueprintPdfTests(unittest.TestCase):
         self.assertIn("50 / 50 BATTLE SURFACE", extracted)
         self.assertIn("TETRIS-IMG-037", extracted)
         self.assertIn("PENDING_EXACT_HEAD_RENDER", extracted)
+
+    def test_blueprint_registers_a_visual_battle_flow_asset_for_the_human_pdf(self) -> None:
+        """Keep the visual battle map from quietly regressing back into a table-only PDF."""
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        visual_assets = manifest["planning_visual_assets"]
+        self.assertEqual(len(visual_assets), 1)
+
+        hero = visual_assets[0]
+        self.assertEqual(hero["path"], "docs/blueprints/assets/tetris_blueprint_battle_flow_v1.png")
+        self.assertEqual(hero["consumer"], "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · visual battle-surface map")
+        self.assertEqual(hero["status"], "USER_STANDING_APPROVED_PLANNING_ASSET")
+        self.assertTrue(HERO_PATH.is_file(), "the registered visual battle map must be present")
+        self.assertEqual(hero["sha256"], hashlib.sha256(HERO_PATH.read_bytes()).hexdigest())
+
+        reader = PdfReader(str(PDF_PATH))
+        extracted = "\n".join(page.extract_text() or "" for page in reader.pages)
+        self.assertIn("BATTLE SURFACE MAP", extracted)
 
 
 if __name__ == "__main__":
