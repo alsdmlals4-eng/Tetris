@@ -95,7 +95,7 @@ Fresh official Godot research was read on 2026-08-29: [Engine time scale](https:
 - `apply_chain_wave` returns `{ "combo_before", "combo_after", "mp_requested", "mp_applied", "mp_lost_at_cap" }`.
 - `try_commit_combo_skill` returns `{ "committed", "resolved_stage", "converted_combo", "mp_spent", "combo_spent" }` and changes neither field on failure.
 
-- [ ] **Step 1: Write failing cap, per-wave, and fallback tests.**
+- [x] **Step 1: Wrote failing cap, per-wave, and fallback tests.**
 
 ```gdscript
 func test_chain_wave_awards_combo_before_formula_and_caps_mp_and_combo() -> void:
@@ -130,11 +130,11 @@ func test_shortage_fallback_converts_only_surplus_combo_and_spends_opening_combo
 
 - [x] **Step 2: Ran the focused test; the old cap-6/depth behavior failed before the minimal implementation.**
 
-Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit -ginclude_subdirs -gexit`
+Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production/combat -ginclude_subdirs -gexit`
 
 Expected: FAIL because `MP_CAP`, `COMBO_CAP`, `apply_chain_wave`, and `try_commit_combo_skill` do not exist.
 
-- [ ] **Step 3: Implement only the atomic state mutations.**
+- [x] **Step 3: Implemented only the atomic state mutations.**
 
 ```gdscript
 func apply_chain_wave(line_lengths: Array[int]) -> Dictionary:
@@ -163,13 +163,13 @@ func try_commit_combo_skill(mp_cost: int, opening_combo: int, resolved_stage: in
     return {"committed": true, "resolved_stage": resolved_stage, "converted_combo": converted, "mp_spent": mp_cost, "combo_spent": opening_combo}
 ```
 
-- [ ] **Step 4: Run focused state tests and the existing Line reward tests.**
+- [x] **Step 4: Ran focused state tests and the existing Line reward tests.**
 
-Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/unit -ginclude_subdirs -gexit`
+Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production -ginclude_subdirs -gexit`
 
 Expected: PASS; negative MP deltas, unqualified line lengths, a 60-MP overflow, Combo 10, a crossing 5+5 at Combo 4 producing 12 MP before cap, and failed shortage transactions are deterministic.
 
-- [ ] **Step 5: Commit the atomic resource boundary.**
+- [x] **Step 5: Committed the atomic resource boundary as part of merged PR #89.**
 
 ```bash
 git add src/production/combat/production_combat_state.gd tests/unit/test_combat_state.gd
@@ -189,7 +189,7 @@ git commit -m "feat: align combo and mp resource caps"
 - `ChainResolver.resolve_existing_matches()` returns each wave with `groups`, `cleared_count`, and `qualified_line_lengths` copied from `group["cells"].size()`.
 - Crossing groups count individually in `qualified_line_lengths`; `matched_cells()` still clears each cell once.
 
-- [ ] **Step 1: Add failing diagonal and crossing-line tests.**
+- [x] **Step 1: Added failing diagonal and crossing-line tests.**
 
 ```gdscript
 func test_match_groups_detect_both_diagonal_axes_as_distinct_maximal_lines() -> void:
@@ -206,13 +206,13 @@ func test_crossing_groups_clear_once_but_report_both_line_lengths() -> void:
     assert_eq(resolution["waves"][0]["cleared_count"], 5)
 ```
 
-- [ ] **Step 2: Run chain board tests and confirm diagonal groups/wave lengths are absent.**
+- [x] **Step 2: Ran chain board tests and confirmed diagonal groups/wave lengths were absent before implementation.**
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production/chain -ginclude_subdirs -gexit`
 
 Expected: FAIL because the old board only emits `H` and `V`, and the resolver has no `qualified_line_lengths`.
 
-- [ ] **Step 3: Implement four-direction maximal-run scanning and propagate lengths.**
+- [x] **Step 3: Implemented four-direction maximal-run scanning and propagated lengths.**
 
 ```gdscript
 const MATCH_DIRECTIONS := [
@@ -228,13 +228,13 @@ func _is_run_start(position: Vector2i, step: Vector2i, symbol: String) -> bool:
 
 For every non-empty cell and each direction, scan only when `_is_run_start` is true, append a group only when its maximal run has at least three cells, then preserve the existing unique-cell clearing path.
 
-- [ ] **Step 4: Run chain tests and assert a five-line remains one 5-length group.**
+- [x] **Step 4: Ran chain tests and asserted a five-line remains one 5-length group.**
 
 Run: `godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests/production/chain -ginclude_subdirs -gexit`
 
 Expected: PASS; neither diagonal is duplicated from an interior cell, a crossing clears once, and a length-five run is never split into three-length fragments.
 
-- [ ] **Step 5: Commit the match grammar.**
+- [x] **Step 5: Committed the match grammar as part of merged PR #89.**
 
 ```bash
 git add src/production/chain/chain_board.gd src/production/chain/chain_resolver.gd tests/production/chain
