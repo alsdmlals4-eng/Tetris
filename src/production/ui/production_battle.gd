@@ -178,8 +178,8 @@ func select_skill_tier(tier: int) -> Dictionary:
 	var prefix: String = String({"ATTACK": "atk", "DEFENSE": "def", "SUPPORT": "sup"}.get(_selected_skill_lane, ""))
 	if prefix == "":
 		return {"selected": false, "reason": "INVALID_SELECTION"}
-	var ids := {"atk": ["quick_cut", "sweeping_arc", "rift_breach", "crushing_strike", "suppressive_break", "execution_edge"], "def": ["guard", "fortify", "counter", "bulwark", "rift_ward", "last_bastion"], "sup": ["second_wind", "rally", "haste", "mark_weakness", "rift_seal", "battle_trance"]}
-	return _runtime.select_skill_technique("%s_t%d_%s" % [prefix, tier, ids[prefix][tier - 1]])
+	var ids := {"atk": ["first_edge", "rift_snare", "fracture_cut", "shieldbreaker", "severing_drive", "execution_edge"], "def": ["brace", "supply_guard", "riposte_guard", "bulwark", "last_guard", "aegis_relay"], "sup": ["first_aid", "rally_step", "second_wind", "anchor_pulse", "field_mend", "breather"]}
+	return _runtime.select_skill_technique("%s_c%d_%s" % [prefix, tier, ids[prefix][tier - 1]])
 
 func _use_selected_skill() -> void:
 	if _runtime != null and _runtime.is_simulation_paused():

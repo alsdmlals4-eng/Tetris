@@ -51,7 +51,7 @@ func readiness(technique_id: String, context: Dictionary) -> Dictionary:
 		return {"ready": false, "reason": "UNKNOWN_TECHNIQUE"}
 	if String(definition.get("runtime_status", "")) == "REALTIME_MIGRATION_REQUIRED":
 		return {"ready": false, "reason": "REALTIME_MIGRATION_REQUIRED"}
-	if _combat_state.energy < int(definition.get("energy_cost", 0)) or _combat_state.stock < int(definition.get("stock_cost", 0)):
+	if _combat_state.energy < int(definition.get("mp_cost", 0)) or _combat_state.stock < int(definition.get("combo_cost", 0)):
 		return {"ready": false, "reason": "INSUFFICIENT_RESOURCE"}
 	return _technique_resolver.readiness(definition, context)
 
@@ -62,8 +62,8 @@ func commit_selected(context: Dictionary) -> Dictionary:
 	var preflight: Dictionary = readiness(_selected_technique_id, context)
 	if not bool(preflight.get("ready", false)):
 		return {"committed": false, "reason": preflight.get("reason", "NOT_READY")}
-	var energy_cost := int(definition["energy_cost"])
-	var stock_cost := int(definition["stock_cost"])
+	var energy_cost := int(definition["mp_cost"])
+	var stock_cost := int(definition["combo_cost"])
 	if not _combat_state.try_spend_skill_cost(energy_cost, stock_cost):
 		return {"committed": false, "reason": "INSUFFICIENT_RESOURCE"}
 	var resolution: Dictionary = _technique_resolver.resolve(definition, context)
