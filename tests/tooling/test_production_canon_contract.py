@@ -221,7 +221,7 @@ class ProductionCanonContractTests(unittest.TestCase):
         ):
             self.assertIn(token, text)
 
-    def test_first_session_contract_is_approved_but_not_runtime_proof(self) -> None:
+    def test_first_session_contract_is_machine_verified_but_not_runtime_or_human_proof(self) -> None:
         data = self._index()
         reality = data["implementation_reality"]
         onboarding_index = data["onboarding"]
@@ -230,8 +230,8 @@ class ProductionCanonContractTests(unittest.TestCase):
         self.assertTrue(ONBOARDING_CONTRACT_PATH.is_file())
         self.assertEqual(
             reality["first_session_briefing_and_tutorial"],
-            "USER_APPROVED_DOCUMENTED_NOT_IMPLEMENTED",
-        )
+            "FIRST_SESSION_BRIEFING_AND_SAFE_TUTORIAL_IMPLEMENTED_MACHINE_VERIFIED_PENDING_RUNTIME_AND_HUMAN_EVIDENCE",
+            )
         self.assertEqual(onboarding_index["rule_delivery"], "FULL_PRE_DEPLOY_BRIEFING")
         self.assertEqual(
             onboarding_index["first_visit_deploy_gate"],
@@ -289,7 +289,7 @@ class ProductionCanonContractTests(unittest.TestCase):
             "Frontier Gate",
             "Gatebreaker",
             "Current Telegraph and ETA",
-            "USER_APPROVED / PHASE 1 CANON / DOCUMENTED_NOT_IMPLEMENTED",
+            "USER_APPROVED / PHASE 2 IMPLEMENTED_MACHINE_VERIFIED / RUNTIME_AND_HUMAN_EVIDENCE_PENDING",
         ):
             self.assertIn(token, onboarding)
         self.assertIn("Shared Turn Timer", onboarding)

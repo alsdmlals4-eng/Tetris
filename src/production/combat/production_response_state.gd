@@ -56,6 +56,49 @@ func clear_after_action(action_id: String) -> bool:
     _lethal_charges = 0
     return true
 
+func snapshot_action_state() -> Dictionary:
+    return {
+        "action_id": _action_id,
+        "direct_mitigation": _direct_mitigation,
+        "counter_ratio": _counter_ratio,
+        "resource_ward_ratio": _resource_ward_ratio,
+        "lethal_hp_floor": _lethal_hp_floor,
+        "lethal_charges": _lethal_charges,
+    }
+
+func restore_action_state(snapshot: Dictionary) -> bool:
+    var required_keys := ["action_id", "direct_mitigation", "counter_ratio", "resource_ward_ratio", "lethal_hp_floor", "lethal_charges"]
+    if snapshot.size() != required_keys.size():
+        return false
+    for key in required_keys:
+        if not snapshot.has(key):
+            return false
+    if not (snapshot["action_id"] is String) or not (snapshot["direct_mitigation"] is int) or not (snapshot["lethal_hp_floor"] is int) or not (snapshot["lethal_charges"] is int):
+        return false
+    if not (snapshot["counter_ratio"] is float or snapshot["counter_ratio"] is int) or not (snapshot["resource_ward_ratio"] is float or snapshot["resource_ward_ratio"] is int):
+        return false
+    var restored_action_id := String(snapshot["action_id"])
+    var restored_direct_mitigation := int(snapshot["direct_mitigation"])
+    var restored_counter_ratio := float(snapshot["counter_ratio"])
+    var restored_resource_ward_ratio := float(snapshot["resource_ward_ratio"])
+    var restored_lethal_hp_floor := int(snapshot["lethal_hp_floor"])
+    var restored_lethal_charges := int(snapshot["lethal_charges"])
+    if restored_direct_mitigation < 0 or restored_lethal_hp_floor < 0 or restored_lethal_charges < 0:
+        return false
+    if is_nan(restored_counter_ratio) or is_inf(restored_counter_ratio) or restored_counter_ratio < 0.0 or restored_counter_ratio > 1.0:
+        return false
+    if is_nan(restored_resource_ward_ratio) or is_inf(restored_resource_ward_ratio) or restored_resource_ward_ratio < 0.0 or restored_resource_ward_ratio > 1.0:
+        return false
+    if restored_action_id == "" and (restored_direct_mitigation != 0 or not is_zero_approx(restored_counter_ratio) or not is_zero_approx(restored_resource_ward_ratio) or restored_lethal_hp_floor != 0 or restored_lethal_charges != 0):
+        return false
+    _action_id = restored_action_id
+    _direct_mitigation = restored_direct_mitigation
+    _counter_ratio = restored_counter_ratio
+    _resource_ward_ratio = restored_resource_ward_ratio
+    _lethal_hp_floor = restored_lethal_hp_floor
+    _lethal_charges = restored_lethal_charges
+    return true
+
 func _bind_action(action_id: String) -> bool:
     if action_id == "":
         return false

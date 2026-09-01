@@ -1,6 +1,8 @@
 {
   "balance_status": "TUNING_SEED_NOT_FINAL",
   "commit_lead_seconds": 0.0,
+  "tutorial_opening_eta_seconds": 45.0,
+  "tutorial_nonterminal_until_first_confirm": true,
   "action_seconds": {
     "light_smash": 8.0,
     "gatebreaker_slam": 12.0,

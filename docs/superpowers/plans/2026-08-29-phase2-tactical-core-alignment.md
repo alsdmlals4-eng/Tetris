@@ -4,6 +4,8 @@
 
 **Goal:** Deliver one verified first-session vertical slice in which `TETRIS-CHAIN-038`, `TETRIS-SKILL-039`, `TETRIS-BALANCE-040`, `TETRIS-SKILL-042`, `TETRIS-ONBOARDING-037`, and the short briefing work together without changing their player promise.
 
+> **Current branch completion snapshot — 2026-09-02:** Task 5 was merged to `main` in PR #93. Tasks 6–9 are implemented on the current task branch and have focused machine evidence; their historical execution checkboxes below remain as the original approved work order, while `Task 10` (target-device receipt, three-person first-exposure evidence, exact PR CI/merge readback) is still pending. This snapshot does not promote machine tests to runtime, Human, balance, accessibility, or release approval.
+
 **Architecture:** Keep `ProductionCombatState` as the sole owner of HP/MP/Combo mutation, keep `ProductionCombatRuntime` as the frame-order owner, and retain data-driven skill definitions. Split the delivery into three mergeable implementation PRs: deterministic CHAIN/resource alignment, combo-resolved Skill/time control, then briefing/tutorial handoff. The UI reads authoritative runtime snapshots; it never chooses an effect, mutates a resource, or edits an enemy clock directly.
 
 **Tech Stack:** Godot 4.7.1-stable, GDScript, JSON production seeds, GUT 9.7.1, Python tooling tests, GitHub Actions `core-poc-ci`.

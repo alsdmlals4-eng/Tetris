@@ -19,7 +19,7 @@ func _init(
     _timing = timing
     _resolver = resolver
 
-func start() -> Dictionary:
+func start(use_tutorial_opening: bool = false) -> Dictionary:
     if _started or _director == null or _timing == null or _resolver == null:
         return {"started": false, "reason": "INVALID_START_STATE"}
     var opening: Dictionary = _director.bootstrap()
@@ -27,7 +27,7 @@ func start() -> Dictionary:
     var next = opening.get("next", {})
     if not current is Dictionary or not next is Dictionary:
         return {"started": false, "reason": "INVALID_AUTHORED_OPENING"}
-    var duration := _timing.seconds_for_action(String(current.get("template_key", "")))
+    var duration := _timing.opening_seconds_for_action(String(current.get("template_key", "")), use_tutorial_opening)
     if duration <= 0.0:
         return {"started": false, "reason": "MISSING_ACTION_TIMING"}
     _telegraph = GatebreakerTelegraphState.new(current, next)
@@ -42,6 +42,7 @@ func start() -> Dictionary:
         "current_action_id": current_action_id(),
         "next_action_id": next_action_id(),
         "remaining_seconds": _remaining_seconds,
+        "tutorial_opening": use_tutorial_opening,
     }
 
 func tick_simulation(delta: float, context: Dictionary) -> Array[Dictionary]:
@@ -82,6 +83,11 @@ func current_action_id() -> String:
         return ""
     return String(_telegraph.current_action().get("id", ""))
 
+func current_action_kind() -> String:
+    if _telegraph == null:
+        return ""
+    return String(_telegraph.current_action().get("kind", ""))
+
 func next_action_id() -> String:
     if _telegraph == null:
         return ""
@@ -92,6 +98,9 @@ func remaining_seconds() -> float:
 
 func is_action_committed() -> bool:
     return _started and _timing != null and _remaining_seconds <= _timing.commit_lead_seconds
+
+func tutorial_nonterminal_until_first_confirm() -> bool:
+    return _timing != null and _timing.tutorial_nonterminal_until_first_confirm
 
 func adjust_current_eta(action_id: String, delta_seconds: float) -> Dictionary:
     var before := _remaining_seconds

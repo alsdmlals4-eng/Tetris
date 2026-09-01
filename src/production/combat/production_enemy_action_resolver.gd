@@ -59,6 +59,12 @@ func _preview_direct_hp_ratio(action_id: String, action: Dictionary, context: Di
         pending_damage = maxi(0, int(player.hp) - lethal_floor)
         lethal_safety_triggered = true
 
+    var tutorial_guard_triggered := false
+    var tutorial_floor := maxi(0, int(context.get("tutorial_nonterminal_floor", 0)))
+    if tutorial_floor > 0 and int(player.hp) - pending_damage < tutorial_floor:
+        pending_damage = maxi(0, int(player.hp) - tutorial_floor)
+        tutorial_guard_triggered = true
+
     var counter_ratio := clampf(float(modifiers.get("counter_ratio", 0.0)), 0.0, 1.0)
     var counter_damage := roundi(float(mitigation) * counter_ratio)
     var enemy = context.get("enemy")
@@ -83,6 +89,7 @@ func _preview_direct_hp_ratio(action_id: String, action: Dictionary, context: Di
         "damage_applied": damage_applied,
         "counter_damage": counter_applied,
         "lethal_safety_triggered": lethal_safety_triggered,
+        "tutorial_nonterminal_guard_triggered": tutorial_guard_triggered,
         "projected_player_hp": int(player.hp) - damage_applied,
         "projected_enemy_hp": projected_enemy_hp,
     }
@@ -182,6 +189,12 @@ func _resolve_direct_hp_ratio(action_id: String, action: Dictionary, context: Di
         pending_damage = maxi(0, int(player.hp) - lethal_floor)
         lethal_safety_triggered = true
 
+    var tutorial_guard_triggered := false
+    var tutorial_floor := maxi(0, int(context.get("tutorial_nonterminal_floor", 0)))
+    if tutorial_floor > 0 and int(player.hp) - pending_damage < tutorial_floor:
+        pending_damage = maxi(0, int(player.hp) - tutorial_floor)
+        tutorial_guard_triggered = true
+
     var counter_ratio := clampf(float(modifiers.get("counter_ratio", 0.0)), 0.0, 1.0)
     var counter_damage := roundi(float(mitigation) * counter_ratio)
     if counter_damage > 0:
@@ -203,6 +216,7 @@ func _resolve_direct_hp_ratio(action_id: String, action: Dictionary, context: Di
         "damage_applied": damage_applied,
         "counter_damage": counter_damage,
         "lethal_safety_triggered": lethal_safety_triggered,
+        "tutorial_nonterminal_guard_triggered": tutorial_guard_triggered,
         "reason": "RESOLVED",
     }
 

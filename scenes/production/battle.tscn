@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://src/production/ui/production_battle.gd" id="1_battle"]
 [ext_resource type="Script" path="res://src/production/ui/production_line_board_view.gd" id="2_line"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" path="res://assets/production/bosses/gatebreaker_combat_cutout_v1.png" id="7_gatebreaker_cutout"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/vanguard_attack_accent_v1.png" id="8_vanguard_attack_fx"]
 [ext_resource type="Texture2D" path="res://assets/production/vfx/gatebreaker_threat_telegraph_v1.png" id="9_gatebreaker_telegraph_fx"]
+[ext_resource type="PackedScene" path="res://scenes/production/battle_briefing.tscn" id="10_briefing"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vanguard_portrait"]
 atlas = ExtResource("6_vanguard_cutout")
@@ -64,6 +65,11 @@ process_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 text = "TACTICAL SKILL · K"
+
+[node name="RulesButton" type="Button" parent="MainRow/PuzzleColumn/ModeFrame/ModeBar"]
+process_mode = 2
+layout_mode = 2
+text = "RULES"
 
 [node name="PuzzleHost" type="Control" parent="MainRow/PuzzleColumn"]
 layout_mode = 2
@@ -256,6 +262,13 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.8, 1, 1)
 text = "NEXT · FORECAST"
 
+[node name="TutorialPrompt" type="Label" parent="MainRow/CombatColumn/SharedActionFrame/ActionPhaseStack"]
+layout_mode = 2
+autowrap_mode = 2
+horizontal_alignment = 1
+theme_override_colors/font_color = Color(1, 0.84, 0.54, 1)
+text = "LIVE PRACTICE · READ THE CURRENT TELEGRAPH BEFORE ACTING"
+
 [node name="ResourceFrame" type="PanelContainer" parent="MainRow/CombatColumn"]
 layout_mode = 2
 
@@ -320,48 +333,43 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "SUP"
 
-[node name="TierGrid" type="GridContainer" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+[node name="SkillPreview" type="RichTextLabel" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
+process_mode = 2
+custom_minimum_size = Vector2(0, 94)
 layout_mode = 2
-columns = 3
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+bbcode_enabled = true
+fit_content = false
+scroll_active = false
+theme_override_colors/default_color = Color(0.84, 0.86, 0.94, 1)
+text = "[color=#aeb7cb]Select ATK, DEF, or SUP to inspect the current Combo skill.[/color]"
 
-[node name="Tier1" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="TimingFeedback" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
 layout_mode = 2
-text = "T1"
+autowrap_mode = 2
+theme_override_colors/font_color = Color(0.52, 0.82, 1, 1)
+text = ""
 
-[node name="Tier2" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="ConfirmButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
 layout_mode = 2
-text = "T2"
+disabled = true
+text = "CONFIRM CURRENT COMBO SKILL"
 
-[node name="Tier3" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
+[node name="CancelButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
 process_mode = 2
 layout_mode = 2
-text = "T3"
+text = "CANCEL"
 
-[node name="Tier4" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T4"
+[node name="RulesReferencePopup" type="PopupPanel" parent="."]
+process_mode = 3
+initial_position_type = 1
+size = Vector2i(850, 500)
 
-[node name="Tier5" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T5"
-
-[node name="Tier6" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"]
-process_mode = 2
-layout_mode = 2
-text = "T6"
-
-[node name="SkillFlow" type="Label" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.68, 0.71, 0.82, 1)
-text = "ATK / DEF / SUP → T1–T6 → DETAIL → USE"
-
-[node name="UseButton" type="Button" parent="MainRow/CombatColumn/SkillFrame/SkillPanel"]
-process_mode = 2
-layout_mode = 2
-text = "USE SELECTED TECHNIQUE"
+[node name="BattleBriefing" parent="RulesReferencePopup" instance=ExtResource("10_briefing")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -29,12 +29,47 @@ class PendingChainSession:
 class PendingChainWorkspace:
 	var chain_session := PendingChainSession.new()
 
-class SkillSelectionRuntime:
-	var selected_id := ""
+class SkillPreviewRuntime:
+	var selected_category := ""
+	var _snapshot := {
+		"terminal": false,
+		"paused": true,
+		"player_hp": 72,
+		"player_energy": 31,
+		"player_stock": 5,
+		"enemy_hp": 100,
+		"enemy_eta_seconds": 8.5,
+		"last_time_feedback": {
+			"target": "CURRENT ENEMY ETA",
+			"changed": "Current enemy ETA +2.0 s",
+			"unchanged": "LINE board timing unchanged",
+		},
+	}
 
-	func select_skill_technique(technique_id: String) -> Dictionary:
-		selected_id = technique_id
-		return {"selected": true, "technique_id": technique_id}
+	func is_skill_open() -> bool:
+		return true
+
+	func is_simulation_paused() -> bool:
+		return true
+
+	func select_skill_category(category: String) -> Dictionary:
+		selected_category = category
+		return {
+			"selected": true,
+			"ready": true,
+			"category": category,
+			"technique_id": "atk_c5_severing_drive",
+			"display_name": "Severing Drive",
+			"opening_combo": 5,
+			"resolved_stage": 5,
+			"converted_combo": 0,
+			"mp_cost": 22,
+			"preview_lines": ["Deal 28 direct damage."],
+			"effects": [{"op": "DAMAGE_SINGLE", "magnitude": 28}],
+		}
+
+	func snapshot() -> Dictionary:
+		return _snapshot
 
 func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 	for event in InputMap.action_get_events(action_name):
@@ -176,37 +211,51 @@ func test_mode_buttons_switch_the_single_visible_puzzle_surface() -> void:
 	assert_true(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/LineBoardView").visible)
 	assert_false(battle.get_node("MainRow/PuzzleColumn/PuzzleHost/ChainBoardView").visible)
 
-func test_skill_panel_exposes_explicit_lane_tier_and_use_controls() -> void:
+func test_skill_panel_exposes_categories_one_preview_and_explicit_confirm_without_tier_grid() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):
 		return
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
 	for node_path in ["Attack", "Defense", "Support"]:
 		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillCategories/%s" % node_path))
-	for tier in range(1, 7):
-		assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid/Tier%d" % tier))
-	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/UseButton"))
+	assert_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TierGrid"))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillPreview"))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/ConfirmButton"))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/CancelButton"))
+	assert_not_null(battle.get_node_or_null("MainRow/CombatColumn/SkillFrame/SkillPanel/TimingFeedback"))
 	assert_true(battle.has_method("select_skill_category"))
-	assert_true(battle.has_method("select_skill_tier"))
+	assert_false(battle.has_method("select_skill_tier"))
 
-func test_skill_panel_groups_categories_and_tiers_for_the_compact_combat_column() -> void:
+func test_battle_keeps_the_same_briefing_as_a_reopenable_rules_reference() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	var skill_panel_path := "MainRow/CombatColumn/SkillFrame/SkillPanel"
-	assert_not_null(battle.get_node_or_null("%s/SkillCategories" % skill_panel_path))
-	var tier_grid = battle.get_node_or_null("%s/TierGrid" % skill_panel_path)
-	assert_not_null(tier_grid)
-	if tier_grid != null:
-		assert_eq(tier_grid.columns, 3, "six tiers must use a compact 3-column grid instead of pushing USE below the viewport")
+	assert_not_null(battle.get_node_or_null("MainRow/PuzzleColumn/ModeFrame/ModeBar/RulesButton"))
+	assert_not_null(battle.get_node_or_null("RulesReferencePopup/BattleBriefing"))
+	assert_true(battle.has_method("_open_rules_reference"))
 
-func test_transitional_tier_adapter_targets_the_matching_combo_stage_definition() -> void:
+func test_skill_preview_binds_the_resolved_combo_stage_before_confirm() -> void:
 	var battle = load(BATTLE_SCENE_PATH).instantiate()
 	add_child_autofree(battle)
-	var runtime := SkillSelectionRuntime.new()
+	var runtime := SkillPreviewRuntime.new()
 	battle._runtime = runtime
-	battle._selected_skill_lane = "ATTACK"
-	assert_true(bool(battle.select_skill_tier(2).get("selected", false)))
-	assert_eq(runtime.selected_id, "atk_c2_rift_snare", "until the Tier grid is removed, its second legacy button must resolve the authored C2 definition")
+	var preview: Dictionary = battle.select_skill_category("ATTACK")
+	assert_true(bool(preview.get("ready", false)))
+	assert_eq(runtime.selected_category, "ATTACK")
+	var preview_label = battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/SkillPreview") as RichTextLabel
+	var confirm_button = battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/ConfirmButton") as Button
+	assert_string_contains(preview_label.text, "C5")
+	assert_string_contains(preview_label.text, "22 MP")
+	assert_false(confirm_button.disabled)
+
+func test_timing_feedback_names_target_changed_value_and_unchanged_domain() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	battle._runtime = SkillPreviewRuntime.new()
+	battle._refresh_runtime_labels()
+	var feedback = battle.get_node("MainRow/CombatColumn/SkillFrame/SkillPanel/TimingFeedback") as Label
+	assert_string_contains(feedback.text, "CURRENT ENEMY ETA")
+	assert_string_contains(feedback.text, "Current enemy ETA +2.0 s")
+	assert_string_contains(feedback.text, "LINE board timing unchanged")
 
 func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):

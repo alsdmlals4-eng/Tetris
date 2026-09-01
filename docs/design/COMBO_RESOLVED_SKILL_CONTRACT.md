@@ -3,7 +3,7 @@
 - Decision: `TETRIS-SKILL-039 · Category Choice → Combo-Resolved Technique → Explicit Confirm`
 - Balance amendment: `TETRIS-BALANCE-040 · Bounded Combo-to-MP Fallback`
 - Content amendment: [`TETRIS-SKILL-042 · Deliberate Combo Stop + Target-Separated Time Control`](COMBO_STAGE_SKILL_CONTENT_GDD.md)
-- Status: `USER_DIRECTED / PHASE 1 CANON / PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES`
+- Status: `USER_DIRECTED / PHASE 2 IMPLEMENTED_MACHINE_VERIFIED / RUNTIME_AND_HUMAN_EVIDENCE_PENDING`
 - Date: 2026-08-28
 - Scope: one tactical-pause skill decision inside `TETRIS-CORE-029`; it does not alter continuous combat, LINE/CHAIN ownership, the 1-MP CHAIN setup lock, or the Combo cap.
 - Detailed predecessors: `TETRIS-SKILL-026` and `TETRIS-BALANCE-027` are `SUPERSEDED_FOR_MANUAL_TIER_SELECTION_AND_COST_GRAMMAR`. They remain historical evidence for the three lane identities and reusable effect primitives only.
@@ -44,7 +44,7 @@ The three category buttons are a player-facing tactical vocabulary, not three se
 - Combo cap is **10**. A viable current Combo state is `C ∈ [1, 10]`.
 - Each lane owns authored **Stage 1–10 content**: `LaneStage[ATK|DEF|SUP][1..10]`. Stage is a resolved Combo state, not a separately selected player tier.
 - `LaneStage[C]` is the normal preview. It spends `C` Combo and its authored MP cost `MP(lane, C)`.
-- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content, target-separated time-control semantics and Phase 2 content gates. The current seed and catalog now own the 30 C1–C10 definitions and adaptive current-threat packages; category-only preview, fallback and confirmation remain separate unimplemented runtime work.
+- The user-approved C1–C10 matrix retains contextually meaningful lower-Combo responses. The player may intentionally stop CHAIN preparation at a desired lower current Combo to use its unique response; they may not manually select a lower Stage while holding a higher Combo. `COMBO_STAGE_SKILL_CONTENT_GDD.md` owns the approved content and target-separated time-control semantics. The current seed/catalog own the 30 C1–C10 definitions and adaptive current-threat packages; the runtime resolves a category-only preview, bounded fallback and explicit confirmation from that current Combo state.
 - Stage content must remain data-driven effect composition. This contract does not authorize thirty bespoke scripts, a new currency, cooldown system or a new enemy roster.
 
 ## 4. MP-insufficient bounded fallback
@@ -96,16 +96,16 @@ This preserves the user-approved tension: spend the shared Combo now for a timel
 
 ## 6. Actual implementation boundary
 
-This is `PARTIALLY_IMPLEMENTED_DATA_AND_TIME_PRIMITIVES`. Current exact-head evidence has completed the schema/content boundary and the narrow target-separated time owners, while the player-facing resolver remains incomplete:
+This is `IMPLEMENTED_MACHINE_VERIFIED_PENDING_RUNTIME_AND_HUMAN_EVIDENCE`. Current exact-head evidence covers the schema/content boundary, target-separated time owners, the player-facing resolver and the category-only surface:
 
 - `data/production/vanguard_skill_seed.json` contains 30 authored `ATK/DEF/SUP × C1–C10` entries with `stage`, `combo_cost`, `mp_cost`, display text, preview text and only approved primitive effects.
 - `src/production/skill/production_skill_catalog.gd` validates Stage 1–10 definitions, resolves by lane/stage, rejects legacy Tier/conditional-multiplier data and selects exactly one C6/C10 adaptive package for the visible action kind.
 - `PlayerBoardOpportunityState` caps the player-side reserve at `12.0` seconds and only supplies `0.0` to active LINE gravity/lock; `EnemyActionScheduler` adjusts only the exact uncommitted current action ETA and preserves the authored Next Forecast. Both owners reject malformed/stale restore state.
-- `ProductionCombatRuntime` passes the full frame delta to the enemy scheduler, routes LINE through the reserve only while simulation is active, and gives the existing temporary Skill executor both narrow owners. This is deterministic machine-test evidence, not a category-only preview/confirm completion claim.
-- `src/production/ui/production_battle.gd` still binds `TierGrid/Tier1..Tier6`; it is a **temporary legacy Tier 1–6 bridge** whose six buttons now select matching C1–C6 definitions only until the grid is replaced.
-- `src/production/skill/production_skill_session.gd` still requires a manually selected technique id and uses the transitional direct-cost commit path. It does not yet derive a current Combo preview, apply the bounded fallback or expose the final category-only confirmation transaction.
+- `ProductionCombatRuntime` passes the full frame delta to the enemy scheduler, routes LINE through the reserve only while simulation is active, and gives the Skill resolver both narrow owners. A confirmed time effect records its target, changed value and unchanged domain for the battle surface.
+- `src/production/ui/production_battle.gd` binds exactly `ATK / DEF / SUP`, one `SkillPreview`, `CONFIRM`, and `CANCEL`; `TierGrid` and manual Tier selection are absent.
+- `src/production/skill/production_skill_session.gd` resolves from opening Combo, holds a C5 when affordable, falls back only to the highest MP-feasible lower Stage, preflights all effects before resource spend, and restores resources/effect owners on execution failure.
 
-This partial data implementation is automated-test evidence only. It does not promote the final Skill flow, a Godot scene/UI replacement, target-device runtime behavior, balance, usability or Human/player evidence. Phase 2 must replace the temporary grid/session path with the deterministic resolver, use RED→GREEN tests for the formula above, and obtain target-resolution plus first-exposure evidence before a usability/pass claim.
+This implementation is automated-test evidence only. It does not prove target-device runtime behavior, balance, usability or Human/player understanding. Obtain target-resolution and first-exposure evidence before a usability/pass claim.
 
 ## 7. Acceptance contract for the later implementation issue
 
@@ -115,4 +115,4 @@ This partial data implementation is automated-test evidence only. It does not pr
 - When the current stage lacks MP, the system selects the highest feasible lower Stage after the exact 5-MP-per-Combo conversion; it never changes resources during preview.
 - Combo never exceeds 10; all fallback math honors MP cap 60 and never creates a Stage 0 cast.
 - Cancel returns to the exact paused battle state without any conversion, spend or board mutation.
-- The temporary manual Tier 1–6 bridge remains labeled legacy until the category-only replacement exact HEAD passes automated and target-device runtime validation.
+- The removed manual Tier 1–6 bridge remains historical provenance only; category-only selection is the active runtime path.

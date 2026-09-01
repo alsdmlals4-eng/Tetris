@@ -11,12 +11,13 @@ var _pause_controller: SimulationPauseController
 var _response_state
 var _telemetry = null
 var _board_opportunity = null
+var _tutorial = null
 var _last_time_feedback: Dictionary = {}
 var _started := false
 var _terminal := false
 var _system_pause_token: int = 0
 
-func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null, board_opportunity = null) -> void:
+func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspace_manager, enemy_scheduler, skill_session, pause_controller: SimulationPauseController, response_state, telemetry = null, board_opportunity = null, tutorial = null) -> void:
 	_player = player
 	_enemy = enemy
 	_workspace_manager = workspace_manager
@@ -26,11 +27,13 @@ func _init(player: ProductionCombatState, enemy: ProductionCombatState, workspac
 	_response_state = response_state
 	_telemetry = telemetry
 	_board_opportunity = board_opportunity
+	_tutorial = tutorial
 
 func start_battle() -> Dictionary:
 	if _started or _player == null or _enemy == null or _enemy_scheduler == null:
 		return {"started": false, "reason": "INVALID_START_STATE"}
-	var started: Dictionary = _enemy_scheduler.start()
+	var use_tutorial_opening: bool = _tutorial != null and _tutorial.has_method("should_use_safe_opening") and _tutorial.should_use_safe_opening()
+	var started: Dictionary = _enemy_scheduler.start(use_tutorial_opening)
 	if not bool(started.get("started", false)):
 		return started
 	_started = true
@@ -39,6 +42,11 @@ func start_battle() -> Dictionary:
 		if _workspace_manager != null:
 			_telemetry.record("WORKSPACE_ENTERED", {"workspace": _workspace_manager.active_workspace()})
 		_telemetry.record("ENEMY_TELEGRAPH_STARTED", {"action_id": current_action_id()})
+	var tutorial_start_events: Array = _tutorial.begin() if _tutorial != null and _tutorial.has_method("begin") else []
+	if _telemetry != null:
+		for tutorial_event in tutorial_start_events:
+			if tutorial_event is Dictionary:
+				_telemetry.record(String(Dictionary(tutorial_event).get("kind", "")), Dictionary(tutorial_event))
 	return {"started": true, "enemy_eta_seconds": _enemy_scheduler.remaining_seconds()}
 
 func process_player_command(command: Dictionary) -> Dictionary:
@@ -91,11 +99,14 @@ func tick(delta: float) -> Array[Dictionary]:
 	if _telemetry != null and action_before != "" and current_action_id() != action_before:
 		_telemetry.record("ENEMY_TELEGRAPH_STARTED", {"action_id": current_action_id()})
 	_resolve_terminal(events)
+	_observe_tutorial_events(events)
 	return events
 
 func open_skill() -> Dictionary:
 	if _skill_session == null or _terminal:
 		return {"opened": false, "reason": "SKILL_UNAVAILABLE"}
+	if _enemy_scheduler != null and _enemy_scheduler.is_action_committed():
+		return {"opened": false, "reason": "ENEMY_ACTION_COMMITTED"}
 	var opened: bool = _skill_session.open()
 	if opened and _telemetry != null:
 		_telemetry.begin_tactical_pause()
@@ -128,21 +139,27 @@ func toggle_system_pause() -> Dictionary:
 func is_skill_open() -> bool:
 	return _skill_session != null and _skill_session.is_open()
 
-func select_skill_category(category: String) -> bool:
-	return _skill_session != null and _skill_session.select_category(category)
+func select_skill_category(category: String) -> Dictionary:
+	if _skill_session == null:
+		return {"selected": false, "ready": false, "reason": "SKILL_UNAVAILABLE"}
+	var preview: Dictionary = _skill_session.select_category(category, _effect_context())
+	if bool(preview.get("selected", false)):
+		_observe_tutorial_events([{"kind": "TECHNIQUE_PREVIEWED", "preview": preview.duplicate(true)}])
+	return preview
 
 func select_skill_technique(technique_id: String) -> Dictionary:
-	if _skill_session == null:
-		return {"selected": false, "reason": "SKILL_UNAVAILABLE"}
-	return _skill_session.select_technique(technique_id)
+	return {"selected": false, "reason": "MANUAL_TECHNIQUE_SELECTION_REMOVED", "technique_id": technique_id}
 
 func use_selected_skill() -> Dictionary:
 	if _skill_session == null:
 		return {"committed": false, "reason": "SKILL_UNAVAILABLE"}
 	var result: Dictionary = _skill_session.commit_selected(_effect_context())
-	if bool(result.get("committed", false)) and _telemetry != null:
-		_telemetry.record("TECHNIQUE_USED", result)
-		_telemetry.end_tactical_pause()
+	if bool(result.get("committed", false)):
+		_last_time_feedback = _timing_feedback_for_preview(Dictionary(result.get("preview", {})))
+		_observe_tutorial_events([{"kind": "TECHNIQUE_USED", "result": result.duplicate(true)}])
+		if _telemetry != null:
+			_telemetry.record("TECHNIQUE_USED", result)
+			_telemetry.end_tactical_pause()
 	return result
 
 func try_chain_swap(first: Vector2i, second: Vector2i) -> Dictionary:
@@ -207,6 +224,9 @@ func snapshot() -> Dictionary:
 		"enemy_eta_seconds": _enemy_scheduler.remaining_seconds() if _enemy_scheduler != null else 0.0,
 		"player_board_opportunity_seconds": _board_opportunity.remaining_seconds() if _board_opportunity != null and _board_opportunity.has_method("remaining_seconds") else 0.0,
 		"last_time_feedback": _last_time_feedback.duplicate(true),
+		"tutorial_step": _tutorial.current_step() if _tutorial != null and _tutorial.has_method("current_step") else "",
+		"tutorial_free_play": _tutorial.is_free_play() if _tutorial != null and _tutorial.has_method("is_free_play") else false,
+		"tutorial_nonterminal_guard": _should_apply_tutorial_nonterminal_guard(),
 	}
 
 func _tick_active_puzzle(delta: float) -> void:
@@ -264,6 +284,59 @@ func _effect_context() -> Dictionary:
 		"enemy": _enemy,
 		"response_state": _response_state,
 		"telegraph_action_id": _enemy_scheduler.current_action_id() if _enemy_scheduler != null else "",
+		"current_action_kind": _enemy_scheduler.current_action_kind() if _enemy_scheduler != null and _enemy_scheduler.has_method("current_action_kind") else "",
 		"board_opportunity": _board_opportunity,
 		"enemy_scheduler": _enemy_scheduler,
+		"tutorial_nonterminal_floor": 1 if _should_apply_tutorial_nonterminal_guard() else 0,
+	}
+
+func _should_apply_tutorial_nonterminal_guard() -> bool:
+	return _tutorial != null \
+		and _tutorial.has_method("is_nonterminal_guard_active") \
+		and _tutorial.is_nonterminal_guard_active() \
+		and _enemy_scheduler != null \
+		and _enemy_scheduler.has_method("tutorial_nonterminal_until_first_confirm") \
+		and _enemy_scheduler.tutorial_nonterminal_until_first_confirm()
+
+func _observe_tutorial_events(events: Array) -> void:
+	if _tutorial == null or not _tutorial.has_method("observe"):
+		return
+	var tutorial_events: Array = _tutorial.observe(events)
+	if _telemetry != null:
+		for tutorial_event in tutorial_events:
+			if tutorial_event is Dictionary:
+				_telemetry.record(String(Dictionary(tutorial_event).get("kind", "")), Dictionary(tutorial_event))
+
+func _timing_feedback_for_preview(preview: Dictionary) -> Dictionary:
+	var changed: Array[String] = []
+	var targets: Array[String] = []
+	var changes_board := false
+	var changes_eta := false
+	for effect_variant in Array(preview.get("effects", [])):
+		if not (effect_variant is Dictionary):
+			continue
+		var effect: Dictionary = effect_variant
+		var op := String(effect.get("op", ""))
+		var magnitude := float(effect.get("magnitude", 0.0))
+		if op == "GRANT_PLAYER_BOARD_OPPORTUNITY":
+			changes_board = true
+			targets.append("PLAYER LINE BOARD")
+			changed.append("Board opportunity +%.1f s" % magnitude)
+		elif op == "ADJUST_CURRENT_ENEMY_ETA":
+			changes_eta = true
+			targets.append("CURRENT ENEMY ETA")
+			changed.append("Current enemy ETA +%.1f s" % magnitude)
+	if not changes_board and not changes_eta:
+		return {}
+	var unchanged := ""
+	if changes_board and changes_eta:
+		unchanged = "Next action ETA and non-targeted board state unchanged"
+	elif changes_board:
+		unchanged = "Enemy ETA unchanged"
+	else:
+		unchanged = "LINE board timing unchanged"
+	return {
+		"target": " / ".join(targets),
+		"changed": " · ".join(changed),
+		"unchanged": unchanged,
 	}
