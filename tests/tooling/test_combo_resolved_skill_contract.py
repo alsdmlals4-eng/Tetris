@@ -19,6 +19,7 @@ MANIFEST = ROOT / "docs/assets/reference/planned/PROJECT_UNDERSTANDING_VISUAL_MA
 SKILL_SESSION = ROOT / "src/production/skill/production_skill_session.gd"
 BATTLE_UI = ROOT / "src/production/ui/production_battle.gd"
 CATALOG = ROOT / "src/production/skill/production_skill_catalog.gd"
+SKILL_SEED = ROOT / "data/production/vanguard_skill_seed.json"
 AGENTS = ROOT / "AGENTS.md"
 
 
@@ -81,11 +82,15 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
         ):
             self.assertIn(required, text)
 
-    def test_actual_runtime_is_not_misreported_as_the_new_skill_flow(self) -> None:
+    def test_current_partial_skill_delivery_distinguishes_data_from_unreplaced_runtime_flow(self) -> None:
         contract = CONTRACT.read_text(encoding="utf-8")
-        self.assertIn("DOCUMENTED_NOT_IMPLEMENTED", contract)
-        self.assertIn("legacy manual Tier 1–6", contract)
-        self.assertIn("tier < 1 or tier > 6", CATALOG.read_text(encoding="utf-8"))
+        self.assertIn("PARTIALLY_IMPLEMENTED_DATA_ONLY", contract)
+        self.assertIn("temporary legacy Tier 1–6", contract)
+        self.assertIn("stage < 1 or stage > 10", CATALOG.read_text(encoding="utf-8"))
+        self.assertIn("definition_for_lane_stage", CATALOG.read_text(encoding="utf-8"))
+        seed = json.loads(SKILL_SEED.read_text(encoding="utf-8"))
+        self.assertEqual(2, seed["schema_version"])
+        self.assertEqual(30, len(seed["techniques"]))
         self.assertIn("TierGrid", BATTLE_UI.read_text(encoding="utf-8"))
         self.assertIn("select_technique", SKILL_SESSION.read_text(encoding="utf-8"))
 

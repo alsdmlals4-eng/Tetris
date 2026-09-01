@@ -19,7 +19,7 @@ Current lanes remain:
 - **DEF** — protection, mitigation, counter, resource ward.
 - **SUP** — recovery, self-buff, timing utility, non-damage disruption.
 
-`Tier 1–6` was the player-facing grid and Stock cost grammar. It is no longer current selection authority: the player now selects only `ATK / DEF / SUP`, sees one Combo-Resolved Stage preview and explicitly confirms it. The lane/effect intent below remains reference material until Stage 1–10 data is authored.
+`Tier 1–6` was the player-facing grid and Stock cost grammar. It is no longer current selection authority: the intended player grammar is `ATK / DEF / SUP` → one Combo-Resolved Stage preview → explicit confirm. Validated Stage 1–10 data is now authored in the production seed; the temporary Tier bridge and final category-only preview/confirmation replacement remain separate runtime work.
 
 ## 2. What SKILL-026 supersedes
 

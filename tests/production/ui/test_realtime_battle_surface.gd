@@ -29,6 +29,13 @@ class PendingChainSession:
 class PendingChainWorkspace:
 	var chain_session := PendingChainSession.new()
 
+class SkillSelectionRuntime:
+	var selected_id := ""
+
+	func select_skill_technique(technique_id: String) -> Dictionary:
+		selected_id = technique_id
+		return {"selected": true, "technique_id": technique_id}
+
 func _has_physical_key(action_name: String, expected_key: Key) -> bool:
 	for event in InputMap.action_get_events(action_name):
 		if event is InputEventKey and event.physical_keycode == expected_key:
@@ -191,6 +198,15 @@ func test_skill_panel_groups_categories_and_tiers_for_the_compact_combat_column(
 	assert_not_null(tier_grid)
 	if tier_grid != null:
 		assert_eq(tier_grid.columns, 3, "six tiers must use a compact 3-column grid instead of pushing USE below the viewport")
+
+func test_transitional_tier_adapter_targets_the_matching_combo_stage_definition() -> void:
+	var battle = load(BATTLE_SCENE_PATH).instantiate()
+	add_child_autofree(battle)
+	var runtime := SkillSelectionRuntime.new()
+	battle._runtime = runtime
+	battle._selected_skill_lane = "ATTACK"
+	assert_true(bool(battle.select_skill_tier(2).get("selected", false)))
+	assert_eq(runtime.selected_id, "atk_c2_rift_snare", "until the Tier grid is removed, its second legacy button must resolve the authored C2 definition")
 
 func test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer() -> void:
 	if not ResourceLoader.exists(BATTLE_SCENE_PATH):

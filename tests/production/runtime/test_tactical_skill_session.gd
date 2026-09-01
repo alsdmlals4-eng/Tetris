@@ -69,13 +69,13 @@ func test_tactical_browse_composes_pause_tokens_and_row_selection_never_spends()
 	assert_true(controller.is_paused())
 	assert_true(controller.has_reason("TACTICAL_SKILL"))
 	assert_true(session.select_category("ATTACK"))
-	var selected: Dictionary = session.select_technique("atk_t1_quick_cut")
+	var selected: Dictionary = session.select_technique("atk_c1_first_edge")
 	assert_true(bool(selected.get("selected", false)))
 	assert_eq(int(player.energy), 30, "selecting a row must not spend Energy")
 	assert_eq(int(player.stock), 3, "selecting a row must not spend Stock")
 	assert_eq(int(fixture["enemy"].hp), 100, "selecting a row must not apply an effect")
-	assert_eq(String(session.selected_detail().get("id", "")), "atk_t1_quick_cut")
-	assert_true(bool(session.readiness("atk_t1_quick_cut", context).get("ready", false)))
+	assert_eq(String(session.selected_detail().get("id", "")), "atk_c1_first_edge")
+	assert_true(bool(session.readiness("atk_c1_first_edge", context).get("ready", false)))
 
 	var system_token: int = controller.acquire("SYSTEM_MENU")
 	assert_gt(system_token, 0)
@@ -100,7 +100,7 @@ func test_explicit_use_commits_once_and_releases_only_the_tactical_pause() -> vo
 
 	assert_true(session.open())
 	assert_true(session.select_category("ATTACK"))
-	assert_true(bool(session.select_technique("atk_t1_quick_cut").get("selected", false)))
+	assert_true(bool(session.select_technique("atk_c1_first_edge").get("selected", false)))
 	var committed: Dictionary = session.commit_selected(context)
 	assert_true(bool(committed.get("committed", false)))
 	assert_eq(int(player.energy), 20)
@@ -114,7 +114,7 @@ func test_explicit_use_commits_once_and_releases_only_the_tactical_pause() -> vo
 	assert_eq(int(player.stock), 2, "USE may spend a selected Technique only once")
 	assert_eq(int(enemy.hp), 88, "USE may apply a selected Technique only once")
 
-func test_realtime_migration_required_techniques_fail_closed_without_partial_spend() -> void:
+func test_legacy_tier_technique_ids_fail_closed_without_partial_spend() -> void:
 	var fixture := _make_fixture()
 	if fixture.is_empty():
 		return
@@ -127,12 +127,12 @@ func test_realtime_migration_required_techniques_fail_closed_without_partial_spe
 	assert_true(session.open())
 	assert_true(session.select_category("SUPPORT"))
 	var selected: Dictionary = session.select_technique("sup_t3_haste")
-	assert_true(bool(selected.get("selected", false)))
+	assert_false(bool(selected.get("selected", true)))
 	var readiness: Dictionary = session.readiness("sup_t3_haste", context)
 	assert_false(bool(readiness.get("ready", true)))
-	assert_eq(String(readiness.get("reason", "")), "REALTIME_MIGRATION_REQUIRED")
+	assert_eq(String(readiness.get("reason", "")), "UNKNOWN_TECHNIQUE")
 	var committed: Dictionary = session.commit_selected(context)
 	assert_false(bool(committed.get("committed", false)))
-	assert_eq(String(committed.get("reason", "")), "REALTIME_MIGRATION_REQUIRED")
+	assert_eq(String(committed.get("reason", "")), "NO_SELECTION")
 	assert_eq(int(player.energy), 30)
 	assert_eq(int(player.stock), 6)
