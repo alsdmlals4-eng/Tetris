@@ -1,0 +1,112 @@
+{
+  "alias_resolutions": {},
+  "aliases": [],
+  "artifact_role": "PROJECT_SKILL_SNAPSHOT",
+  "base_registry": {
+    "hash_definition": "RAW_FILE_BYTES_SHA256",
+    "path": "skills/SKILL_REGISTRY.json",
+    "sha256": "08f882d0c77339e8f7ff187c35b79501e0a2958ab1ff1c7aaa1c0ef8dbee45d6"
+  },
+  "base_routes": [
+    {
+      "route_id": "auditing-canonical-reference-freshness",
+      "skill_id": "auditing-canonical-reference-freshness",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "managing-base-change-proposals",
+      "skill_id": "managing-base-change-proposals",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "managing-game-project-operating-system",
+      "skill_id": "managing-game-project-operating-system",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "managing-project-intake-and-work-contract",
+      "skill_id": "managing-project-intake-and-work-contract",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "reviewing-and-validating-project-changes",
+      "skill_id": "reviewing-and-validating-project-changes",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "running-adversarial-review-and-refinement",
+      "skill_id": "running-adversarial-review-and-refinement",
+      "status": "ACTIVE"
+    },
+    {
+      "route_id": "synchronizing-local-and-github-state",
+      "skill_id": "synchronizing-local-and-github-state",
+      "status": "ACTIVE"
+    }
+  ],
+  "effective_routes": {
+    "auditing-canonical-reference-freshness": {
+      "route_id": "auditing-canonical-reference-freshness",
+      "skill_id": "auditing-canonical-reference-freshness",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "auditing-canonical-reference-freshness"
+    },
+    "managing-base-change-proposals": {
+      "route_id": "managing-base-change-proposals",
+      "skill_id": "managing-base-change-proposals",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "managing-base-change-proposals"
+    },
+    "managing-game-project-operating-system": {
+      "route_id": "managing-game-project-operating-system",
+      "skill_id": "managing-game-project-operating-system",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "managing-game-project-operating-system"
+    },
+    "managing-project-intake-and-work-contract": {
+      "route_id": "managing-project-intake-and-work-contract",
+      "skill_id": "managing-project-intake-and-work-contract",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "managing-project-intake-and-work-contract"
+    },
+    "reviewing-and-validating-project-changes": {
+      "route_id": "reviewing-and-validating-project-changes",
+      "skill_id": "reviewing-and-validating-project-changes",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "reviewing-and-validating-project-changes"
+    },
+    "running-adversarial-review-and-refinement": {
+      "route_id": "running-adversarial-review-and-refinement",
+      "skill_id": "running-adversarial-review-and-refinement",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "running-adversarial-review-and-refinement"
+    },
+    "synchronizing-local-and-github-state": {
+      "route_id": "synchronizing-local-and-github-state",
+      "skill_id": "synchronizing-local-and-github-state",
+      "source": "BASE_SHARED",
+      "status": "ACTIVE",
+      "target_route_id": "synchronizing-local-and-github-state"
+    }
+  },
+  "generated": true,
+  "inactive_routes": [],
+  "project_registry": {
+    "hash_definition": "RAW_FILE_BYTES_SHA256",
+    "path": "skills/SKILL_REGISTRY.json",
+    "sha256": "0b096c201b9ddf3808f3ff746fdf9f162cb4721c217bb9ebc8f50948fa907453"
+  },
+  "project_routes": [],
+  "schema_version": 1,
+  "source_registry": {
+    "hash_definition": "RAW_FILE_BYTES_SHA256",
+    "path": "skills/PROJECT_BASE_ADAPTER.json",
+    "sha256": "f9082310504375f0078bb3b8d570bba33557a64ddaa947744ab4874eb8d10799"
+  }
+}
