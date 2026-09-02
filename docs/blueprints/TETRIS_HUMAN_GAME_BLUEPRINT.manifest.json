@@ -2,12 +2,12 @@
   "schema_version": 1,
   "artifact_role": "HUMAN_GDD_PDF_DERIVED_VIEW",
   "canonicality": "NON_CANONICAL_DERIVED_VIEW",
-  "source_git_head": "ef83eb148cf80e7898cc99536b8819d5a3eef051",
-  "generation_utc": "2026-09-01T23:59:45.519428+00:00",
+  "source_git_head": "22042d21acf27cf3252b3e285906721401ef6320",
+  "generation_utc": "2026-09-02T00:34:52.927027+00:00",
   "generator": "tools/build_human_game_blueprint_pdf.py",
   "pdf": {
     "path": "docs/blueprints/TETRIS_HUMAN_GAME_BLUEPRINT.pdf",
-    "sha256": "c1daeb520c2e2a5c0116560fb6cb4ca7ad88dc1e12e895cb4a6d8f85a59569a4"
+    "sha256": "c7d6cf9b4e7e8f615eb9fbc254b224f4bc468b0711330d70d15144580cd08766"
   },
   "sources": [
     {
@@ -47,14 +47,24 @@
       "sha256": "0a7a96aa26ad5294baa00611ae2fe81d9cc00ab76e4f81a857ab4d5a21b41439"
     }
   ],
-  "planning_visual_assets": [
+  "planning_visual_assets": [],
+  "cover_visual_policy": "REUSE_CURRENT_RUNTIME_IDENTITY_ASSETS_NO_SYNTHETIC_SCREEN_RECOMPOSITION",
+  "embedded_project_assets": [
     {
-      "path": "docs/blueprints/assets/tetris_blueprint_battle_flow_v1.png",
-      "sha256": "d9725055b22a96a7ba853a8ff1eca9d1291793732b46e900f2276070a0cafae0",
-      "consumer": "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · visual battle-surface map",
-      "status": "USER_STANDING_APPROVED_PLANNING_ASSET",
-      "provenance": "OpenAI Image Generation · 2026-09-02 · blueprint-only planning visual · no runtime consumer",
-      "rollback": "Regenerate the prior derived PDF from git history, or remove this planning-only asset and its manifest record together in a future derived-view revision."
+      "asset_id": "TETRIS-IMG-033",
+      "path": "assets/production/characters/vanguard_combat_cutout_v1.png",
+      "sha256": "b4e6fe89e2b4cd96d878dda220f474e6ba4b64affce0080cbc43b1c3448e7ecd",
+      "consumer": "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · current-screen identity plate",
+      "source_role": "Vanguard HUD portrait source; battle scene consumer remains ResourceRow/VanguardPortrait.",
+      "evidence_boundary": "Reused project asset in a derived PDF; it does not establish an exact-head render or Human/UX evidence."
+    },
+    {
+      "asset_id": "TETRIS-IMG-037",
+      "path": "assets/production/bosses/gatebreaker_combat_cutout_v2.png",
+      "sha256": "b81f75a524599c9ead862e6af55c065dd7f5f5bf04abfbb80f89734d3a09d591",
+      "consumer": "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · current-screen identity plate",
+      "source_role": "Gatebreaker CombatStage source; battle scene consumer remains CombatStage/GatebreakerReference.",
+      "evidence_boundary": "Reused project asset in a derived PDF; it does not establish an exact-head render or Human/UX evidence."
     }
   ],
   "evidence_ceiling": {
