@@ -24,6 +24,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     Image,
     KeepTogether,
+    PageBreak,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -39,6 +40,7 @@ MANIFEST_PATH = OUTPUT_DIR / "TETRIS_HUMAN_GAME_BLUEPRINT.manifest.json"
 FONT_PATH = Path("C:/Windows/Fonts/malgun.ttf")
 FONT_BOLD_PATH = Path("C:/Windows/Fonts/malgunbd.ttf")
 BOSS_ART_PATH = ROOT / "assets" / "production" / "bosses" / "gatebreaker_combat_cutout_v2.png"
+HERO_BATTLE_FLOW_PATH = ROOT / "docs" / "blueprints" / "assets" / "tetris_blueprint_battle_flow_v1.png"
 
 SOURCE_PATHS = [
     "docs/design/PROJECT_MASTER_GDD.md",
@@ -130,6 +132,24 @@ def styles_for(font_name: str) -> dict[str, ParagraphStyle]:
             textColor=SEPIA,
             spaceAfter=12,
         ),
+        "eyebrow": ParagraphStyle(
+            "BlueprintEyebrow",
+            parent=base["Normal"],
+            fontName=font_name,
+            fontSize=8.2,
+            leading=10,
+            textColor=GOLD,
+            spaceAfter=4,
+        ),
+        "display": ParagraphStyle(
+            "BlueprintDisplay",
+            parent=base["Title"],
+            fontName=font_name,
+            fontSize=22,
+            leading=28,
+            textColor=INK,
+            spaceAfter=8,
+        ),
         "heading": ParagraphStyle(
             "BlueprintHeading",
             parent=base["Heading2"],
@@ -173,6 +193,15 @@ def styles_for(font_name: str) -> dict[str, ParagraphStyle]:
             leading=11.2,
             textColor=colors.white,
             alignment=TA_CENTER,
+        ),
+        "card_title": ParagraphStyle(
+            "BlueprintCardTitle",
+            parent=base["Heading3"],
+            fontName=font_name,
+            fontSize=10.2,
+            leading=13,
+            textColor=INK,
+            spaceAfter=3,
         ),
         "hero": ParagraphStyle(
             "BlueprintHero",
@@ -238,6 +267,52 @@ def panel(title: str, body: str, styles: dict[str, ParagraphStyle], width: float
     return table
 
 
+def card(
+    kicker: str,
+    title: str,
+    body: str,
+    styles: dict[str, ParagraphStyle],
+    width: float,
+    accent: colors.Color = GOLD,
+) -> Table:
+    content = [
+        paragraph(f"<font color='#765537'><b>{kicker}</b></font>", styles["small"]),
+        paragraph(title, styles["card_title"]),
+        paragraph(body, styles["cell"]),
+    ]
+    table = Table([[content]], colWidths=[width], hAlign="LEFT")
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), PANEL),
+                ("BOX", (0, 0), (-1, -1), 0.7, accent),
+                ("LINEABOVE", (0, 0), (-1, 0), 3, accent),
+                ("LEFTPADDING", (0, 0), (-1, -1), 8),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 8),
+                ("TOPPADDING", (0, 0), (-1, -1), 8),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ]
+        )
+    )
+    return table
+
+
+def planning_visual_assets() -> list[dict[str, str]]:
+    if not HERO_BATTLE_FLOW_PATH.is_file():
+        raise FileNotFoundError(f"required blueprint visual is missing: {HERO_BATTLE_FLOW_PATH}")
+    return [
+        {
+            "path": HERO_BATTLE_FLOW_PATH.relative_to(ROOT).as_posix(),
+            "sha256": sha256(HERO_BATTLE_FLOW_PATH),
+            "consumer": "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · visual battle-surface map",
+            "status": "USER_STANDING_APPROVED_PLANNING_ASSET",
+            "provenance": "OpenAI Image Generation · 2026-09-02 · blueprint-only planning visual · no runtime consumer",
+            "rollback": "Regenerate the prior derived PDF from git history, or remove this planning-only asset and its manifest record together in a future derived-view revision.",
+        }
+    ]
+
+
 def footer(canvas, document) -> None:  # noqa: ANN001
     canvas.saveState()
     canvas.setStrokeColor(GOLD)
@@ -252,145 +327,144 @@ def footer(canvas, document) -> None:  # noqa: ANN001
 
 def build_story(styles: dict[str, ParagraphStyle], page_width: float) -> list:
     story: list = []
-    story.append(Spacer(1, 13 * mm))
-    story.append(paragraph("TETRIS HUMAN GAME BLUEPRINT", styles["title"]))
+    half_width = (page_width - 4 * mm) / 2
+    third_width = (page_width - 8 * mm) / 3
+
+    story.append(Spacer(1, 5 * mm))
+    story.append(paragraph("VISUAL PRODUCTION BLUEPRINT · DERIVED VIEW", styles["eyebrow"]))
+    story.append(paragraph("TETRIS HUMAN GAME BLUEPRINT", styles["display"]))
     story.append(paragraph("퍼즐 전술 전투 · 사람용 파생 기획서", styles["subtitle"]))
     story.append(
         paragraph(
-            "<b>CANONICALITY:</b> 이 PDF는 현재 저장소 정본의 읽기 쉬운 파생 뷰입니다. 규칙, 수치, 승인과 구현 판단은 아래 출처 문서와 실제 Godot 소비 경로가 우선합니다.",
-            styles["body"],
-        )
-    )
-    story.append(Spacer(1, 3 * mm))
-    story.append(paragraph("한 줄 경험", styles["heading"]))
-    story.append(
-        paragraph(
-            "드롭 퍼즐과 체인 퍼즐을 오가며 <b>같은 적 행동 ETA</b> 안에서 콤보를 만들고, 전술 일시정지에서 현재 콤보에 맞는 기술 하나를 확인한 뒤 확정해 보스의 다음 위협에 대응한다.",
+            "<b>한 줄 경험.</b> 드롭 퍼즐과 체인 퍼즐을 오가며 <b>같은 적 행동 ETA</b> 안에서 콤보를 만들고, 전술 일시정지에서 현재 콤보에 맞는 기술 하나를 확인한 뒤 확정해 보스의 다음 위협에 대응한다.",
             styles["hero"],
         )
     )
-    story.append(panel("플레이어 약속", "한 화면에서 무엇을 조작하는지, 지금 왜 급한지, 기술을 쓰면 무엇이 달라지는지를 끊김 없이 읽는다.", styles, page_width))
-    story.append(Spacer(1, 5 * mm))
-    story.append(paragraph("핵심 전투 표면", styles["heading"]))
+    story.append(Image(str(HERO_BATTLE_FLOW_PATH), width=page_width, height=95 * mm, kind="proportional"))
+    story.append(Spacer(1, 4 * mm))
     story.append(
-        cell_table(
-            [
-                ["영역", "현재 역할", "읽는 순서"],
-                ["좌측 50% · Puzzle", "LINE 또는 CHAIN 중 하나만 활성 workspace로 보여 주며, 하단에 조작 안내를 둔다.", "모드 선택 → 즉시 조작 → 결과/콤보 확인"],
-                ["우측 상단 · Boss Stage", "Gatebreaker가 지배적인 무대 실루엣으로 위협을 전달한다. Vanguard는 이 구역에 배치하지 않는다.", "보스/현재 위협 → 다음 예고"],
-                ["우측 중단 · SHARED ACTION ETA", "보스 행동 ETA와 플레이어 반응 가능 시간이 동일한 하나의 창임을 표시한다.", "CURRENT → 남은 ETA → NEXT"],
-                ["우측 하단 · Skill", "ATK / DEF / SUP 카테고리 선택 → 현재 Combo에 맞는 한 기술 미리보기 → 명시적 CONFIRM.", "카테고리 → 효과/비용/불변 영역 → 확정"],
-            ],
-            [34 * mm, 87 * mm, 48 * mm],
-            styles,
+        Table(
+            [[
+                card("THE PROMISE", "한 화면 안에서 즉시 읽는다", "무엇을 조작하는지, 왜 지금 급한지, 기술을 쓰면 무엇이 달라지는지가 끊기지 않는다.", styles, half_width, BLUE),
+                card("CANONICALITY", "PDF는 설명용 파생 뷰", "규칙·수치·승인·구현 판단은 저장소 정본과 실제 Godot 소비 경로가 우선한다.", styles, half_width, GOLD),
+            ]],
+            colWidths=[half_width, half_width + 4 * mm],
+            hAlign="LEFT",
+            style=[("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)],
         )
     )
-    story.append(paragraph("50 / 50 BATTLE SURFACE", styles["heading"]))
-    story.append(
-        cell_table(
-            [
-                ["LEFT · PUZZLE", "RIGHT · COMBAT"],
-                ["Mode bar / Board / preview / controls / chain-lock choice", "Boss stage / shared timer / forecast / large Vanguard HUD portrait / skill overlay"],
-                ["보드가 전투를 밀어내지 않으며, 안내는 하단에 둬 가로 면적을 확보한다.", "보스의 크기와 가시성을 우선하되, ETA와 기술 확정은 무대 위에 겹치지 않는다."],
-            ],
-            [84 * mm, 85 * mm],
-            styles,
-        )
-    )
-    story.append(paragraph("실시간 전투와 공유 행동 타이머", styles["heading"]))
-    story.append(
-        cell_table(
-            [
-                ["표시", "의미", "변하지 않는 원칙"],
-                ["CURRENT THREAT", "지금 대응 중인 보스 행동과 잔여 ETA", "보스 시간이 곧 플레이어가 개입할 수 있는 시간이다."],
-                ["SHARED ACTION ETA", "별도의 플레이어 턴 예산이 아니라 하나의 동일 창", "LINE, CHAIN, SKILL 모두 이 창을 읽고 활용한다."],
-                ["TACTICAL PAUSE", "Skill을 열어 카테고리와 현재 콤보 기술을 검토하는 시간", "시뮬레이션과 보스 연출은 정지하고, Confirm 또는 Cancel로 재개한다."],
-            ],
-            [37 * mm, 65 * mm, 67 * mm],
-            styles,
-        )
-    )
-    story.append(paragraph("퍼즐 → 자원 → 기술 루프", styles["heading"]))
-    story.append(
-        cell_table(
-            [
-                ["단계", "LINE", "CHAIN", "전투 환류"],
-                ["1. 조작", "낙하, 이동, 회전, HOLD, 하드 드롭", "인접 2칸 교환 후 직선 3+ 성립 확인", "진행 중 보스 ETA는 계속 읽힌다."],
-                ["2. 성공", "라인 클리어와 테트리스로 MP/기회 회복", "성공 체인으로 COMBO 상승", "다음 기술의 해금 단계와 비용 판단이 생긴다."],
-                ["3. 실패/선택", "보드 상태를 계속 개선", "불성립 교환은 취소 또는 MP를 지불해 유지", "실패도 선택으로 남기고, 숨은 자동 손실로 처리하지 않는다."],
-                ["4. 확정", "카테고리를 선택", "현재 Combo 단계에 실제 존재하는 기술 하나를 표시", "Confirm 후 효과를 반영하고 공유 시간은 재개한다."],
-            ],
-            [25 * mm, 47 * mm, 48 * mm, 49 * mm],
-            styles,
-        )
-    )
-    story.append(paragraph("스킬 읽기와 확정 흐름", styles["heading"]))
+
+    story.append(PageBreak())
+    story.append(paragraph("01 · BATTLE SURFACE MAP", styles["eyebrow"]))
+    story.append(paragraph("보드와 전투는 같은 비중, 하나의 위협 창", styles["display"]))
     story.append(
         paragraph(
-            "기술 UI의 C1-C8은 클릭 가능한 티어 벽이 아니라 <b>현재 콤보 단계와 해결된 효과를 읽는 표시</b>다. 사용자는 ATK, DEF, SUP 중 하나를 먼저 고르고, 현재 Combo에서 가능한 기술의 대상·효과·비용·변하지 않는 영역을 본 뒤 CONFIRM한다. 상위 콤보 기술이 없으면 정의된 fallback으로 내려가며, 변환된 콤보를 명시한다.",
+            "좌측은 하나의 큰 Puzzle Surface, 우측은 보스 무대·위협·자원·스킬 표면이다. 비율은 약 <b>50 / 50</b>이며, 보스 행동 ETA와 플레이어 반응 가능 시간은 분리된 턴 예산이 아닌 같은 하나의 창이다.",
             styles["body"],
         )
     )
-    story.append(paragraph("첫 세션 흐름", styles["heading"]))
+    story.append(Spacer(1, 4 * mm))
+    story.append(
+        Table(
+            [[
+                card("LEFT 50% · PUZZLE", "LINE 또는 CHAIN", "한 번에 하나의 전체 workspace만 활성화한다. 보드가 전투를 밀어내지 않게 조작 안내는 하단에 둔다.", styles, half_width, BLUE),
+                card("RIGHT 50% · COMBAT", "Boss Stage + Threat + Skill", "Gatebreaker가 전투 무대를 지배한다. Vanguard는 보스 영역이 아니라 읽기 쉬운 HUD portrait로만 남긴다.", styles, half_width, VIOLET),
+            ]],
+            colWidths=[half_width, half_width + 4 * mm],
+            hAlign="LEFT",
+            style=[("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)],
+        )
+    )
+    story.append(Spacer(1, 5 * mm))
+    story.append(card("SHARED ACTION ETA", "적 행동 시간 = 플레이어 반응 시간", "CURRENT THREAT → 남은 ETA → NEXT를 읽는다. 플레이어 턴 게이지를 새로 만들지 않는다. LINE, CHAIN, SKILL 모두 같은 행동 창을 활용한다.", styles, page_width, RED))
+    story.append(Spacer(1, 6 * mm))
+    story.append(paragraph("읽는 순서", styles["heading"]))
     story.append(
         cell_table(
             [
-                ["1", "2", "3", "4", "5"],
-                ["Briefing에서 목적과 조작을 짧게 읽는다.", "CURRENT THREAT와 ETA를 본다.", "LINE으로 자원을 회복한다.", "CHAIN 성공으로 콤보를 만든다.", "SKILL에서 미리보고 확정해 위협에 대응한다."],
+                ["1 · THREAT", "2 · CHOOSE", "3 · ACT", "4 · CONFIRM"],
+                ["보스/현재 위협과 ETA", "LINE 또는 CHAIN", "결과·MP·Combo", "카테고리 기술 미리보기"],
             ],
-            [33.8 * mm] * 5,
+            [page_width / 4] * 4,
             styles,
         )
     )
-    story.append(paragraph("현재 아트 소비 구조", styles["heading"]))
+    story.append(Spacer(1, 4 * mm))
+    story.append(panel("고정 경계", "보스 무대에는 보스만 둔다. ETA·기술 확정·HUD는 무대를 가리지 않는 별도 표면에 놓고, 보드는 왼쪽의 가로 폭을 끝까지 확보한다.", styles, page_width))
+    story.append(Spacer(1, 7 * mm))
+    story.append(paragraph("이 표면에서 확인한 것과 아직 남은 것", styles["heading"]))
+    story.append(
+        cell_table(
+            [
+                ["현재 확인", "아직 주장하지 않는 것"],
+                ["50 / 50 화면 경계·공유 ETA·보스/플레이어 배치 계약", "실제 Godot 프레임의 크롭·가독성·보스 위압감"],
+                ["파생 PDF의 입력 SHA-256과 planning visual provenance", "Human/UX에서의 재미·학습 흐름 최종 승인"],
+            ],
+            [page_width / 2] * 2,
+            styles,
+        )
+    )
+
+    story.append(PageBreak())
+    story.append(paragraph("02 · PLAYER LOOP", styles["eyebrow"]))
+    story.append(paragraph("퍼즐에서 만든 기회가 전술 선택으로 돌아온다", styles["display"]))
+    story.append(
+        Table(
+            [[
+                card("01", "위협을 읽는다", "CURRENT THREAT와 ETA를 읽고, 보드 전환이 필요한지 판단한다.", styles, third_width, RED),
+                card("02", "LINE 또는 CHAIN", "LINE은 MP를, CHAIN은 Combo와 CHAIN MP 회복 기회를 만든다.", styles, third_width, BLUE),
+                card("03", "전술 일시정지", "ATK / DEF / SUP 중 하나를 보고 현재 Combo에 맞는 기술 하나를 명시적으로 CONFIRM한다.", styles, third_width, VIOLET),
+            ]],
+            colWidths=[third_width, third_width + 4 * mm, third_width + 4 * mm],
+            hAlign="LEFT",
+            style=[("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)],
+        )
+    )
+    story.append(Spacer(1, 7 * mm))
+    story.append(paragraph("두 퍼즐 workspace의 역할", styles["heading"]))
+    story.append(
+        Table(
+            [[
+                card("LINE", "MP의 주 공급원", "낙하·이동·회전·HOLD·하드 드롭으로 라인을 정리한다. Single / Double / Triple / Four는 승인된 초기 MP 기회를 만든다.", styles, half_width, BLUE),
+                card("CHAIN", "Combo의 주 공급원", "인접 2칸을 교환해 직선 3+를 만든다. 성공 wave는 Combo +1 후 정해진 규칙으로 MP를 회복한다. 실패 교환은 취소하거나 1 MP lock으로 유지한다.", styles, half_width, VIOLET),
+            ]],
+            colWidths=[half_width, half_width + 4 * mm],
+            hAlign="LEFT",
+            style=[("VALIGN", (0, 0), (-1, -1), "TOP"), ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0)],
+        )
+    )
+    story.append(Spacer(1, 7 * mm))
+    story.append(card("SKILL READOUT", "ATK / DEF / SUP → 현재 Combo 미리보기 → CONFIRM", "C1-C8은 클릭 가능한 티어 벽이 아니라 현재 Combo 단계와 해결된 효과를 읽는 표시다. 카테고리 선택은 소비가 아니며, Confirm에서만 비용·효과·5 MP당 Combo fallback 변환을 원자적으로 반영한다. Cancel 또는 성공적인 Use는 정확히 멈춘 시간에서 다시 시작한다.", styles, page_width, GOLD))
+    story.append(Spacer(1, 6 * mm))
+    story.append(panel("첫 세션", "Briefing → CURRENT THREAT/ETA → LINE으로 MP 확보 → CHAIN으로 Combo → SKILL 미리보기·확정. 규칙의 설명 순서가 아니라 플레이어가 실제로 읽고 행동하는 순서다.", styles, page_width))
+
+    story.append(PageBreak())
+    story.append(paragraph("03 · PRODUCTION & PROOF", styles["eyebrow"]))
+    story.append(paragraph("보여 주는 것과 아직 검증하지 않은 것을 분리한다", styles["display"]))
     art_cell: list = [paragraph("<b>TETRIS-IMG-037</b><br/>Gatebreaker Rift Core Combat Cutout v2<br/><br/>`CombatStage/GatebreakerReference`가 사용하는 현재 보스 무대 후보입니다.<br/><br/><b>상태</b><br/>USER_STANDING_APPROVED_RUNTIME_CANDIDATE<br/>PENDING_EXACT_HEAD_RENDER", styles["cell"])]
     if BOSS_ART_PATH.is_file():
-        art = Image(str(BOSS_ART_PATH), width=46 * mm, height=69 * mm, kind="proportional")
-        art_cell.append(art)
-    visual_table = Table([[art_cell[0], art_cell[1] if len(art_cell) > 1 else ""]], colWidths=[106 * mm, 63 * mm], hAlign="LEFT")
-    visual_table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), PANEL), ("BOX", (0, 0), (-1, -1), 0.55, GOLD), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("LEFTPADDING", (0, 0), (-1, -1), 9), ("RIGHTPADDING", (0, 0), (-1, -1), 9), ("TOPPADDING", (0, 0), (-1, -1), 8), ("BOTTOMPADDING", (0, 0), (-1, -1), 8)]))
-    story.append(KeepTogether([visual_table, Spacer(1, 2 * mm)]))
-    story.append(
-        paragraph(
-            "현 v2는 1024×1536 RGBA 투명 소스이며, Rift Core·ram-arm·chained flail이 남는 1024×1408 crop으로 CombatStage를 덮는다. 기존 `TETRIS-IMG-034`는 삭제하거나 덮어쓰지 않고, 정확한 원본 바이트를 유지한 rollback source로 남긴다. Vanguard는 ResourceFrame의 읽기 쉬운 얼굴/어깨 HUD portrait만 사용한다.",
-            styles["body"],
-        )
-    )
-    story.append(paragraph("검증 상태와 사람 검수", styles["heading"]))
-    story.append(
-        cell_table(
-            [
-                ["증거", "현재 상태", "아직 주장하지 않는 것"],
-                ["정본/정적 계약", "구조화 문서, scene binding, PNG RGBA/alpha/hash, tooling tests", "실제 Godot 프레임의 시각 품질"],
-                ["자동 테스트", "퍼즐·공유 ETA·스킬·체인·자산 소비 계약의 회귀 검사", "기기별 입력감, 성능, 접근성"],
-                ["Runtime render", "PENDING_EXACT_HEAD_RENDER", "v2가 실제 실행 프레임에서 잘리지 않고 읽힌다는 PASS"],
-                ["Human/UX", "PENDING", "보스 위압감, 보드/기술 가독성, 재미와 학습 흐름의 최종 승인"],
-            ],
-            [39 * mm, 65 * mm, 65 * mm],
-            styles,
-        )
-    )
+        art_cell.append(Image(str(BOSS_ART_PATH), width=42 * mm, height=56 * mm, kind="proportional"))
+    visual_table = Table([[art_cell[0], art_cell[1] if len(art_cell) > 1 else ""]], colWidths=[104 * mm, 65 * mm], hAlign="LEFT")
+    visual_table.setStyle(TableStyle([("BACKGROUND", (0, 0), (-1, -1), PANEL), ("BOX", (0, 0), (-1, -1), 0.7, GOLD), ("VALIGN", (0, 0), (-1, -1), "MIDDLE"), ("LEFTPADDING", (0, 0), (-1, -1), 9), ("RIGHTPADDING", (0, 0), (-1, -1), 9), ("TOPPADDING", (0, 0), (-1, -1), 8), ("BOTTOMPADDING", (0, 0), (-1, -1), 8)]))
+    story.append(KeepTogether([visual_table, Spacer(1, 3 * mm)]))
+    story.append(paragraph("v2는 1024×1536 RGBA 투명 소스이며, Rift Core·ram-arm·chained flail이 남는 1024×1408 crop으로 CombatStage를 덮는다. v1 `TETRIS-IMG-034`는 덮어쓰지 않은 rollback source로 유지한다.", styles["body"]))
     story.append(paragraph("추가·수정·삭제 권장 사항", styles["heading"]))
     story.append(
         cell_table(
             [
                 ["현재 상태", "권장 조치", "요청 이유", "기대 효과"],
                 ["v2 보스는 scene binding 완료, exact-head render 미확보", "Tetris 전용 Godot 실행기에서 실제 창 캡처와 crop 확인", "정적 계약은 화면의 잘림·가독성을 보장하지 못한다.", "보스 위압감과 UI 경계의 실증"],
-                ["보드·체인·기술은 단위/계약 검증 중심", "한 세션의 LINE→CHAIN→SKILL 실제 플레이 기록", "규칙 통과와 재미/학습성은 다르다.", "초기 이탈과 불명확한 콤보 원인 발견"],
-                ["v1 Gatebreaker 파일은 복구용으로 보존", "사용처 0과 exact v2 render가 확인될 때까지 유지", "구형이라는 이유만으로 삭제하면 안전한 롤백을 잃는다.", "무손실 복구와 에셋 출처 추적"],
-                ["사람용 PDF는 파생 뷰", "정본 규칙 변경 시 이 PDF를 재생성", "PDF를 독립 정본으로 취급하면 규칙이 이중화된다.", "기획/구현/검수의 단일 진실원 유지"],
+                ["보드·체인·기술은 단위/계약 검증 중심", "한 세션의 LINE→CHAIN→SKILL 실제 플레이 기록", "규칙 통과와 재미/학습성은 다르다.", "초기 이탈과 불명확한 Combo 원인 발견"],
+                ["v1 Gatebreaker는 rollback source", "사용처 0과 exact v2 render가 확인될 때까지 유지", "구형이라는 이유만으로 삭제하면 안전한 복구를 잃는다.", "무손실 복구와 에셋 출처 추적"],
+                ["사람용 PDF는 파생 뷰", "정본 규칙 변경 시 이 PDF를 재생성", "PDF가 독립 정본이 되면 규칙이 이중화된다.", "기획·구현·검수의 단일 진실원 유지"],
             ],
             [39 * mm, 42 * mm, 43 * mm, 45 * mm],
             styles,
         )
     )
+    story.append(Spacer(1, 5 * mm))
     story.append(paragraph("정본 출처", styles["heading"]))
-    story.append(
-        paragraph(
-            "Project Master GDD · Production Realtime Combat Canon · Combo Resolved Skill Contract · Chain Combo MP Contract · Runtime Image Asset Consumer Contract · Visual Bible · First Session Onboarding Contract · Full Game Screen Surface Inventory · Approved Reference Manifest. 각 파일의 SHA-256은 함께 생성되는 manifest에서 고정한다.",
-            styles["small"],
-        )
-    )
+    story.append(paragraph("Project Master GDD · Production Realtime Combat Canon · Combo Resolved Skill Contract · Chain Combo MP Contract · Runtime Image Asset Consumer Contract · Visual Bible · First Session Onboarding Contract · Full Game Screen Surface Inventory · Approved Reference Manifest. 각 파일의 SHA-256과 planning visual hash는 함께 생성되는 manifest에서 고정한다.", styles["small"]))
     return story
 
 
@@ -430,6 +504,7 @@ def main() -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest.parent.mkdir(parents=True, exist_ok=True)
     sources = source_records()
+    visual_assets = planning_visual_assets()
     source_head = repository_head()
 
     with tempfile.NamedTemporaryFile(delete=False, dir=output.parent, suffix=".pdf") as stream:
@@ -453,6 +528,7 @@ def main() -> None:
             "sha256": sha256(output),
         },
         "sources": sources,
+        "planning_visual_assets": visual_assets,
         "evidence_ceiling": {
             "machine_contract": "document and static asset/scene facts only",
             "runtime_render": "PENDING_EXACT_HEAD_RENDER",
