@@ -40,7 +40,7 @@ MANIFEST_PATH = OUTPUT_DIR / "TETRIS_HUMAN_GAME_BLUEPRINT.manifest.json"
 FONT_PATH = Path("C:/Windows/Fonts/malgun.ttf")
 FONT_BOLD_PATH = Path("C:/Windows/Fonts/malgunbd.ttf")
 BOSS_ART_PATH = ROOT / "assets" / "production" / "bosses" / "gatebreaker_combat_cutout_v2.png"
-HERO_BATTLE_FLOW_PATH = ROOT / "docs" / "blueprints" / "assets" / "tetris_blueprint_battle_flow_v1.png"
+VANGUARD_ART_PATH = ROOT / "assets" / "production" / "characters" / "vanguard_combat_cutout_v1.png"
 
 SOURCE_PATHS = [
     "docs/design/PROJECT_MASTER_GDD.md",
@@ -298,19 +298,83 @@ def card(
     return table
 
 
-def planning_visual_assets() -> list[dict[str, str]]:
-    if not HERO_BATTLE_FLOW_PATH.is_file():
-        raise FileNotFoundError(f"required blueprint visual is missing: {HERO_BATTLE_FLOW_PATH}")
-    return [
-        {
-            "path": HERO_BATTLE_FLOW_PATH.relative_to(ROOT).as_posix(),
-            "sha256": sha256(HERO_BATTLE_FLOW_PATH),
-            "consumer": "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · visual battle-surface map",
-            "status": "USER_STANDING_APPROVED_PLANNING_ASSET",
-            "provenance": "OpenAI Image Generation · 2026-09-02 · blueprint-only planning visual · no runtime consumer",
-            "rollback": "Regenerate the prior derived PDF from git history, or remove this planning-only asset and its manifest record together in a future derived-view revision.",
-        }
+def embedded_project_assets() -> list[dict[str, str]]:
+    """Register the existing project identities reused in the PDF without promoting it to runtime proof."""
+    required_assets = [
+        (
+            "TETRIS-IMG-033",
+            VANGUARD_ART_PATH,
+            "Vanguard HUD portrait source; battle scene consumer remains ResourceRow/VanguardPortrait.",
+        ),
+        (
+            "TETRIS-IMG-037",
+            BOSS_ART_PATH,
+            "Gatebreaker CombatStage source; battle scene consumer remains CombatStage/GatebreakerReference.",
+        ),
     ]
+    records = []
+    for asset_id, path, source_role in required_assets:
+        if not path.is_file():
+            raise FileNotFoundError(f"required project identity asset is missing: {path}")
+        records.append(
+            {
+                "asset_id": asset_id,
+                "path": path.relative_to(ROOT).as_posix(),
+                "sha256": sha256(path),
+                "consumer": "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · current-screen identity plate",
+                "source_role": source_role,
+                "evidence_boundary": "Reused project asset in a derived PDF; it does not establish an exact-head render or Human/UX evidence.",
+            }
+        )
+    return records
+
+
+def current_screen_identity_plate(styles: dict[str, ParagraphStyle], page_width: float) -> Table:
+    """Show the existing screen hierarchy without inventing a synthetic battle screenshot."""
+    left_width = 87 * mm
+    right_width = page_width - left_width
+    puzzle_column = [
+        paragraph("<b>CURRENT-SCREEN IDENTITY PLATE</b>", styles["eyebrow"]),
+        paragraph("NO SYNTHETIC BATTLE SCREEN", styles["card_title"]),
+        paragraph(
+            "이 표지는 새 전투 화면을 그려 넣지 않는다. 현재 Godot 전투 화면이 가진 <b>50 / 50</b> 정보 우선순위와 실제 프로젝트 캐릭터 자산만 재사용해, 사람이 화면을 읽는 순서를 설명한다.",
+            styles["cell"],
+        ),
+        Spacer(1, 4 * mm),
+        card("LEFT 50%", "하나의 큰 Puzzle Surface", "LINE 또는 CHAIN 하나만 크게 보인다. 조작 안내는 보드의 가로 폭을 빼앗지 않는 하단 영역에 둔다.", styles, left_width - 14 * mm, BLUE),
+        Spacer(1, 3 * mm),
+        card("SHARED ACTION ETA", "보스 행동 = 플레이어 반응 창", "CURRENT THREAT·ETA·NEXT가 보스와 플레이어가 공유하는 같은 실시간 창을 읽게 한다. 별도 플레이어 턴 타이머는 만들지 않는다.", styles, left_width - 14 * mm, RED),
+        Spacer(1, 4 * mm),
+        paragraph("<b>Vanguard HUD portrait · TETRIS-IMG-033</b>", styles["small"]),
+        Image(str(VANGUARD_ART_PATH), width=27 * mm, height=34 * mm, kind="proportional"),
+        paragraph("Vanguard는 보스 무대가 아닌 HP / MP / Combo 옆의 읽기 쉬운 portrait 역할만 유지한다.", styles["small"]),
+    ]
+    boss_column = [
+        paragraph("<font color='#F3E7CE'><b>RIGHT 50% · COMBAT STAGE</b></font>", styles["small"]),
+        paragraph("<font color='#F3E7CE'><b>Gatebreaker dominates the threat stage</b></font>", styles["cell"]),
+        Spacer(1, 2 * mm),
+        Image(str(BOSS_ART_PATH), width=right_width - 12 * mm, height=86 * mm, kind="proportional"),
+        Spacer(1, 2 * mm),
+        paragraph("<font color='#F3E7CE'>TETRIS-IMG-037 · CombatStage / GatebreakerReference</font>", styles["small"]),
+        paragraph("<font color='#F3E7CE'>보스 이미지는 무대를 지배하지만, ETA·자원·Skill surface를 덮지 않는다.</font>", styles["small"]),
+    ]
+    plate = Table([[puzzle_column, boss_column]], colWidths=[left_width, right_width], hAlign="LEFT")
+    plate.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (0, 0), PANEL),
+                ("BACKGROUND", (1, 0), (1, 0), INK),
+                ("BOX", (0, 0), (-1, -1), 0.85, GOLD),
+                ("LINEBEFORE", (1, 0), (1, 0), 0.55, GOLD),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+                ("LEFTPADDING", (0, 0), (-1, -1), 7 * mm),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 7 * mm),
+                ("TOPPADDING", (0, 0), (-1, -1), 6 * mm),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 6 * mm),
+            ]
+        )
+    )
+    return plate
 
 
 def footer(canvas, document) -> None:  # noqa: ANN001
@@ -340,7 +404,7 @@ def build_story(styles: dict[str, ParagraphStyle], page_width: float) -> list:
             styles["hero"],
         )
     )
-    story.append(Image(str(HERO_BATTLE_FLOW_PATH), width=page_width, height=95 * mm, kind="proportional"))
+    story.append(current_screen_identity_plate(styles, page_width))
     story.append(Spacer(1, 4 * mm))
     story.append(
         Table(
@@ -398,7 +462,7 @@ def build_story(styles: dict[str, ParagraphStyle], page_width: float) -> list:
             [
                 ["현재 확인", "아직 주장하지 않는 것"],
                 ["50 / 50 화면 경계·공유 ETA·보스/플레이어 배치 계약", "실제 Godot 프레임의 크롭·가독성·보스 위압감"],
-                ["파생 PDF의 입력 SHA-256과 planning visual provenance", "Human/UX에서의 재미·학습 흐름 최종 승인"],
+                ["파생 PDF의 입력 SHA-256과 재사용 프로젝트 자산 provenance", "Human/UX에서의 재미·학습 흐름 최종 승인"],
             ],
             [page_width / 2] * 2,
             styles,
@@ -464,7 +528,7 @@ def build_story(styles: dict[str, ParagraphStyle], page_width: float) -> list:
     )
     story.append(Spacer(1, 5 * mm))
     story.append(paragraph("정본 출처", styles["heading"]))
-    story.append(paragraph("Project Master GDD · Production Realtime Combat Canon · Combo Resolved Skill Contract · Chain Combo MP Contract · Runtime Image Asset Consumer Contract · Visual Bible · First Session Onboarding Contract · Full Game Screen Surface Inventory · Approved Reference Manifest. 각 파일의 SHA-256과 planning visual hash는 함께 생성되는 manifest에서 고정한다.", styles["small"]))
+    story.append(paragraph("Project Master GDD · Production Realtime Combat Canon · Combo Resolved Skill Contract · Chain Combo MP Contract · Runtime Image Asset Consumer Contract · Visual Bible · First Session Onboarding Contract · Full Game Screen Surface Inventory · Approved Reference Manifest. 각 파일의 SHA-256과 재사용 프로젝트 자산 hash는 함께 생성되는 manifest에서 고정한다.", styles["small"]))
     return story
 
 
@@ -504,7 +568,7 @@ def main() -> None:
     output.parent.mkdir(parents=True, exist_ok=True)
     manifest.parent.mkdir(parents=True, exist_ok=True)
     sources = source_records()
-    visual_assets = planning_visual_assets()
+    visual_assets = embedded_project_assets()
     source_head = repository_head()
 
     with tempfile.NamedTemporaryFile(delete=False, dir=output.parent, suffix=".pdf") as stream:
@@ -528,7 +592,9 @@ def main() -> None:
             "sha256": sha256(output),
         },
         "sources": sources,
-        "planning_visual_assets": visual_assets,
+        "planning_visual_assets": [],
+        "cover_visual_policy": "REUSE_CURRENT_RUNTIME_IDENTITY_ASSETS_NO_SYNTHETIC_SCREEN_RECOMPOSITION",
+        "embedded_project_assets": visual_assets,
         "evidence_ceiling": {
             "machine_contract": "document and static asset/scene facts only",
             "runtime_render": "PENDING_EXACT_HEAD_RENDER",

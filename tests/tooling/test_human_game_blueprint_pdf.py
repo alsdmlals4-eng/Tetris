@@ -14,15 +14,18 @@ ROOT = Path(__file__).resolve().parents[2]
 PDF_PATH = ROOT / "docs" / "blueprints" / "TETRIS_HUMAN_GAME_BLUEPRINT.pdf"
 MANIFEST_PATH = ROOT / "docs" / "blueprints" / "TETRIS_HUMAN_GAME_BLUEPRINT.manifest.json"
 CORE_CI_PATH = ROOT / ".github" / "workflows" / "core-poc-ci.yml"
-HERO_PATH = ROOT / "docs" / "blueprints" / "assets" / "tetris_blueprint_battle_flow_v1.png"
+BOSS_ASSET_PATH = ROOT / "assets" / "production" / "bosses" / "gatebreaker_combat_cutout_v2.png"
+VANGUARD_ASSET_PATH = ROOT / "assets" / "production" / "characters" / "vanguard_combat_cutout_v1.png"
 
 
 class HumanGameBlueprintPdfTests(unittest.TestCase):
     def test_core_ci_installs_the_pdf_reader_before_running_tooling_tests(self) -> None:
         workflow = CORE_CI_PATH.read_text(encoding="utf-8")
-        dependency = "pypdf==6.14.2"
-        self.assertIn(dependency, workflow)
-        self.assertLess(workflow.index(dependency), workflow.index("python -m unittest discover -s tests/tooling"))
+        tooling_dependencies = ["pypdf==6.14.2", "reportlab==5.0.1"]
+        tooling_tests = workflow.index("python -m unittest discover -s tests/tooling")
+        for dependency in tooling_dependencies:
+            self.assertIn(dependency, workflow)
+            self.assertLess(workflow.index(dependency), tooling_tests)
 
     def test_blueprint_is_a_readable_derived_pdf_with_exact_source_provenance(self) -> None:
         self.assertTrue(PDF_PATH.is_file(), "human blueprint PDF must be generated")
@@ -63,23 +66,36 @@ class HumanGameBlueprintPdfTests(unittest.TestCase):
         self.assertIn("TETRIS-IMG-037", extracted)
         self.assertIn("PENDING_EXACT_HEAD_RENDER", extracted)
 
-    def test_blueprint_registers_a_visual_battle_flow_asset_for_the_human_pdf(self) -> None:
-        """Keep the visual battle map from quietly regressing back into a table-only PDF."""
+    def test_blueprint_reuses_current_runtime_identity_assets_without_a_synthetic_screen(self) -> None:
+        """The derived cover may explain the layout, but must not invent a second game screen."""
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-        visual_assets = manifest["planning_visual_assets"]
-        self.assertEqual(len(visual_assets), 1)
+        self.assertEqual(manifest["planning_visual_assets"], [])
+        self.assertEqual(
+            manifest["cover_visual_policy"],
+            "REUSE_CURRENT_RUNTIME_IDENTITY_ASSETS_NO_SYNTHETIC_SCREEN_RECOMPOSITION",
+        )
 
-        hero = visual_assets[0]
-        self.assertEqual(hero["path"], "docs/blueprints/assets/tetris_blueprint_battle_flow_v1.png")
-        self.assertEqual(hero["consumer"], "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · visual battle-surface map")
-        self.assertEqual(hero["status"], "USER_STANDING_APPROVED_PLANNING_ASSET")
-        self.assertTrue(HERO_PATH.is_file(), "the registered visual battle map must be present")
-        self.assertEqual(hero["sha256"], hashlib.sha256(HERO_PATH.read_bytes()).hexdigest())
+        visual_assets = manifest["embedded_project_assets"]
+        self.assertEqual(len(visual_assets), 2)
+        expected = {
+            "TETRIS-IMG-033": VANGUARD_ASSET_PATH,
+            "TETRIS-IMG-037": BOSS_ASSET_PATH,
+        }
+        for asset in visual_assets:
+            self.assertIn(asset["asset_id"], expected)
+            asset_path = expected[asset["asset_id"]]
+            self.assertEqual(asset["path"], asset_path.relative_to(ROOT).as_posix())
+            self.assertTrue(asset_path.is_file(), "the registered project asset must be present")
+            self.assertEqual(asset["sha256"], hashlib.sha256(asset_path.read_bytes()).hexdigest())
+            self.assertEqual(asset["consumer"], "TETRIS_HUMAN_GAME_BLUEPRINT.pdf · current-screen identity plate")
 
         reader = PdfReader(str(PDF_PATH))
         self.assertEqual(len(reader.pages), 4, "the visual blueprint is a deliberate four-page field guide")
         extracted = "\n".join(page.extract_text() or "" for page in reader.pages)
         self.assertIn("BATTLE SURFACE MAP", extracted)
+        self.assertIn("CURRENT-SCREEN IDENTITY PLATE", extracted)
+        self.assertIn("NO SYNTHETIC BATTLE SCREEN", extracted)
+        self.assertNotIn("planning visual", extracted.lower())
 
 
 if __name__ == "__main__":

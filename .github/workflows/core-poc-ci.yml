@@ -26,9 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Install PDF tooling test dependency
+      - name: Install reproducible PDF tooling dependencies
         shell: bash
-        run: python -m pip install --disable-pip-version-check pypdf==6.14.2
+        run: python -m pip install --disable-pip-version-check pypdf==6.14.2 reportlab==5.0.1
 
       - name: Verify Tetris HiGodot slot 8 binding
         shell: bash
