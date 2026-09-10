@@ -1,0 +1,89 @@
+{
+  "schema": "tetris-replanning-portrait-candidates-v1",
+  "requirement": "REPLAN-VR-PORTRAIT-01",
+  "owner": "docs/design/REPLANNING_FOUNDATION.md#9-continued-preparation-portrait-direction-experiment",
+  "date": "2026-09-10",
+  "source_main": "9e9de05f2c4060e3b1c84883d6c601c88d671364",
+  "status": "GENERATED_CANDIDATES_NOT_APPROVED",
+  "production_consumer_changed": false,
+  "planned_consumer": "scenes/production/battle.tscn::MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait",
+  "display_trial": "128x96 HUD slot containing 96x96 portrait; static portrait-comparison.html, not a Godot capture",
+  "generation": {
+    "tool": "built-in image_gen.imagegen",
+    "additional_paid_api_used": false,
+    "requested_size": [1024, 1024],
+    "actual_size": [1254, 1254],
+    "brief_record_type": "semantic production brief, not a verbatim tool transcript",
+    "shared_brief": "New original adult male frontier defender; dark tousled hair, warm brown eyes, calm determined neutral expression, dark steel armor collar and muted blue-green mantle. Face and upper shoulders only, near-front slight three-quarter view, complete hair silhouette with safe margin, face large and unobscured. No weapon, text, frame, scene or old character copying. Request genuine transparent background.",
+    "a_direction": "Clean anime cel shading, broad light and shadow, clear contours.",
+    "b_direction": "Edit new A only: preserve identity, pose and framing; change rendering to painterly anime, soft material modeling and restrained texture; request real alpha.",
+    "c_direction": "Edit new A only: preserve identity, pose and framing; change rendering to graphic ink and flat-color anime, strong contour hierarchy, little texture; request real alpha.",
+    "repair_brief": "Remove only the painted checkerboard background, preserve all character pixels and return genuine transparent alpha.",
+    "repair_outcome": "Two bounded B/C repair attempts still returned opaque RGB with painted checkerboard. Neither repair was promoted or copied into the repository. No programmatic drawing or background substitution used."
+  },
+  "candidates": [
+    {
+      "id": "A",
+      "path": "portrait-a-cel-v1.png",
+      "sha256": "79e0f02c584b1fb4072a9a3d211d00ce8d1572281682ff958225ec0a89855de2",
+      "generation_output_id": "exec-26877ff3-614c-43a6-9896-815616155ce2",
+      "mode": "RGBA",
+      "alpha_extrema": [0, 255],
+      "alpha_bbox": [0, 18, 1254, 1254],
+      "review": "TECHNICAL_CANDIDATE; real transparency; head-top padding is only 18px, so framing margin requires follow-up before a final state family",
+      "approval": "PENDING",
+      "runtime": "NOT_IMPLEMENTED"
+    },
+    {
+      "id": "B",
+      "path": "portrait-b-painterly-v1.png",
+      "sha256": "a4f1258ddcc8b37d4f68a20f3e54787533fe35c5edeeb0b75e4ad869eb57b743",
+      "generation_output_id": "exec-ea0e2d24-771b-48d7-8fb3-62d24bd1f355",
+      "reference_candidate": "A",
+      "mode": "RGB",
+      "review": "REVISION_REQUIRED_ALPHA; style comparison only; painted checkerboard is not transparency",
+      "failed_repair_output_id": "exec-b66017ef-f585-4131-8dde-fe319d9f0e58",
+      "approval": "PENDING",
+      "runtime": "PROHIBITED_UNTIL_REPAIRED_AND_APPROVED"
+    },
+    {
+      "id": "C",
+      "path": "portrait-c-graphic-v1.png",
+      "sha256": "4b5b12bf70f7227c7d630ed82ad81111626e2039d336e4d3428c9493156c2517",
+      "generation_output_id": "exec-908c9519-fae3-4854-8ead-9b468141ffb9",
+      "reference_candidate": "A",
+      "mode": "RGB",
+      "review": "REVISION_REQUIRED_ALPHA; style comparison only; painted checkerboard is not transparency",
+      "failed_repair_output_id": "exec-953ae75a-8f15-4969-8683-6e8cd605e7ca",
+      "approval": "PENDING",
+      "runtime": "PROHIBITED_UNTIL_REPAIRED_AND_APPROVED"
+    }
+  ],
+  "aseprite_evidence": {
+    "route": "existing aseprite-candidates native tools; candidate-only staging",
+    "operations": ["get_sprite_info", "copy_sprite", "export_frame", "get_sprite_info"],
+    "source_candidate": "A",
+    "path": "portrait-a-neutral-v1.aseprite",
+    "sha256": "da2d591b88b87055657752989bda604305a1c091aace528a0f14669d765db40c",
+    "width": 1254,
+    "height": 1254,
+    "frames": 1,
+    "layers": 1,
+    "tags": [],
+    "frame_duration_ms": 100,
+    "duration_meaning": "Editor default for one static neutral frame, not authored animation timing",
+    "roundtrip_png_sha256": "03ac396bfbcf39168112fa76ebae79223af21033aa60fe7372663bbd9bf18acd",
+    "decoded_rgba_pixel_equal": true,
+    "decoded_rgba_sha256": "e372e299b70f04a087906851ad2aaff301052f0c435c1a65b62131fd664371e4",
+    "verification": "Pillow decoded RGBA bytes and dimensions compared exactly; true alpha retained. Temporary roundtrip is regenerable from retained source.",
+    "animation": "NOT_AUTHORED",
+    "godot_import_or_runtime": "NOT_RUN"
+  },
+  "evidence_ceiling": {
+    "large_candidate_visual_inspection": "REVIEWED_WITH_DEFECTS",
+    "static_comparison_page": "BROWSER_OPEN_AND_ACCESSIBILITY_CONTENT_VERIFIED; actual 96px screenshot review NOT_RUN",
+    "human_style_approval": "PENDING",
+    "motion_continuity": "NOT_RUN",
+    "commercial_rights_or_release": "NOT_VERIFIED"
+  }
+}
