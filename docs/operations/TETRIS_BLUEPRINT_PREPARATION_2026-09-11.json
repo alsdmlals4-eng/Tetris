@@ -1,0 +1,79 @@
+{
+  "work_level": "L3",
+  "direction_anchor": "Prepare a research-backed, visually complete human blueprint and implementation specification for the current replanning direction; do not implement gameplay before final user approval.",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "2026-09-11 user supplies Ten Paces PDF as structure-only example and authorizes detailed recommended planning and necessary game-usable candidate art, reserving final approval and implementation for afterward.",
+  "scope": "R1 core, first complete playable session, screen atlas, detailed SWOT and mitigation, content/data tables, game-usable candidate assets and region/motion contracts, derived PDF, implementation handoff and review. Preserve baseline runtime and old PDF. No campaign/progression expansion or title lock by inference.",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {"source_and_evidence": "main ce607ce684f7b21d45a77cc60fda8f92c9729750; AGENTS, REPLANNING_FOUNDATION, REPLANNING_RULES_AND_FUN_SPEC, workspace index, installed Base9.4.4, battle.tscn, LINE/CHAIN board views, portrait manifest, existing PDF builder; six current Draft PRs read-only", "observed_pattern": "Baseline board views still draw primitive blocks; proposed R1 is not runtime. Existing reader PDF cannot describe new rules or assets.", "project_fit_and_difference": "Keep existing owners and builder techniques, add a separate new-design reader edition and candidate package; no runtime asset replacement or unrelated Draft absorption.", "disposition": "ADAPT"},
+      {"source_and_evidence": "User example TEN_PACES_HUMAN_BLUEPRINT_20260910_ORGANIZED.pdf:92pages; text inspection and page5 rendered; Base reuse handoff/profile and RM-VIS-001/002; docs policy and System Blueprint contract", "observed_pattern": "Screen atlas, experience, SWOT, rules, content tables and implementation checklist form a readable hierarchy. Base TETRIS identity hint still mentions obsolete turn budget.", "project_fit_and_difference": "Reuse structure and semantic-state contracts only. Reject obsolete Base identity hint in favor of project continuous ETA; preserve9.4.4 lock.", "disposition": "ADAPT"},
+      {"source_and_evidence": "2026-09-11 fresh official pages: docs.godotengine.org/en/stable/classes/class_atlastexture.html; aseprite.org/docs/sprite-sheet/; subsetgames.com/itb.html; puyo.sega.jp/puyopuyotetris2/rule.html", "observed_pattern": "Atlas regions/filter clipping; frame sheet packaging; visible threats; puzzle/HP hybrid and forced swaps have precedents.", "project_fit_and_difference": "Use explicit atlas regions, preserve voluntary switching and one shared ETA. No genre-combination novelty claim.", "disposition": "ADAPT"}
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Replanning human publication and asset preparation only",
+    "inventory": [
+      {"path":"docs/design/REPLANNING_FOUNDATION.md","classification":"ACTIVE_OWNER","owner_or_provenance":"REPLAN-043","references_and_consumers":"New-direction entry; existing controlled comparison preserved","removal_proposed":false},
+      {"path":"docs/design/REPLANNING_RULES_AND_FUN_SPEC.md","classification":"ACTIVE_OWNER","owner_or_provenance":"R1 recommendation","references_and_consumers":"New blueprint composes these rules; no runtime adoption","removal_proposed":false},
+      {"path":"docs/blueprints/TETRIS_HUMAN_GAME_BLUEPRINT.pdf","classification":"COMPATIBILITY","owner_or_provenance":"Preserved baseline-derived reader artifact","references_and_consumers":"Do not overwrite or delete","removal_proposed":false},
+      {"path":"assets/production","classification":"ACTIVE_OWNER","owner_or_provenance":"Still-bound runtime assets","references_and_consumers":"battle.tscn and current manifests; untouched","removal_proposed":false}
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref":"REPLAN-043 human blueprint final-approval preparation",
+    "source_main_sha":"ce607ce684f7b21d45a77cc60fda8f92c9729750",
+    "work_item_refs":["BLUEPRINT-PREP"],
+    "active_work_item_ref":null,
+    "next_action":"STOP_APPROVED_SCOPE_COMPLETE",
+    "work_items":[{
+      "work_item_id":"BLUEPRINT-PREP","title":"Detailed human blueprint with usable candidate assets and implementation mapping","status":"DONE",
+      "canon_owner":"docs/design/REPLANNING_HUMAN_BLUEPRINT.md",
+      "actual_consumers":["Derived human PDF and future implementation handoff; no runtime change"],
+      "depends_on":[],"acceptance_criteria":["AC-BP-COVERAGE","AC-BP-ASSETS","AC-BP-REVIEW"],"required_evidence":["E1_STATIC","E2_TEST"],
+      "checklist":[
+        {"id":"AC-BP-COVERAGE","text":"Human screen atlas, detailed SWOT actions, rules, examples, content/data tables, error flows and implementation acceptance covered","status":"PASS","evidence":["REPLANNING_HUMAN_BLUEPRINT.md sections01-50 and blueprint-data.json; source70ad5ebcea42109bdfe8a829f488a12ba2ef4e00"]},
+        {"id":"AC-BP-ASSETS","text":"Required actual image candidates stored with provenance, dimensions, regions and planned consumers; no fake runtime claims","status":"PASS","evidence":["Five PNGs,25 regions,four Aseprite masters; candidate manifest hash/dimension/region tests and RGBA roundtrips passed"]},
+        {"id":"AC-BP-REVIEW","text":"Two full review loops, PDF all-page render, static regression, exact source/output readback","status":"PASS","evidence":["artifact_review and adversarial_review below; all65 tooling tests passed; exact PDF/source bytes verified"]}
+      ],
+      "verification":[{"level":"E1_STATIC","status":"PASS","evidence":["Source commit 70ad5ebcea42109bdfe8a829f488a12ba2ef4e00; 50 numbered sections; 51 rendered pages visually inspected individually; no clipped text/table or missing artwork found","Approved project operating contract validation passed; git diff --check passed; runtime and protected baseline untouched"]},{"level":"E2_TEST","status":"PASS","evidence":["python -m unittest discover -s tests/tooling: 65 tests passed, including 11 blueprint tests","Five PNG hashes/dimensions, 25 atlas regions, four Aseprite RGBA byte-identical roundtrips, teaching fixtures, economy arithmetic, no-damage presentation and exact committed PDF source hashes verified"]}],
+      "verified_head_sha":"5ab1a8e21724e063f68fc35cc98810114f07cc96",
+      "must_fix_remaining":0,
+      "blocked_unverified_remaining":0,
+      "user_decision_required_remaining":0,
+      "repository_readback":"PASS",
+      "readback_evidence":["Verified-subject commit5ab1a8e21724e063f68fc35cc98810114f07cc96 contains the51-page PDF,source-bound manifest and candidate art;65 tests and approved operating contract validation passed against that commit","PDF hash6880475eab2b99392d2ad1c611398310f2f94396933a02982f781eee7f601f56; sourcecommit70ad5ebcea42109bdfe8a829f488a12ba2ef4e00 verified by git blob equality","Diff against source main contains only preparation documents,art,builder,tests and CI history checkout; no gameplay or production asset changes"],
+      "rollback":"Revert this preparation slice only through a normal reviewed PR; preserve baseline runtime and old PDF",
+      "next_action":"STOP_APPROVED_SCOPE_COMPLETE"
+    }]
+  },
+  "base_drift":{"local":"68792fc38340a19945ba6b15eedef39f55d50705","remote_main":"2f93e872d9ed4fa18018ac759b01acd7d34e9b58","installed_version":"9.4.4","adapter_changed":false},
+  "artifact_review": {
+    "source_commit":"70ad5ebcea42109bdfe8a829f488a12ba2ef4e00",
+    "pdf_path":"docs/blueprints/TETRIS_REPLANNED_HUMAN_BLUEPRINT.pdf",
+    "pdf_sha256":"6880475eab2b99392d2ad1c611398310f2f94396933a02982f781eee7f601f56",
+    "pages":51,
+    "render_review":"PASS_ALL_51_PAGES_VISUALLY_INSPECTED",
+    "method":"pdftoppm -scale-to 1200 -png against an immutable exact-hash copy; completed exit 0; individually opened pages 01 through 51",
+    "not_runtime_capture":true
+  },
+  "adversarial_review": {
+    "full_loop_count":2,
+    "loop_1":{"reviewer":"primary","scope":"Full authority, source, alternatives, rules, consumer mapping, assets, PDF and tests","corrections":["Equal-width layout arithmetic and ETA-preserving skill overlay","Four-cell NEXT pieces and anticipation timing","Exact-source dirty guard and PDF pagination/thumbnail spacing"],"state":"CORRECTED_AND_REGRESSION_VERIFIED"},
+    "loop_2":{"reviewer":"independent blueprint_review agent","scope":"Full source and candidate package, actual consumer anchors, own tests and visual asset inspection","must_fix":"No-damage recover_pose was ambiguously mapped to generic impact/ETA presentation","resolution":"Separate no-damage recovery pose, full windup timing and stable-end ETA; no impact/sound/HP heal. Independent targeted readback verified correction and tests within the same second loop.","unresolved_blocking_findings":0,"state":"CLEAN_REVIEW_EXIT"},
+    "post_completion_artifact_rescan":"Final51-page rendering and65 tests passed; verified-subject artifact commit5ab1a8e21724e063f68fc35cc98810114f07cc96 is complete. Subsequent receipt-only commit and GitHub delivery readback do not claim a new PDF source revision. Final user approval and implementation are outside this preparation completion."
+  },
+  "reuse_learning_handoff": {
+    "selected_modules":["RM-VIS-001","RM-VIS-002"],
+    "reuse_mode":"ADAPT",
+    "project_paths_changed":["docs/design/REPLANNING_HUMAN_BLUEPRINT.md","docs/design/blueprint-data.json","docs/design/REPLANNING_ASSET_BRIEFS.md","docs/design/REPLANNING_FOUNDATION.md","docs/assets/reference/planned/replanning/blueprint","docs/blueprints/TETRIS_REPLANNED_HUMAN_BLUEPRINT.pdf","tools/build_replanning_blueprint.py","tests/tooling/test_replanning_blueprint.py",".github/workflows/core-poc-ci.yml"],
+    "verification_evidence":"65 tooling tests, 51-page visual render review, four byte-identical Aseprite roundtrips, exact source/PDF manifest",
+    "evidence_ceiling":"Prepared review candidate only; no gameplay runtime, human fun, smooth animation or release approval",
+    "rollback":"Revert only this preparation slice through a normal PR; baseline runtime, approved production art and previous PDF are unchanged",
+    "project_only_lessons":["No-damage boss actions need their own presentation/ETA contract rather than generic attack commit animation","Use actual atlas coordinates and separate portrait/boss consumers to prevent old identity-binding regressions","First draft render failed because the source PDF was rebuilt while Poppler was reading it; exclude that output and render an immutable hash-bound copy"],
+    "base_promotion_candidates":["Evaluate immutable-PDF render input and byte-exact Aseprite roundtrip checks for reuse after further evidence"],
+    "base_changed":false
+  },
+  "evidence_ceiling":{"runtime":"NOT_RUN_USER_DEFERRED","human":"NOT_RUN","final_design_and_asset_approval":"PENDING","release":"NOT_VERIFIED"}
+}

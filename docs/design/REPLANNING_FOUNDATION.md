@@ -2,6 +2,8 @@
 
 ## 1. Authority and status
 
+- Current reader publication (2026-09-11): [Human blueprint](REPLANNING_HUMAN_BLUEPRINT.md), [derived PDF](../blueprints/TETRIS_REPLANNED_HUMAN_BLUEPRINT.pdf), [preparation data](blueprint-data.json), and [candidate asset manifest](../assets/reference/planned/replanning/blueprint/manifest.json). These are final-review recommendations, not final user approval or runtime adoption. The new reader source owns first-complete-session/UI/handoff details; existing R1 rules and the unchanged section10 comparison retain their owners.
+
 - Decision: `TETRIS-REPLAN-043`, direction approved in the current conversation on 2026-09-10: replan from the dual-puzzle resource-to-boss-skill core, evaluate existing elements through research, and proceed with the recommended role-clarity direction.
 - State: `RESEARCHED`; candidate rules below are `SPECIFIED_FOR_COMPARATIVE_PROTOTYPE`, not final gameplay approval or implementation evidence.
 - Latest direction (2026-09-10): the user explicitly defers implementation and delegates detailed design/research decisions. Continue with [Detailed rules, fun and originality](REPLANNING_RULES_AND_FUN_SPEC.md). Godot connectivity is not a gate for this design-only work. The new detail owns recommended post-comparison changes; section10 still owns the unchanged v0.1 A/B control fixture.

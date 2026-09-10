@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # Reader artifacts verify their exact committed source blobs.
 
       - name: Install reproducible PDF tooling dependencies
         shell: bash

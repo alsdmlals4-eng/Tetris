@@ -1,0 +1,29 @@
+{
+  "document_id": "TETRIS-REPLAN-HUMAN-01",
+  "artifact_role": "HUMAN_GDD_PDF_DERIVED_VIEW",
+  "source_commit": "70ad5ebcea42109bdfe8a829f488a12ba2ef4e00",
+  "generated_at": "2026-09-11",
+  "status": "DERIVED_REVIEW_COPY",
+  "approval": "PENDING_FINAL_USER_REVIEW",
+  "input_hashes": {
+    "docs/design/REPLANNING_HUMAN_BLUEPRINT.md": "a23bce6e294b6799a7072629bbe7075351494970668ae0ced974a0614a55f3af",
+    "docs/design/blueprint-data.json": "d2a7243c9926e809ce8614b2835ed4b2aca48e3c092fc5421702f8de9a250225",
+    "docs/assets/reference/planned/replanning/blueprint/manifest.json": "bb23c764f671e25bd1e272136b08e2b36354a83b1d12afb8117deebe8856d1a5",
+    "docs/design/REPLANNING_FOUNDATION.md": "d8b87dce724a8833b51c0980341b46a117b28f5802eb558beed50718dda49be1",
+    "docs/design/REPLANNING_RULES_AND_FUN_SPEC.md": "80cae53074fc896b9e16c09565c208adb723953f852f7c70128404a7195cf79e",
+    "docs/design/REPLANNING_ASSET_BRIEFS.md": "9a213055e4784f131e92c9a793eed05b660e2f55d631e9899d9bf9ea7934c1e0",
+    "tools/build_replanning_blueprint.py": "19242929a9bdc69537a786071564c529b38977f9f60366d579d9c87e5679f884",
+    "docs/assets/reference/planned/replanning/blueprint/tiles.png": "8d41de60d401ab4be5ae8b2a8a4eb9b9edcb295964e28802f4e92844222e5750",
+    "docs/assets/reference/planned/replanning/blueprint/icons.png": "40d55313aeff152106a7bfd2a5f22615cace29ee8d4b8c483195bc02384cdbde",
+    "docs/assets/reference/planned/replanning/blueprint/portrait-states.png": "cb2ea6fe04f765fe2baf6c782988f6a1346cbdd95c0bca60e875d0757bdb49e9",
+    "docs/assets/reference/planned/replanning/blueprint/boss-states.png": "bfbc08f5512a4681da55b17777cebd9bb20e30d164a16671245a2e6653721b91",
+    "docs/assets/reference/planned/replanning/blueprint/frontier.png": "982b48dcd60708440bd87fa701589c71b56d80832bc690209089a2d3d2e588c4"
+  },
+  "pdf_sha256": "6880475eab2b99392d2ad1c611398310f2f94396933a02982f781eee7f601f56",
+  "page_count": 51,
+  "section_count": 50,
+  "visuals": "Generated candidate art and text-native screen/flow projections; no runtime screenshots",
+  "render_review": "See docs/operations/TETRIS_BLUEPRINT_PREPARATION_2026-09-11.json for hash-bound post-build review",
+  "runtime": "NOT_RUN_USER_DEFERRED",
+  "human": "NOT_RUN"
+}
