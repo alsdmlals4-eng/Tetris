@@ -4,6 +4,7 @@
 
 - Decision: `TETRIS-REPLAN-043`, direction approved in the current conversation on 2026-09-10: replan from the dual-puzzle resource-to-boss-skill core, evaluate existing elements through research, and proceed with the recommended role-clarity direction.
 - State: `RESEARCHED`; candidate rules below are `SPECIFIED_FOR_COMPARATIVE_PROTOTYPE`, not final gameplay approval or implementation evidence.
+- Latest direction (2026-09-10): the user explicitly defers implementation and delegates detailed design/research decisions. Continue with [Detailed rules, fun and originality](REPLANNING_RULES_AND_FUN_SPEC.md). Godot connectivity is not a gate for this design-only work. The new detail owns recommended post-comparison changes; section10 still owns the unchanged v0.1 A/B control fixture.
 - This file owns the new design direction, comparison and production order. Existing combat/skill/CHAIN contracts continue to describe the unchanged playable baseline. They do not silently constrain the new design.
 - Comparison source: completed main `b3a0975d2586dc093d3a3929a426bdcd7e4f3575`, inspected 2026-09-10. Re-read latest main and PR overlap before implementation; this SHA is evidence, not permanent execution authority.
 - Existing images and visual locks are `REFERENCE_ONLY_FOR_REPLANNING`. Preserve runtime-bound assets and original manifests until approved replacements have verified consumers. Do not impose parchment, pixel art, earlier title art or earlier composition as the new visual decision.
@@ -127,6 +128,8 @@ For each animation brief record source hash, dimensions, frame count/durations, 
 The simulation event applies gameplay exactly once. A presenter follows that event; frame arrival never owns damage. Pausing freezes simulation-linked motion. Reduced-motion presentation preserves the same telegraph and result. Interrupted, skipped or repeated playback cannot duplicate damage, refund, resource spend or victory transitions. Do not create a mechanical stagger window merely because the boss recoil looks convincing.
 
 ## 7. Work sequence and exit evidence
+
+Current execution override: design-only research and detailed rules come first under the latest user instruction. The table below remains the eventual production dependency order, not authorization to resume implementation now. See the linked detail for recommended rules, unresolved experiential questions and production deferrals.
 
 | Order | Bounded output | Exit evidence / next dependency |
 | --- | --- | --- |

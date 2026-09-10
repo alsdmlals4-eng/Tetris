@@ -1,0 +1,165 @@
+{
+  "work_level": "L2",
+  "work_title": "Design-only rules, fun and originality refinement",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Latest user explicitly defers implementation and delegates detailed design decisions using internet research, benchmarking and recommendations.",
+  "scope": "Research and specify a recommended design-only rule pack, fun hypotheses, alternatives, examples and evaluation plan. No code, scenes, images, Godot execution, old PR mutation, runtime adoption, final balance or release claims.",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "main56a7b9e75f3c4f4754b6ad1b64c37390a4c60c50; REPLANNING_FOUNDATION, actual combat state, CHAIN session, LINE feel configuration and runtime reward handling fresh-read; open PR19/23/33/46/85/100 read-only.",
+        "observed_pattern": "Two persistent boards and atomic skills exist. Proposed B separates MP and Combo but marginal rewards and failure penalties can undermine voluntary choice.",
+        "project_fit_and_difference": "Preserve v0.1 controlled comparison and production. Detail a separately named recommended design pack; implementation deferred by user, not blocked by missing Godot connection.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "2026-09-10 primary pages: puyo.sega.jp/puyopuyotetris2/rule.html; subsetgames.com/itb.html; tetriseffect.game; sirlin.net/articles/subtractive-design; sirlin.net/articles/balancing-multiplayer-games-part-1-definitions; megacrit.com/press-kits/slay-the-spire/; Riot gameplay clarity.",
+        "observed_pattern": "Hybrid puzzle skill combat exists; forecast, contextual choice, readable feedback and removing unnecessary complexity are useful patterns.",
+        "project_fit_and_difference": "No novelty claim for genre combination; use prepared-board opportunity costs and forecast responses as the identity hypothesis. No competitor rules or art copied.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Design owner/detail and current planning contract",
+    "inventory": [
+      {
+        "path": "docs/design/REPLANNING_FOUNDATION.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "REPLAN-043",
+        "references_and_consumers": "Top-level new-design route, baseline comparison values remain owned here."
+      },
+      {
+        "path": "docs/design/REPLANNING_RULES_AND_FUN_SPEC.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "New design-only detail under REPLAN-043",
+        "references_and_consumers": "Planning reader; NOT a runtime data consumer."
+      },
+      {
+        "path": "skills/PROJECT_BASE_ADAPTER.json",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Installed9.4.4",
+        "references_and_consumers": "Unchanged lock; current Base methods only."
+      },
+      {
+        "path": "PR100",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "Previous unmerged first-battle checkpoint",
+        "references_and_consumers": "Read-only. Its Godot blocker is not a prerequisite for this design-only request; no branch absorption."
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "REPLAN-043 design-only refinement",
+    "source_main_sha": "56a7b9e75f3c4f4754b6ad1b64c37390a4c60c50",
+    "work_item_refs": [
+      "DESIGN-RULES"
+    ],
+    "active_work_item_ref": null,
+    "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
+    "work_items": [
+      {
+        "work_item_id": "DESIGN-RULES",
+        "title": "Research-backed detailed rules and fun/originality hypotheses",
+        "status": "DONE",
+        "canon_owner": "docs/design/REPLANNING_RULES_AND_FUN_SPEC.md",
+        "actual_consumers": [
+          "Planning reader; no runtime adoption"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "AC-DESIGN"
+        ],
+        "required_evidence": [
+          "E1_STATIC"
+        ],
+        "checklist": [
+          {
+            "id": "AC-DESIGN",
+            "text": "Rule coverage, contextual decisions, numerical counterexamples, failure edges, primary sources and keep/change/defer dispositions are explicit; no unsupported runtime or fun claims.",
+            "status": "PASS",
+            "evidence": [
+              "Detailed rule pack sections1-14; eight focused source entries; three alternatives; numerical scenarios; explicit R1 versus v0.1 separation and future test gates."
+            ]
+          }
+        ],
+        "verification": [
+          {
+            "level": "E1_STATIC",
+            "status": "PASS",
+            "evidence": [
+              "git diff --check; independent exact content-head33ab0d5 review, Critical0/Important0; eight arithmetic checks; protected contract check; no runtime/data/scene/asset/adapter/PDF delta."
+            ]
+          }
+        ],
+        "next_action": "Design packet prepared; later encounter-content and Korean player-facing examples can continue without implementation.",
+        "verified_head_sha": "33ab0d5ef9c1290697f703058fa9f95c79c8e600",
+        "must_fix_remaining": 0,
+        "blocked_unverified_remaining": 0,
+        "user_decision_required_remaining": 0,
+        "repository_readback": "PASS",
+        "readback_evidence": [
+          "Remote PR101 head33ab0d5 matches locally reviewed content head; godot-validation and windows-powershell-contract both passed on this head."
+        ],
+        "rollback": "Revert these documentation additions; baseline runtime and images unchanged."
+      }
+    ]
+  },
+  "evidence_ceiling": {
+    "design": "SPECIFIED_RECOMMENDATION_STATIC_REVIEWED_NOT_PLAYER_VALIDATED",
+    "runtime": "DEFERRED_BY_USER",
+    "human": "NOT_RUN",
+    "new_art": "NOT_REQUESTED_THIS_SLICE",
+    "release": "NOT_VERIFIED"
+  },
+  "review_progress": {
+    "required_full_loops": 2,
+    "completed_full_loops": 2,
+    "scope": "New design-only deliverable; PR100 implementation work remains deferred and untouched.",
+    "loop_1": {
+      "input": "main56a7b9e plus full design working candidate",
+      "coverage": "Full design scope, alternatives, baseline source, rules/arithmetic, player flow, assets/motion, authority/cost, tests, preservation, rollback.",
+      "findings_and_corrections": [
+        "Clarified LINE overflow must not reroll bag or reset held-piece use;25HP is not Ward-absorbable boss damage.",
+        "Made immediate post-command pause/terminal checks explicit so a lethal Strike prevents later boss resolution.",
+        "Clarified anti-overflow-farming objective."
+      ],
+      "verification": "Whole corrected document read; arithmetic8/8; tooling54/54; protected contract passed.",
+      "remaining": "Only experiential/implementation work explicitly deferred."
+    },
+    "loop_2": {
+      "input": "33ab0d5ef9c1290697f703058fa9f95c79c8e600",
+      "state": "CLEAN_REVIEW_EXIT",
+      "scope": "Independent whole design review including actual baseline sizes/rewards/feel, primary sources, arithmetic, state ordering, assumptions, alternatives and preserved consumers.",
+      "findings": "Critical0/Important0; optional link-label clarification only, no source-claim error.",
+      "verification": "Independent read-only source/diff readback and recomputation; no blocking design findings.",
+      "minor_deferred": "Sirlin viable-options label links to Part1 definitions, which directly supports the claim; editorial specificity can be improved later without changing rule meaning."
+    }
+  },
+  "base_drift": {
+    "local": "68792fc38340a19945ba6b15eedef39f55d50705",
+    "remote": "2f93e872d9ed4fa18018ac759b01acd7d34e9b58",
+    "project_adoption": "9.4.4 unchanged"
+  },
+  "remaining_work": {
+    "design_packet_blockers": 0,
+    "implementation": "DEFERRED_BY_USER",
+    "human_and_balance": "NOT_RUN; future evaluation required",
+    "godot_connection": "Not a planning blocker",
+    "next_design_work": [
+      "Exact encounter-content sheet and teaching variants",
+      "Korean rule glossary and sample skill cards",
+      "Representative candidate briefs; no runtime dependency for concept preparation"
+    ],
+    "base_promotion": "NO_NEW_REUSE_LEARNING requiring new Base policy",
+    "cleanup": "No Godot or temporary images launched. Active unrelated Draft branches preserved."
+  },
+  "validation_evidence": {
+    "tooling_tests": "54 passed",
+    "arithmetic": "8/8 desk calculations passed; not simulation",
+    "protected_contract": "PASS",
+    "remote_checks": "Content head33ab0d5: godot-validation PASS38s, windows-powershell-contract PASS19s",
+    "receipt_semantics": "verified_head_sha identifies the reviewed content commit. This receipt-only closeout commit records that evidence; its own exact-head CI/readback is reported on PR101, not recursively self-hashed."
+  }
+}
