@@ -1,0 +1,235 @@
+{
+  "work_level": "L3",
+  "work_title": "First battle specification and isolated comparison prototype",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Current user: 그래 진행해줘, approving first-battle specification before representative art and isolated comparison implementation.",
+  "scope": "Extend REPLAN-043 first-battle flow and asset/motion requirements, then implement and verify isolated A/B comparison. Preserve production entry, runtime assets, old PDF, installed Base9.4.4 and unrelated Draft PRs. No final gameplay/style or release approval.",
+  "benchmark_preflight_receipt": {
+    "state": "REUSED_EVIDENCE",
+    "entries": [
+      {
+        "source_and_evidence": "Project main56a7b9e75f3c4f4754b6ad1b64c37390a4c60c50; REPLANNING_FOUNDATION sections3-11; actual bootstrap, scheduler, runtime reward bridge and battle scene inspected 2026-09-10.",
+        "observed_pattern": "Deterministic boards and atomic skills are reusable, but scheduler resolves and advances inside one call; CHAIN rewards are applied by combat runtime, not just configuration.",
+        "project_fit_and_difference": "Keep production untouched. A bounded experiment adapter must own termination and B resource differences; a UI-only wrapper is insufficient.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html and https://docs.godotengine.org/en/stable/tutorials/2d/2d_sprite_animation.html read 2026-09-10; current Base HiGodot single-authority policy and project dedicated launcher read.",
+        "observed_pattern": "Paused processing does not suppress every signal callback; animation playback is separate from combat authority. Project-bound authoring readiness is required.",
+        "project_fit_and_difference": "Guard commands at the simulation boundary. Keep static baseline art in mechanics comparison and defer Godot authoring while current tool cannot select exact Tetris session.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "First battle slice and exact Tetris executor only",
+    "inventory": [
+      {
+        "path": "docs/design/REPLANNING_FOUNDATION.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "REPLAN-043",
+        "references_and_consumers": "Single new-design owner; extend in place."
+      },
+      {
+        "path": "assets/production",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Running baseline",
+        "references_and_consumers": "Still-bound assets preserved; not replaced by portrait previews."
+      },
+      {
+        "path": "skills/PROJECT_BASE_ADAPTER.json",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Base9.4.4 installed lock",
+        "references_and_consumers": "No migration."
+      },
+      {
+        "path": "project.godot",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Production entry and editor-owned settings",
+        "references_and_consumers": "Only editor-added blank line restored after owned editor closed; 26 task-generated untracked sidecars removed by exact path. No production setting change remains."
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "TETRIS-REPLAN-043 first battle continuation",
+    "source_main_sha": "56a7b9e75f3c4f4754b6ad1b64c37390a4c60c50",
+    "work_item_refs": [
+      "FIRST-BATTLE-SPEC",
+      "COMPARISON-RUNTIME",
+      "REPRESENTATIVE-ART"
+    ],
+    "active_work_item_ref": "FIRST-BATTLE-SPEC",
+    "next_action": "BLOCKED_UNVERIFIED: reconnect exact Tetris authoring session before comparison runtime; no final gameplay or asset readiness claim.",
+    "work_items": [
+      {
+        "work_item_id": "FIRST-BATTLE-SPEC",
+        "title": "First battle flow, screen budgets and image/motion requirements",
+        "status": "VERIFY_REVIEW",
+        "canon_owner": "docs/design/REPLANNING_FOUNDATION.md",
+        "actual_consumers": [
+          "Existing scenes/production/battle.tscn geometry as reference; isolated comparison consumer planned, not created"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "AC-FLOW"
+        ],
+        "required_evidence": [
+          "E1_STATIC"
+        ],
+        "checklist": [
+          {
+            "id": "AC-FLOW",
+            "text": "Specify first-fight flow, actual-resolution budget, interaction states and bounded asset production gate without claiming final art or runtime.",
+            "status": "PASS",
+            "evidence": [
+              "REPLANNING_FOUNDATION sections12-14: first-fight flow, 960x540 reference, running/detail state budgets, representative consumer requirements and three actual integration constraints."
+            ]
+          }
+        ],
+        "verification": [
+          {
+            "level": "E1_STATIC",
+            "status": "PASS",
+            "evidence": [
+              "git diff --check; approved protected operating contract check; baseline source and production asset diff empty after task-owned launcher cleanup."
+            ]
+          }
+        ],
+        "next_action": "Preserve prepared specification; finish final whole-result review after comparison runtime can be implemented."
+      },
+      {
+        "work_item_id": "COMPARISON-RUNTIME",
+        "title": "Implement and verify isolated comparison",
+        "status": "BLOCKED_UNVERIFIED",
+        "blocker": "Current HiGodot tools do not expose the Tetris dedicated editor session.",
+        "resume_condition": "Fresh exact-project readiness via existing loopback8008 endpoint, without touching other projects.",
+        "canon_owner": "docs/design/REPLANNING_FOUNDATION.md",
+        "actual_consumers": [
+          "Planned experiment bootstrap, scheduler boundary, resource bridge and skill session"
+        ],
+        "depends_on": [
+          "FIRST-BATTLE-SPEC"
+        ],
+        "acceptance_criteria": [
+          "AC-RUNTIME"
+        ],
+        "required_evidence": [
+          "E2_TEST",
+          "E3_RUNTIME"
+        ],
+        "checklist": [
+          {
+            "id": "AC-RUNTIME",
+            "text": "Both conditions run from paired initial state; guard7 never commits; B costs/refunds are atomic; baseline regression and actual UI flow verified.",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "NOT_RUN",
+            "evidence": []
+          },
+          {
+            "level": "E3_RUNTIME",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "Restore exact-project HiGodot authoring connection, then RED/GREEN boundary tests before implementation."
+      },
+      {
+        "work_item_id": "REPRESENTATIVE-ART",
+        "title": "Representative art and event-bound motion after mechanics fixture",
+        "status": "BACKLOG",
+        "canon_owner": "docs/design/REPLANNING_FOUNDATION.md",
+        "actual_consumers": [
+          "Planned comparison visual-pass consumers; no new runtime consumer exists yet"
+        ],
+        "depends_on": [
+          "COMPARISON-RUNTIME"
+        ],
+        "acceptance_criteria": [
+          "AC-ART"
+        ],
+        "required_evidence": [
+          "E4_VISUAL"
+        ],
+        "checklist": [
+          {
+            "id": "AC-ART",
+            "text": "Small representative candidate set passes actual-size review and alpha/source validation; approval and runtime promotion remain distinct.",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "verification": [
+          {
+            "level": "E4_VISUAL",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "No mass generation; validate representative consumer sizes first."
+      }
+    ]
+  },
+  "executor_blocker": {
+    "state": "BLOCKED_UNVERIFIED",
+    "recovery_attempt": "Existing tools/windows/start_tetris_local_executor.ps1 -SkipCodex succeeded; exact dedicated Godot4.7.1 and server3.2.0 on loopback HTTP8008/WS9508 verified.",
+    "readiness_failure": "Current enabled HiGodot session list exposes urban-legend and Switchy only. session_activate(Tetris) returned no match. Launcher startup is not editor mutation readiness.",
+    "protected": "No changes to other project sessions, global client settings, ports, new bridge or external authoring fallback.",
+    "next_required_state": "Current task authoring client must reach existing Tetris endpoint http://127.0.0.1:8008/mcp and fresh-read exact project/editor readiness.",
+    "cleanup": "Task-owned editor37636 closed gracefully; server32540 and loopback8008/9508 listeners absent afterward. Other projects untouched. Existing launcher can reopen when the authoring client is correctly routed."
+  },
+  "evidence_ceiling": {
+    "implementation": "NOT_RUN",
+    "runtime": "NOT_RUN",
+    "human": "NOT_RUN",
+    "art": "NO_NEW_ART_THIS_SLICE",
+    "release": "NOT_VERIFIED"
+  },
+  "review_progress": {
+    "required_full_loops": 2,
+    "completed_full_loops": 1,
+    "loop_1": {
+      "state": "BLOCKED_UNVERIFIED",
+      "input": "main56a7b9e plus first-battle owner/receipt working diff",
+      "coverage": "Scope, baseline canon and actual bootstrap/scheduler/reward consumers, UI fit, paired comparison, assets/motion, authority/cost, tests, preservation and rollback.",
+      "findings": [
+        "Scheduler resolve-and-advance boundary cannot be safely stopped by an outer listener.",
+        "Reward configuration alone cannot suppress B CHAIN MP.",
+        "Existing bootstrap consumes production first-session handoff.",
+        "Actual viewport is960x540, so always-expanded panels need a separate detail state.",
+        "Godot startup does not establish this client's exact-project authoring readiness."
+      ],
+      "correction": "Sections12-14 specify isolated boundaries, trial layout and explicit blocked runtime; production untouched. Work receipt keeps mandatory runtime/art items incomplete.",
+      "verification": "54 tooling tests passed; approved operating contract passed; git diff --check passed. These do not exercise new comparison gameplay.",
+      "alternatives": "Rechecked UI-only production flags versus full stack copying versus narrow isolated adapters; retain adapters with interface feasibility PARTIAL.",
+      "remaining": "No comparison implementation/live/Human evidence. Second full-result round reserved for implemented candidate; CLEAN_REVIEW_EXIT not claimed."
+    },
+    "loop_2": {
+      "state": "NOT_RUN",
+      "reason": "No implemented comparison candidate exists; do not spend final round pretending documentation is the runtime."
+    }
+  },
+  "remaining_work": {
+    "scope_complete": false,
+    "baseline_preserved": true,
+    "base_promotion": "NO_NEW_REUSE_LEARNING; no Base writes",
+    "required": [
+      "Comparison implementation and deterministic focused tests",
+      "Exact-project runtime input/layout/pause verification",
+      "Representative art actual-size review and later approved state-family motion"
+    ],
+    "synchronization": "Current branch checkpoint only; main unchanged; Draft PR planned, not ready to merge.",
+    "cleanup": {
+      "generated_sidecars_removed": 26,
+      "recovery": "Godot regenerates import and UID sidecars; no source images/scripts removed.",
+      "process_residual_check": "PASS for task-owned editor/server and ports only.",
+      "older_staging": "Previous-turn blocked staging cleanup not retried."
+    },
+    "rollback": "Revert the two documentation files from this task branch; no saved data or production migration."
+  }
+}

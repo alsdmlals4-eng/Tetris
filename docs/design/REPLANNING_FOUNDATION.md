@@ -9,7 +9,7 @@
 - Existing images and visual locks are `REFERENCE_ONLY_FOR_REPLANNING`. Preserve runtime-bound assets and original manifests until approved replacements have verified consumers. Do not impose parchment, pixel art, earlier title art or earlier composition as the new visual decision.
 - Retain the installed Base 9.4.4 adapter/version lock. Current Base research, production and review methods supplement this task without replacing the adapter.
 - The existing Human Blueprint PDF is a preserved **baseline-derived artifact**, not a blueprint of this proposal. A new derived reader PDF follows coherent screen/rule/asset specifications and render review.
-- Excluded now: replacing runtime rules/assets, deleting old PRs or assets, release approval, paid tools, claiming player-tested fun or globally unique mechanics.
+- Excluded: replacing production default rules/assets, deleting old PRs or assets, release approval, paid tools, claiming player-tested fun or globally unique mechanics. The later first-battle continuation authorizes isolated comparison implementation, not replacement of the production baseline (section12).
 
 ## 2. Current implementation and the problem to solve
 
@@ -235,3 +235,81 @@ Proposed bounded implementation ownership: a separate comparison bootstrap/scene
 Motion contract for later production: boss idle → readable preparation during the current forecast → commit-driven contact → recovery; blocked hit, unblocked hit and death follow the actual resolved event. HP, resources and victory belong to simulation, not frame arrival. Portrait damage reaction is optional presentation and cannot imply stun. Pause freezes simulation-linked playback, while UI navigation remains active. Use an unanimated but truthful fallback on missing art. Key poses are reviewed before inbetweens; record pivot/crop/weapon continuity and effect-off checks. Duration tuning remains tied to the chosen action presenter, not guessed from a generated pose sheet.
 
 Current official sources inspected 2026-09-10: [Godot sprite animation](https://docs.godotengine.org/en/stable/tutorials/2d/2d_sprite_animation.html) establishes separate-frame/sheet playback options (ADAPT, no import/runtime claim); [Aseprite CLI](https://www.aseprite.org/docs/cli/) supports source/export metadata workflows (ADAPT existing native candidate tools; no new CLI bridge); [GDC animation session description](https://www.gdcvault.com/play/1021657/Powerful-and-Effective-Animation-for) informs anticipation and timing under gameplay constraints (ADAPT; full video NOT_VIEWED). Motion direction and final portrait style still require visual evaluation, not automatic acceptance from these sources.
+
+## 12. First-battle slice: experience and screen specification
+
+Continuation approval: the user's `그래 진행해줘` accepts specifying the first battle before representative art, then building the isolated comparison. Status remains `SPECIFIED_FOR_COMPARATIVE_PROTOTYPE`; implementation and Human evidence are NOT_RUN. Current execution tracking: [first-battle receipt](../operations/TETRIS_FIRST_BATTLE_SLICE_2026-09-10.json). This section extends the same owner; it does not reopen all world-building, add progression, or make a new GDD authoritative.
+
+### Minimum player experience
+
+The first encounter tests one understandable decision: prepare resources on either persistent board, read the visible boss threat, then choose damage, prevention or recovery. Use Gatebreaker as the existing encounter identity, not a newly approved story, title or player class lock. All numerical rules and participant criteria remain section10's responsibility.
+
+```text
+Development-only condition selection
+  → common explanation + bounded unscored practice
+  → fresh encounter reset and paired initial-state hash check
+  → active LINE or CHAIN / visible current threat and ETA
+  ↔ tactical Skill pause / preview / explicit confirm or cancel
+  → resumed puzzle and boss simulation
+  → victory OR defeat OR observation complete OR invalid-session error
+  → condition-labelled evidence summary / explicit retry
+```
+
+No auto-confirm, hidden reroll, forced switch, tutorial resource grant or automatic retry. Practice must not consume the production `FirstSessionLaunch` handoff, alter saved progression, or carry resources/board state into the scored encounter. A malformed fixture fails before play; it must not silently fall back to production data. An observation result is not a win or an earned reward.
+
+During play, explain LINE as MP preparation and CHAIN as the condition's actual reward rule. B says optional amplification, never mandatory attack access. A displays the resolved technique and any conversion/fallback before confirmation. Keep failed-swap restore versus paid keep explicit in both practice conditions. Scored probes must not inject corrective hints unavailable to the other condition.
+
+### Layout trial, not a final visual lock
+
+Actual `project.godot` reference is 960×540 with `canvas_items` stretch, not an assumed 1280×720. Keep that baseline unchanged. Validate the separate trial at both 960×540 and 1280×720; only the first is an existing project setting. Initial composition retains equal-width puzzle/combat regions. Insets and gutter are outside the equal content budgets; do not accidentally count the gutter as one side's width.
+
+| Region/state | Trial requirement | Failure evidence |
+| --- | --- | --- |
+| Left puzzle | One active board, aspect-correct cells, board modes above and concise instructions below; HOLD/NEXT compact and subordinate | Two full boards, squashed cells, instructions stealing a large side column, clipped bottom controls |
+| Right running | After common insets/gaps, target vertical allocation: boss40%, current/next ETA15%, player strip16%, skill summary29% | Boss reduced to a small portrait, enemy zone showing Vanguard, face unreadable, overlapping controls |
+| Boss stage | Large Gatebreaker silhouette; HP/name over an intentionally clear band; crop must retain head, core and attack silhouette | Enlarging texture alone crops the telegraph or hides threat information |
+| Player strip | Face-first crop, square content target at least72 logical pixels; HP/MP/Combo alongside with wrapping or short labels | Full-body art squeezed into face slot; stretching or bars covering face |
+| Skill closed | Selected purpose, actual cost, availability and open action remain visible | No skill information until opening an unrelated menu |
+| Skill open | Expand a right-region detail overlay over lower battle presentation; leave current ETA/pause indicator visible, dim and disable covered controls | Long descriptions made tiny to fit permanent panels; background click-through; covered ETA |
+
+The percentages are initial running-state layout hypotheses, not image crop dimensions or claimed measurements. Expanded detail is a tactical-pause state, not simultaneous full panels. Reserve room for category, purpose, target, effective value, cost, base/amplified choice in B, disabled reason, CONFIRM and CANCEL. Use wrapping and a bounded detail scroll only if necessary; never hide CONFIRM/CANCEL below that scroll. Focus enters the selected category and returns to the previous puzzle control when closed. Keyboard and pointer must reach the same command boundary. A paired mechanics comparison uses the same layout and baseline art; new portrait styling is a separate visual trial to avoid confounding preference.
+
+Timer language: `CURRENT · resolves in …s`, `NEXT · forecast`, and `TACTICAL PAUSE`. Next timing must identify whether it is relative to becoming current or absolute from now. Do not label enemy ETA as a player turn countdown or imply a second shared spendable budget. On the sixth action the forecast slot reads `END OF OBSERVATION`; section10's guard7 remains internal and untargetable.
+
+### Pause and event integrity
+
+[Godot's pause documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/pausing_games.html), read2026-09-10, states that signals can still invoke connected methods during pause. ADAPT: check pause/terminal state in the actual command owner, not only by disabling processing or buttons. Damage, resources, refunds and results must remain unchanged by a queued signal, replayed animation or repeated confirm. UI navigation can run during tactical pause; puzzle gravity, cascade simulation, enemy ETA and simulation-linked presentation cannot advance. SceneTree pause alone is not proof that the existing RefCounted simulation or manually-ticked presenters stop.
+
+## 13. Asset and motion production gate
+
+Use the actual-size scene trial before bulk production. More anime-like, slim adult facial proportions are the current direction, not permission to replace all characters or turn a face HUD into a full-body showcase. Later conversation A2/A3/A4 previews are not runtime assets; do not treat a displayed checkerboard or opaque pale backdrop as verified alpha. The registered candidate manifest continues to own its actual file evidence.
+
+| Intended consumer (planned, not implemented) | Small representative output | Required later states / continuity | Entry gate |
+| --- | --- | --- | --- |
+| Player face slot | One face-first neutral candidate tested at72/96px, with breathing room for hair | Neutral and brief hurt; death only if the final result presenter consumes it; identical crop/scale | Face crop visible at actual size; genuine alpha if composited |
+| Boss stage | One large silhouette/key-pose candidate fitting HP and forecast safe areas | Idle → preparation → event-bound impact → recovery; hurt/blocked/death variants only when corresponding events exist | Head/core/weapon readability in actual stage crop; no Vanguard substitution |
+| LINE and CHAIN cells | Small representative tiles with redundant glyphs, tested on both real cell sizes | Normal/selected/clear; LINE ghost and CHAIN pending-lock variants retain distinct meaning | Color plus shape clarity, no glyph noise at minimum cell size |
+| Stable-purpose B skills | One Strike, Ward and Recover icon family, not thirty stage illustrations | Selected/disabled conveyed by UI state without changing skill identity; amplify remains same purpose | Three purposes distinguishable at actual button size without color alone |
+| Combat feedback | One impact and one prevention key-pose/effect test | Windup/contact/recovery aligned to actual events; safe static fallback | Skipping/replaying presentation cannot repeat simulation effects |
+
+These are production requirements, not `BRIEF_READY` files. Before generating each candidate, record its exact consumer geometry, source/export dimensions, padding, alpha need, crop/pivot, state list and approval boundary in the existing candidate/catalog owner. Do not invent fixed frame counts before the presenter timing test. Aseprite selection is task-dependent: use the adopted native route for frame/layer editing and verified export metadata when applicable, not as a command to make pixel art. Keep raster creation/editing on the image-model route; Aseprite packaging and playback verification do not prove generated-image quality or user approval.
+
+Order: actual-size greybox with existing assets → small representative candidates → visual direction review → approved canonical registration/provenance → required state families and motion → Godot event binding → actual runtime capture. Do not produce the whole asset list while earlier readability or mechanics gates remain unresolved. Preserve the current PDF until a coherent new source and verified representative screens exist; do not publish this trial as an implemented-game blueprint.
+
+## 14. Implementation reconciliation and current blocker
+
+Fresh source56a7b9e on2026-09-10 identifies three integration boundaries that section11 did not yet resolve:
+
+1. `EnemyActionScheduler.tick_simulation()` both resolves and advances inside one call. An outer listener stopping after the returned event is too late to satisfy section10's no-advance boundary. A comparison-only scheduler must decide the six-action end before advancement. Never report guard7 as a harmless real attack and then undo its effects.
+2. `ProductionCombatRuntime._commit_puzzle_events()` applies CHAIN MP through `ProductionCombatState.apply_chain_wave()`. Changing the reward JSON or UI alone cannot implement B's Combo-only waves. The isolated comparison resource owner must receive the actual resolved waves exactly once.
+3. `ProductionBattleBootstrap.build_runtime()` consumes the first-session handoff and starts the battle. Calling it and subsequently replacing dependencies is not an isolated reset. Build the comparison from reusable primitives without consuming production launch state.
+
+| Integration alternative | Benefit | Cost / risk / disposition |
+| --- | --- | --- |
+| Production flags and UI-only overlay | Few new files | Hidden launch/reward side effects and baseline changes; REJECT for this isolated trial |
+| Full copied combat stack | Complete local control | Duplicate rules, high regression and synchronization cost; REJECT |
+| Explicit comparison bootstrap and narrow scheduler/resource/skill adapters | Preserves boards, catalog primitives and production entry; independently testable | Extra boundary contracts and tests; ADAPT, subject to test-first interface verification |
+
+Do not bypass private state by mutating production internals. The adapter's callable boundary must cover the actual consumers, including scheduler ETA adjustment/checkpoint restore used by A's skills; testing only B would invalidate the control. If a required extension cannot be implemented without changing the production public interface, record that finding and reassess the bounded plan before authoring. Feasibility remains PARTIAL, not an implementation-ready API claim.
+
+Runtime authoring is currently `BLOCKED_UNVERIFIED`: the existing Tetris launcher established its dedicated Godot4.7.1 / HiGodot3.2.0 endpoint on loopback8008/9508, but this task's enabled HiGodot client lists only other projects and cannot activate Tetris. No persistent Godot edit was made through another authority. After this check the task-owned editor was closed gracefully and its server/listeners stopped; the existing launcher remains the restart route. Restore this task's exact-project connection and observe readiness before resuming. Specification preparation can proceed independently; new runtime tests, live UI, Human evaluation, representative art and state-family production remain outstanding.
