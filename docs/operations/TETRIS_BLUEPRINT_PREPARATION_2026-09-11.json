@@ -25,10 +25,10 @@
     "goal_or_slice_issue_ref":"REPLAN-043 human blueprint final-approval preparation",
     "source_main_sha":"ce607ce684f7b21d45a77cc60fda8f92c9729750",
     "work_item_refs":["BLUEPRINT-PREP"],
-    "active_work_item_ref":"BLUEPRINT-PREP",
-    "next_action":"Publish the verified preparation artifacts through the current-task PR and read back exact main; final design approval remains separate",
+    "active_work_item_ref":null,
+    "next_action":"STOP_APPROVED_SCOPE_COMPLETE",
     "work_items":[{
-      "work_item_id":"BLUEPRINT-PREP","title":"Detailed human blueprint with usable candidate assets and implementation mapping","status":"VERIFY_REVIEW",
+      "work_item_id":"BLUEPRINT-PREP","title":"Detailed human blueprint with usable candidate assets and implementation mapping","status":"DONE",
       "canon_owner":"docs/design/REPLANNING_HUMAN_BLUEPRINT.md",
       "actual_consumers":["Derived human PDF and future implementation handoff; no runtime change"],
       "depends_on":[],"acceptance_criteria":["AC-BP-COVERAGE","AC-BP-ASSETS","AC-BP-REVIEW"],"required_evidence":["E1_STATIC","E2_TEST"],
@@ -38,7 +38,14 @@
         {"id":"AC-BP-REVIEW","text":"Two full review loops, PDF all-page render, static regression, exact source/output readback","status":"PASS","evidence":["artifact_review and adversarial_review below; all65 tooling tests passed; exact PDF/source bytes verified"]}
       ],
       "verification":[{"level":"E1_STATIC","status":"PASS","evidence":["Source commit 70ad5ebcea42109bdfe8a829f488a12ba2ef4e00; 50 numbered sections; 51 rendered pages visually inspected individually; no clipped text/table or missing artwork found","Approved project operating contract validation passed; git diff --check passed; runtime and protected baseline untouched"]},{"level":"E2_TEST","status":"PASS","evidence":["python -m unittest discover -s tests/tooling: 65 tests passed, including 11 blueprint tests","Five PNG hashes/dimensions, 25 atlas regions, four Aseprite RGBA byte-identical roundtrips, teaching fixtures, economy arithmetic, no-damage presentation and exact committed PDF source hashes verified"]}],
-      "next_action":"Current-task PR checks and exact main readback"
+      "verified_head_sha":"5ab1a8e21724e063f68fc35cc98810114f07cc96",
+      "must_fix_remaining":0,
+      "blocked_unverified_remaining":0,
+      "user_decision_required_remaining":0,
+      "repository_readback":"PASS",
+      "readback_evidence":["Verified-subject commit5ab1a8e21724e063f68fc35cc98810114f07cc96 contains the51-page PDF,source-bound manifest and candidate art;65 tests and approved operating contract validation passed against that commit","PDF hash6880475eab2b99392d2ad1c611398310f2f94396933a02982f781eee7f601f56; sourcecommit70ad5ebcea42109bdfe8a829f488a12ba2ef4e00 verified by git blob equality","Diff against source main contains only preparation documents,art,builder,tests and CI history checkout; no gameplay or production asset changes"],
+      "rollback":"Revert this preparation slice only through a normal reviewed PR; preserve baseline runtime and old PDF",
+      "next_action":"STOP_APPROVED_SCOPE_COMPLETE"
     }]
   },
   "base_drift":{"local":"68792fc38340a19945ba6b15eedef39f55d50705","remote_main":"2f93e872d9ed4fa18018ac759b01acd7d34e9b58","installed_version":"9.4.4","adapter_changed":false},
@@ -55,7 +62,7 @@
     "full_loop_count":2,
     "loop_1":{"reviewer":"primary","scope":"Full authority, source, alternatives, rules, consumer mapping, assets, PDF and tests","corrections":["Equal-width layout arithmetic and ETA-preserving skill overlay","Four-cell NEXT pieces and anticipation timing","Exact-source dirty guard and PDF pagination/thumbnail spacing"],"state":"CORRECTED_AND_REGRESSION_VERIFIED"},
     "loop_2":{"reviewer":"independent blueprint_review agent","scope":"Full source and candidate package, actual consumer anchors, own tests and visual asset inspection","must_fix":"No-damage recover_pose was ambiguously mapped to generic impact/ETA presentation","resolution":"Separate no-damage recovery pose, full windup timing and stable-end ETA; no impact/sound/HP heal. Independent targeted readback verified correction and tests within the same second loop.","unresolved_blocking_findings":0,"state":"CLEAN_REVIEW_EXIT"},
-    "post_completion_artifact_rescan":"Final 51-page rendering and 65 tests passed after source commit; delivery checks remain separately pending"
+    "post_completion_artifact_rescan":"Final51-page rendering and65 tests passed; verified-subject artifact commit5ab1a8e21724e063f68fc35cc98810114f07cc96 is complete. Subsequent receipt-only commit and GitHub delivery readback do not claim a new PDF source revision. Final user approval and implementation are outside this preparation completion."
   },
   "reuse_learning_handoff": {
     "selected_modules":["RM-VIS-001","RM-VIS-002"],
