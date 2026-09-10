@@ -1,0 +1,199 @@
+{
+  "work_level": "L3",
+  "work_title": "Comparative encounter specification and portrait style candidates",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Current user continuation: 좋아 권장안대로 계속 진행해, following merged REPLAN-043 foundation and proposed encounter/visual candidate next steps.",
+  "scope": "Extend the existing replanning owner with comparative encounter specification and named HUD portrait candidates. Produce three bounded style alternatives, verify candidate-only Aseprite processing if suitable, preserve production runtime/assets and baseline PDF. No final art lock, runtime migration or release approval.",
+  "benchmark_preflight_receipt": {
+    "state": "REUSED_EVIDENCE",
+    "entries": [
+      {
+        "source_and_evidence": "main 9e9de05f2c4060e3b1c84883d6c601c88d671364: REPLANNING_FOUNDATION, bootstrap, scheduler, skill session, seed data, battle scene and existing portraits read 2026-09-10",
+        "observed_pattern": "Baseline 100-HP combat, 12/35/55 damage ratios, deterministic seeds, atomic confirmation and 128x96 portrait slot already exist.",
+        "project_fit_and_difference": "Reuse a controlled encounter and actual HUD geometry. Existing full-body texture is reference-only for a new face-first candidate.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "https://www.aseprite.org/docs/cli/ ; https://docs.godotengine.org/en/stable/tutorials/2d/2d_sprite_animation.html ; https://www.gdcvault.com/play/1021657/Powerful-and-Effective-Animation-for ; read 2026-09-10",
+        "observed_pattern": "Source frames, export metadata and engine playback are distinct. Anticipation/timing are staging concerns; GDC description only, not full video viewed.",
+        "project_fit_and_difference": "Keep mechanics authoritative and select Aseprite only for candidate source/frame operations; no copied animation, no new tool bridge.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Current replanning owner and new candidate preparation only",
+    "inventory": [
+      {
+        "path": "docs/design/REPLANNING_FOUNDATION.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "REPLAN-043",
+        "references_and_consumers": "Extend this owner; do not create another competing GDD."
+      },
+      {
+        "path": "assets/production",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Preserved running baseline",
+        "references_and_consumers": "Still runtime-bound; reference-only for new design does not mean obsolete."
+      },
+      {
+        "path": "skills/PROJECT_BASE_ADAPTER.json",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Installed Base9.4.4",
+        "references_and_consumers": "Unchanged lock; current Base methods supplement without migration."
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "REPLAN-043 continued comparative preparation",
+    "source_main_sha": "9e9de05f2c4060e3b1c84883d6c601c88d671364",
+    "work_item_refs": [
+      "COMPARISON-PREPARATION"
+    ],
+    "active_work_item_ref": null,
+    "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
+    "work_items": [
+      {
+        "work_item_id": "COMPARISON-PREPARATION",
+        "title": "Encounter and visual candidates can be evaluated without replacing baseline",
+        "status": "DONE",
+        "canon_owner": "docs/design/REPLANNING_FOUNDATION.md",
+        "actual_consumers": [
+          "Comparative encounter implementation brief",
+          "scenes/production/battle.tscn::MainRow/CombatColumn/ResourceFrame/ResourceRow/VanguardPortrait (planned candidate comparison only)"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "AC-SPEC",
+          "AC-VISUAL"
+        ],
+        "required_evidence": [
+          "E1_STATIC",
+          "E2_TEST",
+          "E4_VISUAL"
+        ],
+        "checklist": [
+          {
+            "id": "AC-SPEC",
+            "text": "Numeric experiment seeds, target/refund edges and outcome criteria are explicit without claiming final balance.",
+            "status": "PASS",
+            "evidence": [
+              "REPLANNING_FOUNDATION sections10-11: numerical seeds, action instance reservation/refund, final forecast boundary and evaluation ceiling."
+            ]
+          },
+          {
+            "id": "AC-VISUAL",
+            "text": "Named portrait alternatives have actual output, provenance, candidate status and visual inspection; source and runtime preserved.",
+            "status": "PASS",
+            "evidence": [
+              "Three original candidates retained with hashes and explicit defects; A pixel-identical static Aseprite roundtrip; baseline preserved. No final art readiness claimed."
+            ]
+          }
+        ],
+        "verification": [
+          {
+            "level": "E1_STATIC",
+            "status": "PASS",
+            "evidence": [
+              "git diff --check; approved operating contract check; manifest hash/dimension/mode readback; no src/data/scenes/assets/adapter/PDF changes."
+            ]
+          },
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "python -m unittest discover -s tests/tooling: 54 tests PASS.",
+              "A source and Aseprite-export PNG decoded RGBA bytes exactly equal; digest in candidate manifest."
+            ]
+          },
+          {
+            "level": "E4_VISUAL",
+            "status": "PASS",
+            "evidence": [
+              "Three large candidates visually inspected; B/C checkerboard defects classified comparison-only. A roundtrip viewed. This PASS is candidate inspection only, not all-assets readiness.",
+              "Static browser comparison page opened and accessibility content read; actual 96px screenshot QA NOT_RUN."
+            ]
+          }
+        ],
+        "next_action": "Preparation scope complete, not entire replanning. Next: isolated experiment implementation, portrait framing/actual-size review and final style decision; B/C stay comparison-only.",
+        "verified_head_sha": "055d808945b4ed5a75a6e1b89a1da7fe77f668f3",
+        "must_fix_remaining": 0,
+        "blocked_unverified_remaining": 0,
+        "user_decision_required_remaining": 0,
+        "repository_readback": "PASS",
+        "readback_evidence": [
+          "PR99 exact head055d808945b4ed5a75a6e1b89a1da7fe77f668f3: godot-validation and windows-powershell-contract PASS; these are baseline automated checks, not new-design live runtime.",
+          "Independent exact-head review: zero Important/blocking findings. GitHub review threads empty. Baseline source/assets/adapter/PDF unchanged."
+        ],
+        "rollback": "Revert preparation PR through a reviewed follow-up; no runtime or saved data migration."
+      }
+    ]
+  },
+  "evidence_ceiling": {
+    "new_runtime": "NOT_RUN",
+    "human": "NOT_RUN",
+    "new_images": "THREE_GENERATED_CANDIDATES; A_TECHNICAL_CANDIDATE; B_C_REVISION_REQUIRED_ALPHA",
+    "aseprite_task": "STATIC_SOURCE_AND_PIXEL_IDENTICAL_ROUNDTRIP_VERIFIED; ANIMATION_NOT_AUTHORED",
+    "style_approval": "PENDING",
+    "actual_96px_screenshot": "NOT_RUN",
+    "release": "NOT_VERIFIED"
+  },
+  "review_progress": {
+    "required_full_loops": 2,
+    "loop_1": {
+      "state": "CORRECTED_AND_RECHECKED",
+      "findings": [
+        "B/C alpha requested but opaque checkerboard emitted; two extraction retries failed.",
+        "Ward replacement exploration lacked an unambiguous transaction rule."
+      ],
+      "correction": "Preserve B/C as comparison-only with visible defects, prohibit runtime promotion; A retained true alpha and exact pixel roundtrip. v0.1 Ward disallows replacement and defines once-only refund/rollback/terminal handling.",
+      "regression": "All four asset hashes and PNG modes verified; 54 tooling tests passed."
+    },
+    "loop_2": {
+      "state": "CLEAN_REVIEW_EXIT",
+      "scope": "Independent read-only whole-scope review, actual baseline seeds/consumers, all three candidates, hashes and preservation.",
+      "findings_and_corrections": [
+        "Two stale NOT_RUN/current-ceiling claims changed to initial-milestone history with section9 current evidence.",
+        "Six-action fixture now specifies forecast-only guard7 and stopping before advancement, with no guard damage/Ward/commit."
+      ],
+      "regression": "Independent correction readback: zero Important/blocking findings, Ready-to-merge YES for candidate-only preparation; git diff --check PASS. Exact-head validation follows."
+    }
+  },
+  "reuse_learning_handoff": {
+    "reuse_mode": "ADAPT",
+    "selected_modules": [
+      "Existing deterministic board/scheduler and atomic skill owners",
+      "Existing native candidate-only Aseprite route"
+    ],
+    "project_paths_changed": [
+      "docs/design/REPLANNING_FOUNDATION.md",
+      "docs/operations/TETRIS_COMPARISON_PREPARATION_2026-09-10.json",
+      "docs/assets/reference/planned/replanning"
+    ],
+    "verification_evidence": [
+      "54 tooling tests",
+      "Asset SHA256/PNG mode check",
+      "Decoded RGBA roundtrip equality"
+    ],
+    "evidence_ceiling": "SPECIFICATION_AND_REVIEWED_CANDIDATES_WITH_DEFECTS_NOT_RUNTIME",
+    "rollback": "Git revert of this preparation change; baseline unchanged",
+    "project_only_lessons": [
+      "Never interpret a generated checkerboard as alpha; fail-closed provenance and file metadata prevent accidental runtime promotion.",
+      "A valid Next requirement needs an explicit terminal fixture boundary."
+    ],
+    "base_promotion_candidates": [],
+    "base_disposition": "NO_NEW_REUSE_LEARNING requiring a shared rule; existing alpha/provenance/state gates already cover this failure."
+  },
+  "remaining_work": {
+    "preparation_scope": "No blocking preparation findings; conditional asset defects explicitly retained, not accepted for runtime.",
+    "later_work": [
+      "Comparison prototype and transaction/scheduler regression tests",
+      "Actual 96px visual audit and portrait framing",
+      "Final style choice before approved state-family production",
+      "Boss/tiles/skill icons and event-bound motion",
+      "New blueprint PDF after its new source is specified"
+    ],
+    "cleanup": "An exact-path owned staging cleanup command was rejected by execution policy; no deletion claimed. Repository contains only three comparison PNGs, one editable A source, its manifest and viewer; no failed repair duplicates.",
+    "base_drift": "Installed9.4.4 unchanged; latest inspected Base remote2f93e872d9ed4fa18018ac759b01acd7d34e9b58 used for applicable methods only."
+  }
+}
