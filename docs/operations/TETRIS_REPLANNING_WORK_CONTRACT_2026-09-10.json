@@ -1,0 +1,58 @@
+{
+  "work_level": "L3",
+  "work_title": "Puzzle combat replanning foundation",
+  "direction_anchor": "Preserve the dual-puzzle resource-to-boss-skill core; reassess rules, world, screen, assets and motion through evidence. Existing images are references for the new design, not automatic visual locks.",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Current conversation 2026-09-10: user confirmed the retained puzzle-combat core, requested SWOT/benchmark/practice-based revision, then said 권장안대로 진행.",
+  "scope": "Register the approved restart direction, develop a concrete candidate design and linked production sequence, reconcile entry routing, verify and publish the planning branch. Runtime migration and final art direction remain later gates, not implied by document completion.",
+  "base_adoption": "Retain installed 9.4.4 adapter and its protected baseline. Supplement the planning workflow with current Base methods requested by the user; do not change the adapter lock.",
+  "benchmark_preflight_receipt": {
+    "state": "REUSED_EVIDENCE",
+    "entries": [
+      {"source_and_evidence": "Tetris main b3a0975d2586dc093d3a3929a426bdcd7e4f3575 rechecked 2026-09-10; CORE-029, CHAIN-038, SKILL-039/042, data/production and src/production; same-conversation 11-game primary-source research.", "observed_pattern": "Persistent dual boards, pause, ETA and atomic skills already exist; combo controls recovery, technique identity and shortage conversion. Stored LINE opportunity is already implemented.", "project_fit_and_difference": "Reuse deterministic owners as the comparison baseline. Replan economy and technique clarity without calling existing time-control logic a new invention.", "disposition": "ADAPT"},
+      {"source_and_evidence": "https://puyo.sega.jp/puyopuyotetris2/rule.html ; https://store.steampowered.com/app/590380/Into_the_Breach/ ; https://store.steampowered.com/app/212680/FTL_Faster_Than_Light/ ; read in this conversation 2026-09-10.", "observed_pattern": "Multiple puzzles and HP/MP skills have precedents; explicit threats and pausable decision-making support deliberate response.", "project_fit_and_difference": "Retain manual preparation and visible response; reject timed forced swap and copied presentation. Sources establish mechanics, not causal fun or global novelty.", "disposition": "ADAPT"},
+      {"source_and_evidence": "Current Base ART_DIRECTION_AND_ASSET_PLANNING_GUIDE section 11 and sprite-pose-sequence-controls; local Aseprite LOCAL_USAGE.md and tool discovery/version readback in this conversation.", "observed_pattern": "Image-model artwork, restricted candidate-only Aseprite packaging, state continuity and runtime verification are separate stages.", "project_fit_and_difference": "Reuse the existing route and preserve source assets; no new bridge, purchase, forced pixel-art style or fabricated animation proof.", "disposition": "ADOPT"}
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Planning entrypoints and new replanning brief only; no runtime, source image, old PR or adapter mutation.",
+    "inventory": [
+      {"path": "AGENTS.md", "classification": "ACTIVE_OWNER", "owner_or_provenance": "Project entrypoint", "references_and_consumers": "Needs restart scope ahead of baseline invariants; preserve runtime read order."},
+      {"path": "docs/design/PROJECT_WORKSPACE_INDEX.md", "classification": "ACTIVE_OWNER", "owner_or_provenance": "Existing active-context/work-order owner", "references_and_consumers": "New replanning entry; old completed mechanics are baseline rather than next tasks."},
+      {"path": "skills/PROJECT_BASE_ADAPTER.json", "classification": "ACTIVE_OWNER", "owner_or_provenance": "Installed Base 9.4.4 adapter", "references_and_consumers": "Version and protected paths remain unchanged."},
+      {"path": "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json", "classification": "COMPATIBILITY", "owner_or_provenance": "Historical first-install policy", "references_and_consumers": "Protected baseline provenance; not current installation state."},
+      {"path": "assets/production", "classification": "COMPATIBILITY", "owner_or_provenance": "Existing playable-baseline assets", "references_and_consumers": "Still runtime-bound; reference-only for new visual design does not authorize deletion."},
+      {"path": "docs/blueprints/TETRIS_HUMAN_GAME_BLUEPRINT.pdf", "classification": "ARCHIVE", "owner_or_provenance": "Prior baseline-derived reader artifact", "references_and_consumers": "Preserve bytes and source manifest; not the new design blueprint."}
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "2026-09-10 current user-approved replanning foundation",
+    "source_main_sha": "b3a0975d2586dc093d3a3929a426bdcd7e4f3575",
+    "work_item_refs": ["REPLAN-FOUNDATION"],
+    "active_work_item_ref": "REPLAN-FOUNDATION",
+    "next_action": "Author and verify the bounded planning foundation and current-authority routing.",
+    "work_items": [{
+      "work_item_id": "REPLAN-FOUNDATION",
+      "title": "Current restart direction and concrete candidate design are discoverable without replacing runtime truth",
+      "status": "VERIFY_REVIEW",
+      "canon_owner": "docs/design/REPLANNING_FOUNDATION.md",
+      "actual_consumers": ["AGENTS.md", "docs/design/PROJECT_WORKSPACE_INDEX.md", "future bounded gameplay and asset briefs"],
+      "depends_on": [],
+      "acceptance_criteria": ["AC-AUTHORITY", "AC-DESIGN"],
+      "required_evidence": ["E1_STATIC", "E2_TEST"],
+      "checklist": [
+        {"id": "AC-AUTHORITY", "text": "Latest direction is routed separately from the unchanged baseline, adapter and source assets.", "status": "PASS", "evidence": ["AGENTS and workspace route to REPLANNING_FOUNDATION; production index records proposal state separately; git diff contains no runtime or image changes."]},
+        {"id": "AC-DESIGN", "text": "Candidate rules, alternatives, risks, state/consumer/motion boundaries and next validation are explicit.", "status": "PASS", "evidence": ["REPLANNING_FOUNDATION sections 3-7: 11 benchmarks, three alternatives, provisional economy, three technique purposes, asset/motion states and comparative evaluation."]}
+      ],
+      "verification": [{"level": "E1_STATIC", "status": "PASS", "evidence": ["git diff --check and scoped changed-path readback; no runtime/assets/adapter/PDF source changes"]}, {"level": "E2_TEST", "status": "PASS", "evidence": ["python -m unittest discover -s tests/tooling: 54 tests passed after preserving PDF source bytes"]}],
+      "next_action": "Obtain independent review, exact-head protected-contract checks and remote publication/readback; close only this planning slice."
+    }]
+  },
+  "review_progress": {
+    "required_full_loops": 2,
+    "loop_1": {"state": "CORRECTED_AND_RECHECKED", "finding": "Adding scope banners to PDF source owners invalidated preserved edition provenance; the initial tooling run had 1 failure out of 54.", "correction": "Restored Master GDD and Visual Bible bytes; routed the new scope through AGENTS, workspace and production index instead.", "regression": "54 tooling tests passed; unchanged PDF, source documents, runtime, assets and adapter."},
+    "loop_2": {"state": "IN_PROGRESS", "scope": "Reread complete candidate, entry routing, baseline and scope preservation; independent review and exact-head publication gates remain."}
+  },
+  "reuse_learning_handoff": {"reuse_mode": "ADAPT", "selected_modules": ["Existing deterministic puzzle/combat owners as comparison baseline", "Current Base intake/design/art-state/review methods without adapter migration"], "project_paths_changed": ["AGENTS.md", "docs/design/PROJECT_WORKSPACE_INDEX.md", "docs/design/PRODUCTION_CANON_INDEX.json", "docs/design/REPLANNING_FOUNDATION.md", "docs/operations/TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json", "docs/operations/TETRIS_REPLANNING_WORK_CONTRACT_2026-09-10.json"], "verification_evidence": ["54 tooling tests", "PDF provenance regression check"], "evidence_ceiling": "PLANNING_AND_STATIC_ONLY", "rollback": "Git revert of this planning branch; runtime and original assets unchanged", "project_only_lessons": ["Route a restart outside preserved PDF source owners to avoid invalidating historical provenance"], "base_promotion_candidates": ["Evaluate edition-aware source preservation only if repeated projects demonstrate the same need; no Base change in this task"]},
+  "evidence_ceiling": {"research": "SOURCE_READ_NOT_PLAYTEST", "runtime": "NOT_RUN", "human": "NOT_RUN", "new_images": "NOT_GENERATED", "aseprite_task": "NOT_RUN"}
+}

@@ -1,5 +1,11 @@
 # Tetris project work rules
 
+## Current replanning direction — 2026-09-10
+
+Read `docs/design/REPLANNING_FOUNDATION.md` and `docs/design/PROJECT_WORKSPACE_INDEX.md` before the baseline read order below. `TETRIS-REPLAN-043` owns the user-approved restart direction; its detailed rules are comparative-prototype candidates, not implemented or finally approved gameplay. Existing images/visual locks are reference-only for the new design; preserve still-bound runtime assets. Existing production contracts remain the running-baseline authority, not automatic new-design locks. The installed Base 9.4.4 adapter remains pinned.
+
+For this replanning contract, apply the latest user-requested two complete adversarial review loops, with zero unresolved blocking findings required for a clean exit; historical five-loop receipts are provenance, not this task's execution gate.
+
 ## Canon
 
 Read current production gameplay in this order:
@@ -20,7 +26,7 @@ Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
 ## TETRIS_FORMAL_BASE_ADAPTER_BOOTSTRAP
 
 - `docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json` is the project-owned first-migration policy source for the formal Base adapter route. It must be read at its exact merged `origin/main` commit before the adapter is installed.
-- `skills/PROJECT_BASE_ADAPTER.json` is the only future canonical adapter path. It is `NOT_INSTALLED` at this policy-source commit; no task may create the adapter and claim this same feature branch as its trusted protected baseline.
+- `skills/PROJECT_BASE_ADAPTER.json` is the installed canonical adapter (Base 9.4.4). `NOT_INSTALLED` describes the historical first-policy commit only, not current state. Preserve the recorded protected baseline and version lock.
 - The subsequent adapter-install PR must use the merged policy commit as `protected_baseline.commit`, read `/protected_paths`, and preserve every listed path. It must not copy Base Skill bodies into this project.
 
 ## DOMAIN_SPLIT_CANON
