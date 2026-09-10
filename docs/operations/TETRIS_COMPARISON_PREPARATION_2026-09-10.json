@@ -50,13 +50,13 @@
     "work_item_refs": [
       "COMPARISON-PREPARATION"
     ],
-    "active_work_item_ref": "COMPARISON-PREPARATION",
-    "next_action": "Exact-head review, remote validation and current-task publication.",
+    "active_work_item_ref": null,
+    "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
     "work_items": [
       {
         "work_item_id": "COMPARISON-PREPARATION",
         "title": "Encounter and visual candidates can be evaluated without replacing baseline",
-        "status": "IN_PROGRESS",
+        "status": "DONE",
         "canon_owner": "docs/design/REPLANNING_FOUNDATION.md",
         "actual_consumers": [
           "Comparative encounter implementation brief",
@@ -115,7 +115,17 @@
             ]
           }
         ],
-        "next_action": "Exact-head review, remote validation and current-task publication."
+        "next_action": "Preparation scope complete, not entire replanning. Next: isolated experiment implementation, portrait framing/actual-size review and final style decision; B/C stay comparison-only.",
+        "verified_head_sha": "055d808945b4ed5a75a6e1b89a1da7fe77f668f3",
+        "must_fix_remaining": 0,
+        "blocked_unverified_remaining": 0,
+        "user_decision_required_remaining": 0,
+        "repository_readback": "PASS",
+        "readback_evidence": [
+          "PR99 exact head055d808945b4ed5a75a6e1b89a1da7fe77f668f3: godot-validation and windows-powershell-contract PASS; these are baseline automated checks, not new-design live runtime.",
+          "Independent exact-head review: zero Important/blocking findings. GitHub review threads empty. Baseline source/assets/adapter/PDF unchanged."
+        ],
+        "rollback": "Revert preparation PR through a reviewed follow-up; no runtime or saved data migration."
       }
     ]
   },
@@ -173,5 +183,17 @@
     ],
     "base_promotion_candidates": [],
     "base_disposition": "NO_NEW_REUSE_LEARNING requiring a shared rule; existing alpha/provenance/state gates already cover this failure."
+  },
+  "remaining_work": {
+    "preparation_scope": "No blocking preparation findings; conditional asset defects explicitly retained, not accepted for runtime.",
+    "later_work": [
+      "Comparison prototype and transaction/scheduler regression tests",
+      "Actual 96px visual audit and portrait framing",
+      "Final style choice before approved state-family production",
+      "Boss/tiles/skill icons and event-bound motion",
+      "New blueprint PDF after its new source is specified"
+    ],
+    "cleanup": "An exact-path owned staging cleanup command was rejected by execution policy; no deletion claimed. Repository contains only three comparison PNGs, one editable A source, its manifest and viewer; no failed repair duplicates.",
+    "base_drift": "Installed9.4.4 unchanged; latest inspected Base remote2f93e872d9ed4fa18018ac759b01acd7d34e9b58 used for applicable methods only."
   }
 }
