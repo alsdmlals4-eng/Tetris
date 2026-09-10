@@ -1,0 +1,31 @@
+{
+  "schema":"tetris-r1-blueprint-preparation-v1",
+  "state":"SPECIFIED_RECOMMENDATION_NOT_RUNTIME_DATA",
+  "rules_owner":"docs/design/REPLANNING_RULES_AND_FUN_SPEC.md",
+  "comparison_seed_owner":"docs/design/REPLANNING_FOUNDATION.md#10-comparative-encounter-specification-v01",
+  "new_session_data_owner":"this file; human blueprint sections32-35 are its reader explanation",
+  "normal_encounter":{
+    "id":"r1_gatebreaker_intro","rule_pack":"R1","player_hp":100,"boss_hp":180,"initial_mp":20,"initial_charge":2,"phase":1,
+    "repeat_schedule":true,"end_condition":"HP_TERMINAL_ONLY","target_active_seconds":[90,180],"target_is_hypothesis":true,
+    "schedule":[
+      {"action_id":"light_smash","label":"망치 견제","kind":"direct_damage","windup_seconds":10,"damage":12},
+      {"action_id":"gatebreaker_slam","label":"균열 강타","kind":"direct_damage","windup_seconds":14,"damage":35},
+      {"action_id":"light_smash","label":"망치 견제","kind":"direct_damage","windup_seconds":10,"damage":12},
+      {"action_id":"recover_pose","label":"균열핵 안정","kind":"no_damage","windup_seconds":8,"damage":0}
+    ],
+    "instance_id_rule":"run_id + monotonically increasing action sequence, never action_id alone",
+    "modes":{"standard":{"windup_multiplier":1.0},"relaxed":{"windup_multiplier":1.25}},
+    "phase_changes":false
+  },
+  "teaching":{
+    "recorded_as_normal_win":false,
+    "line_fixture":{"id":"teach_line_single","width":10,"visible_height":20,"hidden_rows":4,"visible_rows":["..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","..........","GGGGGG...."],"hidden_rows_content":["..........","..........","..........",".........."],"forced_active_piece":"I","orientation":"horizontal","target_landing_cells":[[6,19],[7,19],[8,19],[9,19]],"initial_mp":0,"initial_charge":0,"expected_lines":1,"expected_mp":10,"boss_frozen":true,"note":"Authored teaching fixture override only; not ordinary seven-bag or A/B initial state"},
+    "chain_fixture":{"id":"teach_chain_wave","rows":["RRBGYPCB","GBRYPCBG","BYPCRGBY","YPCRGBYP","PCRGBYPC","CRGBYPCR","RGBYPCRG","GBYPCRGB"],"initial_charge":0,"swap":[[2,0],[2,1]],"expected_first_wave_cells":[[0,0],[1,0],[2,0]],"minimum_charge_gain":1,"boss_frozen":true},
+    "skill_fixture":{"id":"teach_amplified_ward","player_hp":10,"boss_hp":100,"mp":10,"charge":2,"action":"gatebreaker_slam","windup_seconds":14,"damage":35,"expected_remaining_hp":5,"starts_on_explicit_practice_start":true}
+  },
+  "motion":{"boss":{"impact_ms":120,"recovery_ms":240,"hurt_ms":100,"anticipation_seconds":{"light_smash":0.6,"gatebreaker_slam":1.2},"priority":{"terminal":100,"commit":80,"anticipation":60,"hurt":40,"idle":0}},"portrait_hurt_ms":160,"freeze_with_simulation":true,"damage_authority":"simulation transaction only","reduced_motion":"static state plus unchanged ETA/result labels"},
+  "screen_layout":{"reference_size":[1280,720],"outer_margin":16,"center_gap":16,"column_width":616,"column_height":688,"right_heights":{"boss_and_hp":360,"threat":104,"portrait_and_resources":104,"skill_entry":72,"gaps":48},"portrait_minimum":[96,96],"line_cell":26},
+  "no_damage_presentation":{"action_id":"recover_pose","active_state":"recovery","hold":"full action windup including mode multiplier","priority":0,"on_commit":"enter next action state without impact","impact":false,"hit_sound":false,"eta_label":"안정 종료까지","hp_recovery":0},
+  "deadlock_search_limit":256,
+  "approval":"PENDING_FINAL_USER_REVIEW"
+}
