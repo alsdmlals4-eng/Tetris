@@ -2,6 +2,15 @@
   "schema_version": 3,
   "project": "TETRIS",
   "status": "CURRENT_PRODUCTION_CANON",
+  "replanning": {
+    "direction_decision": "TETRIS-REPLAN-043",
+    "owner": "docs/design/REPLANNING_FOUNDATION.md",
+    "direction_state": "USER_APPROVED",
+    "detail_state": "SPECIFIED_FOR_COMPARATIVE_PROTOTYPE",
+    "baseline_runtime_changed": false,
+    "existing_images": "REFERENCE_ONLY_FOR_REPLANNING_PRESERVE_RUNTIME_CONSUMERS",
+    "full_adversarial_loops": 2
+  },
   "current_core_decision": "TETRIS-CORE-029",
   "current_skill_decision": "TETRIS-SKILL-039",
   "current_skill_content_decision": "TETRIS-SKILL-042",
@@ -17,6 +26,7 @@
   "external_workspace_migration_record": "docs/operations/TETRIS_CURRENT_WORKSPACE_MIGRATION_2026-08-28.json",
   "mandatory_current_task_evidence_gate": {
     "owner": "AGENTS.md#MANDATORY_CURRENT_TASK_EVIDENCE_GATE",
+    "replanning_override": "For TETRIS-REPLAN-043 use replanning.full_adversarial_loops; the minimum below describes baseline work only.",
     "fresh_source_and_implementation_read": true,
     "targeted_current_internet_research": "REQUIRED_FOR_MATERIAL_WORK",
     "mechanical_no_external_dependency_exception": "EXPLICIT_SCOPE_AND_REASON_REQUIRED",

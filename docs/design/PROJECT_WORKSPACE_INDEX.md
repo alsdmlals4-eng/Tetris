@@ -8,6 +8,8 @@
 
 ## 1. Start here
 
+Current restart direction and next work: [`REPLANNING_FOUNDATION.md`](REPLANNING_FOUNDATION.md), `TETRIS-REPLAN-043`. The tables and detailed contracts below describe the preserved playable baseline unless explicitly marked as a new proposal. Existing images are references for replanning, not new visual locks. The linked PDF remains the baseline-derived edition, not the new proposal's blueprint.
+
 | I need to know… | Repository owner |
 | --- | --- |
 | What game are we making, what is approved, what conflicts, and what is next? | [`PROJECT_MASTER_GDD.md`](PROJECT_MASTER_GDD.md) |
@@ -39,7 +41,7 @@ The folders are responsibility boundaries, not a claim that all planned screens,
 
 `TETRIS-CHAIN-038` is implemented and machine-verified: diagonal CHAIN matching, the 1-MP failed-swap keep-or-revert lock, MP/Combo caps and per-wave CHAIN MP recovery are runtime behavior. `TETRIS-ONBOARDING-037` is also implemented and machine-verified: first-visit rules review, an actual 45-second ETA, a pre-first-CONFIRM nonterminal guard and same-encounter handoff. Human/player evidence for every surface remains `NOT_RUN`.
 
-The current work order is:
+The following is the historical baseline implementation order (CHAIN, category-resolved Skill and onboarding are already present). Do not restart these as missing implementations; the current work order is in `REPLANNING_FOUNDATION.md` section 7:
 
 1. Apply the user-approved Phase 2 contract: [`2026-08-29-phase2-tactical-core-alignment.md`](../superpowers/plans/2026-08-29-phase2-tactical-core-alignment.md) locks the C1–C10 content, target-separated time semantics and the capped stored board-opportunity reserve. `TETRIS-VIS-BOARD-002` remains a planning-only reference, not a runtime asset.
 2. Implement the smallest verified sequence: deterministic CHAIN alignment → category-resolved Skill and target-separated timing → briefing/rules/Deploy and safe live practice, reusing the same encounter.
