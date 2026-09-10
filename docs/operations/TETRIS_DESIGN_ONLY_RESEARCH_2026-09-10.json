@@ -1,0 +1,118 @@
+{
+  "work_level": "L2",
+  "work_title": "Design-only rules, fun and originality refinement",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Latest user explicitly defers implementation and delegates detailed design decisions using internet research, benchmarking and recommendations.",
+  "scope": "Research and specify a recommended design-only rule pack, fun hypotheses, alternatives, examples and evaluation plan. No code, scenes, images, Godot execution, old PR mutation, runtime adoption, final balance or release claims.",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "main56a7b9e75f3c4f4754b6ad1b64c37390a4c60c50; REPLANNING_FOUNDATION, actual combat state, CHAIN session, LINE feel configuration and runtime reward handling fresh-read; open PR19/23/33/46/85/100 read-only.",
+        "observed_pattern": "Two persistent boards and atomic skills exist. Proposed B separates MP and Combo but marginal rewards and failure penalties can undermine voluntary choice.",
+        "project_fit_and_difference": "Preserve v0.1 controlled comparison and production. Detail a separately named recommended design pack; implementation deferred by user, not blocked by missing Godot connection.",
+        "disposition": "ADAPT"
+      },
+      {
+        "source_and_evidence": "2026-09-10 primary pages: puyo.sega.jp/puyopuyotetris2/rule.html; subsetgames.com/itb.html; tetriseffect.game; sirlin.net/articles/subtractive-design; sirlin.net/articles/balancing-multiplayer-games-part-1-definitions; megacrit.com/press-kits/slay-the-spire/; Riot gameplay clarity.",
+        "observed_pattern": "Hybrid puzzle skill combat exists; forecast, contextual choice, readable feedback and removing unnecessary complexity are useful patterns.",
+        "project_fit_and_difference": "No novelty claim for genre combination; use prepared-board opportunity costs and forecast responses as the identity hypothesis. No competitor rules or art copied.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "Design owner/detail and current planning contract",
+    "inventory": [
+      {
+        "path": "docs/design/REPLANNING_FOUNDATION.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "REPLAN-043",
+        "references_and_consumers": "Top-level new-design route, baseline comparison values remain owned here."
+      },
+      {
+        "path": "docs/design/REPLANNING_RULES_AND_FUN_SPEC.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "New design-only detail under REPLAN-043",
+        "references_and_consumers": "Planning reader; NOT a runtime data consumer."
+      },
+      {
+        "path": "skills/PROJECT_BASE_ADAPTER.json",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Installed9.4.4",
+        "references_and_consumers": "Unchanged lock; current Base methods only."
+      },
+      {
+        "path": "PR100",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "Previous unmerged first-battle checkpoint",
+        "references_and_consumers": "Read-only. Its Godot blocker is not a prerequisite for this design-only request; no branch absorption."
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "REPLAN-043 design-only refinement",
+    "source_main_sha": "56a7b9e75f3c4f4754b6ad1b64c37390a4c60c50",
+    "work_item_refs": [
+      "DESIGN-RULES"
+    ],
+    "active_work_item_ref": "DESIGN-RULES",
+    "next_action": "Write design detail, reconcile owner routing, and verify design evidence.",
+    "work_items": [
+      {
+        "work_item_id": "DESIGN-RULES",
+        "title": "Research-backed detailed rules and fun/originality hypotheses",
+        "status": "IN_PROGRESS",
+        "canon_owner": "docs/design/REPLANNING_RULES_AND_FUN_SPEC.md",
+        "actual_consumers": [
+          "Planning reader; no runtime adoption"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "AC-DESIGN"
+        ],
+        "required_evidence": [
+          "E1_STATIC"
+        ],
+        "checklist": [
+          {
+            "id": "AC-DESIGN",
+            "text": "Rule coverage, contextual decisions, numerical counterexamples, failure edges, primary sources and keep/change/defer dispositions are explicit; no unsupported runtime or fun claims.",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "verification": [
+          {
+            "level": "E1_STATIC",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "Research and write detailed rule pack."
+      }
+    ]
+  },
+  "evidence_ceiling": {
+    "design": "IN_PROGRESS",
+    "runtime": "DEFERRED_BY_USER",
+    "human": "NOT_RUN",
+    "new_art": "NOT_REQUESTED_THIS_SLICE",
+    "release": "NOT_VERIFIED"
+  },
+  "review_progress": {
+    "required_full_loops": 2,
+    "completed_full_loops": 0,
+    "scope": "New design-only instruction; prior PR100 implementation review not restarted or claimed complete."
+  },
+  "base_drift": {
+    "local": "68792fc38340a19945ba6b15eedef39f55d50705",
+    "remote": "2f93e872d9ed4fa18018ac759b01acd7d34e9b58",
+    "project_adoption": "9.4.4 unchanged"
+  },
+  "remaining_work": {
+    "implementation": "DEFERRED_BY_USER",
+    "godot_connection": "Not a planning blocker",
+    "base_promotion": "No Base write planned"
+  }
+}
