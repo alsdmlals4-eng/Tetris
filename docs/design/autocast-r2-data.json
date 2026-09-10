@@ -1,0 +1,17 @@
+{
+  "schema": "tetris-autocast-r2-planning-v1",
+  "rules_owner": "docs/design/REPLANNING_AUTOCAST_R2.md",
+  "state": "SPECIFIED_RECOMMENDATION_NOT_RUNTIME_DATA",
+  "direction": "USER_APPROVED_B_LINE_RESOURCES_CHAIN_AUTOCAST",
+  "tuning": "UNTESTED_RECOMMENDED_SEED",
+  "runtime": "NOT_RUN_USER_DEFERRED",
+  "tile_types": ["attack", "defense", "healing", "time"],
+  "line": {"width":10,"visible_height":20,"hidden_rows":4,"shape_bag":"IOTSZJL","resource_bag":["attack","defense","healing","time"],"uniform_resource_per_piece":true,"attack_per_cell":1,"armor_per_cell":1,"healing_per_cell":1,"time_per_cell_seconds":0.25,"overflow_hp_loss":25},
+  "chain": {"width":8,"height":8,"match_axes":["horizontal","vertical"],"minimum_match":3,"direct_tile_rewards":false,"casts_per_wave":1,"category_lock":"WHOLE_CASCADE","combo_reset":"STABLE_BOARD","stage_cap":6,"safety_wave_cap":64,"mp_cost":0},
+  "skills": {"ATK":[4,6,8,11,14,18],"DEF":[3,5,7,10,13,17],"SUP":[2,3,4,5,7,9],"def_stack":"MAX_TARGET_VALUE_CURRENT_UNCOMMITTED_ACTION","attack_bank_consumption":"ONCE_NEXT_SUCCESSFUL_DAMAGE_SKILL","manual_use":false},
+  "timer": {"scope":"CURRENT_UNCOMMITTED_ACTION_INSTANCE","extension_cap_seconds":3.0,"after_commit_extension":0,"carry_excess":false},
+  "layout": {"width":1280,"height":720,"margin":16,"gap":16,"column_width":616,"column_height":688,"right_heights":[300,116,96,140,36],"portrait_minimum":96},
+  "tile_asset": {"path":"docs/assets/reference/planned/replanning/autocast/tiles.png","sha256":"6da54b7be30ff875153d0dde7611b133709f78be8cfd0b0653f6efa3f0d7a21b","size":[1254,1254],"regions":{"attack":[0,0,627,627],"defense":[627,0,627,627],"healing":[0,627,627,627],"time":[627,627,627,627]},"source":"docs/assets/reference/planned/replanning/autocast/tiles.aseprite","source_sha256":"dedf84fb10402679c77da4ac0f1ea60b25596055a07765b1a226ad803bdb49ae","frames":1,"approval":"GENERATED_CANDIDATE_PENDING_USER_REVIEW","consumer":"PLANNED_LINE_AND_CHAIN_NOT_BOUND","provenance":"image_gen edit of R1 tiles; exec-7c8b7653-e8df-4a56-9731-7f9af023704d.png; native Aseprite copy and pixel-equal export"},
+  "boss_asset": {"state":"BLOCKED_ALPHA_VALIDATION","attempts":["exec-293575c1-4833-4991-8447-778ec3cce8c7.png","exec-41283730-90e9-4205-9e46-7d06a19f0a13.png"],"observed_mode":"RGB","observed_size":[1254,1254],"alpha_present":false,"runtime_adoption":false},
+  "approval_gate": "FULL_BLUEPRINT_AND_ASSETS_NOT_READY"
+}

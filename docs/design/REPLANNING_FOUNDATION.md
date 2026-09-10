@@ -2,6 +2,8 @@
 
 ## 1. Authority and status
 
+- Latest approved change (2026-09-11): [R2 automatic-cast rules](REPLANNING_AUTOCAST_R2.md) and [R2 planning data](autocast-r2-data.json) own LINE four-type resources → CHAIN per-wave automatic skill casting, replacing R1 manual MP/charge rules for the new design only. User approved recommended B; detailed numerical seeds remain untested recommendations. R2 asset/complete-blueprint readiness is pending transparent-boss correction. The preserved R1 PDF below is historical review evidence, not the current automatic-cast design. Production runtime and pinned Base adapter remain unchanged.
+
 - Current reader publication (2026-09-11): [Human blueprint](REPLANNING_HUMAN_BLUEPRINT.md), [derived PDF](../blueprints/TETRIS_REPLANNED_HUMAN_BLUEPRINT.pdf), [preparation data](blueprint-data.json), and [candidate asset manifest](../assets/reference/planned/replanning/blueprint/manifest.json). These are final-review recommendations, not final user approval or runtime adoption. The new reader source owns first-complete-session/UI/handoff details; existing R1 rules and the unchanged section10 comparison retain their owners.
 
 - Decision: `TETRIS-REPLAN-043`, direction approved in the current conversation on 2026-09-10: replan from the dual-puzzle resource-to-boss-skill core, evaluate existing elements through research, and proceed with the recommended role-clarity direction.
