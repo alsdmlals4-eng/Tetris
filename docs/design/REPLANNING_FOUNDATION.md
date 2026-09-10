@@ -150,7 +150,7 @@ Evaluation protocol: use the same deterministic board seeds and boss schedule fo
 | ADD_CANDIDATE | Explicit amplification, event-bound motion and comparative metrics | Link preparation, choice and visible consequence |
 | DEFER | Thirty new skill illustrations, job expansion, progression, shape-authored attacks | Avoid content multiplication before the core earns it |
 | REFERENCE_ONLY | Existing visual locks, images and old PDF for new design | Permit a genuine restart without damaging the running baseline |
-| REMOVE_CANDIDATE | Hidden technique substitution in candidate B only | Eliminate unexpected effects; no deletion from baseline in this change |
+| REMOVE_CANDIDATE | Combo-dependent technique substitution and shortage fallback in candidate B only | Keep technique purpose stable; baseline already previews the selected effect and conversion before CONFIRM, so this is not a claim that it hides the executed effect |
 
 Project lesson: separate new-direction authority from still-running rules and asset consumers at the entrypoint. Base reuse: existing intake, design-document, art/state and review methods suffice; no new bridge or mandatory shared module. Base promotion is a candidate only until repeated evidence exists.
 
