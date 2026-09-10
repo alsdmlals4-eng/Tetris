@@ -1,0 +1,43 @@
+{
+  "direction_anchor": "Approved B: LINE four-type direct resources, CHAIN per-wave automatic category skill. Design and candidate asset preparation only; implementation remains user-deferred.",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Latest user: 권장안대로 진행해, after B alternative recommendation",
+  "scope_status": "PARTIAL_DELIVERY_FULL_BLUEPRINT_NOT_COMPLETE",
+  "work_mode": "RESEARCH_DESIGN_ASSET_PREPARATION",
+  "skills_used": ["managing-project-intake-and-work-contract", "superpowers:brainstorming", "imagegen", "pdf:pdf", "superpowers:requesting-code-review", "superpowers:verification-before-completion"],
+  "start_main": "8014785d279e69694da9561590dc114b015f9969",
+  "source_commit": "e5eccab56d91750863a62baf9def5cd5690523ab",
+  "protected_scope": "No changes to runtime src/data/scenes, installed Base9.4.4 adapter, protected production contracts or R1 PDF/manifest. Other draft PRs remain read-only.",
+  "preflight": {
+    "reuse": "REUSED_EVIDENCE plus fresh actual scheduler, skill checkpoint, R1 atlas/PDF builder and project adapter read",
+    "alternatives": "A dual direct rewards rejected; B role split approved; C MP-gated autocast deferred. Owner REPLANNING_AUTOCAST_R2.md section02.",
+    "external": ["https://puyo.sega.jp/puyopuyotetris2/rule.html", "https://docs.godotengine.org/en/stable/classes/class_atlastexture.html", "https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/103"],
+    "date": "2026-09-11",
+    "feasibility": "PARTIAL: existing scheduler transaction/atlas structures reusable; new runtime policies not implemented, boss alpha output failed"
+  },
+  "owner_hygiene": {
+    "active": ["docs/design/REPLANNING_FOUNDATION.md", "docs/design/REPLANNING_AUTOCAST_R2.md", "docs/design/autocast-r2-data.json"],
+    "historical_preserved": ["R1 blueprint, data and assets"],
+    "removal": "NONE"
+  },
+  "verification": {
+    "planning_and_tooling": {"state":"PASS","command":"python -m unittest discover -s tests/tooling","count":71,"skipped":0,"ceiling":"Planning arithmetic, asset bytes and PDF publication; not runtime behavior"},
+    "protected_contract": {"state":"PASS","command":"check_approved_project_operating_contract.py --project-root . --base-repository C:/Users/user/Documents/GitHub/Base --protected-base c2093d7796cf8948dff613c41407c7e857d7a3e2 --approval docs/operations/TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json --external-approval true --check"},
+    "aseprite": {"state":"PASS","frames":1,"rgba_export_equal":true,"ceiling":"Static candidate import/export, not animation or runtime"},
+    "pdf": {"state":"DOCUMENT_RENDER_REVIEWED","path":"docs/blueprints/TETRIS_AUTOCAST_R2_REVIEW.pdf","sha256":"7268b6867e48c24ba91d486c2c7e906c7a6dc8cd5b3eba0effa32011ff269cf4","pages":20,"render":"Immutable exact-byte copy, pdftoppm PNG scale1150, all20 pages inspected with view_image; no clipped text/tables or missing glyphs observed","complete_blueprint":false},
+    "review_loop_1": {"state":"FINDINGS_CORRECTED","findings":["commit boundary vs ETA0 damage", "ward target/value save fields", "fixed simulation wave cadence"]},
+    "review_loop_2": {"state":"CLEAN_REVIEW_EXIT","new_blocking_findings":0,"scope":"R2 amended rules/data/publication only; not overall art/blueprint readiness"},
+    "runtime": "NOT_RUN_USER_DEFERRED",
+    "human": "NOT_RUN"
+  },
+  "remaining_work_completion_gate": "NOT_COMPLETE",
+  "implementation_correction_rescan": "R1 runtime unchanged; R2 core inequalities and save/timing ambiguities corrected",
+  "post_completion_adversarial_review_required": "Two loops performed for partial delivery, not a full-goal completion claim",
+  "remaining": [
+    {"item":"True transparent boss six-state atlas","state":"BLOCKED_ALPHA_VALIDATION","evidence":"Two image-model edits returned RGB1254x1254 with painted checkerboard; neither promoted"},
+    {"item":"Updated battle screen atlas and full human blueprint integration","state":"PENDING","dependency":"Verified transparent character asset and full display/motion composition"},
+    {"item":"Deterministic four-type tutorial boards and full encounter tuning data","state":"PENDING","dependency":"New complete-session planning pass; existing R1 tutorial/encounter is not silently carried over"},
+    {"item":"Final user review then gameplay implementation","state":"USER_DEFERRED_UNTIL_READY"}
+  ],
+  "reuse_learning_handoff": {"selected_modules":["existing ReportLab Korean layout","Aseprite restricted candidate workflow","scheduler commit/checkpoint contracts"],"reuse_mode":"ADAPT","evidence_ceiling":"design/document/candidate only","rollback":"Revert R2 branch changes through ordinary reviewed Git commit; preserved R1 bytes remain available","project_only_lessons":"Never interpret painted checkerboard as alpha; no cast or resource effect from visual callbacks","base_promotion_candidates":[],"base_change":"NO_NEW_REUSE_LEARNING_REQUIRING_BASE_CHANGE"}
+}
