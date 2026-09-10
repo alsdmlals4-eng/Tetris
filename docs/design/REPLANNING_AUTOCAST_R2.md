@@ -61,6 +61,8 @@ SEGA 공식 규칙은 퍼즐+HP/MP 스킬 전투와 시간에 따른 보드 교�
 
 한 파동 = 현재 보드에서 동시에 성립한 모든 매치의 고유 셀 합집합. 콤보 +1 → 단계 결정 → 해당 계열 기술 1회 자동 적용 → 소거/낙하/보충 → 다음 파동. 두 그룹 동시 소거는 2회 발동이 아니다. 수동 USE·CONFIRM·MP 부족 하향 발동은 없다.
 
+권장 파동 간격은 시뮬레이션 시간 0.30초다. 성공 교환 확정 후 첫 파동까지도 0.30초, 이후 파동도 같은 간격. 논리 예약 시각이 발동을 소유하고 화면 연출은 이에 따라간다. 연출 축소·렌더 프레임 속도로 발동 속도를 바꾸지 않는다. pause는 파동 예약의 남은 시간도 멈춘다. 간격은 재미 검증 전 시험값이다.
+
 권장 콤보는 이번 한 연쇄의 깊이이며 보드가 안정되면 0으로 돌아간다. 과거 누적 Combo 재화를 이월하지 않는다. 화면의 최대 콤보 기록은 별도 통계다. 잘못된 교환은 원위치, 자원·스킬 효과 없음. 다음 연쇄는 다시 C1부터다.
 
 ## 07 · 단계와 스킬의 역할
@@ -98,7 +100,7 @@ LINE에서 얻은 공격 가산치를 bank라 부른다. ATK 성공 시 총 피�
 
 ## 10 · 같은 순간 발생하는 사건의 순서
 
-권장 고정 시뮬레이션 tick마다: 메뉴 pause → 보스 확정 경계 도달 처리 → 이미 확정된 보스 피해 → HP 종료 판정 → 새 LINE/CHAIN 소거 트랜잭션 → 자원/자동 스킬 → 적 HP 종료 판정 → 낙하·보충·다음 행동 예약 → 화면 갱신.
+권장 고정 시뮬레이션 tick마다: 메뉴 pause → 보스 ETA 갱신과 확정 경계 상태 갱신 → ETA가 0에 도달한 보스 피해 → HP 종료 판정 → 같은 tick에 예약된 LINE/CHAIN 소거 트랜잭션 → 자원/자동 스킬 → 적 HP 종료 판정 → 낙하·보충·다음 행동 예약 → 화면 갱신. commit_lead 진입은 변경 금지 시점이며 피해를 앞당기는 시점이 아니다. 새 행동의 예약은 이 tick 종료 시이며 이전 행동을 겨냥한 타일/방벽 효과를 새 행동으로 재지정하지 않는다.
 
 따라서 같은 tick에서 치명적 보스 피해가 확정되면 뒤의 자동 회복이 플레이어를 부활시키지 않는다. 경계 직전 아직 미확정인 행동에는 정상적으로 시간 타일이 적용된다. UI에 표시한 ETA를 보고 소급 취소하는 별도 경로를 만들지 않는다. 실제 timing 설정의 commit_lead를 구현 시 검증하고, 임의 0초로 대체하지 않는다.
 
@@ -173,7 +175,7 @@ Aseprite는 원본 보존·편집 가능한 .aseprite 저장·내보내기 검�
 
 새 data는 docs/design/autocast-r2-data.json에 격리한다. data/production, scenes/production, src/production은 지금 변경하지 않는다. 승인 후 별도 R2 rule_pack으로 통합하며 R1 저장을 값 이름만 바꿔 해석하지 않는다.
 
-권장 저장 스냅샷: schema/rule_pack, 양 보드 셀·형태/자원 RNG·HOLD/NEXT, HP/armor/attack_bank, current action instance/ETA/extension_used, 선택 계열, chain_id/wave_index/category_snapshot/processed_event_ids. 중간 트랜잭션은 저장하지 않고 완료 경계에서 체크포인트. 전투 중 재시작 복구는 전체 원자 스냅샷 또는 명시적 전투 재시작 중 한 경로를 사용한다.
+권장 저장 스냅샷: schema/rule_pack, 양 보드 셀·형태/자원 RNG·HOLD/NEXT, HP/armor/attack_bank, current action instance/ETA/extension_used, ward_value/ward_target_action_instance, 선택 계열, chain_id/wave_index/category_snapshot/processed_event_ids/next_wave_remaining_seconds. 중간 트랜잭션은 저장하지 않고 완료 경계에서 체크포인트. 전투 중 재시작 복구는 전체 원자 스냅샷 또는 명시적 전투 재시작 중 한 경로를 사용한다. 방벽 대상 action이 일치하지 않는 스냅샷은 부분 복원하지 않고 오류 처리한다.
 
 구현 순서: 데이터 검증 → unique-cell LINE 정산 → 파동 트랜잭션/자동 cast → 보스 scheduler/시간 cap → UI 세 상태(선택·다음·최근) → 승인 이미지 consumer → Godot 검증 → 사람 테스트. 별도 카탈로그·대시보드를 중복 생성하지 않는다.
 

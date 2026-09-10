@@ -7,7 +7,7 @@
   "runtime": "NOT_RUN_USER_DEFERRED",
   "tile_types": ["attack", "defense", "healing", "time"],
   "line": {"width":10,"visible_height":20,"hidden_rows":4,"shape_bag":"IOTSZJL","resource_bag":["attack","defense","healing","time"],"uniform_resource_per_piece":true,"attack_per_cell":1,"armor_per_cell":1,"healing_per_cell":1,"time_per_cell_seconds":0.25,"overflow_hp_loss":25},
-  "chain": {"width":8,"height":8,"match_axes":["horizontal","vertical"],"minimum_match":3,"direct_tile_rewards":false,"casts_per_wave":1,"category_lock":"WHOLE_CASCADE","combo_reset":"STABLE_BOARD","stage_cap":6,"safety_wave_cap":64,"mp_cost":0},
+  "chain": {"width":8,"height":8,"match_axes":["horizontal","vertical"],"minimum_match":3,"direct_tile_rewards":false,"casts_per_wave":1,"category_lock":"WHOLE_CASCADE","combo_reset":"STABLE_BOARD","stage_cap":6,"safety_wave_cap":64,"wave_interval_seconds":0.30,"mp_cost":0},
   "skills": {"ATK":[4,6,8,11,14,18],"DEF":[3,5,7,10,13,17],"SUP":[2,3,4,5,7,9],"def_stack":"MAX_TARGET_VALUE_CURRENT_UNCOMMITTED_ACTION","attack_bank_consumption":"ONCE_NEXT_SUCCESSFUL_DAMAGE_SKILL","manual_use":false},
   "timer": {"scope":"CURRENT_UNCOMMITTED_ACTION_INSTANCE","extension_cap_seconds":3.0,"after_commit_extension":0,"carry_excess":false},
   "layout": {"width":1280,"height":720,"margin":16,"gap":16,"column_width":616,"column_height":688,"right_heights":[300,116,96,140,36],"portrait_minimum":96},
