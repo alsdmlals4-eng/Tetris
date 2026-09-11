@@ -81,7 +81,7 @@ def build():
         'atomicity':'write temp, flush, validate checksum, preserve previous valid backup, atomic replace; never load temp',
         'cancel_selection':'CHAIN same-cell selection cancels; pause retains cursor but restore clears incomplete selection'},
       'asset_approval':'PENDING_FINAL_USER_REVIEW','runtime':'NOT_RUN_USER_DEFERRED','human':'NOT_RUN'}
-    p=ROOT/'docs/design/r2-complete-session.json';p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+    p=ROOT/'docs/design/r2-complete-session.json';p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
     print(json.dumps({'fixture':data['chain_teaching'],'asset_count':len(assets)},ensure_ascii=False))
 
 

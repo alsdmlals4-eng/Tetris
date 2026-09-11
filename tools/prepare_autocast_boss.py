@@ -57,7 +57,7 @@ def extract(source, destination):
       'partial_alpha_pixels':int(((a>0)&(a<255)).sum()),'regions':regions,'pivot_per_cell':[325,448],
       'method':'neutral-bright connected matte >=24px with violet-neighborhood highlight protection below1000px; minfilter3, blur0.35; original RGB preserved; reviewed unequal source rows to fixed460px padded cells',
       'approval':'USER_APPROVED_BACKGROUND_ONLY_LOCAL_EXCEPTION','visual_review':'REQUIRED'}
-    destination.with_suffix('.extraction.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8')
+    destination.with_suffix('.extraction.json').write_text(json.dumps(receipt,indent=2)+'\n',encoding='utf-8',newline='\n')
     print(json.dumps(receipt))
 
 
