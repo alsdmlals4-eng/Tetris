@@ -879,16 +879,37 @@ func _render_practice():
     $Battle/PracticeStatus.visible=active and session.mode=="LINE"
     $Battle/PracticeNext.visible=active
     $Battle/PracticeRetry.visible=active
-    if not active: return
+    var state: Label=$Battle/Puzzle/Chain/State
+    var help: Label=$Battle/Puzzle/Chain/Role
+    if not active:
+        state.position=Vector2(18,582)
+        state.size=Vector2(580,40)
+        help.position=Vector2(18,628)
+        help.size=Vector2(580,52)
+        help.text="인접 교환 → 파동마다 자동 기술\n타일 직접 보상 없음 · Tab 보드 전환"
+        state.add_theme_font_size_override("font_size",roundi(18.0*float(options.font_scale)/100.0))
+        help.add_theme_font_size_override("font_size",roundi(17.0*float(options.font_scale)/100.0))
+        return
     $Battle/PracticeNext.disabled=not _practice_complete()
     $Battle/PracticeStatus.text="연습 %d / 4\n%s\n\n%s"%[practice_stage,"보스 시계 정지" if session.training_boss_frozen else "보스 시계 진행","단계 조건 완료" if _practice_complete() else "안내대로 실제 입력"]
     if session.mode=="CHAIN":
-        $Battle/PracticeNext.position=Vector2(68,642)
-        $Battle/PracticeRetry.position=Vector2(225,642)
+        # Board ends at global590; status/help/buttons occupy separate footer rows.
+        state.position=Vector2(18,580)
+        state.size=Vector2(580,28)
+        help.position=Vector2(18,611)
+        help.size=Vector2(580,28)
+        state.add_theme_font_size_override("font_size",roundi(16.0*float(options.font_scale)/100.0))
+        help.add_theme_font_size_override("font_size",roundi(15.0*float(options.font_scale)/100.0))
+        $Battle/PracticeNext.position=Vector2(68,660)
+        $Battle/PracticeRetry.position=Vector2(225,660)
+        $Battle/PracticeNext.size=Vector2(140,38)
+        $Battle/PracticeRetry.size=Vector2(140,38)
         $Battle/Puzzle/Chain/Role.text="연습 %d · %s"%( [practice_stage,"실제 기술 %d회 / 타일 직접 보상 0"%session.metrics.casts])
     else:
         $Battle/PracticeNext.position=Vector2(28,485)
         $Battle/PracticeRetry.position=Vector2(28,533)
+        $Battle/PracticeNext.size=Vector2(140,42)
+        $Battle/PracticeRetry.size=Vector2(140,42)
 func _show_result(training_complete: bool = false, persist: bool = true):
     if session==null: return
     inputs.clear()

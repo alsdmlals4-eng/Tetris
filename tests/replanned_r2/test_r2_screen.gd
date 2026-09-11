@@ -339,3 +339,34 @@ func test_start_save_failure_preserves_new_run_or_explicit_previous_choice():
         screen.disk.failure_point=""
         screen.continue_run()
         assert_eq(screen.session.run_id,previous)
+
+func test_practice_footer_regions_do_not_overlap_chain_board_or_each_other():
+    if not ready_screen(): return
+    for scale in [100,125]:
+        screen.options.font_scale=scale
+        screen._apply_font()
+        screen.begin_practice(2)
+        screen.close_details()
+        await get_tree().process_frame
+        var board=screen.get_node("Battle/Puzzle/Chain/Cells").get_global_rect()
+        var state=screen.get_node("Battle/Puzzle/Chain/State").get_global_rect()
+        var help=screen.get_node("Battle/Puzzle/Chain/Role").get_global_rect()
+        var next=screen.get_node("Battle/PracticeNext").get_global_rect()
+        var retry=screen.get_node("Battle/PracticeRetry").get_global_rect()
+        var puzzle=screen.get_node("Battle/Puzzle").get_global_rect()
+        assert_eq(board.size,Vector2(512,512),"Keep64px CHAIN tiles")
+        assert_false(board.intersects(state))
+        assert_false(state.intersects(help))
+        assert_false(help.intersects(next),"Help must end before the practice button row")
+        assert_false(help.intersects(retry))
+        assert_false(next.intersects(retry))
+        for rect in [state,help,next,retry]:
+            assert_true(puzzle.encloses(rect),"Footer stays within the existing puzzle half")
+        screen.begin_practice(1)
+        screen.close_details()
+        var line=screen.get_node("Battle/Puzzle/Line/Cells").get_global_rect()
+        var previews=screen.get_node("Battle/Puzzle/Line/Previews").get_global_rect()
+        for path in ["Battle/PracticeNext","Battle/PracticeRetry","Battle/PracticeStatus"]:
+            var rect=screen.get_node(path).get_global_rect()
+            assert_false(rect.intersects(line))
+            assert_false(rect.intersects(previews))
