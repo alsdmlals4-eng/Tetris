@@ -71,6 +71,9 @@ func apply_line(event_id: String, cells: Array) -> Dictionary:
     if not _ready:
         rejected["reason"] = "RULE_PACK_INVALID"
         return rejected
+    if paused:
+        rejected["reason"] = "PAUSED"
+        return rejected
     if outcome != "RUNNING":
         rejected["reason"] = "COMBAT_TERMINAL"
         return rejected
@@ -161,6 +164,9 @@ func cast(event_id: String, category: String, wave: int) -> Dictionary:
     var rejected := _cast_result(false, "NO_EFFECT", event_id, category, wave, "")
     if not _ready:
         rejected["reason"] = "RULE_PACK_INVALID"
+        return rejected
+    if paused:
+        rejected["reason"] = "PAUSED"
         return rejected
     if outcome != "RUNNING":
         rejected["reason"] = "COMBAT_TERMINAL"
@@ -267,6 +273,9 @@ func apply_topout(event_id: String) -> Dictionary:
     }
     if not _ready:
         rejected["reason"] = "RULE_PACK_INVALID"
+        return rejected
+    if paused:
+        rejected["reason"] = "PAUSED"
         return rejected
     if outcome != "RUNNING":
         rejected["reason"] = "COMBAT_TERMINAL"
@@ -426,10 +435,12 @@ func restore(value: Dictionary) -> bool:
     if int(restored_ward) == 0 and not restored_target.is_empty():
         return false
     if int(restored_ward) > 0:
+        if not _is_authored_ward_value(int(restored_ward)):
+            return false
         if restored_target != _action_id_for_index(int(restored_index)):
             return false
         var action := _action_for_index(int(restored_index), restored_mode)
-        if int(action["damage"]) <= 0 or int(restored_eta) <= COMMIT_LEAD_US:
+        if int(action["damage"]) <= 0:
             return false
 
     var line_event_set = _string_array_to_set(value["processed_line_event_ids"])
@@ -601,6 +612,12 @@ func _normalized_integer(value, minimum: int, maximum: int):
     if normalized < minimum or normalized > maximum:
         return null
     return normalized
+
+func _is_authored_ward_value(value: int) -> bool:
+    for authored_value in _skills["DEF"]:
+        if int(authored_value) == value:
+            return true
+    return false
 
 func _sorted_string_keys(values: Dictionary) -> Array:
     var result: Array = []

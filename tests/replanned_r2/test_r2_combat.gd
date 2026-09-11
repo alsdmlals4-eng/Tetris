@@ -314,3 +314,45 @@ func test_due_lethal_boss_action_prevents_same_tick_line_heal_and_sup_revive() -
     assert_eq(state.outcome, "DEFEAT")
     assert_eq(state.snapshot()["processed_line_event_ids"], [])
     assert_eq(state.snapshot()["processed_cast_event_ids"], [])
+
+func test_pause_blocks_direct_transactions_without_consuming_event_ids() -> void:
+    var state = _state()
+    if state == null:
+        return
+    state.paused = true
+    var before: Dictionary = state.snapshot()
+    var line_result: Dictionary = state.apply_line("paused-direct-line", [{"id": "paused-direct-cell", "kind": "A"}])
+    var cast_result: Dictionary = state.cast("paused-direct-cast", "ATK", 1)
+    var topout_result: Dictionary = state.apply_topout("paused-direct-topout")
+    assert_false(line_result["success"])
+    assert_eq(line_result["reason"], "PAUSED")
+    assert_false(cast_result["success"])
+    assert_eq(cast_result["reason"], "PAUSED")
+    assert_false(topout_result["success"])
+    assert_eq(topout_result["reason"], "PAUSED")
+    assert_eq(state.snapshot(), before)
+    state.paused = false
+    assert_true(state.apply_line("paused-direct-line", [{"id": "paused-direct-cell", "kind": "A"}])["success"])
+    assert_true(state.cast("paused-direct-cast", "ATK", 1)["success"])
+    assert_true(state.apply_topout("paused-direct-topout")["success"])
+
+func test_restore_accepts_valid_committed_ward_and_rejects_unauthored_ward_atomically() -> void:
+    var invalid = _state()
+    var committed = _state()
+    if invalid == null or committed == null:
+        return
+    invalid.cast("invalid-ward-seed", "DEF", 6)
+    var before_invalid: Dictionary = invalid.snapshot()
+    var unauthored: Dictionary = before_invalid.duplicate(true)
+    unauthored["ward"] = 99
+    assert_false(invalid.restore(unauthored))
+    assert_eq(invalid.snapshot(), before_invalid)
+    committed.cast("committed-ward-seed", "DEF", 6)
+    committed.tick(9999000)
+    var committed_snapshot: Dictionary = committed.snapshot()
+    assert_eq(committed_snapshot["ward"], 17)
+    assert_eq(committed_snapshot["ward_target"], "rift_breaker_r2_intro:0")
+    assert_eq(committed_snapshot["eta_us"], 1000)
+    committed.hp = 99
+    assert_true(committed.restore(committed_snapshot))
+    assert_eq(committed.snapshot(), committed_snapshot)
