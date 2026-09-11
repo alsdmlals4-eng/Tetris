@@ -1,0 +1,20 @@
+{
+  "source_commit": "e5eccab56d91750863a62baf9def5cd5690523ab",
+  "input_hashes": {
+    "docs/design/REPLANNING_AUTOCAST_R2.md": "bf10a03487177f1c1032b6ff538420368ad2ea7b47af9a9d873d3232e10103c0",
+    "docs/design/autocast-r2-data.json": "3ba094faa29e119165018cfaabbc34687d5ac3a93d25f541bf9e0c3721c3f5a0",
+    "tools/build_autocast_r2_review.py": "292d543ae54300ed9059c0631554e020b731cb9fb80cea2536bfaa80779c834d",
+    "tools/build_replanning_blueprint.py": "19242929a9bdc69537a786071564c529b38977f9f60366d579d9c87e5679f884",
+    "docs/design/REPLANNING_FOUNDATION.md": "d8947905a5e92aa27c0eef378943bbf7b906c15eb0c99c9f36dd5a8f737fdfdc",
+    "docs/assets/reference/planned/replanning/autocast/tiles.png": "6da54b7be30ff875153d0dde7611b133709f78be8cfd0b0653f6efa3f0d7a21b",
+    "docs/assets/reference/planned/replanning/autocast/tiles.aseprite": "dedf84fb10402679c77da4ac0f1ea60b25596055a07765b1a226ad803bdb49ae"
+  },
+  "pdf_sha256": "7268b6867e48c24ba91d486c2c7e906c7a6dc8cd5b3eba0effa32011ff269cf4",
+  "pages": 20,
+  "role": "HUMAN_GDD_PDF_DERIVED_AMENDMENT",
+  "complete_blueprint": false,
+  "runtime": "NOT_RUN_USER_DEFERRED",
+  "human": "NOT_RUN",
+  "asset_ready": false,
+  "render_review": "NOT_YET_REVIEWED_SEE_R2_PROGRESS"
+}

@@ -125,12 +125,14 @@ class ReplanningBlueprintTest(unittest.TestCase):
         self.assertIn('fetch-depth: 0',workflow)
         self.assertLess(workflow.index('fetch-depth: 0'),workflow.index('python -m unittest discover -s tests/tooling'))
 
-    def test_pdf_publication_matches_local_sources(self):
+    def test_preserved_pdf_publication_matches_immutable_sources(self):
         path=ROOT/'docs/blueprints/TETRIS_REPLANNED_HUMAN_BLUEPRINT.pdf'
         receipt=json.loads(path.with_suffix('.manifest.json').read_text(encoding='utf-8'))
         self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),receipt['pdf_sha256'])
         for rel,expected in receipt['input_hashes'].items():
-            self.assertEqual(hashlib.sha256((ROOT/rel).read_bytes()).hexdigest(),expected,rel)
+            # R1 is preserved historical evidence. Current Foundation may point to R2.
+            # Validate source bytes at the published commit, not a moving local owner.
+            self.assertTrue(receipt['source_commit'])
             if receipt['source_commit']:
                 blob=subprocess.run(['git','show',receipt['source_commit']+':'+rel],cwd=ROOT,capture_output=True,check=True).stdout
                 self.assertEqual(hashlib.sha256(blob).hexdigest(),expected,rel)
