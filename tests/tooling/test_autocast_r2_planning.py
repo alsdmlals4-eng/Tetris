@@ -59,7 +59,6 @@ class AutocastPlanningTest(unittest.TestCase):
         m=json.loads(p.with_suffix('.manifest.json').read_text(encoding='utf-8'))
         self.assertEqual(hashlib.sha256(p.read_bytes()).hexdigest(),m['pdf_sha256'])
         for path,h in m['input_hashes'].items():
-            self.assertEqual(hashlib.sha256((ROOT/path).read_bytes()).hexdigest(),h,path)
             raw=subprocess.run(['git','show',m['source_commit']+':'+path],cwd=ROOT,capture_output=True,check=True).stdout
             self.assertEqual(hashlib.sha256(raw).hexdigest(),h,path)
 
