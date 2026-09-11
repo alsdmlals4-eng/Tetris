@@ -77,6 +77,9 @@ func _ready():
     if not assets.errors.is_empty():
         $Main/Status.text = "개발 오류: "+", ".join(assets.errors)
 
+func _exit_tree():
+    inputs.release_menu_bindings()
+
 func _panel(parent: Node, node_name: String, rect: Rect2) -> Panel:
     var node = Panel.new()
     node.name = node_name
@@ -651,7 +654,7 @@ func _input(event: InputEvent):
         return
     if $Options.visible:
         inputs.clear()
-        if action == "pause": close_options(false); get_viewport().set_input_as_handled()
+        if action in ["pause","cancel"]: close_options(false); get_viewport().set_input_as_handled()
         return
     if $DetailsPanel.visible:
         inputs.clear()
@@ -662,7 +665,7 @@ func _input(event: InputEvent):
     if page != "battle":
         inputs.clear()
         return
-    if action=="pause":
+    if action=="pause" or (action=="cancel" and session.combat.paused):
         if session.combat.paused: resume_game()
         else: pause_game()
     elif session.combat.paused:
@@ -946,6 +949,7 @@ func _top_modal() -> Control:
     return pause if pause!=null and pause.visible else null
 func _sync_modal_boundary():
     var top=_top_modal()
+    inputs.set_menu_bindings(page!="battle" or top!=null)
     var shield=get_node_or_null("ModalShield") as Control
     if shield==null: return
     shield.visible=top!=null

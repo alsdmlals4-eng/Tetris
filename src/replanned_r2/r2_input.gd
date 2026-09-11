@@ -5,11 +5,32 @@ var _sources := {}
 var options: Dictionary = {}
 var capture_group := ""
 var capture_action := ""
+var _menu_events := {}
 const DAS_US := 150000
 const ARR_US := 50000
 func configure(value: Dictionary):
+    release_menu_bindings()
     options = value
     clear()
+func set_menu_bindings(enabled: bool):
+    var actions={"ui_accept":"accept","ui_cancel":"cancel","ui_close_dialog":"cancel"}
+    for ui_action in actions:
+        var code=int(options.get("gamepad_mapping",{}).get(actions[ui_action],-1))
+        if _menu_events.has(ui_action):
+            if enabled and _menu_events[ui_action].button_index==code: continue
+            InputMap.action_erase_event(ui_action,_menu_events[ui_action])
+            _menu_events.erase(ui_action)
+        if not enabled or code<0: continue
+        var event=InputEventJoypadButton.new()
+        event.device=-1
+        event.button_index=code
+        if not InputMap.action_has_event(ui_action,event):
+            InputMap.action_add_event(ui_action,event)
+            _menu_events[ui_action]=event
+func release_menu_bindings():
+    for action in _menu_events:
+        InputMap.action_erase_event(action,_menu_events[action])
+    _menu_events.clear()
 func clear():
     held.clear()
     _sources.clear()

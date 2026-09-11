@@ -5,6 +5,8 @@ func before_each():
         screen = load("res://scenes/replanned_r2/main.tscn").instantiate()
         screen.save_path = "user://replanned_r2_tests/screen/save.json"
         screen.options_path = "user://replanned_r2_tests/screen/options.json"
+        var test_disk=screen.Disk.new(screen.save_path,screen.options_path)
+        test_disk.save_options(screen.Disk.default_options())
         add_child_autofree(screen)
         screen.set_process(false)
     else: screen = null
@@ -370,3 +372,158 @@ func test_practice_footer_regions_do_not_overlap_chain_board_or_each_other():
             var rect=screen.get_node(path).get_global_rect()
             assert_false(rect.intersects(line))
             assert_false(rect.intersects(previews))
+
+func _send_pad(button: int):
+    var event=InputEventJoypadButton.new()
+    event.button_index=button
+    event.pressed=true
+    Input.parse_input_event(event)
+    await get_tree().process_frame
+    event=event.duplicate()
+    event.pressed=false
+    Input.parse_input_event(event)
+    await get_tree().process_frame
+
+func test_pad_accept_activates_main_and_only_top_modal_without_gameplay_leak():
+    if not ready_screen(): return
+    screen.get_node("Main/Practice").grab_focus()
+    screen.get_node("Main/Practice").hide()
+    await _send_pad(JOY_BUTTON_A)
+    assert_eq(screen.page,"main","Hidden focus cannot activate")
+    screen.get_node("Main/Practice").show()
+    screen.get_node("Main/Practice").grab_focus()
+    await _send_pad(JOY_BUTTON_A)
+    assert_eq(screen.page,"battle","Native pad accept must activate Main/Practice")
+    assert_true(screen.get_node("DetailsPanel").visible)
+    if screen.session==null: return
+    screen._focus_lost()
+    await _send_pad(JOY_BUTTON_A)
+    assert_false(screen.get_node("DetailsPanel").visible,"Accept must actually close the top details panel")
+    assert_true(screen.session.combat.paused,"External pause stays in force")
+    var locks=screen.session.line.lock_sequence
+    await _send_pad(JOY_BUTTON_A)
+    assert_false(screen.session.combat.paused,"Next accept activates Pause/Resume")
+    assert_eq(screen.session.line.lock_sequence,locks,"Menu accept cannot also hard-drop")
+    screen.pause_game()
+    screen.get_node("PausePanel/Resume").disabled=true
+    await _send_pad(JOY_BUTTON_A)
+    assert_true(screen.session.combat.paused,"Disabled focus cannot activate")
+    screen.get_node("PausePanel/Resume").disabled=false
+    screen.open_options()
+    await _send_pad(JOY_BUTTON_B)
+    assert_false(screen.get_node("Options").visible,"Pad cancel closes Options without saving")
+    assert_true(screen.session.combat.paused)
+
+func test_pad_native_dropdown_and_overwrite_confirm_cancel():
+    if not ready_screen(): return
+    screen.open_options()
+    screen.get_node("Options/Device").grab_focus()
+    await _send_pad(JOY_BUTTON_A)
+    var popup=screen.get_node("Options/Device").get_popup()
+    assert_true(popup.visible,"Native OptionButton opens with pad accept")
+    await _send_pad(JOY_BUTTON_B)
+    assert_false(popup.visible,"Native popup cancels with pad B")
+    assert_true(screen.get_node("Options").visible,"Popup cancel must not also dismiss its parent")
+    await _send_pad(JOY_BUTTON_B)
+    assert_false(screen.get_node("Options").visible)
+    screen.close_options(false)
+    screen.start_run("STANDARD",321)
+    screen.return_to_main()
+    screen.request_new_run()
+    assert_true(screen.get_node("OverwriteDialog").visible)
+    screen.get_node("OverwriteDialog").get_cancel_button().grab_focus()
+    await _send_pad(JOY_BUTTON_A)
+    assert_false(screen.get_node("OverwriteDialog").visible,"Pad accept activates dialog Cancel")
+    assert_eq(screen.page,"main")
+    screen.get_node("OverwriteDialog").hide()
+    screen.request_new_run()
+    await _send_pad(JOY_BUTTON_B)
+    assert_false(screen.get_node("OverwriteDialog").visible,"Pad B cancels native confirmation")
+    assert_eq(screen.page,"main")
+    screen.get_node("OverwriteDialog").hide()
+    screen.request_new_run()
+    screen.get_node("OverwriteDialog").get_ok_button().grab_focus()
+    await _send_pad(JOY_BUTTON_A)
+    assert_eq(screen.page,"briefing","Pad accept confirms native dialog")
+    screen.get_node("OverwriteDialog").hide()
+
+func test_scoped_menu_pad_bindings_leave_existing_events_and_do_not_duplicate():
+    if not ready_screen(): return
+    var existing=InputEventJoypadButton.new()
+    existing.button_index=JOY_BUTTON_PADDLE1
+    InputMap.action_add_event("ui_accept",existing)
+    var menu_count=InputMap.action_get_events("ui_accept").size()
+    for i in range(3):
+        screen.open_options()
+        screen.close_options(false)
+    assert_eq(InputMap.action_get_events("ui_accept").size(),menu_count,"Repeated modal entry cannot duplicate mappings")
+    screen.start_run("STANDARD",32)
+    assert_false(InputMap.event_is_action(_pad_event(JOY_BUTTON_A),"ui_accept"),"R2 mapping must be absent during gameplay")
+    assert_true(InputMap.action_has_event("ui_accept",existing),"Other owners' mappings survive")
+    screen.pause_game()
+    assert_true(InputMap.event_is_action(_pad_event(JOY_BUTTON_A),"ui_accept"))
+    screen.open_options()
+    screen.options_draft.gamepad_mapping.accept=JOY_BUTTON_MISC1
+    screen.close_options(true)
+    assert_false(InputMap.event_is_action(_pad_event(JOY_BUTTON_A),"ui_accept"))
+    assert_true(InputMap.event_is_action(_pad_event(JOY_BUTTON_MISC1),"ui_accept"),"Saved remap replaces only owned temporary binding")
+    screen.open_options()
+    screen.options_draft.gamepad_mapping.accept=JOY_BUTTON_A
+    screen.close_options(false)
+    assert_true(InputMap.event_is_action(_pad_event(JOY_BUTTON_MISC1),"ui_accept"),"Cancelled remap keeps saved mapping")
+    screen.disk.save_options(screen.Disk.default_options())
+    screen.queue_free()
+    await get_tree().process_frame
+    assert_false(InputMap.event_is_action(_pad_event(JOY_BUTTON_MISC1),"ui_accept"),"Scene exit releases owned events")
+    assert_true(InputMap.action_has_event("ui_accept",existing))
+    InputMap.action_erase_event("ui_accept",existing)
+    screen=null
+
+func test_gameplay_pad_actions_stay_single_and_menu_cancel_releases_action():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",554)
+    screen.pause_game()
+    await _send_pad(JOY_BUTTON_B)
+    assert_false(screen.session.combat.paused)
+    assert_true(screen.session.line.hold_available,"Pause cancel cannot also trigger gameplay HOLD")
+    assert_false(Input.is_action_pressed("ui_cancel"),"Removing temporary bindings must not leave a held native action")
+    await _send_pad(JOY_BUTTON_B)
+    assert_false(screen.session.line.hold_available,"Gameplay B still performs HOLD")
+    await _send_pad(JOY_BUTTON_A)
+    assert_eq(screen.session.line.lock_sequence,1,"Gameplay A performs exactly one hard drop")
+    assert_false(InputMap.event_is_action(_pad_event(JOY_BUTTON_A),"ui_accept"))
+    screen.pause_game()
+    await _send_pad(JOY_BUTTON_A)
+    assert_eq(screen.session.line.lock_sequence,1,"Resume A must not also drop the next piece")
+    assert_false(Input.is_action_pressed("ui_accept"))
+
+func test_menu_mapping_scene_reentry_preserves_preexisting_matching_event():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",123)
+    var existing=_pad_event(JOY_BUTTON_A)
+    existing.device=-1
+    InputMap.action_add_event("ui_accept",existing)
+    var baseline_count=InputMap.action_get_events("ui_accept").size()
+    screen.queue_free()
+    await get_tree().process_frame
+    for i in range(2):
+        screen=load("res://scenes/replanned_r2/main.tscn").instantiate()
+        screen.save_path="user://replanned_r2_tests/screen/save.json"
+        screen.options_path="user://replanned_r2_tests/screen/options.json"
+        add_child_autofree(screen)
+        screen.set_process(false)
+        assert_eq(InputMap.action_get_events("ui_accept").size(),baseline_count,"Reentry does not duplicate another owner's matching event")
+        screen.get_node("Main/Practice").grab_focus()
+        await _send_pad(JOY_BUTTON_A)
+        assert_eq(screen.page,"battle")
+        screen.queue_free()
+        await get_tree().process_frame
+        assert_true(InputMap.action_has_event("ui_accept",existing),"Exit cannot remove a preexisting matching event")
+        assert_eq(InputMap.action_get_events("ui_accept").size(),baseline_count)
+    InputMap.action_erase_event("ui_accept",existing)
+    screen=null
+
+func _pad_event(button: int) -> InputEventJoypadButton:
+    var event=InputEventJoypadButton.new()
+    event.button_index=button
+    return event
