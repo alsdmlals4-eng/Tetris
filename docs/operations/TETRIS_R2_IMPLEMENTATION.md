@@ -19,7 +19,7 @@
 - LINE gives A/D/H/T rewards; CHAIN gives no direct tile resources and one automatic selected-category cast per simultaneous clear wave. No MP/manual USE/CONFIRM.
 - One current boss ETA; next is order forecast only. Pause stops all simulation. Boss lethal damage wins over same-tick healing. Fixed 300000 microseconds per CHAIN wave.
 - ATK `[4,6,8,11,14,18]` plus bank once; DEF max ward `[3,5,7,10,13,17]` tied to current uncommitted damaging action; SUP `[2,3,4,5,7,9]` capped healing.
-- Left/right 50:50, one visible board, large transparent boss and 96px face. Reuse approved package images; do not generate substitute art.
+- Left/right 50:50, one visible board, large transparent boss and 96px face. Reuse the reviewed package's candidate images for the isolated runtime trial; do not generate substitute art or infer final asset approval. The published package retains `PENDING_FINAL_USER_REVIEW` provenance and production imagery remains unchanged.
 - Save R2 separately, whole-state atomic stable boundaries only; never reinterpret baseline saves.
 
 ## Preflight and rulings
@@ -82,7 +82,13 @@ Task1 code `203fc3942265f9ed7f4dc129e1802a44c31a601f`: focused GUT18/18 (137 ass
 
 Task1 review closeout `240563a8863c332247fd629aacfc04e412cced56`: two important findings (public pause bypass and impossible restored ward) reproduced18/20, corrected20/20 (157 assertions), scoped re-review clean. Positive authored ward created before commit correctly survives a snapshot at the commit boundary. Task1 is complete at pure-model evidence level; Task2 is active. Separate publication checks19+6 and protected adapter validator passed; Base lock and baseline remain unchanged. Local/remote branch synchronized at83c2c48 before this fix; exact final synchronization remains pending.
 
+Task2 source `8e05c627a62e31277086f76de683fd3af2142656` plus training follow-up `2d47d4dcb4df253479cc7d88ae85ce9940d71e5c`: R2 GUT44/44 (445 assertions), full297/297 (3099 assertions). Models reuse production LINE geometry and isolate H/V-only timed CHAIN, complete-state restore and event-driven actual/wasted result metrics. Independent scoped review pending. Teaching refinement: stage1 resource learning and stage2 cascade learning may opt into `setup_training(workspace,true)` to freeze only boss clock/damage; stage3 defense timing andstage4 pause use normal timing. This teaching-only flag is saved/validated and is forbidden in normal combat; the default remains false. The view does not fake HP/ETA. Cost/trade-off: safe early learning versus unproven tutorial pacing, requiring later Human review.
+
 Publication boundary correction: Foundation now routes this approved implementation. The integrated PDF still verifies its exact published Foundation bytes at source commit, while remaining rule/asset inputs verify both current and historical bytes. RED: its original test failed solely on the added continuation routing paragraph; this is not permission to weaken asset/rule checks or relabel old PDF as runtime evidence.
+
+Task2 scoped review against `2d47d4d` found two Important gaps: incomplete or contradictory recent-cast receipts can restore, and boss action identity is encounter-based rather than run-based. Both are in fix round1 with the original implementer; the combat identity interface is included in that bounded correction. Task2 is not closed and Task3 has not started. Earlier passing tests are evidence for their exercised cases, not proof that these newly identified cases passed.
+
+Task3 input feasibility refresh: Godot's official [InputEventKey](https://docs.godotengine.org/en/stable/classes/class_inputeventkey.html) documents OS-dependent echo timing, while [controller input](https://docs.godotengine.org/en/stable/tutorials/inputs/controllers_gamepads_joysticks.html) has no equivalent held-button echo and can reach unfocused windows. ADAPT the existing authored DAS/ARR in one view-owned held-input path; REJECT OS-repeat-dependent gameplay and persistent baseline input-setting edits. [Window](https://docs.godotengine.org/en/stable/classes/class_window.html) exposes focus loss and runtime focus/scaling controls, supporting isolated R2 sizing and focus handling without changing the project entry point. Device hardware behavior and visual scaling still require separate live evidence.
 
 | Shared interface | Check |
 | --- | --- |
