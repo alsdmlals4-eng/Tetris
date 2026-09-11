@@ -78,6 +78,8 @@ Implementation IN_PROGRESS. No R2 runtime/Human PASS yet. Historical preparation
 
 Task1 code `203fc3942265f9ed7f4dc129e1802a44c31a601f`: focused GUT18/18 (137 assertions), full271/271 (2791 assertions), source/test check-only exit0. TDD gaps: missing core0/14, missing topout14/16, invalid restored ETA16/17 before correction. Independent task review pending. `new("RELAXED")` selects the authored relaxed encounter. Initial editor exit cause is unverified; approved launcher recovered exact editor37444/session tetris@82c0 and every later test retained endpoint8008. This does not prove R2 scene/runtime or Human readiness.
 
+Task1 review closeout `240563a8863c332247fd629aacfc04e412cced56`: two important findings (public pause bypass and impossible restored ward) reproduced18/20, corrected20/20 (157 assertions), scoped re-review clean. Positive authored ward created before commit correctly survives a snapshot at the commit boundary. Task1 is complete at pure-model evidence level; Task2 is active. Separate publication checks19+6 and protected adapter validator passed; Base lock and baseline remain unchanged. Local/remote branch synchronized at83c2c48 before this fix; exact final synchronization remains pending.
+
 Publication boundary correction: Foundation now routes this approved implementation. The integrated PDF still verifies its exact published Foundation bytes at source commit, while remaining rule/asset inputs verify both current and historical bytes. RED: its original test failed solely on the added continuation routing paragraph; this is not permission to weaken asset/rule checks or relabel old PDF as runtime evidence.
 
 | Shared interface | Check |
