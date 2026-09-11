@@ -1,0 +1,663 @@
+{
+  "schema": "tetris-r2-complete-session-v1",
+  "rules_owner": "docs/design/REPLANNING_AUTOCAST_R2.md",
+  "state": "PREPARATION_CANDIDATE_NOT_RUNTIME",
+  "assets": {
+    "R1-ICONS": {
+      "path": "docs/assets/reference/planned/replanning/blueprint/icons.png",
+      "regions": {
+        "strike": [
+          4,
+          4,
+          504,
+          504
+        ],
+        "ward": [
+          516,
+          4,
+          504,
+          504
+        ],
+        "recover": [
+          1028,
+          4,
+          504,
+          504
+        ],
+        "mp": [
+          4,
+          516,
+          504,
+          504
+        ],
+        "charge": [
+          516,
+          516,
+          504,
+          504
+        ],
+        "heavy": [
+          1028,
+          516,
+          504,
+          504
+        ]
+      },
+      "sha256": "40d55313aeff152106a7bfd2a5f22615cace29ee8d4b8c483195bc02384cdbde",
+      "size": [
+        1536,
+        1024
+      ]
+    },
+    "R1-PORTRAIT": {
+      "path": "docs/assets/reference/planned/replanning/blueprint/portrait-states.png",
+      "regions": {
+        "neutral": [
+          2,
+          2,
+          623,
+          623
+        ],
+        "hurt": [
+          629,
+          2,
+          623,
+          623
+        ],
+        "victory": [
+          2,
+          629,
+          623,
+          623
+        ],
+        "defeat": [
+          629,
+          629,
+          623,
+          623
+        ]
+      },
+      "sha256": "cb2ea6fe04f765fe2baf6c782988f6a1346cbdd95c0bca60e875d0757bdb49e9",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    "R1-ENV": {
+      "path": "docs/assets/reference/planned/replanning/blueprint/frontier.png",
+      "regions": {
+        "full": [
+          0,
+          0,
+          1672,
+          941
+        ]
+      },
+      "sha256": "982b48dcd60708440bd87fa701589c71b56d80832bc690209089a2d3d2e588c4",
+      "size": [
+        1672,
+        941
+      ]
+    },
+    "R2-TILES": {
+      "path": "docs/assets/reference/planned/replanning/autocast/tiles.png",
+      "regions": {
+        "attack": [
+          0,
+          0,
+          627,
+          627
+        ],
+        "defense": [
+          627,
+          0,
+          627,
+          627
+        ],
+        "healing": [
+          0,
+          627,
+          627,
+          627
+        ],
+        "time": [
+          627,
+          627,
+          627,
+          627
+        ]
+      },
+      "sha256": "6da54b7be30ff875153d0dde7611b133709f78be8cfd0b0653f6efa3f0d7a21b",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    "R2-BOSS": {
+      "path": "docs/assets/reference/planned/replanning/autocast/boss-cutout.png",
+      "regions": {
+        "idle": [
+          0,
+          0,
+          651,
+          460
+        ],
+        "anticipation": [
+          651,
+          0,
+          651,
+          460
+        ],
+        "impact": [
+          0,
+          460,
+          651,
+          460
+        ],
+        "recovery": [
+          651,
+          460,
+          651,
+          460
+        ],
+        "hurt": [
+          0,
+          920,
+          651,
+          460
+        ],
+        "defeat": [
+          651,
+          920,
+          651,
+          460
+        ]
+      },
+      "sha256": "59976e21209aac65fef13ae70c5976af4babed6ee00a11210bd8cf7bed89081f",
+      "size": [
+        1302,
+        1380
+      ],
+      "pivot": [
+        325,
+        448
+      ],
+      "alpha": "VERIFIED_RGBA"
+    }
+  },
+  "chain_teaching": {
+    "id": "r2_two_wave_teaching",
+    "rows": [
+      "HAHAADTT",
+      "DADHTTAT",
+      "TTDHTTDD",
+      "HTHTAAHT",
+      "AADTTAAT",
+      "AHHDADDA",
+      "HAHHDHDT",
+      "ADTDDHAT"
+    ],
+    "swap": [
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        5
+      ]
+    ],
+    "refill_stream": [
+      "H",
+      "D",
+      "T",
+      "D",
+      "H",
+      "H",
+      "A",
+      "H",
+      "D",
+      "A",
+      "D",
+      "A",
+      "D",
+      "H",
+      "A",
+      "D",
+      "A",
+      "T",
+      "H",
+      "T",
+      "T",
+      "D",
+      "A",
+      "D",
+      "H",
+      "A",
+      "H",
+      "A",
+      "A",
+      "T",
+      "T",
+      "T",
+      "H",
+      "H",
+      "A",
+      "A",
+      "D",
+      "T",
+      "A",
+      "H",
+      "T",
+      "T",
+      "H",
+      "D",
+      "T",
+      "A",
+      "D",
+      "D",
+      "D",
+      "D",
+      "H",
+      "T",
+      "A",
+      "A",
+      "D",
+      "T",
+      "T",
+      "T",
+      "A",
+      "D",
+      "D",
+      "A",
+      "T",
+      "D",
+      "A",
+      "A",
+      "A",
+      "T",
+      "D",
+      "A",
+      "D",
+      "H",
+      "H",
+      "A",
+      "T",
+      "A",
+      "D",
+      "H",
+      "T",
+      "H",
+      "A",
+      "D",
+      "H",
+      "H",
+      "D",
+      "T",
+      "D",
+      "H",
+      "A",
+      "T",
+      "D",
+      "T",
+      "H",
+      "T",
+      "D",
+      "D",
+      "T",
+      "D",
+      "T",
+      "D",
+      "T",
+      "D",
+      "T",
+      "A",
+      "T",
+      "D",
+      "D",
+      "A",
+      "H",
+      "A",
+      "A",
+      "D",
+      "H",
+      "T",
+      "T",
+      "T",
+      "T",
+      "T",
+      "H",
+      "T",
+      "A",
+      "T",
+      "A",
+      "T",
+      "D",
+      "H",
+      "H",
+      "T"
+    ],
+    "refill_order": "column left-to-right; new cells top-to-bottom",
+    "waves": [
+      [
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ]
+      ],
+      [
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          4
+        ]
+      ]
+    ],
+    "final_rows": [
+      "HAHAHDTT",
+      "DADAHDAT",
+      "TTDHDHDD",
+      "HTHHTHHT",
+      "AADTADAT",
+      "AHHDTTDA",
+      "HAHHAHDT",
+      "ADTDTHAT"
+    ],
+    "expected_casts": 2,
+    "expected_atk_damage_bank7": 17,
+    "training_only": true
+  },
+  "line_teaching": {
+    "visible_rows": [
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "..........",
+      "DDHHTT...."
+    ],
+    "hidden_rows": [
+      "..........",
+      "..........",
+      "..........",
+      ".........."
+    ],
+    "landing": [
+      [
+        6,
+        19
+      ],
+      [
+        7,
+        19
+      ],
+      [
+        8,
+        19
+      ],
+      [
+        9,
+        19
+      ]
+    ],
+    "piece": "I",
+    "resource": "attack",
+    "expected_counts": {
+      "A": 4,
+      "D": 2,
+      "H": 2,
+      "T": 2
+    },
+    "initial_hp": 80,
+    "expected_hp": 82,
+    "expected_extension": 0.5,
+    "training_only": true
+  },
+  "encounter": {
+    "id": "rift_breaker_r2_intro",
+    "player_hp": 100,
+    "boss_hp": 240,
+    "attack_bank": 0,
+    "armor": 0,
+    "ward": 0,
+    "initial_category": "ATK",
+    "initial_workspace": "LINE",
+    "seed": 9112026,
+    "repeat": true,
+    "terminal": "HP_ZERO",
+    "actions": [
+      {
+        "id": "probe",
+        "label": "망치 견제",
+        "seconds": 10,
+        "damage": 12,
+        "anticipation": 0.6
+      },
+      {
+        "id": "slam",
+        "label": "균열 강타",
+        "seconds": 14,
+        "damage": 35,
+        "anticipation": 1.2
+      },
+      {
+        "id": "probe",
+        "label": "망치 견제",
+        "seconds": 10,
+        "damage": 12,
+        "anticipation": 0.6
+      },
+      {
+        "id": "rest",
+        "label": "균열핵 안정",
+        "seconds": 8,
+        "damage": 0,
+        "anticipation": 0
+      }
+    ],
+    "instance_id": "run_id:monotonic_action_index",
+    "relaxed_windup_multiplier": 1.25,
+    "commit_lead_seconds": 0.001,
+    "tuning": "UNTESTED_RECOMMENDATION"
+  },
+  "motion": {
+    "mode": "EVENT_BOUND_KEY_POSES_WITH_TRANSFORM_TWEENS_NOT_SMOOTH_INBETWEENS",
+    "pivot": [
+      325,
+      448
+    ],
+    "idle_breath": {
+      "period": 2.4,
+      "scale_y": [
+        1.0,
+        1.012
+      ]
+    },
+    "impact_ms": 120,
+    "recovery_ms": 240,
+    "hurt_ms": 100,
+    "priority": [
+      "defeat",
+      "impact",
+      "anticipation",
+      "hurt",
+      "idle"
+    ],
+    "no_damage_pose": "recovery",
+    "pause": "ALL_SIMULATION_FROZEN",
+    "reduced_motion": "STATIC_POSE_TEXT_SAME_TIMING"
+  },
+  "input": {
+    "line": [
+      "Left/Right or A/D move",
+      "Z/X rotate",
+      "Down/S soft drop",
+      "Space hard drop",
+      "C hold"
+    ],
+    "chain": [
+      "arrows move cursor",
+      "Enter select then adjacent cursor and Enter swap",
+      "mouse select two neighboring cells"
+    ],
+    "shared": [
+      "Tab switch board at safe boundary",
+      "1/2/3 category outside cascade",
+      "Esc full pause",
+      "F1 read-only skill details full pause"
+    ],
+    "gamepad": [
+      "Dpad move",
+      "A chain select / LINE hard drop",
+      "X/Y LINE rotate",
+      "B cancel / LINE hold",
+      "LB board switch",
+      "RB category cycle outside cascade",
+      "Start pause"
+    ]
+  },
+  "line_input": {
+    "das_ms": 150,
+    "arr_ms": 50,
+    "lock_ms": 500,
+    "lock_reset_limit": 15,
+    "gravity_seconds": 1.0,
+    "tuning": "UNTESTED_RECOMMENDATION"
+  },
+  "save_contract": {
+    "schema": "r2-save-v1",
+    "path": "user://replanned_r2/save.json",
+    "options_path": "user://replanned_r2/options.json",
+    "checkpoint": "stable CHAIN, no transaction, complete scheduler tick",
+    "restore": "full pause; clear held inputs; validate entire snapshot before applying",
+    "required_groups": {
+      "identity": [
+        "schema",
+        "rule_pack_hash",
+        "run_id",
+        "mode",
+        "encounter_id",
+        "elapsed_simulation_us",
+        "checkpoint_sequence"
+      ],
+      "player": [
+        "hp",
+        "armor",
+        "attack_bank",
+        "ward_value",
+        "ward_target_action_instance"
+      ],
+      "boss": [
+        "hp",
+        "action_sequence_index",
+        "monotonic_action_index",
+        "current_instance",
+        "eta_us",
+        "extension_used_us",
+        "committed"
+      ],
+      "line": [
+        "visible_cells",
+        "hidden_cells",
+        "active_shape",
+        "active_resource",
+        "active_x",
+        "active_y",
+        "active_rotation",
+        "gravity_accumulator_us",
+        "grounded_us",
+        "lock_reset_count",
+        "grounded",
+        "hold_shape",
+        "hold_resource",
+        "hold_available",
+        "next_queue",
+        "shape_bag_remaining",
+        "resource_bag_remaining",
+        "shape_rng_state",
+        "resource_rng_state"
+      ],
+      "chain": [
+        "cells",
+        "chain_rng_state",
+        "chain_id",
+        "wave_index",
+        "category_snapshot",
+        "processed_event_ids",
+        "next_wave_remaining_us"
+      ],
+      "ui": [
+        "active_workspace",
+        "selected_category",
+        "last_cast",
+        "metrics"
+      ],
+      "options": [
+        "schema",
+        "language",
+        "font_scale",
+        "reduced_motion",
+        "audio",
+        "keyboard_mapping",
+        "gamepad_mapping"
+      ]
+    },
+    "invariants": [
+      "HP within configured maxima",
+      "ETA nonnegative; extension <= action cap",
+      "ward target equals current action instance or ward is zero",
+      "stable chain; wave_index=0; next_wave_remaining_us=0; no pending transaction",
+      "active piece valid or explicit terminal top-out; exactly five NEXT items",
+      "all three RNG states and bag orders present",
+      "committed consistent with ETA boundary; sequence and instance index match encounter",
+      "rule_pack_hash and schema match; reject partial or foreign saves"
+    ],
+    "checksum": "SHA256 of UTF-8 canonical JSON payload: keys sorted recursively, compact separators, integer numeric fields; exclude checksum field",
+    "atomicity": "write temp, flush, validate checksum, preserve previous valid backup, atomic replace; never load temp",
+    "cancel_selection": "CHAIN same-cell selection cancels; pause retains cursor but restore clears incomplete selection"
+  },
+  "asset_approval": "PENDING_FINAL_USER_REVIEW",
+  "runtime": "NOT_RUN_USER_DEFERRED",
+  "human": "NOT_RUN"
+}
