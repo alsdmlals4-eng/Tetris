@@ -1,0 +1,69 @@
+{
+  "source_commit": "1dd2e46e404772275d26b40031c20c9ad5148ba9",
+  "scene": "res://scenes/replanned_r2/main.tscn",
+  "run_id": "r36274595-9",
+  "date": "2026-09-12",
+  "engine": "Godot 4.7.1 stable Windows",
+  "embedding": false,
+  "font_scale_percent": 125,
+  "acquisition": "Native game framebuffer via project-dedicated HiGodot; stale_frame=false; no image edits",
+  "input": "Normal keyboard/mouse. game_eval only read state and resized presentation window; no gameplay model injection.",
+  "images": [
+    {
+      "file": "receipt-def1280-1dd2e46.png",
+      "width": 1280,
+      "height": 720,
+      "sha256": "42105fa7537bfb826d79d162b324f0e50d95c8ffcb0c3713abe268fe3da915b7",
+      "observation": "Practice1 Rightx3/Space: A4 D2 H2 T2, bank4 armor2 HP82, time+0.500s; DEF target preview."
+    },
+    {
+      "file": "receipt-def1920-1dd2e46.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "d80dd7104e30df492c89ad02b7b02f1db34376097288d01cf7105ae96dac44da",
+      "observation": "Same actual receipt at native1920."
+    },
+    {
+      "file": "def-rest1920-1dd2e46.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "33fdb8593dc22ee3fb3648f050a8941737af6b3c07fcc3ee7279541c118085c4",
+      "observation": "Practice3 normal clock reached rest, HP21 ETA2.305102s; Escape pause. Bottom DEF preview warns rest/no effect. Pause overlays central area."
+    },
+    {
+      "file": "def-receipt1920-1dd2e46.png",
+      "width": 1920,
+      "height": 1080,
+      "sha256": "58c222bc8fe2dccb7393b2772c36016584c8f3065dfb32fdd7a7845098221c3c",
+      "observation": "Normal CHAIN swap(2,0)-(3,0) during rest cast DEF twice. Actual last receipt DEF_NO_TARGET/NO_DAMAGE_ACTION/T2, ward0. Next action now active; recent cast keeps actual rest reason."
+    }
+  ],
+  "tests": {
+    "gut": {
+      "passed": 337,
+      "total": 337,
+      "assertions": 3555,
+      "scripts": 57,
+      "exit": 0,
+      "seconds": 30.721,
+      "evidence": "Implementer final-byte command/output readback in task report; scoped reviewer checked coverage."
+    },
+    "tooling": {
+      "passed": 79,
+      "total": 79,
+      "seconds": 4.868,
+      "exit": 0
+    }
+  },
+  "diagnostics": {
+    "editor_entries": 0,
+    "game_entries": 1,
+    "game_note": "helper registration only"
+  },
+  "limits": [
+    "Sampled runtime and visual states only, not global Human/fun/balance approval.",
+    "Cap/commit/finished receipt boundary and64-wave recovery proven by tests, not manually reproduced at native GUI.",
+    "Physical gamepad, export/platform/accessibility, sound playback and OS power-loss durability not verified.",
+    "Candidate asset reuse is not final art approval."
+  ]
+}
