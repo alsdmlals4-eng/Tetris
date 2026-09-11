@@ -1,0 +1,73 @@
+{
+  "direction_anchor": "Finish approved preimplementation B-design preparation and candidate art; do not implement Godot gameplay before final user review.",
+  "approval_state": "REUSED_APPROVAL",
+  "approval_reference": "Latest user: 좋아 권장안대로 남은작업 없게 진행해; continuation of explicitly approved free local background-only alpha extraction exception",
+  "scope_status": "PREIMPLEMENTATION_PREPARATION_COMPLETE_FINAL_USER_REVIEW_PENDING",
+  "work_mode": "DESIGN_ASSET_PREPARATION_AND_REVIEW",
+  "skills_used": ["superpowers:brainstorming", "imagegen", "pdf:pdf", "superpowers:requesting-code-review", "superpowers:verification-before-completion"],
+  "skill_effect": "Approved design reused without restarting approval interview; image guideline applied with explicit background-only local exception; PDF source binding and full render inspection; independent two-loop review and fresh verification.",
+  "start_main": "e4027432cd5942f07acb63bf039c1e8d3025d20b",
+  "source_commit": "c3f72f631aed017de9a27817791583d00623676f",
+  "protected_scope": "No src/data/scenes runtime changes, no Base9.4.4 adapter upgrade, no protected contract edits, no historical PDF replacement, no mutation/absorption of draft PR100/85/46/33/23/19.",
+  "preflight": {
+    "reuse_state": "REUSED_EVIDENCE_WITH_FRESH_CONSUMER_READBACK",
+    "evidence": ["REPLANNING_FOUNDATION.md", "REPLANNING_AUTOCAST_R2.md", "autocast-r2-data.json", "R1 atlas manifest", "existing Korean ReportLab builder", "production LINE snapshot and fall state", "scheduler/checkpoint anchors"],
+    "source_and_evidence": ["https://pillow.readthedocs.io/en/stable/reference/Image.html", "https://docs.godotengine.org/en/stable/classes/class_atlastexture.html"],
+    "observed_pattern": "Explicit alpha channel rather than visual checkerboard; clipped atlas regions with separate background; whole-state snapshot rather than partial recovery.",
+    "project_fit_and_difference": "Reuse R1 face/icons/environment as candidates; new actual-alpha boss and R2 four tiles; maintain single shared boss ETA and no manual MP cast.",
+    "alternatives": [
+      {"option":"Re-run image generation only","disposition":"REJECT_FOR_THIS_RECOVERY","reason":"Two prior outputs were RGB checkerboard; repeating without new evidence does not close alpha gate"},
+      {"option":"Free local component alpha extraction preserving RGB","disposition":"ADAPT","reason":"Explicitly approved exception; protect bright violet core, normalize unequal pose rows, verify composite and real alpha"},
+      {"option":"External background-removal service or new model dependency","disposition":"REJECT","reason":"Unnecessary cost/dependency and provenance boundary; local extraction solves current asset"}
+    ],
+    "feasibility":"FEASIBLE_FOR_PREPARATION; actual scene integration, animation timing, performance and player value are NOT_RUN",
+    "base_drift":"Base reuse hint still describes old Shared Player Turn Budget/READY; treated as stale reference, not project authority. Adopted9.4.4 unchanged. Latest AGENTS replanning-specific two-loop override wins over older generic five-loop text."
+  },
+  "owner_hygiene": {
+    "ACTIVE_OWNER": ["docs/design/REPLANNING_FOUNDATION.md", "docs/design/REPLANNING_AUTOCAST_R2.md mechanics", "docs/design/R2_COMPLETE_HUMAN_BLUEPRINT.md", "docs/design/r2-complete-session.json"],
+    "ARCHIVE": ["historical R1 PDF and manifest", "20-page R2 amendment PDF and source-bound manifest", "TETRIS_AUTOCAST_R2_PROGRESS.json partial receipt"],
+    "COMPATIBILITY": ["old R2 readiness and failed-alpha metadata describe previous publication only"],
+    "removed": ["task-owned failed boss-alpha.png and receipt", "task-owned failed boss-alpha-v2.png and receipt"],
+    "preserved": ["model source for reproducibility", "approved/live baseline art", "all unrelated PR work"]
+  },
+  "completed_preparation": [
+    "Actual RGBA boss six-state fixed-region atlas plus native Aseprite master",
+    "Main, briefing, LINE, CHAIN, threat, skill, pause/settings and result screen projections",
+    "Four tile types, face states, skill/pattern icons and separate stage environment linked by real paths and hashes",
+    "Validated two-wave CHAIN teaching fixture and LINE resource clear fixture",
+    "First encounter, input, mode, generation, complete checkpoint, motion event and asset consumer contracts",
+    "Detailed SWOT with improvement action, reason, expected effect and retest conditions",
+    "37-page integrated source-bound PDF with all pages visually inspected"
+  ],
+  "verification": {
+    "tooling": {"state":"PASS","command":"python -m unittest discover -s tests/tooling","count":79,"skipped":0,"source":"c3f72f631aed017de9a27817791583d00623676f","ceiling":"planning arithmetic, fixture replay, image bytes/regions/alpha, source/PDF binding; not gameplay runtime"},
+    "protected_contract": {"state":"PASS","command":"check_approved_project_operating_contract.py --project-root . --base-repository C:/Users/user/Documents/GitHub/Base --protected-base c2093d7796cf8948dff613c41407c7e857d7a3e2 --approval docs/operations/TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json --external-approval true --check"},
+    "boss": {"state":"CANDIDATE_RGBA_AND_COMPOSITE_REVIEWED","png_sha256":"59976e21209aac65fef13ae70c5976af4babed6ee00a11210bd8cf7bed89081f","aseprite_sha256":"7cc47593238b550b7df4f013339239ec6c3fdfcb99d38144c97e8dba31be05d0","rgba_roundtrip_equal":true,"frames_in_native_file":1,"pose_regions":6,"ceiling":"Six event-bound key poses; not smooth in-between animation or runtime. This receipt satisfies extraction JSON visual_review REQUIRED without rewriting extraction evidence."},
+    "pdf": {"state":"DOCUMENT_RENDER_REVIEWED","path":"docs/blueprints/TETRIS_R2_COMPLETE_HUMAN_BLUEPRINT.pdf","sha256":"95be15e57ade1175d736aa7dcb1e7535728ed56250fe67ed7ed1c9b6f3d8de50","pages":37,"method":"Immutable exact-byte copy, pdftoppm -scale-to1100 PNG; all37 individual pages read with view_image; no missing glyphs/images, clipped tables or overlapping text observed","runtime_capture":false},
+    "environment": {"python":"3.13.14","reportlab":"5.0.1","pypdf":"6.14.2","pillow":"12.3.0","malgun_ttf_sha256":"7a183cf1c6c56b9609fcc16eda8b5229fbc11758a21e669ec00343239b02192f","malgunbd_ttf_sha256":"e8cbc0b2afcc14fb45dfb6086d5102c0b23a96e7b6e708f3122acde1b86c9082","cross_environment_byte_identity":"NOT_CLAIMED"},
+    "review_loop_1": {"state":"FINDINGS_CORRECTED","independent":true,"findings":["DEF current7 versus T1 target3 preview ambiguity","Incomplete continuation snapshot field contract"]},
+    "review_loop_2": {"state":"CLEAN_REVIEW_EXIT","independent":true,"source":"d05bdfa0e77c99fb7c3836d5ba142b8858fbe05b","new_blocking_findings":0},
+    "targeted_followup": {"state":"PASS","source":"c3f72f631aed017de9a27817791583d00623676f","findings":["Threat anticipation pose now0.8s inside1.2s window","Current/next actual icon regions shown"],"full_review_round":false},
+    "runtime":"NOT_RUN_USER_DEFERRED",
+    "human":"NOT_RUN",
+    "release":"NOT_RUN"
+  },
+  "remaining_work_completion_gate":"PREPARATION_REQUIREMENTS_SATISFIED_PUBLICATION_READBACK_REQUIRED",
+  "implementation_correction_rescan":"No new gameplay applied; save/DEF/timing/atlas ambiguities corrected and source-bound tests passed",
+  "post_completion_adversarial_review_required":"Two complete independent loops plus targeted last-correction review completed; no third full loop",
+  "remaining_preparation_tasks":[],
+  "next_authority_gate":"FINAL_USER_REVIEW_OF_DESIGN_AND_ART_BEFORE_GODOT_IMPLEMENTATION",
+  "remaining_risks":["Numerical tuning/fun and actual device readability untested","Candidate art not finally user-approved or runtime-bound","Motion is key-pose plus transform specification; runtime motion not implemented","Release rights/platform approval not established","Earlier policy-blocked temporary-directory cleanup is not bypassed"],
+  "publication":"See current-task PR exact-head checks and merge readback; do not infer remote completion from this source receipt alone",
+  "reuse_learning_handoff": {
+    "selected_modules":["existing Korean PDF layout/fonts","existing R1 candidate atlas regions","Aseprite local packaging","existing scheduler and complete LINE snapshot boundaries"],
+    "reuse_mode":"ADAPT_PROJECT_ONLY",
+    "project_paths_changed":["docs/design","docs/assets/reference/planned/replanning/autocast","docs/blueprints","tools","tests/tooling"],
+    "verification_evidence":["79 tooling tests","actual alpha histogram and composite inspection","37-page source-bound PDF render","two independent reviews"],
+    "evidence_ceiling":"Preparation/candidate/document only; no runtime or Human PASS",
+    "rollback":"Ordinary reviewed revert of this current-task change; historical artifacts and live baseline preserved",
+    "project_only_lessons":["Source rows in a generated sheet may be unequal; do not blindly slice a regular grid","Bright core must be preserved during background extraction","Emit canonical LF metadata so exact Git source hashes agree on Windows","A DEF preview must show actual max/current result rather than only tier target"],
+    "base_promotion_candidates":[],
+    "base_change":"NO_NEW_REUSE_LEARNING_REQUIRING_BASE_CHANGE"
+  }
+}

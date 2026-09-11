@@ -1,0 +1,32 @@
+{
+  "source_commit": "c3f72f631aed017de9a27817791583d00623676f",
+  "draft": false,
+  "input_hashes": {
+    "docs/design/R2_COMPLETE_HUMAN_BLUEPRINT.md": "e7ef237844f8b441b36e3aec3a8ab23dac1b4a78fb84cac4f823a07523d1fb00",
+    "tools/build_r2_complete_blueprint.py": "471e48e50ce1094d2ce50b1cc9bcf2b8e8d8d20f48d51b75845abffce362d722",
+    "tools/r2_blueprint_visuals.py": "a6e83d5dde8e8e5f574a184aabb662c23d292bdc3d4168191f2b1b2a13ff57a3",
+    "tools/build_replanning_blueprint.py": "19242929a9bdc69537a786071564c529b38977f9f60366d579d9c87e5679f884",
+    "tools/prepare_r2_session_data.py": "3d13fcb1bf87b73eccea1a0c4a7f9c54229720e07c21baf14566fcf0710df78b",
+    "tools/prepare_autocast_boss.py": "50fa8eeaee4b8ae3e01fc9e3693fc237574e10e4bc7bebfe683869b9d999c8f2",
+    "docs/design/r2-complete-session.json": "897a2958d23f880b0041161ee0f1b2cfe7b0ef63925a1f58dc4a5fb298b73fed",
+    "docs/design/autocast-r2-data.json": "3ba094faa29e119165018cfaabbc34687d5ac3a93d25f541bf9e0c3721c3f5a0",
+    "docs/design/REPLANNING_AUTOCAST_R2.md": "4fa8d8ddaedb8268cc24e1ed743e5e476d9c575624188a9c94a6dc09dfb54953",
+    "docs/design/REPLANNING_FOUNDATION.md": "435d1fc802675f339d8e82c7004be8af234d2529595b046b74f02fc4e755aec9",
+    "docs/assets/reference/planned/replanning/blueprint/icons.png": "40d55313aeff152106a7bfd2a5f22615cace29ee8d4b8c483195bc02384cdbde",
+    "docs/assets/reference/planned/replanning/blueprint/portrait-states.png": "cb2ea6fe04f765fe2baf6c782988f6a1346cbdd95c0bca60e875d0757bdb49e9",
+    "docs/assets/reference/planned/replanning/blueprint/frontier.png": "982b48dcd60708440bd87fa701589c71b56d80832bc690209089a2d3d2e588c4",
+    "docs/assets/reference/planned/replanning/autocast/tiles.png": "6da54b7be30ff875153d0dde7611b133709f78be8cfd0b0653f6efa3f0d7a21b",
+    "docs/assets/reference/planned/replanning/autocast/boss-cutout.png": "59976e21209aac65fef13ae70c5976af4babed6ee00a11210bd8cf7bed89081f",
+    "docs/assets/reference/planned/replanning/autocast/boss-source.png": "144d4b9c7a7da603162b4f1870ab7095ca5143c0ad5055bc6da474dfc731247a",
+    "docs/assets/reference/planned/replanning/autocast/boss-cutout.aseprite": "7cc47593238b550b7df4f013339239ec6c3fdfcb99d38144c97e8dba31be05d0",
+    "docs/assets/reference/planned/replanning/autocast/boss-cutout.extraction.json": "30928ae4143b673c0e4875e29f375ebc369bddf05b5dccbb8e38cdb3cb18faaf",
+    "docs/assets/reference/planned/replanning/autocast/tiles.aseprite": "dedf84fb10402679c77da4ac0f1ea60b25596055a07765b1a226ad803bdb49ae"
+  },
+  "pdf_sha256": "95be15e57ade1175d736aa7dcb1e7535728ed56250fe67ed7ed1c9b6f3d8de50",
+  "pages": 37,
+  "role": "HUMAN_GDD_PDF_DERIVED_VIEW",
+  "asset_approval": "PENDING_FINAL_USER_REVIEW",
+  "runtime": "NOT_RUN_USER_DEFERRED",
+  "human": "NOT_RUN",
+  "render_review": "SEE_COMPLETE_PUBLICATION_RECEIPT"
+}
