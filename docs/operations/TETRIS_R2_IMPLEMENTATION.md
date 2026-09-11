@@ -66,7 +66,9 @@ Consumes Task1 transactions. Produces session `command(action:String,args:Dictio
 
 ## Task 3: First encounter screen, art, persistence and verification
 
-Files: `src/replanned_r2/r2_screen.gd`, `r2_save.gd`, `r2_assets.gd`; `scenes/replanned_r2/main.tscn`; `tests/replanned_r2/test_r2_screen.gd`, `test_r2_save.gd`. Reuse atlas source paths and regions from approved session JSON without copying pixels or modifying source images.
+Files: `src/replanned_r2/r2_screen.gd`, `r2_save.gd`, `r2_assets.gd`, `r2_input.gd`; `scenes/replanned_r2/main.tscn`; `tests/replanned_r2/test_r2_screen.gd`, `test_r2_save.gd`, and a focused `test_r2_input.gd` if needed. Reuse atlas source paths and regions from approved session JSON without copying pixels or modifying source images.
+
+Bounded structure refinement: use `r2_input.gd` for mappings, held-input repeat and remap capture, emitting player intents only. The screen retains navigation/modal/focus/pause policy; session owns all simulation and damage; save owns options persistence. Alternatives: one 650–750-line mixed screen (REJECT avoidable input/UI coupling), small focused input helper (ADOPT testable lifecycle), generic input framework/addon (REJECT unnecessary global machinery). Cost if wrong: one extra local interface to maintain; no global settings or gameplay change.
 
 - [ ] Test scene entry, 50:50 bounds, one board visible, category/preview/recent auto-skill states, no manual cast, asset role/region, pause and full snapshot roundtrip before implementing each consumer.
 - [ ] Bind main/briefing/practice/standard-relaxed/settings/result/retry to session. Implement key-pose boss presentation and reduced motion; no damage from animation callbacks.
@@ -100,3 +102,10 @@ Task3 input feasibility refresh: Godot's official [InputEventKey](https://docs.g
 | Task1 internal | Test values agree with R2 formulas and seed. |
 | Task2 internal | Fixture is ordinary matcher/refill input, not hardcoded expected result. |
 | Task3 internal | Screen accepts model outcome; rendering cannot accelerate simulation. |
+
+## Reuse learning and preserved evidence
+
+- REUSE: production LINE geometry and source-owned candidate PNG atlas regions; no image pixels duplicated or regenerated. Fresh SHA-256 readback matches the five intended runtime source assets and the historical37-page PDF. Boss cutout is RGBA1302×1380 with1,051,577 transparent pixels and29,632 partially transparent pixels; this proves source alpha, not correct runtime composition.
+- Project-only correction: cast receipt schema and run-scoped action identity must validate together before restoring the screen's recent-skill projection. Model tests cover valid and malformed roundtrips; disk and runtime acceptance remain Task3.
+- Base promotion candidates, not promoted rules: (1) normalize validated JSON integer domains before comparing owner projections; (2) verify platform-specific replacement implementation before claiming atomic saves; (3) require actual discovered/executed test counts, not empty process output. Existing local owners received the corrections; no new common framework or mandatory registry entry is justified from this single project run.
+- Rollback boundary: R2 source/scene/save namespace and branch can be removed by a later reviewed revert without replacing production state. Original production files, candidate source pixels, published PDF and six unrelated draft branches remain preserved. Generated editor import/UID metadata outside the current source owners is not proof of a new product change and is not deleted by filename or age.
