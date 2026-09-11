@@ -1,5 +1,6 @@
 ## Isolated first encounter view. All gameplay mutation crosses Session.command/tick.
 extends Control
+signal diagnostic_recorded(record: Dictionary)
 const Session = preload("res://src/replanned_r2/r2_session.gd")
 const Disk = preload("res://src/replanned_r2/r2_save.gd")
 const Assets = preload("res://src/replanned_r2/r2_assets.gd")
@@ -38,6 +39,8 @@ var _catalog
 var _rules: Dictionary
 var _source: Dictionary
 var _message := ""
+var _last_line_receipt := {}
+var _reported_safety_chains := {}
 var _pending_save_failure := ""
 var _save_failure_reason := ""
 var _line_cells := []
@@ -216,6 +219,7 @@ func _build_battle():
         var tiles := []
         for j in range(4): tiles.append(_image(preview,"Cell%d"%j,Rect2(0,29,13,13),null))
         _preview_cells.append(tiles)
+    _label(line,"Receipt",Rect2(450,74,158,480),"최근 LINE 보상\n아직 없음",14,CYAN)
     _label(line,"Input",Rect2(12,659,592,27),"←/→ 이동 · Z/X 회전 · Space 낙하 · C 홀드",14)
     var chain = _container(puzzle,"Chain",Rect2(0,0,616,688))
     var grid = _container(chain,"Cells",Rect2(52,62,512,512))
@@ -402,6 +406,8 @@ func _reset_view():
     _hurt_us = 0
     _portrait_hurt_us = 0
     _message = ""
+    _last_line_receipt.clear()
+    _reported_safety_chains.clear()
 func continue_run():
     if _guard_unsaved_state(): return
     var saved = disk.load_checkpoint()
@@ -632,7 +638,16 @@ func _events(events: Array):
             "ATK_DAMAGE":
                 if int(event.damage_applied)>0: _hurt_us = 100000
             "LINE_RESOURCES_APPLIED":
+                _last_line_receipt = event.duplicate(true)
                 _message = "LINE 검 %d · 방패 %d · 하트 %d · 시계 %d" % [event.counts.A,event.counts.D,event.counts.H,event.counts.T]
+            "CHAIN_WAVE_RESOLVED":
+                if event.get("safety_recovery",false):
+                    var key="%s:chain:%d"%[session.run_id,session.chain.chain_id]
+                    if not _reported_safety_chains.has(key):
+                        _reported_safety_chains[key]=true
+                        var record={"run_id":session.run_id,"chain_id":session.chain.chain_id,"wave":event.wave,"reason":"MAX_WAVES_REACHED"}
+                        print("[R2 safety] "+JSON.stringify(record))
+                        diagnostic_recorded.emit(record)
             "LINE_TOPOUT_DAMAGE": _message = "LINE 넘침 · HP %d 손실"%event.damage_applied
 func _input(event: InputEvent):
     if inputs == null or options == null: return
@@ -759,6 +774,13 @@ func refresh():
     _render_pose()
     _render_practice()
 func _render_line():
+    var receipt: Label=$Battle/Puzzle/Line/Receipt
+    receipt.text="최근 LINE 보상\n아직 없음"
+    if not _last_line_receipt.is_empty():
+        var event=_last_line_receipt
+        var unapplied=int(event.time_requested_us)-int(event.time_applied_us)
+        var reason="전체 적용" if String(event.time_reason).is_empty() else _target_reason_text(String(event.time_reason))
+        receipt.text="최근 LINE 보상\n검 %d / 방패 %d\n하트 %d / 시계 %d\n\n시계 결과\n적용 +%.3f초\n미적용 %.3f초\n%s"%[event.counts.A,event.counts.D,event.counts.H,event.counts.T,float(event.time_applied_us)/1000000.0,float(unapplied)/1000000.0,reason]
     var rows: Array = session.line.rows()
     for y in range(20):
         for x in range(10):
@@ -814,6 +836,10 @@ func _render_skills():
     elif category=="DEF": effect="방벽 목표 %d · 현재 %d 유지"%[power,session.combat.ward]
     else: effect="회복 %d · HP 상한까지"%power
     $Battle/Combat/SkillDock/Next.text="다음 %s T%d · %s"%[category,stage,effect]
+    if category=="DEF":
+        var reason=session.combat.def_target_reason()
+        var target="방벽 %d · 대상 있음"%power if reason.is_empty() else "무효 예고: "+_target_reason_text(reason)
+        $Battle/Combat/SkillDock/Next.text="DEF T%d %s · 발동 시 무효 가능"%[stage,target]
     $Battle/Combat/SkillDock/NextIcon.texture=assets.texture("R1-ICONS",{"ATK":"strike","DEF":"ward","SUP":"recover"}[category])
     var last: Dictionary=session.last_cast
     var recent="최근: 없음 · 연쇄 시작 전 계열 선택"
@@ -822,10 +848,12 @@ func _render_skills():
         match last.effect:
             "ATK_DAMAGE": result="실제 피해 %d"%last.damage_applied
             "DEF_WARD": result="현재 방벽 %d"%last.ward_after
-            "DEF_NO_TARGET": result="방벽 대상 없음"
+            "DEF_NO_TARGET": result="대상 없음 · "+_target_reason_text(String(last.reason))
             "SUP_HEAL": result="실제 회복 %d"%last.healing_applied
         recent="최근 %s T%d · %s"%[last.category,last.stage,result]
     $Battle/Combat/SkillDock/Recent.text=recent
+func _target_reason_text(reason: String) -> String:
+    return {"ACTION_FINISHED":"행동 종료","ACTION_COMMITTED":"행동 확정","NO_DAMAGE_ACTION":"휴식","EXTENSION_CAP_REACHED":"상한 도달"}.get(reason,reason)
 func _render_pose():
     var combat=session.combat
     var action: Dictionary=combat.current_action()

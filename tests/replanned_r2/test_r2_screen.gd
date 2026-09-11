@@ -527,3 +527,118 @@ func _pad_event(button: int) -> InputEventJoypadButton:
     var event=InputEventJoypadButton.new()
     event.button_index=button
     return event
+
+func test_def_preview_uses_actual_target_state_before_cast_and_keeps_receipt():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",17)
+    screen.dispatch("category",{"category":"DEF"})
+    var preview=screen.get_node("Battle/Combat/SkillDock/Next")
+    assert_string_contains(preview.text,"대상 있음")
+    assert_string_contains(preview.text,"발동 시")
+    var before=screen.session.combat.snapshot()
+    screen.refresh()
+    assert_eq(screen.session.combat.snapshot(),before,"DEF forecast must be read-only")
+    assert_eq(screen.session.combat.cast("preview-damage","DEF",1).effect,"DEF_WARD")
+    screen.session.combat.tick(9999000)
+    screen.refresh()
+    assert_string_contains(preview.text,"행동 확정")
+    var receipt=screen.session.combat.cast("preview-commit","DEF",1)
+    assert_eq(receipt.effect,"DEF_NO_TARGET")
+    screen.session.last_cast=receipt
+    screen.refresh()
+    assert_string_contains(screen.get_node("Battle/Combat/SkillDock/Recent").text,"행동 확정")
+    screen.start_run("STANDARD",18)
+    screen.dispatch("category",{"category":"DEF"})
+    for duration in [10000000,14000000,10000000]: screen.session.combat.tick(duration)
+    screen.refresh()
+    assert_string_contains(preview.text,"휴식")
+    receipt=screen.session.combat.cast("preview-rest","DEF",1)
+    assert_eq(receipt.reason,"NO_DAMAGE_ACTION")
+    screen.session.last_cast=receipt
+    screen.refresh()
+    assert_string_contains(screen.get_node("Battle/Combat/SkillDock/Recent").text,"휴식")
+
+func test_line_time_receipt_survives_hard_drop_natural_lock_and_later_commands():
+    if not ready_screen(): return
+    var label=screen.get_node_or_null("Battle/Puzzle/Line/Receipt")
+    assert_not_null(label,"Actual LINE receipt must remain visible in the active workspace")
+    if label==null: return
+    for scenario in ["applied","cap","committed","finished"]:
+        screen.begin_practice(1)
+        screen.close_details()
+        for i in range(3): screen.dispatch("move",{"dx":1})
+        if scenario=="cap": screen.session.combat.extension_us=2750000
+        if scenario=="committed": screen.session.combat.eta_us=1000
+        if scenario=="finished":
+            screen.session.training_boss_frozen=false
+            screen.session.combat.eta_us=500000
+            while not screen.session.line.grounded(): screen.dispatch("soft_drop")
+            screen.advance_seconds(0.5)
+        else: screen.dispatch("hard_drop")
+        assert_true(label.is_visible_in_tree())
+        assert_string_contains(label.text,"시계 2")
+        var applied={"applied":"0.500","cap":"0.250","committed":"0.000","finished":"0.000"}[scenario]
+        var unapplied={"applied":"0.000","cap":"0.250","committed":"0.500","finished":"0.500"}[scenario]
+        assert_string_contains(label.text,"적용 +"+applied+"초")
+        assert_string_contains(label.text,"미적용 "+unapplied+"초")
+        assert_string_contains(label.text,{"applied":"전체 적용","cap":"상한 도달","committed":"행동 확정","finished":"행동 종료"}[scenario])
+        var text_before=label.text
+        screen.dispatch("move",{"dx":1})
+        screen.refresh()
+        assert_eq(label.text,text_before,"Successful later commands cannot discard the reward receipt")
+    screen.start_run("STANDARD",19)
+    assert_string_contains(label.text,"아직 없음")
+
+func test_receipt_and_def_preview_fit_existing_regions_at_125_percent():
+    if not ready_screen(): return
+    screen.options.font_scale=125
+    screen._apply_font()
+    screen.begin_practice(1)
+    screen.close_details()
+    for i in range(3): screen.dispatch("move",{"dx":1})
+    screen.dispatch("hard_drop")
+    var label=screen.get_node_or_null("Battle/Puzzle/Line/Receipt")
+    assert_not_null(label)
+    if label==null: return
+    await get_tree().process_frame
+    var rect=label.get_global_rect()
+    for path in ["Battle/Puzzle/Line/Cells","Battle/Puzzle/Line/Previews","Battle/Puzzle/Line/Input","Battle/PracticeStatus","Battle/PracticeNext","Battle/PracticeRetry"]:
+        assert_false(rect.intersects(screen.get_node(path).get_global_rect()),path)
+    assert_true(screen.get_node("Battle/Puzzle").get_global_rect().encloses(rect))
+    screen.dispatch("category",{"category":"DEF"})
+    var next_label=screen.get_node("Battle/Combat/SkillDock/Next")
+    assert_lte(next_label.get_theme_font("font").get_string_size(next_label.text,HORIZONTAL_ALIGNMENT_LEFT,-1,next_label.get_theme_font_size("font_size")).x,next_label.size.x)
+    for duration in [10000000,14000000,10000000]: screen.session.combat.tick(duration)
+    screen.refresh()
+    await get_tree().process_frame
+    assert_false(next_label.get_global_rect().intersects(screen.get_node("Battle/Combat/SkillDock/Recent").get_global_rect()))
+    for path in ["Battle/Combat/SkillDock/Next","Battle/Combat/SkillDock/Recent"]:
+        var text_label=screen.get_node(path)
+        assert_lte(text_label.get_minimum_size().y,text_label.size.y)
+        assert_lte(text_label.get_theme_font("font").get_string_size(text_label.text,HORIZONTAL_ALIGNMENT_LEFT,-1,text_label.get_theme_font_size("font_size")).x,text_label.size.x,"One-line DEF preview must fit")
+
+func test_safety_recovery_emits_one_identified_diagnostic_from_real_wave_event():
+    if not ready_screen(): return
+    assert_true(screen.has_signal("diagnostic_recorded"),"Safety recovery needs an observable diagnostic consumer")
+    if not screen.has_signal("diagnostic_recorded"): return
+    var records=[]
+    screen.diagnostic_recorded.connect(func(record): records.append(record))
+    screen.begin_practice(2)
+    screen.close_details()
+    screen.session.chain.cells=[]
+    for y in range(8): screen.session.chain.cells.append("AAAAAAAA")
+    screen.session.chain.resolving=true
+    screen.session.chain.category_snapshot="SUP"
+    screen.session.chain.chain_id=7
+    screen.session.chain.wave_index=63
+    screen.session.chain.next_wave_remaining_us=300000
+    var events=screen.session.tick(300000)
+    screen._events(events)
+    screen._events(events)
+    assert_eq(records.size(),1,"Duplicate delivery cannot double-log recovery")
+    if records.size()!=1: return
+    assert_eq(records[0].run_id,screen.session.run_id)
+    assert_eq(records[0].chain_id,7)
+    assert_eq(records[0].wave,64)
+    assert_eq(records[0].reason,"MAX_WAVES_REACHED")
+    assert_false(screen.session.chain.resolving)

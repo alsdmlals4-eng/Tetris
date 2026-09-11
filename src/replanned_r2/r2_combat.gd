@@ -215,13 +215,7 @@ func cast(event_id: String, category: String, wave: int) -> Dictionary:
         }
 
     if category == "DEF":
-        var no_target_reason := ""
-        if _action_finished:
-            no_target_reason = "ACTION_FINISHED"
-        elif _is_action_committed():
-            no_target_reason = "ACTION_COMMITTED"
-        elif int(current_action()["damage"]) <= 0:
-            no_target_reason = "NO_DAMAGE_ACTION"
+        var no_target_reason := def_target_reason()
         if not no_target_reason.is_empty():
             return {
                 "success": true,
@@ -264,6 +258,13 @@ func cast(event_id: String, category: String, wave: int) -> Dictionary:
         "healing_requested": power,
         "healing_applied": healing_applied,
     }
+
+## Read-only forecast; cast shares this predicate and rechecks at its transaction.
+func def_target_reason() -> String:
+    if _action_finished: return "ACTION_FINISHED"
+    if _is_action_committed(): return "ACTION_COMMITTED"
+    if int(current_action()["damage"]) <= 0: return "NO_DAMAGE_ACTION"
+    return ""
 
 func apply_topout(event_id: String) -> Dictionary:
     var rejected := {
