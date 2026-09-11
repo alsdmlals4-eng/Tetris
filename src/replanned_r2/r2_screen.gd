@@ -38,6 +38,8 @@ var _catalog
 var _rules: Dictionary
 var _source: Dictionary
 var _message := ""
+var _pending_save_failure := ""
+var _save_failure_reason := ""
 var _line_cells := []
 var _active_cells := []
 var _ghost_cells := []
@@ -271,6 +273,18 @@ func _build_battle():
     _button(battle,"PracticeRetry",Rect2(28,533,140,42),"단계 다시",func(): begin_practice(practice_stage))
 
 func _build_modals():
+    var shield=ColorRect.new()
+    shield.name="ModalShield"
+    shield.position=Vector2.ZERO
+    shield.size=Vector2(1280,720)
+    shield.color=Color(0,0,0,0.55)
+    shield.mouse_filter=Control.MOUSE_FILTER_STOP
+    add_child(shield)
+    var failure=_panel(self,"SaveFailurePanel",Rect2(250,150,780,420))
+    _label(failure,"Title",Rect2(24,20,732,45),"기록 저장을 완료하지 못했습니다",26,GOLD)
+    _label(failure,"Status",Rect2(24,86,732,160),"",20)
+    _button(failure,"RetrySave",Rect2(24,270,732,48),"현재 상태 저장 다시 시도",_retry_failed_save)
+    _button(failure,"PreviousRecord",Rect2(24,334,732,54),"현재 상태를 저장하지 않고 이전 기록으로 메인",_discard_unsaved_to_main)
     var pause = _panel(self,"PausePanel",Rect2(330,100,620,520))
     _label(pause,"Title",Rect2(24,20,572,45),"전체 일시정지",29,GOLD)
     _label(pause,"Status",Rect2(24,77,572,92),"ETA · 퍼즐 · 파동 · 자세 타이머가 정지했습니다.",20)
@@ -330,7 +344,8 @@ func _show_page(next: String):
     page = next
     for node_name in ["Main","Briefing","Battle","Result"]:
         get_node(node_name).visible = node_name.to_lower() == page
-    for node_name in ["PausePanel","DetailsPanel","Options"]: get_node(node_name).hide()
+    for node_name in ["PausePanel","DetailsPanel","Options","SaveFailurePanel"]: get_node(node_name).hide()
+    _sync_modal_boundary()
     inputs.clear()
     _last_wall_us = Time.get_ticks_usec()
     if page == "main": $Main/NewRun.grab_focus()
@@ -349,6 +364,7 @@ func request_new_run():
     if disk.load_checkpoint().success: $OverwriteDialog.popup_centered(Vector2i(560,180))
     else: _open_briefing()
 func _open_briefing():
+    if _guard_unsaved_state(): return
     session = null
     practice_stage = 0
     _show_page("briefing")
@@ -357,6 +373,7 @@ func _refresh_mode():
     $Briefing/Standard.text = ("✓ " if difficulty=="STANDARD" else "")+"표준 · STANDARD"
     $Briefing/Relaxed.text = ("✓ " if difficulty=="RELAXED" else "")+"여유 · 준비시간 1.25배"
 func start_run(mode: String = "STANDARD", seed_value: int = 9112026):
+    if _guard_unsaved_state(): return
     difficulty = mode
     run_seed = seed_value
     practice_stage = 0
@@ -364,9 +381,11 @@ func start_run(mode: String = "STANDARD", seed_value: int = 9112026):
     session = Session.new(mode,seed_value,unique_id)
     _reset_view()
     _show_page("battle")
-    checkpoint()
+    var saved=checkpoint()
     refresh()
+    if not saved.success: _show_save_failure("START",saved.reason)
 func retry_run():
+    if _guard_unsaved_state(): return
     if practice_stage > 0: begin_practice(practice_stage)
     else: start_run(difficulty,run_seed)
 func _reset_view():
@@ -381,6 +400,7 @@ func _reset_view():
     _portrait_hurt_us = 0
     _message = ""
 func continue_run():
+    if _guard_unsaved_state(): return
     var saved = disk.load_checkpoint()
     if not saved.success:
         $Main/Status.text = saved.reason
@@ -398,7 +418,7 @@ func continue_run():
     _clock_ns = saved.clock_remainder_ns
     _show_page("battle")
     if session.combat.outcome != "RUNNING":
-        _show_result()
+        _show_result(false,false)
     else:
         pause_game("체크포인트를 복원했습니다. 입력 선택을 해제하고 전체 정지로 시작합니다.")
         refresh()
@@ -406,12 +426,14 @@ func checkpoint() -> Dictionary:
     if session == null or practice_stage > 0: return {"success":false,"reason":"연습은 일반 이어하기를 덮어쓰지 않습니다."}
     return disk.save_session(session,_clock_ns)
 func return_to_main():
+    if _guard_unsaved_state(): return
     if session: session.command("pause")
     session = null
     practice_stage = 0
     _show_page("main")
     _refresh_continue()
 func _exit_battle():
+    if _guard_unsaved_state(): return
     if not session.can_checkpoint():
         return_to_main()
         return
@@ -422,6 +444,7 @@ func _exit_battle():
     if saved.success: return_to_main()
     else: $PausePanel/Status.text = "저장하지 못했습니다: "+saved.reason
 func _close_requested():
+    if _guard_unsaved_state(): return
     if page == "battle":
         pause_game("종료 요청 · 기록을 보존하고 메인으로 이동한 뒤 종료하세요.")
     else: get_tree().quit()
@@ -430,16 +453,21 @@ func pause_game(reason: String = ""):
     session.command("pause")
     inputs.clear()
     _practice_saw_pause = true
-    $PausePanel.show()
     $PausePanel/Status.text = reason if not reason.is_empty() else "ETA · 퍼즐 · 파동 · 자세 타이머가 정지했습니다."
+    if _blocking_modal()!=null:
+        if not reason.is_empty(): _preserve_external_pause()
+        _sync_modal_boundary()
+        return
+    $PausePanel.show()
     var stable: bool = session.can_checkpoint()
     $PausePanel/Main.text = "체크포인트 보존 후 메인" if stable else "직전 안정 체크포인트로 메인"
     $PausePanel/Checkpoint.text = "현재 전체 상태를 저장할 수 있습니다." if stable else "연쇄 진행 중: 부분 저장하지 않습니다. 계속하거나 직전 온전한 기록으로 돌아갑니다."
-    $PausePanel/Resume.grab_focus()
+    _sync_modal_boundary()
     refresh()
 func resume_game():
-    if session == null: return
+    if session == null or page!="battle" or _blocking_modal()!=null or not _pending_save_failure.is_empty(): return
     $PausePanel.hide()
+    _sync_modal_boundary()
     session.command("resume")
     inputs.clear()
     _last_wall_us = Time.get_ticks_usec()
@@ -447,7 +475,7 @@ func resume_game():
     if focus: focus.release_focus()
     refresh()
 func open_details(stage: int = 1):
-    if session == null: return
+    if session == null or _blocking_modal()!=null: return
     _details_was_paused = session.combat.paused
     session.command("pause")
     inputs.clear()
@@ -456,13 +484,16 @@ func open_details(stage: int = 1):
     $DetailsPanel/Title.text = "기술 설명 · 전체 정지"
     $DetailsPanel/Close.text = "설명 닫기 · 이전 정지 상태로"
     $DetailsPanel/Body.text = "T%d은 설명입니다. 자동 발동 단계나 선택 계열을 바꾸지 않습니다.\n\nATK · 균열 베기: 기본 피해 %d + 준비한 공격 가산치\nDEF · 방벽: 현재 미확정 피해 행동의 목표치 %d (큰 값 유지)\nSUP · 응급 회복: HP %d, 최대 HP까지만 회복\n\n연쇄 파동 번호가 단계를 결정하며 7번째 이후에도 T6입니다." % [stage,_rules.skills.ATK[stage-1],_rules.skills.DEF[stage-1],_rules.skills.SUP[stage-1]]
-    $DetailsPanel/Close.grab_focus()
+    _sync_modal_boundary()
 func close_details():
+    if not $DetailsPanel.visible or $Options.visible or $SaveFailurePanel.visible: return
     $DetailsPanel.hide()
+    _sync_modal_boundary()
     if _details_was_paused: pause_game()
     else: resume_game()
 
 func open_options():
+    if _blocking_modal()!=null: return
     options_draft = options.duplicate(true)
     _options_return = page
     _options_was_paused = session != null and session.combat.paused
@@ -473,8 +504,9 @@ func open_options():
     $Options/effectsLevel.set_value_no_signal(options_draft.audio.effects)
     $Options/musicLevel.set_value_no_signal(options_draft.audio.music)
     _refresh_options()
-    $Options/Save.grab_focus()
+    _sync_modal_boundary()
 func close_options(save_changes: bool):
+    if not $Options.visible or $SaveFailurePanel.visible: return
     inputs.cancel_capture()
     if save_changes:
         if not disk.save_options(options_draft):
@@ -484,6 +516,7 @@ func close_options(save_changes: bool):
     inputs.configure(options)
     _apply_font()
     $Options.hide()
+    _sync_modal_boundary()
     if _options_return == "battle":
         if _options_was_paused: pause_game()
         else: resume_game()
@@ -541,7 +574,7 @@ func _pump_wall():
     _last_wall_us = now
     if elapsed > 0: advance_seconds(float(elapsed)/1000000.0)
 func advance_seconds(delta: float):
-    if session == null or page != "battle" or session.combat.paused or session.combat.outcome != "RUNNING": return
+    if session == null or page != "battle" or session.combat.paused or session.combat.outcome != "RUNNING" or _blocking_modal()!=null: return
     if delta < 0.0 or not is_finite(delta): return
     # Integer nanosecond carry prevents repeated sub-microsecond frame loss.
     _clock_ns += roundi(delta*1000000000.0)
@@ -599,6 +632,7 @@ func _events(events: Array):
 func _input(event: InputEvent):
     if inputs == null or options == null: return
     if event is InputEventKey and event.echo: return
+    if _top_modal()!=null: _sync_modal_boundary()
     _pump_wall()
     var intent = inputs.event_intent(event)
     if intent.is_empty(): return
@@ -610,6 +644,9 @@ func _input(event: InputEvent):
         get_viewport().set_input_as_handled()
         return
     var action = String(intent.action)
+    if $SaveFailurePanel.visible:
+        inputs.clear()
+        return
     if $Options.visible:
         inputs.clear()
         if action == "pause": close_options(false); get_viewport().set_input_as_handled()
@@ -816,7 +853,7 @@ func begin_practice(stage: int = 1):
     $DetailsPanel/Title.text="연습 %d / 4 · 안내 중 전체 정지"%practice_stage
     $DetailsPanel/Body.text=_practice_instruction()
     $DetailsPanel/Close.text="학습 시작 · 정상 입력 사용"
-    $DetailsPanel/Close.grab_focus()
+    _sync_modal_boundary()
 func _practice_instruction() -> String:
     match practice_stage:
         1: return "LINE · 자원 준비\n\n공격 I 조각을 오른쪽 네 빈칸에 놓고 Space로 낙하하세요.\n검4 · 방패2 · 하트2 · 시계2를 실제로 소거합니다.\n\n이 단계는 보스 시계만 멈춥니다. 퍼즐은 정상 동작합니다.\n줄을 지운 뒤 실제 자원 변화를 보고 다음 학습을 누르세요."
@@ -852,11 +889,10 @@ func _render_practice():
     else:
         $Battle/PracticeNext.position=Vector2(28,485)
         $Battle/PracticeRetry.position=Vector2(28,533)
-func _show_result(training_complete: bool = false):
+func _show_result(training_complete: bool = false, persist: bool = true):
     if session==null: return
     inputs.clear()
     _show_page("result")
-    if practice_stage==0: checkpoint()
     $Result/Portrait.texture=assets.texture("R1-PORTRAIT","victory" if session.combat.outcome=="VICTORY" or training_complete else "defeat")
     $Result/BossVisual.texture=assets.texture("R2-BOSS","defeat" if session.combat.outcome=="VICTORY" else "idle")
     var metrics: Dictionary=session.metrics
@@ -870,3 +906,71 @@ func _show_result(training_complete: bool = false):
         float(metrics.time_applied_us)/1000000.0,float(metrics.time_wasted_us)/1000000.0,
         "연습 기록은 일반 전투 통계·체크포인트와 분리됩니다." if practice_stage>0 else "같은 seed 재도전은 새 실행 ID와 초기 전투 자원으로 시작합니다."])
     $Result/Retry.text="이 학습 단계 다시" if practice_stage>0 else "같은 seed로 재도전"
+    if practice_stage==0 and persist:
+        var saved=checkpoint()
+        if not saved.success: _show_save_failure("RESULT",saved.reason)
+
+## One pointer/focus boundary for the top panel; gameplay beneath never receives GUI input.
+func _blocking_modal() -> Control:
+    for path in ["SaveFailurePanel","Options","DetailsPanel"]:
+        var panel=get_node_or_null(path) as Control
+        if panel!=null and panel.visible: return panel
+    return null
+func _top_modal() -> Control:
+    var blocking=_blocking_modal()
+    if blocking!=null: return blocking
+    var pause=get_node_or_null("PausePanel") as Control
+    return pause if pause!=null and pause.visible else null
+func _sync_modal_boundary():
+    var top=_top_modal()
+    var shield=get_node_or_null("ModalShield") as Control
+    if shield==null: return
+    shield.visible=top!=null
+    if top!=null:
+        move_child(shield,get_child_count()-1)
+        move_child(top,get_child_count()-1)
+    for control in find_children("*","Control",true,false):
+        if not control.has_meta("original_focus_mode"):
+            control.set_meta("original_focus_mode",control.focus_mode)
+        control.focus_mode=int(control.get_meta("original_focus_mode")) if top==null or control==top or top.is_ancestor_of(control) else Control.FOCUS_NONE
+    if top==null: return
+    var focus=get_viewport().gui_get_focus_owner()
+    if focus==null or not top.is_ancestor_of(focus):
+        var target={"DetailsPanel":"Close","Options":"Save","PausePanel":"Resume","SaveFailurePanel":"RetrySave"}[String(top.name)]
+        top.get_node(target).grab_focus()
+
+func _guard_unsaved_state() -> bool:
+    if _pending_save_failure.is_empty(): return false
+    _show_save_failure(_pending_save_failure,_save_failure_reason)
+    return true
+func _show_save_failure(context: String, reason: String):
+    _pending_save_failure=context
+    _save_failure_reason=reason
+    if session: session.command("pause")
+    inputs.clear()
+    $PausePanel.hide()
+    $DetailsPanel.hide()
+    $Options.hide()
+    $SaveFailurePanel.show()
+    var subject="실제 전투 결과" if context=="RESULT" else "새 도전의 초기 상태"
+    $SaveFailurePanel/Status.text=subject+"를 저장하지 못했습니다.\n현재 상태는 이 화면에 보존되어 있습니다.\n저장을 다시 시도하거나, 현재 상태를 버리고 이전 기록으로 돌아갈 수 있습니다.\n오류: "+reason
+    _sync_modal_boundary()
+func _retry_failed_save():
+    if _pending_save_failure.is_empty() or session==null: return
+    var saved=checkpoint()
+    if not saved.success:
+        _show_save_failure(_pending_save_failure,saved.reason)
+        return
+    _pending_save_failure=""
+    _save_failure_reason=""
+    $SaveFailurePanel.hide()
+    _sync_modal_boundary()
+    if page=="battle": pause_game("현재 상태 저장을 완료했습니다. 계속을 선택하세요.")
+    elif page=="result": $Result/Retry.grab_focus()
+func _discard_unsaved_to_main():
+    if _pending_save_failure.is_empty(): return
+    _pending_save_failure=""
+    _save_failure_reason=""
+    $SaveFailurePanel.hide()
+    _sync_modal_boundary()
+    return_to_main()

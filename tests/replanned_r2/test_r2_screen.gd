@@ -222,3 +222,120 @@ func test_terminal_checkpoint_reopens_actual_result_not_frozen_battle():
     screen.continue_run()
     assert_eq(screen.session.run_id,id)
     assert_eq(screen.page,"result","Terminal complete checkpoint must return to the actual result")
+
+func _send_accept(pad: bool):
+    var event: InputEvent
+    if pad:
+        event=InputEventJoypadButton.new()
+        event.button_index=JOY_BUTTON_A
+    else:
+        event=InputEventKey.new()
+        event.keycode=KEY_ENTER
+    event.pressed=true
+    Input.parse_input_event(event)
+    await get_tree().process_frame
+    event=event.duplicate()
+    event.pressed=false
+    Input.parse_input_event(event)
+    await get_tree().process_frame
+
+func test_modal_external_pause_keeps_native_accept_inside_top_panel():
+    if not ready_screen(): return
+    for modal in ["DetailsPanel","Options"]:
+        for pad in [false,true]:
+            screen.start_run("STANDARD",14)
+            if modal=="DetailsPanel": screen.open_details(2)
+            else: screen.open_options()
+            if pad: screen.device_connection_changed(0,false)
+            else: screen._focus_lost()
+            var panel=screen.get_node(modal)
+            var focus=screen.get_viewport().gui_get_focus_owner()
+            assert_true(focus!=null and panel.is_ancestor_of(focus),"External pause must keep focus inside the top modal")
+            screen.resume_game()
+            assert_true(screen.session.combat.paused,"Resume cannot bypass a visible details/settings panel")
+            await _send_accept(pad)
+            assert_true(screen.session.combat.paused,"Enter/pad A after external pause must not resume hidden controls")
+            if panel.visible:
+                if modal=="DetailsPanel": screen.close_details()
+                else: screen.close_options(false)
+            screen.resume_game()
+
+func test_modal_background_click_and_nested_open_cannot_change_pause_owner():
+    if not ready_screen(): return
+    screen.begin_practice(1)
+    var original=screen.get_node("DetailsPanel/Body").text
+    var event=InputEventMouseButton.new()
+    event.button_index=MOUSE_BUTTON_LEFT
+    event.position=Vector2(551,42)
+    event.global_position=event.position
+    event.pressed=true
+    Input.parse_input_event(event)
+    await get_tree().process_frame
+    event=event.duplicate()
+    event.pressed=false
+    Input.parse_input_event(event)
+    await get_tree().process_frame
+    assert_false(screen.get_node("PausePanel").visible,"Background Pause must not open behind teaching details")
+    screen.get_node("Battle/Combat/SkillDock/Tier6").pressed.emit()
+    screen.open_options()
+    assert_false(screen.get_node("Options").visible,"A details modal rejects a second settings modal")
+    assert_eq(screen.get_node("DetailsPanel/Body").text,original,"A background Tier button cannot replace teaching content")
+    var shield=screen.get_node_or_null("ModalShield")
+    assert_not_null(shield,"Full-screen pointer boundary required")
+    if shield!=null:
+        assert_true(shield.visible)
+        assert_eq(shield.mouse_filter,Control.MOUSE_FILTER_STOP)
+    screen.close_details()
+    assert_false(screen.session.combat.paused,"Blocked background events do not change the original resume policy")
+
+func test_terminal_save_failure_preserves_result_until_retry_succeeds():
+    if not ready_screen(): return
+    for point in ["rename","backup"]:
+        screen.disk.failure_point=""
+        screen.start_run("STANDARD",7)
+        var id=screen.session.run_id
+        screen.dispatch("switch")
+        screen.disk.failure_point=point
+        screen.advance_seconds(100.0)
+        assert_eq(screen.page,"result")
+        assert_eq(screen.session.combat.outcome,"DEFEAT")
+        var failure=screen.get_node_or_null("SaveFailurePanel")
+        assert_not_null(failure,"Failed terminal save must have recovery UI")
+        if failure==null: return
+        assert_true(failure.visible)
+        assert_true(failure.get_node("Status").text.contains("저장"))
+        screen.return_to_main()
+        screen.retry_run()
+        screen.continue_run()
+        assert_eq(screen.page,"result")
+        assert_eq(screen.session.run_id,id,"Failure cannot silently discard the actual result")
+        screen.disk.failure_point=""
+        failure.get_node("RetrySave").pressed.emit()
+        assert_false(failure.visible)
+        screen.return_to_main()
+        screen.continue_run()
+        assert_eq(screen.page,"result")
+        assert_eq(screen.session.run_id,id)
+        assert_eq(screen.session.combat.outcome,"DEFEAT")
+
+func test_start_save_failure_preserves_new_run_or_explicit_previous_choice():
+    if not ready_screen(): return
+    for point in ["rename","backup"]:
+        screen.disk.failure_point=""
+        screen.start_run("STANDARD",21)
+        var previous=screen.session.run_id
+        screen.disk.failure_point=point
+        screen.start_run("STANDARD",22)
+        var new_id=screen.session.run_id
+        var failure=screen.get_node_or_null("SaveFailurePanel")
+        assert_not_null(failure,"Failed new-run save must have recovery UI")
+        if failure==null: return
+        assert_true(failure.visible)
+        assert_true(screen.session.combat.paused)
+        screen.continue_run()
+        assert_eq(screen.session.run_id,new_id)
+        failure.get_node("PreviousRecord").pressed.emit()
+        assert_eq(screen.page,"main")
+        screen.disk.failure_point=""
+        screen.continue_run()
+        assert_eq(screen.session.run_id,previous)
