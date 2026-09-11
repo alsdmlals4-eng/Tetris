@@ -27,14 +27,18 @@ var training_mode := ""
 var training_boss_frozen := false
 var _rule_pack_hash := ""
 var _transaction := false
+var _skill_powers: Dictionary = {}
+var _boss_hp_limit := 0
 
 func _init(difficulty: String = "STANDARD", seed_value: int = 9112026, requested_run_id: String = "") -> void:
     encounter_mode = "RELAXED" if difficulty == "RELAXED" else "STANDARD"
-    combat = Combat.new(encounter_mode)
+    run_id = "r2:%d" % seed_value if requested_run_id.is_empty() else requested_run_id
+    combat = Combat.new(encounter_mode,run_id)
     line = Line.new(seed_value)
     chain = Chain.new(hash("r2-chain:%d" % seed_value))
-    run_id = "r2:%d" % seed_value if requested_run_id.is_empty() else requested_run_id
     _rule_pack_hash = (combat.snapshot().rule_pack_hash + ":" + FileAccess.get_sha256(Line.CATALOG_PATH)).sha256_text()
+    _skill_powers = JSON.parse_string(FileAccess.get_file_as_string(Combat.RULES_PATH))["skills"]
+    _boss_hp_limit = int(JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))["encounter"]["boss_hp"])
 
 func command(action: String, args: Dictionary = {}) -> Dictionary:
     if action == "pause":
@@ -202,15 +206,15 @@ func restore(data: Dictionary) -> bool:
         "elapsed_simulation_us","checkpoint_sequence","training_mode","training_boss_frozen"]
     if not _has_exact_keys(identity,identity_keys): return false
     if identity.schema != SAVE_SCHEMA or identity.rule_pack_hash != _rule_pack_hash: return false
-    if not identity.run_id is String or identity.run_id.is_empty() or identity.run_id.length() > 128: return false
+    if not Combat.valid_run_id(identity.run_id): return false
     if identity.mode not in ["STANDARD","RELAXED"] or identity.training_mode not in ["","LINE","CHAIN"]: return false
     if not identity.training_boss_frozen is bool: return false
     if identity.training_boss_frozen and identity.training_mode == "": return false
     if not Chain.valid_integer(identity.elapsed_simulation_us,0,9007199254740991) or not Chain.valid_integer(identity.checkpoint_sequence,0,2147483647): return false
-    var candidate_combat = Combat.new(identity.mode)
+    var candidate_combat = Combat.new(identity.mode,identity.run_id)
     if not candidate_combat.restore(data.combat): return false
     var canonical_combat: Dictionary = candidate_combat.snapshot()
-    if identity.encounter_id != canonical_combat.encounter_id or identity.mode != canonical_combat.mode: return false
+    if identity.encounter_id != canonical_combat.encounter_id or identity.mode != canonical_combat.mode or identity.run_id != canonical_combat.run_id: return false
     if not _projection_equal(data.player,_player_state(canonical_combat)) or not _projection_equal(data.boss,_boss_state(canonical_combat)): return false
     var candidate_line = Line.new()
     if not candidate_line.restore(data.line): return false
@@ -223,11 +227,8 @@ func restore(data: Dictionary) -> bool:
     if not ui.last_cast is Dictionary or not ui.metrics is Dictionary or not _has_exact_keys(ui.metrics,metrics.keys()): return false
     for key in metrics:
         if not Chain.valid_integer(ui.metrics[key],0,2147483647): return false
-    if not ui.last_cast.is_empty():
-        if ui.last_cast.get("category","") not in ["ATK","DEF","SUP"] or not ui.last_cast.get("event_id","") in canonical_combat.processed_cast_event_ids:
-            return false
-        if not Chain.valid_integer(ui.last_cast.get("wave"),1,64): return false
     if not _valid_event_ledgers(data.line,data.chain,canonical_combat,ui.metrics): return false
+    if not _valid_last_cast(ui.last_cast,canonical_combat): return false
     # All candidate owners and redundant projections validate before replacing live state.
     combat = candidate_combat
     combat.paused = true
@@ -253,7 +254,7 @@ static func _player_state(state: Dictionary) -> Dictionary:
 static func _boss_state(state: Dictionary) -> Dictionary:
     return {"hp":state.boss_hp,"action_sequence_index":int(state.action_index)%4,
         "monotonic_action_index":state.action_index,
-        "current_instance":"%s:%d" % [state.encounter_id,int(state.action_index)],
+        "current_instance":"%s:%d" % [state.run_id,int(state.action_index)],
         "eta_us":state.eta_us,"extension_used_us":state.extension_us,
         "committed":int(state.eta_us) <= Combat.COMMIT_LEAD_US}
 
@@ -355,3 +356,63 @@ func _record_event_metrics(event: Dictionary) -> void:
         "LINE_TOPOUT_DAMAGE":
             metrics.topout_damage_to_hp += int(event.damage_applied)
             metrics.hp_damage_taken += int(event.damage_applied)
+
+func _valid_last_cast(receipt: Dictionary, state: Dictionary) -> bool:
+    var ids: Array = state.processed_cast_event_ids
+    if ids.is_empty(): return receipt.is_empty()
+    var common := ["success","effect","reason","event_id","category","wave","stage"]
+    for key in common:
+        if not receipt.has(key): return false
+    if not receipt.success is bool or not receipt.success: return false
+    for key in ["effect","reason","event_id","category"]:
+        if not receipt[key] is String: return false
+    if receipt.category not in ["ATK","DEF","SUP"]: return false
+    if not Chain.valid_integer(receipt.wave,1,64) or not Chain.valid_integer(receipt.stage,1,6): return false
+    if int(receipt.stage) != mini(int(receipt.wave),6): return false
+    # IDs have already passed the complete ledger grammar before this call.
+    var latest_chain := 0
+    var latest_wave := 0
+    for id in ids:
+        var parts: PackedStringArray = id.split(":")
+        var number := int(parts[1])
+        var wave := int(parts[3])
+        if number > latest_chain or (number == latest_chain and wave > latest_wave):
+            latest_chain = number
+            latest_wave = wave
+    if receipt.event_id != "chain:%d:wave:%d" % [latest_chain,latest_wave] or int(receipt.wave) != latest_wave:
+        return false
+    var power := int(_skill_powers[receipt.category][int(receipt.stage)-1])
+    if receipt.category == "ATK":
+        if receipt.effect != "ATK_DAMAGE" or receipt.reason != "": return false
+        if not _has_exact_keys(receipt,common+["power","bank_consumed","damage_requested","damage_applied"]): return false
+        for key in ["power","bank_consumed","damage_requested","damage_applied"]:
+            if not Chain.valid_integer(receipt[key],0,Combat.INTEGER_LIMIT): return false
+        if int(receipt.power) != power or int(receipt.damage_requested) != power+int(receipt.bank_consumed): return false
+        if int(receipt.damage_applied) < 1 or int(receipt.damage_applied) > int(receipt.damage_requested): return false
+        if int(state.boss_hp)+int(receipt.damage_applied) > _boss_hp_limit: return false
+        if int(state.boss_hp) > 0 and int(receipt.damage_applied) != int(receipt.damage_requested): return false
+        return true
+    if receipt.category == "SUP":
+        if receipt.effect != "SUP_HEAL" or receipt.reason != "": return false
+        if not _has_exact_keys(receipt,common+["healing_requested","healing_applied"]): return false
+        if not Chain.valid_integer(receipt.healing_requested,0,Combat.MAX_HP) or not Chain.valid_integer(receipt.healing_applied,0,power): return false
+        return int(receipt.healing_requested) == power
+    if receipt.effect not in ["DEF_WARD","DEF_NO_TARGET"]: return false
+    if not _has_exact_keys(receipt,common+["ward_before","ward_after","ward_target"]): return false
+    for key in ["ward_before","ward_after"]:
+        if not Chain.valid_integer(receipt[key],0,Combat.INTEGER_LIMIT): return false
+        if int(receipt[key]) != 0 and receipt[key] not in _skill_powers.DEF: return false
+    if not receipt.ward_target is String: return false
+    if (int(receipt.ward_after) == 0) != receipt.ward_target.is_empty(): return false
+    if not receipt.ward_target.is_empty():
+        var prefix := "%s:" % state.run_id
+        if not receipt.ward_target.begins_with(prefix): return false
+        var suffix: String = receipt.ward_target.substr(prefix.length())
+        if not suffix.is_valid_int() or str(int(suffix)) != suffix: return false
+        if int(suffix) < 0 or int(suffix) > int(state.action_index): return false
+    if receipt.effect == "DEF_WARD":
+        return receipt.reason == "" and int(receipt.ward_after) == maxi(int(receipt.ward_before),power)
+    if receipt.reason not in ["ACTION_FINISHED","ACTION_COMMITTED","NO_DAMAGE_ACTION"]: return false
+    if int(receipt.ward_after) != int(receipt.ward_before): return false
+    if receipt.reason != "ACTION_COMMITTED" and int(receipt.ward_after) != 0: return false
+    return true

@@ -5,6 +5,7 @@ const SESSION_PATH := "res://docs/design/r2-complete-session.json"
 const RULES_PATH := "res://docs/design/autocast-r2-data.json"
 const SAVE_SCHEMA := "r2-combat-snapshot-v1"
 const STANDARD_MODE := "STANDARD"
+const DEFAULT_RUN_ID := "standalone-r2"
 const RELAXED_MODE := "RELAXED"
 const MAX_HP := 100
 const MAX_WAVE := 64
@@ -24,6 +25,7 @@ var paused: bool = false
 var outcome: String = "RUNNING"
 
 var _mode: String = STANDARD_MODE
+var _run_id: String = DEFAULT_RUN_ID
 var _encounter: Dictionary = {}
 var _actions: Array = []
 var _skills: Dictionary = {}
@@ -38,9 +40,10 @@ var _processed_line_cells: Dictionary = {}
 var _processed_cast_events: Dictionary = {}
 var _processed_topout_events: Dictionary = {}
 
-func _init(mode: String = STANDARD_MODE) -> void:
+func _init(mode: String = STANDARD_MODE, run_id: String = DEFAULT_RUN_ID) -> void:
     _mode = RELAXED_MODE if mode == RELAXED_MODE else STANDARD_MODE
-    _ready = _load_rule_pack()
+    _run_id = run_id
+    _ready = _load_rule_pack() and valid_run_id(run_id)
     if not _ready:
         outcome = "DEFEAT"
         return
@@ -357,6 +360,7 @@ func tick(delta_us: int, line_events: Array = [], cast_events: Array = []) -> Ar
 func snapshot() -> Dictionary:
     return {
         "schema": SAVE_SCHEMA,
+        "run_id": _run_id,
         "rule_pack": _rule_pack,
         "rule_pack_hash": _rule_pack_hash,
         "encounter_id": String(_encounter.get("id", "")),
@@ -382,7 +386,7 @@ func restore(value: Dictionary) -> bool:
     if not _ready:
         return false
     var required := [
-        "schema", "rule_pack", "rule_pack_hash", "encounter_id", "mode",
+        "schema", "run_id", "rule_pack", "rule_pack_hash", "encounter_id", "mode",
         "hp", "boss_hp", "armor", "attack_bank", "ward", "ward_target",
         "eta_us", "extension_us", "action_index", "paused", "outcome",
         "processed_line_event_ids", "processed_line_cell_ids", "processed_cast_event_ids",
@@ -393,6 +397,9 @@ func restore(value: Dictionary) -> bool:
     for key in required:
         if not value.has(key):
             return false
+    if not valid_run_id(value["run_id"]):
+        return false
+    var restored_run_id: String = value["run_id"]
     if not value["schema"] is String or String(value["schema"]) != SAVE_SCHEMA:
         return false
     if not value["rule_pack"] is String or String(value["rule_pack"]) != _rule_pack:
@@ -437,7 +444,7 @@ func restore(value: Dictionary) -> bool:
     if int(restored_ward) > 0:
         if not _is_authored_ward_value(int(restored_ward)):
             return false
-        if restored_target != _action_id_for_index(int(restored_index)):
+        if restored_target != _action_id_for_index(int(restored_index), restored_run_id):
             return false
         var action := _action_for_index(int(restored_index), restored_mode)
         if int(action["damage"]) <= 0:
@@ -462,6 +469,7 @@ func restore(value: Dictionary) -> bool:
     paused = bool(value["paused"])
     outcome = restored_outcome
     _mode = restored_mode
+    _run_id = restored_run_id
     _processed_line_events = line_event_set
     _processed_line_cells = line_cell_set
     _processed_cast_events = cast_event_set
@@ -560,8 +568,8 @@ func _duration_us_for_index(index: int, mode: String = "") -> int:
     var multiplier := float(_encounter["relaxed_windup_multiplier"]) if selected_mode == RELAXED_MODE else 1.0
     return roundi(float(action["seconds"]) * 1000000.0 * multiplier)
 
-func _action_id_for_index(index: int) -> String:
-    return "%s:%d" % [String(_encounter.get("id", "")), index]
+func _action_id_for_index(index: int, run_identity: String = "") -> String:
+    return "%s:%d" % [_run_id if run_identity.is_empty() else run_identity, index]
 
 func _action_for_index(index: int, mode: String = "") -> Dictionary:
     var raw: Dictionary = _actions[posmod(index, _actions.size())]
@@ -635,3 +643,6 @@ func _string_array_to_set(value):
             return null
         result[String(item)] = true
     return result
+
+static func valid_run_id(value) -> bool:
+    return value is String and not value.strip_edges().is_empty() and value.length() <= 128

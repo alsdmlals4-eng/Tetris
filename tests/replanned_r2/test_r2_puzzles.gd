@@ -496,3 +496,106 @@ func test_training_clock_flag_restores_paused_and_rejects_foreign_normal_save_at
     normal.tick(10000000)
     assert_eq(normal.combat.hp,88,"Normal/default play still resolves the boss")
     assert_eq(normal.combat.action_index,1)
+
+func test_restore_rejects_partial_or_contradictory_last_cast_receipt_atomically() -> void:
+    var s = _session()
+    if s == null: return
+    _teach_chain(s)
+    s.tick(600000)
+    var good: Dictionary = s.snapshot()
+    var bad: Dictionary = good.duplicate(true)
+    bad.ui.last_cast = {"category":"ATK","event_id":"chain:1:wave:2","wave":2}
+    assert_false(s.restore(bad),"Processed event identity does not make a partial receipt valid")
+    assert_eq(s.snapshot(),good)
+    for key in good.ui.last_cast:
+        bad = good.duplicate(true)
+        bad.ui.last_cast.erase(key)
+        assert_false(s.restore(bad),"Every receipt field is required: "+key)
+        assert_eq(s.snapshot(),good)
+    for change in [{"category":"DEF"},{"effect":"DEF_WARD"},{"stage":6},{"wave":1},
+            {"power":99},{"success":false},{"bank_consumed":-1},{"damage_requested":99},
+            {"damage_applied":999},{"stage":2.5},{"reason":"invented"},
+            {"event_id":"chain:1:wave:1"}]:
+        bad = good.duplicate(true)
+        bad.ui.last_cast.merge(change,true)
+        assert_false(s.restore(bad),"Receipt contradiction must fail: "+str(change))
+        assert_eq(s.snapshot(),good)
+    bad = good.duplicate(true)
+    bad.ui.last_cast = {}
+    assert_false(s.restore(bad),"Nonempty cast ledger needs its latest receipt")
+    assert_eq(s.snapshot(),good)
+
+func test_restore_validates_def_and_sup_receipt_values_and_json_roundtrip() -> void:
+    var s = _session()
+    if s == null: return
+    for category in ["DEF","SUP"]:
+        var source = _session()
+        source.command("category",{"category":category})
+        _teach_chain(source)
+        source.tick(600000)
+        var good: Dictionary = source.snapshot()
+        assert_true(s.restore(JSON.parse_string(JSON.stringify(good))))
+        var before: Dictionary = s.snapshot()
+        var bad: Dictionary = good.duplicate(true)
+        if category == "DEF":
+            bad.ui.last_cast.ward_after = 17
+        else:
+            bad.ui.last_cast.healing_applied = 4
+        assert_false(s.restore(bad))
+        assert_eq(s.snapshot(),before)
+        bad = good.duplicate(true)
+        if category == "DEF":
+            bad.ui.last_cast.ward_target = "foreign-run:0"
+        else:
+            bad.ui.last_cast.healing_requested = 7
+        assert_false(s.restore(bad))
+        assert_eq(s.snapshot(),before)
+    var no_target = _session()
+    no_target.setup_training("CHAIN",true)
+    no_target.combat.eta_us = 1000
+    no_target.command("category",{"category":"DEF"})
+    no_target.command("chain_swap",{"from":[4,5],"to":[5,5]})
+    no_target.tick(600000)
+    var no_target_save: Dictionary = no_target.snapshot()
+    assert_eq(no_target_save.ui.last_cast.effect,"DEF_NO_TARGET")
+    assert_true(s.restore(JSON.parse_string(JSON.stringify(no_target_save))))
+    var before: Dictionary = s.snapshot()
+    no_target_save.ui.last_cast.reason = ""
+    assert_false(s.restore(no_target_save))
+    assert_eq(s.snapshot(),before)
+
+func test_requested_run_identity_namespaces_actions_and_preserves_ward_restore() -> void:
+    var s = _session()
+    if s == null: return
+    var script = load(SESSION_PATH)
+    var a = script.new("STANDARD",9112026,"run-A")
+    var b = script.new("STANDARD",9112026,"run-B")
+    assert_eq(a.combat.action_id(),"run-A:0")
+    assert_eq(b.combat.action_id(),"run-B:0")
+    assert_ne(a.combat.action_id(),b.combat.action_id())
+    assert_eq(a.combat.next_action().instance_id,"run-A:1")
+    a.command("category",{"category":"DEF"})
+    _teach_chain(a)
+    a.tick(600000)
+    assert_eq(a.combat.ward_target,"run-A:0")
+    var saved: Dictionary = JSON.parse_string(JSON.stringify(a.snapshot()))
+    assert_eq(saved.boss.current_instance,"run-A:0")
+    assert_eq(saved.combat.get("run_id",""),"run-A")
+    assert_true(b.restore(saved))
+    assert_eq(b.run_id,"run-A")
+    assert_eq(b.combat.action_id(),"run-A:0")
+    assert_eq(b.combat.ward_target,"run-A:0")
+    var before: Dictionary = b.snapshot()
+    var bad: Dictionary = saved.duplicate(true)
+    bad.identity.run_id = "run-B"
+    assert_false(b.restore(bad))
+    assert_eq(b.snapshot(),before)
+    bad = saved.duplicate(true)
+    bad.combat.run_id = "run-B"
+    assert_false(b.restore(bad))
+    assert_eq(b.snapshot(),before)
+    b.command("resume")
+    b.tick(b.combat.eta_us)
+    assert_eq(b.combat.hp,93)
+    assert_eq(b.combat.action_id(),"run-A:1")
+    assert_eq(b.combat.ward_target,"")

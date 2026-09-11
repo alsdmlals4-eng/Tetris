@@ -30,7 +30,7 @@ func test_default_and_relaxed_modes_consume_the_approved_encounter() -> void:
     assert_eq(standard.next_action()["id"], "slam")
     assert_eq(standard.eta_us, 10000000)
     assert_eq(relaxed.eta_us, 12500000)
-    assert_eq(standard.action_id(), "rift_breaker_r2_intro:0")
+    assert_eq(standard.action_id(), "standalone-r2:0")
     assert_ne(String(standard.snapshot()["rule_pack_hash"]), "")
 
 func test_line_a4_d2_h2_t2_pays_unique_cells_once() -> void:
@@ -117,7 +117,7 @@ func test_def_uses_max_ward_then_armor_before_hp() -> void:
     state.cast("def-3", "DEF", 3)
     assert_eq(state.current_action()["id"], "slam")
     assert_eq(state.ward, 7)
-    assert_eq(state.ward_target, "rift_breaker_r2_intro:1")
+    assert_eq(state.ward_target, "standalone-r2:1")
     var events: Array = state.tick(14000000)
     assert_eq(state.hp, 82)
     assert_eq(state.ward, 0)
@@ -351,8 +351,39 @@ func test_restore_accepts_valid_committed_ward_and_rejects_unauthored_ward_atomi
     committed.tick(9999000)
     var committed_snapshot: Dictionary = committed.snapshot()
     assert_eq(committed_snapshot["ward"], 17)
-    assert_eq(committed_snapshot["ward_target"], "rift_breaker_r2_intro:0")
+    assert_eq(committed_snapshot["ward_target"], "standalone-r2:0")
     assert_eq(committed_snapshot["eta_us"], 1000)
     committed.hp = 99
     assert_true(committed.restore(committed_snapshot))
     assert_eq(committed.snapshot(), committed_snapshot)
+
+func test_explicit_combat_run_id_survives_restore_and_rejects_foreign_ward() -> void:
+    var state = _state()
+    if state == null: return
+    var constructor_arguments := 0
+    for method in state.get_method_list():
+        if method.name == "_init": constructor_arguments = method.args.size()
+    assert_eq(constructor_arguments,2,"Combat owns the same explicit run identity as session")
+    if constructor_arguments != 2: return
+    var source = load(COMBAT_PATH).new("STANDARD","combat-run-A")
+    var other = load(COMBAT_PATH).new("STANDARD","combat-run-B")
+    assert_eq(source.action_id(),"combat-run-A:0")
+    assert_ne(source.action_id(),other.action_id())
+    source.cast("ward-once","DEF",2)
+    assert_eq(source.ward_target,"combat-run-A:0")
+    var saved: Dictionary = JSON.parse_string(JSON.stringify(source.snapshot()))
+    assert_true(other.restore(saved))
+    assert_eq(other.snapshot().run_id,"combat-run-A")
+    assert_eq(other.ward_target,other.action_id())
+    var before: Dictionary = other.snapshot()
+    var invalid: Dictionary = saved.duplicate(true)
+    invalid.run_id = "combat-run-B"
+    assert_false(other.restore(invalid))
+    assert_eq(other.snapshot(),before)
+    invalid = saved.duplicate(true)
+    invalid.run_id = ""
+    assert_false(other.restore(invalid))
+    assert_eq(other.snapshot(),before)
+    other.tick(other.eta_us)
+    assert_eq(other.hp,93)
+    assert_eq(other.action_id(),"combat-run-A:1")
