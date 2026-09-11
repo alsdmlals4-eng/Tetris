@@ -76,6 +76,8 @@ Files: `src/replanned_r2/r2_screen.gd`, `r2_save.gd`, `r2_assets.gd`; `scenes/re
 
 Implementation IN_PROGRESS. No R2 runtime/Human PASS yet. Historical preparation receipt/PDF remains unchanged as prior evidence. This file owns current implementation continuation status and must be updated at every handoff.
 
+Publication boundary correction: Foundation now routes this approved implementation. The integrated PDF still verifies its exact published Foundation bytes at source commit, while remaining rule/asset inputs verify both current and historical bytes. RED: its original test failed solely on the added continuation routing paragraph; this is not permission to weaken asset/rule checks or relabel old PDF as runtime evidence.
+
 | Shared interface | Check |
 | --- | --- |
 | Task1→Task2 combat tick + event dictionaries | Same-tick boss priority and end-tick next target explicit; no puzzle-owned combat arithmetic. |
