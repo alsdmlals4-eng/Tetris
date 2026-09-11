@@ -190,10 +190,10 @@ func _build_battle():
             var cell = _panel(cells,"Cell_%d_%d"%[x,y],Rect2(x*26,y*26,26,26))
             _line_cells.append(_image(cell,"Art",Rect2(1,1,24,24),null))
     for kind in ["Ghost","Active"]:
-        var owner = _container(line,kind,Rect2(178,62,260,520))
-        owner.clip_contents = true
+        var piece_layer = _container(line,kind,Rect2(178,62,260,520))
+        piece_layer.clip_contents = true
         for i in range(4):
-            var tile = _image(owner,"Cell%d"%i,Rect2(0,0,26,26),null)
+            var tile = _image(piece_layer,"Cell%d"%i,Rect2(0,0,26,26),null)
             if kind == "Ghost":
                 tile.modulate.a = 0.35
                 for edge in range(4):
@@ -578,6 +578,8 @@ func advance_seconds(delta: float):
     if delta < 0.0 or not is_finite(delta): return
     # Integer nanosecond carry prevents repeated sub-microsecond frame loss.
     _clock_ns += roundi(delta*1000000000.0)
+    # Deliberately truncate whole microseconds; the remainder stays in _clock_ns.
+    @warning_ignore("integer_division")
     var remaining: int = _clock_ns/1000
     _clock_ns %= 1000
     while remaining > 0 and session.combat.outcome=="RUNNING" and not session.combat.paused:

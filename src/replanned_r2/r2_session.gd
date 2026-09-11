@@ -84,8 +84,8 @@ func command(action: String, args: Dictionary = {}) -> Dictionary:
         return _result(line.rotate(int(args.direction)),"BLOCKED")
     if action == "hold":
         var success: bool = line.hold()
-        var events: Array = _topout() if success and line.spawn_blocked() else []
-        return {"success":success,"reason":"" if success else "HOLD_UNAVAILABLE","events":events}
+        var hold_events: Array = _topout() if success and line.spawn_blocked() else []
+        return {"success":success,"reason":"" if success else "HOLD_UNAVAILABLE","events":hold_events}
     var plan: Dictionary = line.hard_drop_plan()
     var events := _resolve_step(0,plan)
     return {"success":true,"reason":"","events":events}

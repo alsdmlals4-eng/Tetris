@@ -123,7 +123,10 @@ static func remap(options: Dictionary, group: String, action: String, code: int)
         if other == action: continue
         var match_code = code in options[group][other] if group == "keyboard_mapping" else code == options[group][other]
         if match_code: return _error("충돌: "+String(other)+"에 이미 지정되어 있습니다.")
-    options[group][action] = [code] if group == "keyboard_mapping" else code
+    if group == "keyboard_mapping":
+        options[group][action] = [code]
+    else:
+        options[group][action] = code
     return {"success":true,"reason":""}
 
 static func valid_options(value: Dictionary) -> bool:
