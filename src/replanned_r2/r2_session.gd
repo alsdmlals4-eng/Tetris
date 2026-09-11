@@ -24,6 +24,7 @@ var elapsed_simulation_us := 0
 var checkpoint_sequence := 0
 var run_id := ""
 var training_mode := ""
+var training_boss_frozen := false
 var _rule_pack_hash := ""
 var _transaction := false
 
@@ -91,7 +92,7 @@ func tick(delta_us: int) -> Array:
     var remaining := delta_us
     var events: Array = []
     while remaining > 0 and combat.outcome == "RUNNING":
-        var step := mini(remaining,combat.eta_us)
+        var step := remaining if training_boss_frozen else mini(remaining,combat.eta_us)
         if mode == "LINE": step = mini(step,line.next_event_us())
         if chain.resolving: step = mini(step,chain.next_wave_remaining_us)
         if mode == "LINE": line.advance_time(step)
@@ -114,7 +115,7 @@ func _resolve_step(delta_us: int, plan: Dictionary) -> Array:
     var cast_event: Dictionary = chain.due_cast()
     var casts: Array = [] if cast_event.is_empty() else [cast_event]
     # Boss resolves before either transaction, and closes its old target before rescheduling.
-    var events: Array = combat.tick(delta_us,lines,casts)
+    var events: Array = combat.tick(0 if training_boss_frozen else delta_us,lines,casts)
     for event in events:
         _record_event_metrics(event)
         if event.get("category","") in ["ATK","DEF","SUP"] and event.get("success",false):
@@ -155,10 +156,11 @@ func _topout() -> Array:
         queued_workspace = ""
     return [event]
 
-func setup_training(workspace: String) -> bool:
+func setup_training(workspace: String, freeze_boss: bool = false) -> bool:
     if workspace not in ["LINE","CHAIN"] or _transaction or chain.resolving or combat.outcome != "RUNNING": return false
     var data: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
     training_mode = workspace
+    training_boss_frozen = freeze_boss
     mode = workspace
     queued_workspace = ""
     if workspace == "LINE":
@@ -183,7 +185,7 @@ func snapshot() -> Dictionary:
     return {"identity":{"schema":SAVE_SCHEMA,"rule_pack_hash":_rule_pack_hash,
         "run_id":run_id,"mode":encounter_mode,"encounter_id":state.encounter_id,
         "elapsed_simulation_us":elapsed_simulation_us,"checkpoint_sequence":checkpoint_sequence,
-        "training_mode":training_mode},
+        "training_mode":training_mode,"training_boss_frozen":training_boss_frozen},
         "player":_player_state(state),"boss":_boss_state(state),
         "line":line.snapshot(),"chain":chain.snapshot(),
         "ui":{"active_workspace":mode,"selected_category":selected_category,
@@ -197,11 +199,13 @@ func restore(data: Dictionary) -> bool:
         if not data.get(group) is Dictionary: return false
     var identity: Dictionary = data.identity
     var identity_keys := ["schema","rule_pack_hash","run_id","mode","encounter_id",
-        "elapsed_simulation_us","checkpoint_sequence","training_mode"]
+        "elapsed_simulation_us","checkpoint_sequence","training_mode","training_boss_frozen"]
     if not _has_exact_keys(identity,identity_keys): return false
     if identity.schema != SAVE_SCHEMA or identity.rule_pack_hash != _rule_pack_hash: return false
     if not identity.run_id is String or identity.run_id.is_empty() or identity.run_id.length() > 128: return false
     if identity.mode not in ["STANDARD","RELAXED"] or identity.training_mode not in ["","LINE","CHAIN"]: return false
+    if not identity.training_boss_frozen is bool: return false
+    if identity.training_boss_frozen and identity.training_mode == "": return false
     if not Chain.valid_integer(identity.elapsed_simulation_us,0,9007199254740991) or not Chain.valid_integer(identity.checkpoint_sequence,0,2147483647): return false
     var candidate_combat = Combat.new(identity.mode)
     if not candidate_combat.restore(data.combat): return false
@@ -232,6 +236,7 @@ func restore(data: Dictionary) -> bool:
     run_id = identity.run_id
     encounter_mode = identity.mode
     training_mode = identity.training_mode
+    training_boss_frozen = identity.training_boss_frozen
     elapsed_simulation_us = int(identity.elapsed_simulation_us)
     checkpoint_sequence = int(identity.checkpoint_sequence)
     mode = ui.active_workspace

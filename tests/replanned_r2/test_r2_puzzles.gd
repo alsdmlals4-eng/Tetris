@@ -420,3 +420,79 @@ func test_metrics_count_committed_time_waste_and_unshieldable_topout_separately(
     assert_eq(s.metrics.get("boss_damage_to_hp",-1),0)
     assert_eq(s.metrics.get("hp_damage_taken",-1),25)
     assert_eq(s.metrics.get("armor_absorbed",-1),0)
+
+func _setup_frozen_training(s, workspace: String) -> bool:
+    var setup_arguments := 0
+    for method in s.get_method_list():
+        if method.name == "setup_training": setup_arguments = method.args.size()
+    assert_eq(setup_arguments,2,"Training setup must explicitly opt in to freezing only the boss")
+    if setup_arguments != 2: return false
+    return s.setup_training(workspace,true)
+
+func test_frozen_training_preserves_boss_but_line_clock_and_resources_run() -> void:
+    var s = _session()
+    if s == null or not _setup_frozen_training(s,"LINE"): return
+    s.tick(30000000)
+    assert_eq(s.combat.eta_us,10500000,"Clock is frozen; the normal LINE time reward still adds 0.5s")
+    assert_eq(s.combat.action_index,0)
+    assert_eq(s.combat.hp,82,"Only authored LINE healing changes HP; no boss hit occurs")
+    assert_eq(s.combat.attack_bank,4)
+    assert_eq(s.combat.extension_us,500000)
+    assert_eq(s.elapsed_simulation_us,30000000)
+    assert_gt(s.line.lock_sequence,0)
+    assert_eq(s.metrics.boss_damage_to_hp,0)
+    assert_true(s.setup_training("LINE"),"Default setup returns to the real boss clock")
+    assert_false(s.training_boss_frozen)
+    var eta: int = s.combat.eta_us
+    s.tick(2000000)
+    assert_eq(s.combat.eta_us,eta-2000000)
+
+func test_frozen_training_chain_waves_run_but_pause_still_freezes_everything() -> void:
+    var s = _session()
+    if s == null or not _setup_frozen_training(s,"CHAIN"): return
+    s.command("chain_swap",{"from":[4,5],"to":[5,5]})
+    s.tick(100000)
+    s.command("pause")
+    var pending: Dictionary = s.chain.snapshot()
+    s.tick(20000000)
+    assert_eq(s.chain.snapshot(),pending)
+    assert_eq(s.combat.eta_us,10000000)
+    assert_eq(s.combat.boss_hp,240)
+    s.command("resume")
+    s.tick(200000)
+    assert_eq(s.combat.boss_hp,236)
+    assert_eq(s.combat.eta_us,10000000)
+    s.tick(300000)
+    assert_eq(s.combat.boss_hp,230)
+    s.tick(30000000)
+    assert_eq(s.combat.hp,100)
+    assert_eq(s.combat.eta_us,10000000)
+    assert_eq(s.combat.action_index,0)
+    assert_eq(s.metrics.casts,2)
+
+func test_training_clock_flag_restores_paused_and_rejects_foreign_normal_save_atomically() -> void:
+    var s = _session()
+    if s == null or not _setup_frozen_training(s,"CHAIN"): return
+    var saved: Dictionary = JSON.parse_string(JSON.stringify(s.snapshot()))
+    assert_true(saved.identity.training_boss_frozen)
+    var restored = _session()
+    assert_true(restored.restore(saved))
+    assert_true(restored.training_boss_frozen)
+    assert_true(restored.combat.paused)
+    restored.command("resume")
+    restored.tick(30000000)
+    assert_eq(restored.combat.eta_us,10000000)
+    assert_eq(restored.combat.hp,100)
+    var normal = _session()
+    var before: Dictionary = normal.snapshot()
+    var bad: Dictionary = before.duplicate(true)
+    bad.identity.training_boss_frozen = true
+    assert_false(normal.restore(bad))
+    assert_eq(normal.snapshot(),before)
+    bad = before.duplicate(true)
+    bad.identity.training_boss_frozen = 1
+    assert_false(normal.restore(bad))
+    assert_eq(normal.snapshot(),before)
+    normal.tick(10000000)
+    assert_eq(normal.combat.hp,88,"Normal/default play still resolves the boss")
+    assert_eq(normal.combat.action_index,1)
