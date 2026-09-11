@@ -1,0 +1,14 @@
+# Task 1 report
+- status: `DONE_WITH_CONCERNS` — deterministic core is machine-verified; gameplay runtime/Human UX remain `NOT_RUN`.
+- code commit: `203fc3942265f9ed7f4dc129e1802a44c31a601f` (source, test, and two generated UID files only).
+- scope: pure `RefCounted` R2 combat owner; no production scene/UI/config/asset/root file changed.
+- API: `new(mode="STANDARD")` or `new("RELAXED")`; `action_id/current_action/next_action/apply_line/cast/apply_topout/tick/snapshot/restore`.
+- canon input: loads `autocast-r2-data.json` plus `r2-complete-session.json`; snapshot pins both SHA-256 values and the rule-pack schema.
+- TDD RED: focused GUT exit 1, `0/14`, expected missing `r2_combat.gd`; topout RED `14/16`; restore-bound RED `16/17`.
+- focused GREEN: exit 0, `18/18`, 137 assertions; includes literal player-death-before-H/SUP no-revive ordering.
+- full regression: exit 0, `271/271`, 2791 assertions; source/test `--check-only` both exit 0.
+- review loop 1: rejected impossible ETA above authored duration + used extension; corrected and regressed.
+- review loop 2: corrected lethal-order test meaning; zero unresolved blocking findings after full rescan.
+- limits: integer microseconds, 1000us commit lead, 3000000us action-extension cap, wave cap 64, HP100/boss240, topout HP25 bypasses armor/ward.
+- concern: initial editor PID 31048 ended after the first RED run for an unconfirmed reason; approved recovery PID 37444 and port 8008 remained live across every later focused/full/check-only run.
+- report path: `.superpowers/sdd/TETRIS_R2_IMPLEMENTATION/task-1-report.md`.
