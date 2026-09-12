@@ -28,6 +28,18 @@ Research2026-09-12: [SEGA rules](https://puyo.sega.jp/puyopuyotetris2/rule.html)
 
 Preflight: source art reused, baseline owners COMPATIBILITY, R2 implementation ACTIVE_OWNER, published PDFs ARCHIVE snapshots, unknown import/UID metadata preserved. Base reuse profile remains a planned hint, not current runtime authority. No newly relevant cross-project exporter is indexed. System Blueprint entry NOT_APPLICABLE_WITH_REASON: packaging does not change connected gameplay meanings. FEASIBLE native packaging; actual asset/remap, helper exclusion and exported UI acceptance NOT_RUN. Revert only own package commit to roll back; do not delete original files.
 
+Benchmark-to-implementation audit2026-09-12 (public first-party descriptions, not private source inspection, interviews or firsthand play):
+
+| Reference/pattern | Current actual consumer | Decision and expected effect | Remaining evidence |
+|---|---|---|---|
+| Puyo Puyo Tetris2: separate puzzle modes, HP continuation after top-out | R2 practice1/2 and LINE top-out HP transaction | KEEP role-specific lessons and bounded recovery; REJECT forced timed swap/MP. Familiar recovery without blurring LINE preparation and CHAIN spending. | Player understanding, not implied by tests. |
+| Tetris Effect: response synchronized with player actions | `_events`, `_render_pose`, matched CHAIN cells and actual recent-cast receipt | KEEP event-owned feedback and pause semantics; REJECT copied Zone/time-stop and unauthorised music. Actual damage remains model-owned. | Long active-cascade frame-pacing and subjective impact. |
+| Into the Breach: explicit enemy attack telegraphs | `refresh` Current/Next/ETA, `def_target_reason` preview | KEEP same current ETA as response timer, next as order forecast; no turn-based schedule import. Makes defense decisions inspectable. | Normal rest/commit boundary readback remains scoped prior evidence. |
+| Riot: preserve meaningful information across graphics quality | `options.reduced_motion`, boss pose, text damage/resource/cast receipts | KEEP reduced motion without removing rule cues; no new shader framework or144FPS target. | Actual user accessibility remains unverified. |
+| Xbox XAG103: symbols plus explanatory text, not color-only | Four symbol atlases and labels exist; remapped-input guide remains hardcoded | FIX Task5 by deriving control text from actual options, keep symbols/text and options cancellation. Reduces contradictory guidance. | RED/GREEN and native125percent UI required. |
+
+No benchmark alone creates a new game system. Unchanged implemented patterns are reuse evidence; Task5 is the concrete discovered consumer inconsistency, Task4 makes the existing slice locally testable without the editor. Sound production remains optional under blueprint section32; release rights/branding are not certified by this local trial.
+
 - Latest user `좋아 진행해` continues the completed blueprint handoff into implementation. This does not confer runtime, Human, balance or release approval.
 - Existing production scenes/rules/assets, six unrelated draft PRs and historical PDF bytes are preserved. No automatic main-scene replacement.
 - Base 9.4.4 stays pinned. No additional paid dependency or new authoring bridge.
