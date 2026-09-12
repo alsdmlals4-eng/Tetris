@@ -1,0 +1,58 @@
+{
+  "kind": "R2_REPORT_RUNTIME_EVIDENCE",
+  "date": "2026-09-13",
+  "base_main": "9972c580db4854554399424fa05bd7343e83035d",
+  "implementation_files": {
+    "src/replanned_r2/r2_playtest_report.gd": "03b25571efa267d421c21c20e59fa9f425d154a469563dc93a6a9d54c9ddffa3",
+    "src/replanned_r2/r2_screen.gd": "13146ac04584f8a9bdacb5437540d46c0d825db9d7ec10d048bb5be3e608a635"
+  },
+  "captures": [
+    {
+      "path": "result-125.png",
+      "sha256": "fc3bbad3ff828f326bcbf972c8cf9a3def89d0db72cf4247032e0f6c852dc086",
+      "condition": "125 percent result export success; before tooltip-only correction"
+    },
+    {
+      "path": "result-tooltip.png",
+      "sha256": "926eea053020a0149a299e8f90eff115447e0f428dfd176f4aff132a411789fc",
+      "condition": "125 percent actual hover; corrected two-line absolute folder and filename"
+    },
+    {
+      "path": "result-failure-100.png",
+      "sha256": "ae055496c688a0f9417094b6f99e6bbccfafef864116b80bccfb68528a168e3c",
+      "condition": "100 percent invalid destination; final implementation"
+    }
+  ],
+  "runtime": {
+    "engine": "4.7.1",
+    "scene": "res://scenes/replanned_r2/main.tscn",
+    "resolution": [
+      1280,
+      720
+    ],
+    "setup": "Controlled session through real start/switch/timing, isolated user://replanned_r2_tests/native-report save/options/report destinations",
+    "input": "Godot engine mouse press/release, Tab navigation and Enter; not physical device or human first exposure",
+    "checks": [
+      "manual JSON save",
+      "Tab twice reaches export from Retry",
+      "Enter exports",
+      "failure preserves Main navigation",
+      "125 percent layout",
+      "actual hover tooltip"
+    ],
+    "last_game_run": "r1848205-4",
+    "last_game_log_errors": 0
+  },
+  "tests": {
+    "gut": {
+      "passed": 354,
+      "assertions": 3736,
+      "scripts": 59
+    },
+    "tooling": {
+      "passed": 88
+    }
+  },
+  "human": "NOT_RUN",
+  "release": "NOT_CLAIMED"
+}

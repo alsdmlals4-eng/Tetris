@@ -16,7 +16,7 @@ Base reuse: TETRIS profile entries are planned hints, not adopted runtime. RM-TO
 
 Research: Godot FileAccess official documentation was read on 2026-09-13 (https://docs.godotengine.org/en/stable/classes/class_fileaccess.html): local user data and explicit write/error/close readback, ADAPT. Mega Crit's GDC metrics-and-feedback session description read in the preceding planning turn is REUSED_EVIDENCE; this turn's repeat fetch failed, so no new full-video or interview claim. No new policy or gameplay mechanic is inferred from the source.
 
-Feasibility: FEASIBLE data projection and manual local write using existing Godot APIs. Actual authoring, tests and runtime proof remain separate. Godot readiness recovery found MCP initialize 3.4.7 versus installed addon 3.2.0; do not author through an unverified upgrade. Restore the existing pinned 3.2.0 execution path first, without modifying global settings or project vendor files.
+Feasibility: FEASIBLE data projection and manual local write using existing Godot APIs. Actual authoring, tests and runtime proof remain separate. The initial initialize-version discrepancy was diagnosed on resumption: godot-ai constructs FastMCP without an explicit version, so initialize reports the FastMCP dependency version (3.4.7). Installed godot-ai package metadata, the dedicated /godot-ai/status route and exact Tetris session all report 3.2.0. This was not an addon/server upgrade. Existing endpoint initialize and session listing now succeed without global configuration or vendor changes.
 
 ## Contract
 
@@ -70,7 +70,7 @@ Preserve production, approved/frozen PDF bytes, artwork, combat/session/save sch
 
 ## Current evidence
 
-Planning prepared; implementation NOT_RUN, runtime NOT_RUN, Human NOT_RUN. No readiness or complete-game claim follows from this document.
+Current resumption: report projection/writer and manual Result export are implemented locally. Focused report tests 8/8 and screen tests 34/34 passed before final review corrections; fresh full-suite/package evidence is recorded below when available. Human remains NOT_RUN. No complete-game or release claim follows from this document.
 
 2026-09-13 preflight: receipt start validation initially rejected unsupported TODO states; replaced by existing BACKLOG vocabulary. Windows cp949 could not print the report em dash; current-process PYTHONIOENCODING=utf-8 rerun exited0 with start PASS and 0/3 implemented tasks. Neither was a product-test failure.
 
@@ -78,4 +78,15 @@ Readiness recovery: current attached godot-ai connector twice returned sessions=
 
 Planning review1: removed duplicate result-screen construction because _show_result already exposes metrics; retained local export only. Planning review2: kept engine version/report schema distinct from exact build revision; unbound reports must not claim controlled cross-build comparison. Stable snapshot, practice classification, failure/no-overwrite and save preservation remain explicit acceptance criteria. These are planning checks, not the implementation's required two final full-result reviews.
 
-Final deferred state intentionally has no active executable task. The start gate must now refuse execution until the connection blocker is resolved; do not reuse the earlier pre-blocker start PASS as present authorization. Tracking shape is checked separately as information only. No implementation or runtime test has run in this follow-up. Task-owned editor27976 did not accept CloseMainWindow (returned false); no broad or forced process cleanup was attempted, and cleanup completion is not claimed. Remaining local transport/editor processes must be reidentified before resumption or shutdown.
+Historical deferred state intentionally had no active executable task. On resumption, exact editor27976 and endpoint8008 were reidentified with Tetris session tetris@3e5d, Godot4.7.1 and addon/server3.2.0. Fresh initialization/session calls succeeded; a new receipt start validation passed before source authoring. The older denial is one recorded command rejection, not evidence that all local HTTP is prohibited. No broad process cleanup or unrelated editor mutation occurred.
+
+## Resumed implementation and review evidence
+
+- Report projection validates a copy with the existing Session.restore owner. It neither recalculates metrics nor changes gameplay/session/save schemas. SHA256-addressed JSON exports are manual and local only; practice completion is explicitly separated from ordinary victory/defeat.
+- Writer acquisition uses an atomic per-report directory lock to serialize cooperating game instances. An existing/stale lock fails closed and is never stolen or deleted. Only this call's successfully acquired empty lock is removed. This is not OS-exclusive protection against arbitrary external programs altering files, nor a power-loss durability claim. Partial/conflicting records remain preserved for inspection and return failure.
+- RED: seven initial report tests failed because the module was absent. GREEN: projection, invalid/unstable input, practice distinction, idempotence, conflict preservation and unavailable destination passed; an eighth test covers pre-existing lock preservation.
+- RED: two Result tests failed because the export action was absent. GREEN: manual-only export, save/snapshot preservation, failure with usable Retry/Main, distinct practice and 125% Control bounds passed.
+- Review loop 1: independent whole-code review found the absolute-path tooltip was attached to a mouse-ignoring Label. A failing integration assertion reproduced it; tooltip ownership moved to the existing export Button. Actual hover then exposed an overwide single-line path. A font-width regression failed at1506px versus1240px, and folder/filename now occupy separate lines. No rules, tile images, skill assets or battle composition changed.
+- Runtime QA uses a controlled completed-session setup through real commands/timing and isolated test save/report paths, followed by engine mouse/key events (not direct pressed-signal emission). Tab twice from Retry focused ExportReport; Enter and mouse press/release each saved parseable JSON. At125% the result remained legible. This is technical input/runtime evidence, not a human first-exposure playtest.
+- Existing source main and read-only open drafts were rechecked: main9972c580db4854554399424fa05bd7343e83035d; drafts100/85/46/33/23/19 unchanged and not consumed.
+- Learning: use godot-ai's dedicated status/package/session identity, not FastMCP's initialize fallback version, when checking the adopted server pin. Record as a project-local diagnostic lesson; Base promotion remains a candidate only.

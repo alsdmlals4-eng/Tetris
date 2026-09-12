@@ -3,6 +3,9 @@ extends Control
 signal diagnostic_recorded(record: Dictionary)
 const Session = preload("res://src/replanned_r2/r2_session.gd")
 const Disk = preload("res://src/replanned_r2/r2_save.gd")
+const PlaytestReport = preload("res://src/replanned_r2/r2_playtest_report.gd")
+var report_directory := PlaytestReport.DEFAULT_DIRECTORY
+var _result_practice_complete := false
 const Assets = preload("res://src/replanned_r2/r2_assets.gd")
 const Inputs = preload("res://src/replanned_r2/r2_input.gd")
 const Catalog = preload("res://src/production/line/tetromino_catalog.gd")
@@ -201,10 +204,12 @@ func _build_ui():
     var result = _panel(self,"Result",Rect2(40,30,1200,660))
     _label(result,"Title",Rect2(30,20,750,50),"전투 결과",29,GOLD)
     _image(result,"Portrait",Rect2(1030,18,96,96),assets.texture("R1-PORTRAIT","neutral"))
-    _image(result,"BossVisual",Rect2(795,130,380,410),assets.texture("R2-BOSS","idle"))
+    _image(result,"BossVisual",Rect2(795,130,380,330),assets.texture("R2-BOSS","idle"))
     _label(result,"Metrics",Rect2(30,95,750,450),"",20)
     _button(result,"Retry",Rect2(30,575,350,50),"같은 seed로 재도전",retry_run)
     _button(result,"Main",Rect2(400,575,350,50),"메인",return_to_main)
+    _label(result,"ExportStatus",Rect2(795,465,375,100),"검수 기록은 버튼을 눌러 저장합니다.\n개인정보 수집·자동 업로드 없음",16)
+    _button(result,"ExportReport",Rect2(795,575,375,50),"검수 기록 저장",export_playtest_report)
     var overwrite = ConfirmationDialog.new()
     overwrite.name = "OverwriteDialog"
     overwrite.title = "새 도전"
@@ -979,8 +984,23 @@ func _render_practice():
         $Battle/PracticeRetry.position=Vector2(28,533)
         $Battle/PracticeNext.size=Vector2(140,42)
         $Battle/PracticeRetry.size=Vector2(140,42)
+func export_playtest_report():
+    if page != "result" or session == null or _blocking_modal() != null: return
+    var result := PlaytestReport.new().write_snapshot(session.snapshot(),_result_practice_complete,report_directory)
+    if result.success:
+        $Result/ExportStatus.text = "저장 완료 · 로컬 검수 기록\n" + report_directory
+        $Result/ExportReport.tooltip_text = ProjectSettings.globalize_path(result.path.get_base_dir()) + "\n" + result.path.get_file()
+        if result.has("warning"):
+            $Result/ExportStatus.text += "\n잠금 정리 실패 · 재시도 전 확인 필요"
+    else:
+        $Result/ExportStatus.text = "저장 실패 · 재도전과 메인은 사용 가능\n" + result.reason
+        $Result/ExportReport.tooltip_text = result.reason
+
 func _show_result(training_complete: bool = false, persist: bool = true):
     if session==null: return
+    _result_practice_complete = training_complete
+    $Result/ExportStatus.text = "검수 기록은 버튼을 눌러 저장합니다.\n개인정보 수집·자동 업로드 없음"
+    $Result/ExportReport.tooltip_text = ""
     inputs.clear()
     _show_page("result")
     $Result/Portrait.texture=assets.texture("R1-PORTRAIT","victory" if session.combat.outcome=="VICTORY" or training_complete else "defeat")
