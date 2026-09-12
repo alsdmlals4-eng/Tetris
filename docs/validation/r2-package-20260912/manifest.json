@@ -6,7 +6,7 @@
   "package": "C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지/final-ed96b5a-20260912-102800",
   "package_original_location": "C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-ed96b5a-20260912-102800",
   "relocation_evidence": "C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지목록.json; 84 files moved with matching pre/post hashes; no deletion",
-  "current_equivalent_payload": "C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-fc51180-20260912-111500",
+  "current_equivalent_payload": "C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지/final-fc51180-20260912-111500",
   "executable_sha256": "76269a403bb832599edeee4432a5b7a7e88c018eb5c9c798dfd8289359b0ec07",
   "pack_sha256": "4b9ba1748ab48f3eda4e9fd6bce57bde75b8090bd5ab198a4bf896c7cc4baff6",
   "font_scale_percent": 125,
@@ -49,7 +49,7 @@
   },
   "latest_package_native": {
     "repository_head":"07a7007fd1c13b5a036d494baafc10e794928d75",
-    "package":"C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-07a7007-20260912",
+    "package":"C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지/final-07a7007-20260912",
     "pck_sha256":"3c6e1f5049c7e49babe33b3af556d4dfcec1ecf11ffe2838c0ad73fc5c422d7c",
     "verification":"Build and separate VerifyPackageOnly exit0,18artifacts; pack probe ok=true,asset_errors=[],fiveatlases,threeJSON,helperabsent,Koreanglyphs. Existing exact8teardowndiagnostics remain KNOWN_TOOLING_WARNING.",
     "normal_input":"Native independent release window19203390,1280x720125%, no model injection: Main/Practice/Start/Space givesA4D2H2T2 bank4armor2HP82ETA10.5; Escape/fullpause/skilldetails/close retains pause; Practiceexit/Main keeps Continue. Originalthreefileshashesunchanged.",
@@ -59,7 +59,24 @@
       {"file":"package-pause-07a7007.jpg","sha256":"10b02d5e76bcd63e091ec6c182d48a4b88e1d06a4ad938d15d88a986603a1bee","observation":"Practice unsaved; existing ordinary checkpoint explicitly retained."},
       {"file":"package-skill-07a7007.jpg","sha256":"49ff5771de78f358c9f342ab726e776de06adfde9dbfdde65fa167ee4052ed02","observation":"Expanded modal also displays actual skill explanation without clipping, closing retains prior pause."}
     ],
-    "status":"PASS_SAMPLED_NATIVE; final integration correction and rebuild pending"
+    "status":"HISTORICAL_PASS_SAMPLED_NATIVE; superseded by final_fix package, hash-preserving relocation below"
+  },
+  "final_fix": {
+    "source_commit":"ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
+    "package":"C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-ae895bd-20260912",
+    "pck_sha256":"91dab182e788da59a854722a1cf019a2beaadb8cf458110594b87706e408d673",
+    "package_verification":"Fresh build and separate strict VerifyPackageOnly exit0 in pwsh7 and WindowsPowerShell5.1, exact18 artifacts including Hidden enumeration; five atlases/threeJSON/helper exclusion probePASS. Known8export teardown lines unchanged; smoke/probe stderr empty.",
+    "native_setup":"Dedicated debug run4: runtime-only root and fixture paths before_ready; in-memory defaultoptions125 with pauseScrollLock, Practice4 setup. No Settings save, OS lock-key event or ordinary checkpoint write. This is layout fixture evidence, not a newly claimed normal-input gameplay run.",
+    "native_readback":"Pause rectangle x486,y24,w130,h37; right616 <= puzzle632 < combat648. clip=true,ellipsis3; fulltooltip keyboardScrollLock/padStart. Native screenshot and actual tooltip observed. Game stopped; editor retained. Final independent release package opened main window17695432 with correct boss/environment/Korean/Continue, left open for user.",
+    "images":[
+      {"file":"pause-bounds-ae895bd.jpg","sha256":"8b1905a838c0d48baadd5a8e8ff92bc922228267e51486c1011908cf847db644","observation":"125% long pause key fits authored left button, no combat-pane intrusion."},
+      {"file":"pause-tooltip-ae895bd.jpg","sha256":"28fb7d0eda613e50648c14fcead6e1e1a8b33e1930e6fed2133f8f84a0ee92ec","observation":"Actual native tooltip preserves full ScrollLock and Start mapping."},
+      {"file":"package-main-ae895bd.jpg","sha256":"76496fff399214430d166af2d1ec960b5050520b1788adf50dd0fb8e404828b5","observation":"Final standalone package main at1280x720125%, original Continue retained."}
+    ],
+    "regression":"Full GUT344/3443656assertions58scripts; focused32/32382; package9/9; tooling88/88; independent final fix re-review3addressed/no newfindings.",
+    "user_data":"Original options/save/backup hashes above rechecked identical after both final native QA classes.",
+    "quarantine":"C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지추가목록.json: fc51180 and07a7007 packages38files266334666bytes moved with all pre/post hashes matching; no agent deletion; previous84-file record retained. Total deletion-review407files1058957563bytes excluding managementfiles.",
+    "status":"PASS_SCOPED_LOCAL_IMPLEMENTATION_PACKAGE_NATIVE; remote integration separately recorded in work owner"
   },
   "limits": ["Sampled native keyboard/mouse/runtime visuals, not Human/fun/art approval or physical-gamepad/accessibility certification.","Export-driver shutdown resource warnings remain a separately recorded investigation; native smoke/probe correctness is not a clean-export-log claim.","No regular-run checkpoint was overwritten; practice stages reset their tutorial fixtures by the existing rules."]
 }

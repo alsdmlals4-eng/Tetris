@@ -8,6 +8,29 @@
 
 **Tech stack:** Godot 4.7.1, existing GUT 9.7.1, HiGodot 3.2.0 persistent authoring, existing candidate PNG atlases.
 
+## Current follow-up implementation closeout — 2026-09-12
+
+The five-item isolated R2 first-encounter scope is implemented and machine/sampled-native verified at `ae895bd6eb4015975f3f22d09656e8ab2dfab7e8`. Current machine state is `TETRIS_R2_IMPLEMENTATION_PROGRESS.json`; chronological pending statements below retain their original revision only. Publication-head CI/merge/readback remains the final integration step, not an unimplemented gameplay task.
+
+Latest local executable: `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-ae895bd-20260912/START_R2_LOCAL_TRIAL.cmd`. Its independent Windows main is open for the user. Production main is unchanged; R2 has its separate save namespace. Original user options/save/backup SHA256 stayed identical throughout QA. Existing art pixels, published PDF SHA256 `95be15e57ade1175d736aa7dcb1e7535728ed56250fe67ed7ed1c9b6f3d8de50`, Base9.4.4 and unrelated drafts remain preserved.
+
+| Before | Implemented correction | Reason / effect / trade-off |
+|---|---|---|
+| R2 required the editor and export assumptions were unverified | Native selected-resource bundle, export-only R2 entry, explicit JSON/five-atlas probe and source hash sidecar | Editor-free local trial with no duplicate project; original raw bytes add a small amount of necessary package data. |
+| Changed keys still had default teaching text | Read-only guidance from existing mappings; Save/Cancel/reentry and keyboard/pad distinctions | One mapping owner prevents contradictory instructions; full alternatives live in tooltip. |
+| Practice pause claimed it could save | Explicit unsaved Practice and ordinary-checkpoint preservation message | Player can distinguish learning from progress saves; save behavior unchanged. |
+| Long125% Practice3 text overlapped Start | Bounded larger centered modal, complete copy and29px font retained | Timing warning stays readable without board shrink; overlay covers more paused background. |
+| Hidden package extras escaped enumeration; PowerShell5 lacked relative-path API | Force enumeration and normalized root-prefix-checked projection | Exact18-file validation works with Windows default and pwsh; no new dependency. |
+| Long Pause key name crossed into combat pane | Existing130px button uses ellipsis, complete real mapping remains in tooltip | Preserves50:50/control boundary; full long name needs hover rather than permanent width. |
+
+Final correction RED: package7/9, screen31/32 with192/186px buttons. GREEN: package9/9; screen32/32,382assertions; full GUT344/344,3656assertions58scripts exit0/empty stderr; tooling88/88. Parent native normal Settings V/R/P/F remap/save/cancel and LINE/CHAIN auto-casts are recorded separately from the final runtime-only ScrollLock layout fixture. Corrected Practice3, skill-details, unsaved Practice and final release main were actually inspected at1280x720125%. [Source/hash/native manifest](../validation/r2-package-20260912/manifest.json) retains the failed screenshot, fixed screenshots, exact package versions and bounds.
+
+Final follow-up review of main1e272c2..07a7007 found one Important/one Minor plus the reproduced long-label defect. One combined fix wave ae895bd, one independent scoped re-review: all3 ADDRESSED, Critical0/Important0/Minor0. Tasks1–3's already-completed exactly2 full reviews were not rerun. `REMAINING_WORK_COMPLETION_GATE: PASS_5_OF_5_IMPLEMENTATION_SCOPE`; `IMPLEMENTATION_CORRECTION_RESCAN: PASS`; `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED: SATISFIED`; `CLEAN_REVIEW_EXIT: PASS_SCOPED_IMPLEMENTATION_AND_NATIVE`.
+
+Lifecycle limitations: export creation still emits exactly8 version/count-bounded teardown diagnostics, `KNOWN_TOOLING_WARNING`; probe/smoke pass is not warning-clean or release-ready. Physical controllers, first-exposure Human/fun/balance, final art/rights, long-duration performance, power-loss durability and sound playback are unverified or excluded. Current blueprint makes sound optional; no silent audio-implementation claim. No Base migration/promotion/newframework: mapping-owned labels, actual wrapped-height checks and filesystem boundary tests were absorbed in existing project owners (`NO_NEW_REUSE_LEARNING` promotion action).
+
+Cleanup is move-only. The superseded fc51180/07a7007 packages moved to `C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지`,38files266334666bytes with matching hashes. Total user-review quarantine407files1058957563bytes excluding managementfiles. The two prior file manifests and new `패키지추가목록.json` retain original paths/restoration; no user cleanup candidate was directly deleted. Final source reports remain active verification evidence, not disposable by age. Rollback is a normal reviewed revert of this isolated follow-up; production entry/art/saves remain available.
+
 **Spec:** `docs/design/REPLANNING_AUTOCAST_R2.md`, `docs/design/R2_COMPLETE_HUMAN_BLUEPRINT.md`, `docs/design/r2-complete-session.json`, `docs/design/autocast-r2-data.json` at `7340c7f1216b190f91264149e69c1304cbdc6c42`.
 
 ## Global constraints and authority
