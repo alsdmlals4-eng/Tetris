@@ -220,7 +220,7 @@ Tetris R2 Local Trial (NOT FOR RELEASE)
 
 원본 프로젝트의 production main 장면은 바꾸지 않았습니다.
 R2 저장은 user://replanned_r2 아래의 별도 경로를 사용합니다.
-`$RawAssetDirectoryName` 폴더에는 승인 metadata의 SHA-256을 실행 시 다시 확인할 원본 atlas bytes가 들어 있습니다.
+$RawAssetDirectoryName 폴더에는 승인 metadata의 SHA-256을 실행 시 다시 확인할 원본 atlas bytes가 들어 있습니다.
 파일 무결성은 ${ManifestName}의 SHA-256으로 확인할 수 있습니다.
 "@
 Write-Utf8 (Join-Path $OutputDirectory $ReadmeName) $readme
