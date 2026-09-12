@@ -37,8 +37,29 @@
       {"file":"practice-pause-d38a344.jpg","sha256":"8e3abfa6a2f6bfb8ecfa1f02a85a101cf6db2ae7dddbd094afc5066a2205a7cd","observation":"Practice explicitly unsaved, no ordinary checkpoint created; controls/actions readable."},
       {"file":"practice3-overlap-d38a344.jpg","sha256":"d3cb1f87bccbaa1753a5963decdef5a97788c25eea68c6812cb8ec9da1ecf231","observation":"FAIL: correct R/F tutorial bindings, but final running-clock sentence overlaps Start button at125%. Fix round1 pending; not native completion."}
     ],
-    "status":"PARTIAL_NATIVE_MODAL_LAYOUT_FIX_REQUIRED",
-    "limitations":["No physical controller or Human/accessibility certification.","Practice3 overlap blocks Task5 closure until fix and native recheck."]
+    "status":"HISTORICAL_NATIVE_FAILURE_CORRECTED_AACDF8A",
+    "correction": {
+      "source_commit":"aacdf8afe62e6faebdce293a296c851ae04eb386",
+      "file":"practice3-fixed-aacdf8a.jpg","sha256":"f0336ed657829bbcc6a1d9fd14a556d59b474165094bc9d2b7491b378313b654",
+      "observation":"Native1280x720125% run3 normal Practice1 V/Next/Practice2 swap/Next reached Practice3. Full R/F guide plus running-clock safety sentence fits above Start without overlap. Actual long-name variants additionally machine-tested; not native long-name proof.",
+      "editor_log":"Existing cursor6 retained; since_cursor6 returned0 new entries. Initial6 JPEG-suffix import failures not suppressed. Game stopped, editor retained.",
+      "original_user_files":"All three original options/save/backup hashes identical after native recheck."
+    },
+    "limitations":["No physical controller or Human/accessibility certification.","Separate final integration findings remain outside this corrected modal proof."]
+  },
+  "latest_package_native": {
+    "repository_head":"07a7007fd1c13b5a036d494baafc10e794928d75",
+    "package":"C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-07a7007-20260912",
+    "pck_sha256":"3c6e1f5049c7e49babe33b3af556d4dfcec1ecf11ffe2838c0ad73fc5c422d7c",
+    "verification":"Build and separate VerifyPackageOnly exit0,18artifacts; pack probe ok=true,asset_errors=[],fiveatlases,threeJSON,helperabsent,Koreanglyphs. Existing exact8teardowndiagnostics remain KNOWN_TOOLING_WARNING.",
+    "normal_input":"Native independent release window19203390,1280x720125%, no model injection: Main/Practice/Start/Space givesA4D2H2T2 bank4armor2HP82ETA10.5; Escape/fullpause/skilldetails/close retains pause; Practiceexit/Main keeps Continue. Originalthreefileshashesunchanged.",
+    "images":[
+      {"file":"package-main-07a7007.jpg","sha256":"3b11067617c47f6a34252ab52fffe4f7d77889c3983ccc4c2bebef2fa564ae41","observation":"Independent package main, correct large alpha boss, Korean text and existing Continue."},
+      {"file":"package-line-07a7007.jpg","sha256":"86a1b56f400a1beeebfa3da0d1af2e84c59d5057d9c19f1417f48518858e4543","observation":"Actual LINE receipt, four tile families, correct portrait/boss/sharedETA. Default Escape label reaches gutter; long-label bounding is final review follow-up."},
+      {"file":"package-pause-07a7007.jpg","sha256":"10b02d5e76bcd63e091ec6c182d48a4b88e1d06a4ad938d15d88a986603a1bee","observation":"Practice unsaved; existing ordinary checkpoint explicitly retained."},
+      {"file":"package-skill-07a7007.jpg","sha256":"49ff5771de78f358c9f342ab726e776de06adfde9dbfdde65fa167ee4052ed02","observation":"Expanded modal also displays actual skill explanation without clipping, closing retains prior pause."}
+    ],
+    "status":"PASS_SAMPLED_NATIVE; final integration correction and rebuild pending"
   },
   "limits": ["Sampled native keyboard/mouse/runtime visuals, not Human/fun/art approval or physical-gamepad/accessibility certification.","Export-driver shutdown resource warnings remain a separately recorded investigation; native smoke/probe correctness is not a clean-export-log claim.","No regular-run checkpoint was overwritten; practice stages reset their tutorial fixtures by the existing rules."]
 }
