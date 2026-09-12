@@ -10,6 +10,59 @@ func before_each():
         add_child_autofree(screen)
         screen.set_process(false)
     else: screen = null
+func test_result_export_is_manual_and_preserves_retry_and_save():
+    if not ready_screen(): return
+    var button = screen.get_node_or_null("Result/ExportReport")
+    assert_not_null(button, "Manual report export must be visible in Result")
+    if button == null: return
+    var directory = "user://replanned_r2_tests/screen/reports_%s" % str(Time.get_ticks_usec())
+    screen.report_directory = directory
+    screen.start_run("STANDARD",42)
+    screen.dispatch("switch")
+    screen.advance_seconds(120.0)
+    assert_eq(screen.page,"result")
+    assert_false(DirAccess.dir_exists_absolute(directory))
+    var before = screen.session.snapshot()
+    var save_bytes = FileAccess.get_file_as_bytes(screen.save_path)
+    button.pressed.emit()
+    assert_true(DirAccess.dir_exists_absolute(directory))
+    assert_true("저장 완료" in screen.get_node("Result/ExportStatus").text)
+    assert_true(screen.get_node("Result/ExportReport").tooltip_text.is_absolute_path())
+    for line in screen.get_node("Result/ExportReport").tooltip_text.split("\n"):
+        assert_lt(screen.theme.default_font.get_string_size(line,HORIZONTAL_ALIGNMENT_LEFT,-1,18).x,1240.0)
+    assert_eq(screen.session.snapshot(),before)
+    assert_eq(FileAccess.get_file_as_bytes(screen.save_path),save_bytes)
+    screen.report_directory = "res://forbidden"
+    button.pressed.emit()
+    assert_true("실패" in screen.get_node("Result/ExportStatus").text)
+    assert_eq(screen.session.snapshot(),before)
+    screen.get_node("Result/Retry").pressed.emit()
+    assert_eq(screen.page,"battle")
+    assert_ne(screen.session.run_id,before.identity.run_id)
+
+func test_practice_export_and_enlarged_result_controls():
+    if not ready_screen(): return
+    var button = screen.get_node_or_null("Result/ExportReport")
+    assert_not_null(button)
+    if button == null: return
+    screen.report_directory = "user://replanned_r2_tests/screen/practice_%s" % str(Time.get_ticks_usec())
+    screen.start_run("STANDARD",42)
+    screen.session.setup_training("CHAIN",true)
+    screen._show_result(true,false)
+    button.pressed.emit()
+    var files = DirAccess.get_files_at(screen.report_directory)
+    assert_eq(files.size(),1)
+    var data = JSON.parse_string(FileAccess.get_file_as_string(screen.report_directory.path_join(files[0])))
+    assert_eq(data.outcome,"PRACTICE_COMPLETE")
+    assert_eq(data.practice,"CHAIN")
+    screen.options.font_scale = 125
+    screen._apply_font()
+    for path in ["Result/ExportReport","Result/ExportStatus","Result/Retry","Result/Main"]:
+        var node = screen.get_node(path)
+        assert_true(screen.get_node("Result").get_global_rect().encloses(node.get_global_rect()))
+    screen.get_node("Result/Main").pressed.emit()
+    assert_eq(screen.page,"main")
+
 func ready_screen() -> bool:
     assert_not_null(screen,"Separate R2 runnable main entry must exist")
     return screen != null

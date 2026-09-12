@@ -1,0 +1,617 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)
+---  GUT  ---
+[1m[INFO]:  [0musing [C:/Users/user/AppData/Roaming/Godot/app_userdata/Tetris] for temporary output.
+Godot version:  4.7.1
+GUT version:  9.7.1
+[4m
+
+res://tests/integration/test_45_second_scenario.gd
+[0m* test_automated_forty_five_second_contract
+[1m1/1 passed.
+[0m[4m
+
+res://tests/integration/test_freeze_contract.gd
+[0m* test_lock_and_inactive_mode_freeze_sources_but_not_combat_clock
+* test_enemy_action_fires_while_puzzle_is_locked
+* test_switch_destination_stays_locked_until_explicit_run
+[1m3/3 passed.
+[0m[4m
+
+res://tests/integration/test_poc_scene.gd
+[0m* test_poc_scene_instantiates_with_required_controls
+* test_scene_starts_line_locked_and_switch_requires_explicit_run
+* test_next_enemy_action_is_visible_in_hud
+* test_mode_buttons_show_locked_running_and_suspended_states
+* test_skill_buttons_are_disabled_during_resolution
+* test_manual_validation_controls_are_hidden_in_normal_poc
+* test_manual_validation_ui_tracks_human_button_contract_to_pass_and_saves_report
+[1m7/7 passed.
+[0m[4m
+
+res://tests/integration/test_poc_session.gd
+[0m* test_line_then_chain_then_skill_uses_both_resources
+* test_rejected_skill_preserves_resources_and_is_logged
+* test_skill_is_rejected_during_resolution_without_mutation
+* test_queued_switch_logs_queue_then_actual_switch_after_resolution
+* test_line_and_chain_events_are_logged_with_combat_time
+* test_enemy_telemetry_uses_scheduled_times_even_with_coarse_tick
+* test_enemy_telemetry_records_active_mode_and_board_state
+[1m7/7 passed.
+[0m[4m
+
+res://tests/production/chain/test_chain_board.gd
+[0m* test_board_dimensions_are_configurable_and_snapshot_restores_exact_state
+* test_non_adjacent_swap_is_rejected_without_mutating_board
+* test_adjacent_swap_without_resulting_match_rolls_back_atomically
+* test_adjacent_swap_that_creates_match_is_committed
+* test_match_groups_preserve_axes_while_matched_cells_are_unique
+* test_match_groups_detect_both_diagonal_axes_as_distinct_maximal_lines
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/chain/test_chain_board_resolution.gd
+[0m* test_clear_cells_is_unique_and_ignores_out_of_bounds_without_touching_other_cells
+* test_gravity_compacts_each_column_downward_and_preserves_relative_order
+* test_clear_current_matches_then_gravity_leaves_no_floating_symbol
+* test_crossing_groups_clear_once_but_report_both_qualified_line_lengths
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/chain/test_chain_playable_fill.gd
+[0m* test_board_can_detect_whether_any_legal_match_swap_exists_without_mutation
+* test_board_reports_no_available_swap_for_dead_pattern_without_mutation
+* test_fill_playable_board_is_stable_has_a_move_and_is_seed_deterministic
+* test_fill_playable_board_fails_closed_and_restores_original_board
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/chain/test_chain_randomizer.gd
+[0m* test_same_seed_and_palette_reproduce_exact_symbol_stream
+* test_different_seed_changes_stream_without_changing_palette_membership
+* test_stable_initial_fill_is_deterministic_and_contains_no_starting_match
+* test_invalid_empty_palette_refuses_generation_without_mutating_board
+* test_randomizer_state_can_be_restored_for_deterministic_replay
+[1m5/5 passed.
+[0m[4m
+
+res://tests/production/chain/test_chain_resolver.gd
+[0m* test_stable_board_resolves_zero_waves_without_consuming_refill_stream
+* test_two_wave_cascade_records_exact_depth_and_finishes_stable
+* test_cross_match_preserves_two_group_axes_but_clears_center_once
+* test_refill_failure_is_reported_instead_of_leaving_false_stable_success
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/chain/test_chain_runtime_config.gd
+[0m* test_runtime_seed_is_explicitly_non_final_and_traceable
+* test_runtime_config_owns_board_generation_only_not_legacy_depth_rewards
+* test_runtime_config_cannot_mint_legacy_depth_rewards
+* test_invalid_seed_shape_fails_closed
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/combat/test_enemy_action_preview.gd
+[0m* test_direct_preview_predicts_player_and_enemy_hp_without_consuming_response
+* test_repair_preview_predicts_post_resolve_boss_hp_without_healing_early
+* test_resource_loss_preview_keeps_boss_hp_and_does_not_spend_player_resource
+* test_preview_fails_closed_for_unsupported_action_without_mutation
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/combat/test_enemy_action_resolver.gd
+[0m* test_light_smash_ratio_damage_uses_player_max_hp_and_exact_action_id
+* test_current_direct_mitigation_and_counter_use_only_exact_telegraph_response
+* test_response_bound_to_another_action_does_not_modify_current_action
+* test_lethal_safety_caps_current_direct_hit_at_configured_hp_floor
+* test_rift_siphon_applies_energy_loss_after_current_resource_ward
+* test_chain_fracture_loses_stock_without_touching_energy
+* test_rift_repair_heals_enemy_by_ratio_of_enemy_max_hp
+* test_unknown_enemy_action_fails_closed_without_mutation
+[1m8/8 passed.
+[0m[4m
+
+res://tests/production/combat/test_gatebreaker_action_catalog.gd
+[0m* test_catalog_contains_exact_six_current_gatebreaker_action_templates
+* test_seed_values_match_current_human_encounter_canon
+* test_phase_permissions_follow_current_gatebreaker_phase_contract
+* test_tags_expose_only_authored_direct_or_rift_utility_scope
+* test_instantiated_actions_receive_stable_exact_ids_without_mutating_templates
+* test_invalid_template_or_phase_fails_closed
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/combat/test_gatebreaker_encounter_director.gd
+[0m* test_bootstrap_uses_first_run_light_smash_then_first_slam_without_player_state_input
+* test_phase_thresholds_are_monotonic_and_do_not_rewind_after_repair_healing
+* test_phase_two_starts_with_authored_siphon_and_preserves_base_ladder_order
+* test_phase_two_repair_is_single_use_near_half_hp_and_resume_does_not_skip_ladder_position
+* test_phase_three_first_new_authored_action_is_siege_then_uses_no_repair_cycle
+* test_scheduled_actions_are_catalog_valid_for_the_phase_that_created_them
+* test_invalid_or_out_of_canon_sequence_data_refuses_director_construction
+[1m7/7 passed.
+[0m[4m
+
+res://tests/production/combat/test_gatebreaker_encounter_preview.gd
+[0m* test_preview_next_after_resolve_is_repeatable_and_does_not_mutate_director_state
+* test_exact_commit_rejects_preview_id_mismatch_without_advancing_sequence
+* test_repair_preview_does_not_consume_single_use_until_exact_commit
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/combat/test_gatebreaker_telegraph_state.gd
+[0m* test_state_exposes_exact_current_and_next_authored_action_ids
+* test_returned_telegraphs_are_copies_and_cannot_mutate_locked_internal_actions
+* test_mismatched_resolved_action_id_refuses_to_advance_or_replace_current
+* test_exact_resolve_advances_prior_next_to_current_and_accepts_only_new_authored_next
+* test_invalid_or_unidentified_new_next_fails_closed_without_advancing
+* test_forecast_context_is_exact_and_contains_only_current_next_scope_inputs
+* test_advance_readiness_validates_exact_current_and_new_next_without_mutating_lock
+[1m7/7 passed.
+[0m[4m
+
+res://tests/production/combat/test_production_combat_state.gd
+[0m* test_chain_wave_awards_combo_before_mp_formula_and_caps_both_resources
+* test_chain_wave_counts_crossing_lines_separately_and_unqualified_lengths_do_not_mutate
+* test_shortage_fallback_converts_surplus_combo_once_and_rejects_invalid_transactions
+* test_checked_state_snapshot_restores_atomic_resources_and_rejects_invalid_data_without_mutation
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/combat/test_production_response_state.gd
+[0m* test_response_checkpoint_restores_exact_action_state_and_rejects_out_of_range_ratios
+[1m1/1 passed.
+[0m[4m
+
+res://tests/production/integration/test_realtime_battle_bootstrap.gd
+[0m* test_bootstrap_builds_a_started_realtime_runtime_with_line_active_and_chain_persistent
+[1m1/1 passed.
+[0m[4m
+
+res://tests/production/integration/test_realtime_combat_runtime.gd
+[0m* test_runtime_exposes_continuous_api_and_tactical_pause_freezes_enemy_eta_in_the_same_frame
+* test_runtime_does_not_tick_enemy_or_active_puzzle_while_tactical_skill_is_open
+* test_runtime_rejects_opening_skill_after_the_current_enemy_action_is_committed
+* test_safe_opening_uses_a_live_45_second_eta_and_first_confirm_hands_off_without_resetting_the_encounter
+* test_manual_and_tactical_pause_tokens_compose_without_resuming_enemy_time_early
+* test_runtime_commits_each_puzzle_reward_once_and_marks_terminal_without_turn_transitions
+* test_workspace_switch_keeps_only_the_active_puzzle_simulating
+* test_board_opportunity_holds_only_line_gravity_while_enemy_eta_uses_full_delta
+* test_board_opportunity_never_consumes_during_chain_or_pause
+* test_skill_time_effects_use_the_separate_board_and_current_eta_owners
+* test_no_match_resets_combo_once_and_confirmed_lock_spends_exactly_one_mp
+* test_pending_chain_lock_cannot_mutate_board_or_mp_during_tactical_pause
+* test_runtime_commits_each_chain_wave_once_with_post_wave_combo_formula
+[1m13/13 passed.
+[0m[4m
+
+res://tests/production/line/test_active_tetromino.gd
+[0m* test_move_changes_origin_only_when_occupied_cells_remain_legal
+* test_hard_drop_moves_to_lowest_legal_origin_and_returns_distance
+* test_hard_drop_stops_above_existing_cells
+* test_rotation_changes_orientation_on_empty_board
+* test_rotation_uses_project_kick_data_near_wall
+[1m5/5 passed.
+[0m[4m
+
+res://tests/production/line/test_line_advanced_recognition.gd
+[0m* test_active_piece_records_successful_rotation_for_spin_recognition
+* test_t_spin_requires_t_piece_rotation_and_three_occupied_pivot_corners
+* test_spin_recognizer_rejects_non_rotation_non_t_and_two_corners
+* test_combo_counts_consecutive_line_clears_and_resets_on_no_clear
+* test_back_to_back_marks_second_consecutive_difficult_clear_only
+* test_t_spin_line_clear_counts_as_difficult_for_back_to_back
+* test_perfect_clear_is_true_when_commit_clear_leaves_board_empty
+* test_result_event_includes_advanced_recognition_without_changing_base_reward_fields
+[1m8/8 passed.
+[0m[4m
+
+res://tests/production/line/test_line_board.gd
+[0m* test_board_exposes_visible_and_hidden_dimensions
+* test_empty_board_accepts_in_bounds_cells_and_rejects_out_of_bounds
+* test_locked_cells_block_future_placement
+* test_invalid_lock_is_atomic_and_does_not_mutate_board
+* test_full_row_clear_compacts_rows_downward
+* test_multiple_full_rows_clear_in_one_atomic_compaction
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/line/test_line_board_break.gd
+[0m* test_active_spawn_blocked_is_detected_without_advancing_stream
+* test_board_break_resets_field_but_preserves_active_identity_hold_and_future_stream
+* test_board_break_event_is_line_local_and_does_not_claim_resource_confiscation
+* test_reset_without_active_piece_is_rejected_atomically
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/line/test_line_fall_state.gd
+[0m* test_feel_config_is_explicitly_non_final_and_bounded
+* test_gravity_moves_only_after_interval_and_preserves_fractional_time
+* test_large_tick_can_advance_multiple_gravity_cells
+* test_soft_drop_uses_faster_data_driven_interval
+* test_grounded_piece_requests_lock_only_after_lock_delay
+* test_successful_grounded_manipulation_resets_lock_delay_within_cap
+* test_lock_delay_reset_is_bounded
+* test_hard_drop_can_request_immediate_lock_without_waiting_for_delay
+[1m8/8 passed.
+[0m[4m
+
+res://tests/production/line/test_line_piece_cycle.gd
+[0m* test_start_spawns_one_active_piece_and_exposes_stable_next_preview
+* test_normal_advance_uses_preview_front_and_refreshes_preview
+* test_first_hold_stores_current_and_consumes_one_upcoming_piece
+* test_hold_is_rejected_twice_for_the_same_active_piece
+* test_hold_becomes_available_again_after_piece_lock_cycle_advances
+* test_swapping_with_existing_hold_does_not_consume_upcoming_stream
+* test_ghost_origin_is_lowest_legal_without_mutating_active_piece
+* test_ghost_respects_existing_locked_cells
+[1m8/8 passed.
+[0m[4m
+
+res://tests/production/line/test_line_resolution.gd
+[0m* test_clear_classification_is_explicit_from_zero_through_four
+* test_reward_seed_is_explicitly_non_final_and_traces_historical_source
+* test_zero_clear_commit_locks_piece_spawns_next_and_has_zero_reward
+* test_single_clear_commit_returns_separate_score_and_energy_result
+* test_result_event_keeps_score_and_energy_as_separate_fields
+* test_invalid_commit_is_atomic_and_does_not_advance_piece_stream
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/line/test_seven_bag.gd
+[0m* test_each_bag_contains_all_seven_piece_ids_once
+* test_same_seed_reproduces_the_same_sequence
+* test_each_consecutive_group_of_seven_is_complete
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/line/test_tetromino_catalog.gd
+[0m* test_catalog_contains_exactly_seven_tetrominoes
+* test_each_rotation_has_four_unique_cells
+* test_o_piece_rotation_geometry_is_stable
+* test_empty_board_accepts_every_piece_at_project_spawn_origin
+* test_rotation_kicks_are_project_owned_for_all_quarter_turns
+[1m5/5 passed.
+[0m[4m
+
+res://tests/production/runtime/test_enemy_action_scheduler.gd
+[0m* test_scheduler_exposes_realtime_api_and_only_advances_when_ticked
+* test_scheduler_adjusts_only_the_uncommitted_current_telegraph_and_preserves_next
+* test_scheduler_time_snapshot_restores_only_the_same_current_and_next_action_ids
+* test_scheduler_resolves_each_authored_action_once_then_advances_the_locked_forecast
+* test_scheduler_never_retargets_authored_threats_from_player_state
+* test_scheduler_uses_boss_hp_only_at_authored_resolution_boundaries
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/runtime/test_player_board_opportunity_state.gd
+[0m* test_grant_caps_reserve_at_twelve_seconds_without_global_time_control
+* test_partial_expiry_forwards_only_the_unheld_line_delta
+* test_restore_rejects_invalid_or_out_of_cap_state_without_mutation
+* test_grant_rejects_non_finite_seconds_without_corrupting_the_reserve
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/runtime/test_puzzle_workspace_manager.gd
+[0m* test_manager_exposes_workspace_api_and_starts_with_line_input_only
+* test_round_trip_restores_line_state_a_and_chain_state_b_on_the_same_sessions
+* test_rapid_switches_preserve_runtime_state_and_do_not_duplicate_chain_rewards_or_need_a_clock
+* test_accepted_line_to_chain_request_closes_line_input_before_handoff_without_mutating_line_state
+* test_cancelled_chain_to_line_request_restores_chain_input_after_existing_resolution_settles
+* test_switch_away_from_committed_chain_resolution_stays_pending_until_the_board_is_stable
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/runtime/test_realtime_chain_session.gd
+[0m* test_realtime_chain_session_has_no_turn_or_combat_resource_ownership
+* test_stable_inactive_chain_rejects_new_swaps_without_mutating_board_or_rng
+* test_committed_swap_settles_once_after_input_closes_and_emits_resource_request_only
+* test_failed_swap_keeps_a_pending_snapshot_until_runtime_accepts_or_discards_lock
+* test_discarded_failed_swap_restores_the_exact_board_and_reopens_input
+[1m5/5 passed.
+[0m[4m
+
+res://tests/production/runtime/test_realtime_line_session.gd
+[0m* test_realtime_line_session_exists_without_turn_controller_ownership
+* test_disable_then_enable_restores_exact_legal_line_state
+* test_inactive_time_does_not_reset_or_advance_gravity_lock_or_randomizer_state
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/runtime/test_simulation_pause_bridge.gd
+[0m* test_bridge_applies_full_tree_pause_keeps_pause_ui_alive_and_preserves_stopped_audio
+* test_bridge_does_not_resume_tree_until_last_pause_token_is_released
+* test_bridge_reconciles_a_prebound_paused_controller_when_entering_tree
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/runtime/test_simulation_pause_controller.gd
+[0m* test_pause_tokens_compose_across_independent_reasons
+* test_duplicate_reason_tokens_are_independent_and_double_release_fails_closed
+* test_supported_reasons_are_deterministic_and_unknown_reason_is_rejected
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/runtime/test_tactical_skill_session.gd
+[0m* test_category_preview_resolves_current_c5_without_manual_lower_stage_selection
+* test_previewed_shortage_fallback_uses_the_highest_feasible_lower_stage_on_confirm
+* test_cancel_and_lane_replacement_leave_resources_and_effect_owners_unchanged
+* test_explicit_confirm_commits_the_preview_once_then_releases_only_tactical_pause
+* test_post_preflight_execution_failure_restores_resources_and_every_mutable_effect_owner
+* test_restore_failure_is_fail_closed_and_keeps_tactical_pause_open
+[1m6/6 passed.
+[0m[4m
+
+res://tests/production/session/test_first_session_progress.gd
+[0m* test_progress_is_false_until_marked_and_persists_only_the_completion_bit
+* test_launch_state_consumes_only_the_briefing_requested_first_tutorial_handoff
+[1m2/2 passed.
+[0m[4m
+
+res://tests/production/session/test_first_session_tutorial_state.gd
+[0m* test_tutorial_tracks_real_rewards_preview_and_confirm_without_owning_simulation
+[1m1/1 passed.
+[0m[4m
+
+res://tests/production/skill/test_combo_stage_skill_catalog.gd
+[0m* test_catalog_has_exactly_one_combo_stage_definition_per_lane
+* test_adaptive_aegis_reveals_exactly_one_legal_current_threat_package
+* test_catalog_rejects_legacy_tier_and_unimplemented_multiplier_definitions
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/telemetry/test_realtime_combat_telemetry.gd
+[0m* test_telemetry_records_required_events_and_excludes_pause_from_active_simulation_time
+* test_telemetry_tracks_manual_pause_and_total_wall_clock_without_charging_reading_time_to_simulation
+* test_telemetry_retains_tutorial_transition_events_at_the_current_simulation_time
+[1m3/3 passed.
+[0m[4m
+
+res://tests/production/ui/test_battle_briefing.gd
+[0m* test_first_visit_requires_full_rules_review_but_later_visit_can_deploy_immediately
+* test_reference_mode_never_marks_first_session_progress
+[1m2/2 passed.
+[0m[4m
+
+res://tests/production/ui/test_production_line_board_view.gd
+[0m* test_meta_snapshot_uses_exact_hold_and_next_five_from_cycle
+* test_last_clear_label_reports_existing_advanced_fields_without_reward_change
+* test_meta_snapshot_is_safe_before_session_binding
+* test_control_guide_lists_all_supported_line_inputs
+[1m4/4 passed.
+[0m[4m
+
+res://tests/production/ui/test_realtime_battle_surface.gd
+[0m* test_battle_surface_has_required_50_50_hierarchy_without_a_turn_rail
+* test_battle_surface_uses_named_theme_and_semantic_visual_frames
+* test_combat_stage_keeps_the_boss_large_and_moves_vanguard_to_the_resource_hud
+* test_shared_action_timer_is_a_presentation_alias_for_the_current_enemy_eta
+* test_chain_lock_prompt_exposes_visible_keep_or_revert_controls_without_overlaying_the_board
+* test_chain_lock_prompt_hides_a_pending_swap_while_tactical_pause_owns_input
+* test_skill_panel_is_pause_capable_and_chain_board_starts_hidden
+* test_mode_buttons_switch_the_single_visible_puzzle_surface
+* test_skill_panel_exposes_categories_one_preview_and_explicit_confirm_without_tier_grid
+* test_battle_keeps_the_same_briefing_as_a_reopenable_rules_reference
+* test_skill_preview_binds_the_resolved_combo_stage_before_confirm
+* test_timing_feedback_names_target_changed_value_and_unchanged_domain
+* test_combat_stage_exposes_a_dedicated_runtime_backdrop_consumer
+* test_battle_surface_declares_and_reads_only_named_workspace_skill_and_pause_actions
+* test_line_actions_keep_letter_bindings_and_add_directional_aliases
+* test_terminal_defeat_replaces_the_running_combat_label
+* test_terminal_victory_replaces_the_running_combat_label
+* test_terminal_result_exposes_retry_only_after_combat_ends
+[1m18/18 passed.
+[0m[4m
+
+res://tests/replanned_r2/test_r2_assets.gd
+[0m* test_external_source_root_preserves_original_hashes_and_remapped_textures
+* test_tampered_external_source_bytes_are_rejected_by_sha256
+* test_missing_external_source_root_keeps_each_asset_error_explicit
+[1m3/3 passed.
+[0m[4m
+
+res://tests/replanned_r2/test_r2_combat.gd
+[0m* test_default_and_relaxed_modes_consume_the_approved_encounter
+* test_line_a4_d2_h2_t2_pays_unique_cells_once
+* test_duplicate_line_event_and_cell_ids_never_pay_twice
+* test_invalid_line_payload_is_atomic
+* test_attack_bank_is_consumed_by_only_the_first_successful_atk_wave
+* test_def_uses_max_ward_then_armor_before_hp
+* test_sup_healing_caps_at_max_hp
+* test_time_extension_caps_current_action_at_three_seconds
+* test_def_cast_on_committed_or_rest_action_has_no_ward_target
+* test_duplicate_cast_id_has_no_effect
+* test_lethal_atk_stops_later_sup_in_the_same_tick
+* test_old_action_time_cannot_retarget_the_next_action_at_tick_end
+* test_pause_preserves_the_exact_snapshot
+* test_invalid_restore_rejects_all_partial_mutation
+* test_snapshot_restores_after_real_json_roundtrip_and_rejects_fractional_numbers
+* test_topout_damage_bypasses_defenses_deduplicates_and_can_defeat
+* test_restore_rejects_eta_beyond_authored_duration_without_mutation
+* test_due_lethal_boss_action_prevents_same_tick_line_heal_and_sup_revive
+* test_pause_blocks_direct_transactions_without_consuming_event_ids
+* test_restore_accepts_valid_committed_ward_and_rejects_unauthored_ward_atomically
+* test_explicit_combat_run_id_survives_restore_and_rejects_foreign_ward
+[1m21/21 passed.
+[0m[4m
+
+res://tests/replanned_r2/test_r2_playtest_report.gd
+[0m* test_completed_report_preserves_source_and_projects_real_metrics
+* test_rejects_running_empty_and_inconsistent_snapshot
+* test_practice_classification_cannot_disguise_ordinary_run
+* test_unstable_snapshot_is_rejected
+* test_write_is_parseable_idempotent_and_does_not_change_snapshot
+* test_conflicting_existing_file_is_never_overwritten
+* test_existing_lock_is_preserved_and_does_not_change_report
+* test_unavailable_destination_fails_without_other_writes
+[1m8/8 passed.
+[0m[4m
+
+res://tests/replanned_r2/test_r2_puzzles.gd
+[0m* test_exact_two_wave_fixture_and_bank_consumed_once
+* test_no_diagonal_match_and_failed_swap_no_change
+* test_category_locked_and_switch_queued_until_whole_cascade
+* test_inactive_line_freezes_while_boss_progresses
+* test_line_fixture_unique_resource_cells_and_next_five
+* test_hold_pair_is_preserved_and_once_per_lock
+* test_topout_cost_bypasses_armor_preserves_chain_and_resets_hold
+* test_pause_preserves_pending_wave_and_resume_identical
+* test_same_tick_lethal_boss_cancels_cast_refill_and_inputs
+* test_same_tick_lethal_boss_cancels_line_clear_and_heal
+* test_same_tick_finished_action_does_not_retarget_line_time_or_ward
+* test_stable_json_restore_pauses_and_replays_rng_bags_and_pose
+* test_invalid_restore_atomic_and_partial_snapshot_refused
+* test_initial_chain_is_playable_no_match_and_seed_reproducible
+* test_seventh_wave_uses_t6_and_safety_limit_recovers_without_reward
+* test_ground_lock_and_reset_limit_and_ghost_do_not_change_stream
+* test_save_rejects_event_counter_and_bag_inconsistency_atomically
+* test_checkpoint_reason_and_queued_switch_are_inspectable
+* test_cross_matches_are_unique_and_multirow_line_counts_actual_cells
+* test_session_metrics_record_effective_waste_defenses_and_bank_marginal_damage
+* test_metrics_count_committed_time_waste_and_unshieldable_topout_separately
+* test_frozen_training_preserves_boss_but_line_clock_and_resources_run
+* test_frozen_training_chain_waves_run_but_pause_still_freezes_everything
+* test_training_clock_flag_restores_paused_and_rejects_foreign_normal_save_atomically
+* test_restore_rejects_partial_or_contradictory_last_cast_receipt_atomically
+* test_restore_validates_def_and_sup_receipt_values_and_json_roundtrip
+* test_requested_run_identity_namespaces_actions_and_preserves_ward_restore
+[1m27/27 passed.
+[0m[4m
+
+res://tests/replanned_r2/test_r2_save.gd
+[0m* test_canonical_json_recursively_sorts_and_normalizes_integers
+* test_complete_roundtrip_restores_identity_paused_and_clock
+* test_corrupt_primary_uses_last_valid_backup_never_temporary
+* test_valid_backup_not_replaced_by_corrupt_primary
+* test_cascade_partial_and_checksum_tampering_rejected
+* test_interruption_after_primary_disappears_keeps_complete_backup
+* test_failed_rename_and_backup_preservation_never_report_success
+* test_options_persist_and_conflicting_remap_rejects_without_mutation
+[1m8/8 passed.
+[0m[4m
+
+res://tests/replanned_r2/test_r2_screen.gd
+[0m* test_result_export_is_manual_and_preserves_retry_and_save
+* test_practice_export_and_enlarged_result_controls
+* test_main_briefing_and_distinct_retry_identity
+* test_exact_bounds_single_workspace_and_full_shape_previews
+* test_assets_roles_regions_clip_and_alpha
+* test_category_snapshot_readonly_details_and_pause_pose
+* test_fractional_clock_partition_and_held_input_echo
+* test_save_continue_clears_input_and_preserves_identity
+* test_practice_stages_and_disconnect_pause
+* test_input_das_arr_and_pause_reset_use_single_elapsed_owner
+* test_options_cancel_reverts_and_font_scale_does_not_resize_boards
+* test_saved_remaps_refresh_control_guidance_cancel_and_scene_reentry
+* test_practice_pause_keeps_ordinary_checkpoint_without_writing_practice
+* test_practice_guidance_fits_above_start_button_at_125_percent
+* test_long_pause_remap_stays_inside_fixed_left_button_at_125_percent
+* test_key_poses_follow_actual_event_clock_and_pause
+* test_midcascade_exit_preserves_disk_checkpoint_and_continuation_pause
+* test_practice_uses_actual_commands_and_metrics_to_unlock_next
+* test_focus_loss_during_details_must_not_resume_on_close
+* test_terminal_checkpoint_reopens_actual_result_not_frozen_battle
+* test_modal_external_pause_keeps_native_accept_inside_top_panel
+* test_modal_background_click_and_nested_open_cannot_change_pause_owner
+* test_terminal_save_failure_preserves_result_until_retry_succeeds
+* test_start_save_failure_preserves_new_run_or_explicit_previous_choice
+* test_practice_footer_regions_do_not_overlap_chain_board_or_each_other
+* test_pad_accept_activates_main_and_only_top_modal_without_gameplay_leak
+* test_pad_native_dropdown_and_overwrite_confirm_cancel
+* test_scoped_menu_pad_bindings_leave_existing_events_and_do_not_duplicate
+* test_gameplay_pad_actions_stay_single_and_menu_cancel_releases_action
+* test_menu_mapping_scene_reentry_preserves_preexisting_matching_event
+* test_def_preview_uses_actual_target_state_before_cast_and_keeps_receipt
+* test_line_time_receipt_survives_hard_drop_natural_lock_and_later_commands
+* test_receipt_and_def_preview_fit_existing_regions_at_125_percent
+* test_safety_recovery_emits_one_identified_diagnostic_from_real_wave_event
+[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-64282f67f3e5d749bf0f594615876949","wave":64}
+[1m34/34 passed.
+[0m[4m
+
+res://tests/unit/test_board_state.gd
+[0m* test_board_state_constants
+[1m1/1 passed.
+[0m[4m
+
+res://tests/unit/test_chain_rules.gd
+[0m* test_chain_stock_value_caps_at_five
+* test_completed_chain_event_reports_without_mutating_combat
+[1m2/2 passed.
+[0m[4m
+
+res://tests/unit/test_combat_state.gd
+[0m* test_chain_stock_is_non_additive_and_capped
+* test_tier_three_spend_consumes_exactly_three_stock
+* test_emergency_energy_recovery_stops_at_fifteen
+* test_energy_above_emergency_floor_cannot_bank_partial_recovery_time
+* test_shield_absorbs_damage_before_hp
+* test_invalid_skill_spend_does_not_mutate_resources
+[1m6/6 passed.
+[0m[4m
+
+res://tests/unit/test_debug_sources.gd
+[0m* test_line_source_only_advances_when_running
+* test_line_source_emits_normalized_clear_event
+* test_chain_source_emits_normalized_completed_event
+[1m3/3 passed.
+[0m[4m
+
+res://tests/unit/test_enemy_pattern.gd
+[0m* test_enemy_schedule_waits_until_twelve_seconds
+* test_enemy_attacks_at_twelve_and_twenty_four_seconds
+* test_enemy_heals_at_thirty_six_seconds_and_clamps
+[1m3/3 passed.
+[0m[4m
+
+res://tests/unit/test_line_rules.gd
+[0m* test_line_energy_mapping
+* test_reference_line_score_is_separate_from_energy
+* test_line_event_shape_contains_resource_and_score
+[1m3/3 passed.
+[0m[4m
+
+res://tests/unit/test_manual_validation_tracker.gd
+[0m* test_manual_validation_requires_all_steps_and_forty_five_seconds
+* test_steps_must_be_observed_in_contract_order
+* test_line_return_only_passes_when_saved_progress_is_unchanged
+* test_report_contains_machine_readable_verdict_and_environment
+* test_complete_validation_can_persist_and_reload_json_evidence
+* test_incomplete_validation_refuses_to_write_pass_evidence
+[1m6/6 passed.
+[0m[4m
+
+res://tests/unit/test_mode_controller.gd
+[0m* test_default_state_starts_line_locked_chain_suspended
+* test_switch_lands_destination_locked
+* test_only_active_mode_can_run
+* test_switch_during_resolution_is_queued
+* test_invalid_or_same_mode_switch_does_nothing
+[1m5/5 passed.
+[0m[4m
+
+res://tests/unit/test_skill_executor.gd
+[0m* test_tier_one_attack_spends_resources_and_damages_enemy
+* test_unavailable_skill_causes_no_mutation
+* test_defense_adds_shield_and_heal_clamps_to_max_hp
+[1m3/3 passed.
+[0m
+
+
+
+[33m==============================================
+[0m[33m= Run Summary
+[0m[33m==============================================
+[0m
+Totals
+------
+Scripts              59
+Tests               354
+Passing Tests       354
+Asserts            3736
+Time              29.228s
+
+
+[32m---- All tests passed! ----
+[0m

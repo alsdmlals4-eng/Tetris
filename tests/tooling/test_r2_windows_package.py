@@ -26,6 +26,7 @@ EXPECTED_SELECTED = {
     "res://docs/assets/reference/planned/replanning/autocast/tiles.png",
     "res://docs/assets/reference/planned/replanning/autocast/boss-cutout.png",
     "res://src/replanned_r2/r2_screen.gd",
+    "res://src/replanned_r2/r2_playtest_report.gd",
     "res://src/replanned_r2/r2_session.gd",
     "res://src/replanned_r2/r2_combat.gd",
     "res://src/replanned_r2/r2_line.gd",
