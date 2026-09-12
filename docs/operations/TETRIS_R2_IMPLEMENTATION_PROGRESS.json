@@ -247,7 +247,7 @@
             ]
           }
         ],
-        "next_action": "Source/runtime trial ready; exact-head PR/required-check/integration gates pending.",
+        "next_action": "PR105 merged at1e272c2668e8de102552608eb0ccd5d4718e40ca; continue R2-04/05 package and instruction verification.",
         "verified_head_sha": "1dd2e46e404772275d26b40031c20c9ad5148ba9",
         "must_fix_remaining": 0,
         "blocked_unverified_remaining": 0,
@@ -260,7 +260,7 @@
       }
     ]
   },
-  "evidence_ceiling": "Isolated first encounter implemented and machine/sampled runtime/visual verified. Exactly2whole reviews,0remaining findings. Remote CI/integration pending. Human/fun/balance/physical-device/export/audio/power-loss/final-art/release remain unverified or excluded.",
+  "evidence_ceiling": "Tasks1-3 isolated encounter implemented, machine/sampled runtime/visual verified and PR105 merged with both checks successful (fresh read2026-09-12). Exactly2whole reviews apply to that source, not new package/guidance delta. R2-04/05 in progress. Human/fun/balance/physical-device/export/audio/power-loss/final-art/release remain separately unverified or excluded.",
   "runtime": "PASS_SCOPED_FIRST_ENCOUNTER",
   "human": "NOT_RUN",
   "release": "NOT_RUN",
