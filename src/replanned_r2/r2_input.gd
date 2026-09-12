@@ -5,13 +5,54 @@ var _sources := {}
 var options: Dictionary = {}
 var capture_group := ""
 var capture_action := ""
+var presentation_group := "keyboard_mapping"
 var _menu_events := {}
+const GAMEPAD_NAMES := {0:"A",1:"B",2:"X",3:"Y",4:"Back",5:"Guide",6:"Start",7:"왼쪽 스틱",8:"오른쪽 스틱",9:"LB",10:"RB",11:"십자키 위",12:"십자키 아래",13:"십자키 왼쪽",14:"십자키 오른쪽"}
 const DAS_US := 150000
 const ARR_US := 50000
 func configure(value: Dictionary):
     release_menu_bindings()
     options = value
     clear()
+func _presentation_action(action: String, group: String) -> String:
+    if group == "gamepad_mapping":
+        if action == "hard_drop": return "accept"
+        if action == "hold": return "cancel"
+        if action == "def": return "category_next"
+    return action
+
+func binding_names(action: String, group: String = "", source_options: Dictionary = {}) -> PackedStringArray:
+    var selected_group := presentation_group if group.is_empty() else group
+    var selected_options := options if source_options.is_empty() else source_options
+    var mapped_action := _presentation_action(action,selected_group)
+    var mapping: Dictionary = selected_options.get(selected_group,{})
+    if not mapping.has(mapped_action): return PackedStringArray()
+    var codes: Array = []
+    if selected_group == "keyboard_mapping": codes = mapping[mapped_action]
+    else: codes = [mapping[mapped_action]]
+    var names := PackedStringArray()
+    for raw_code in codes:
+        var code := int(raw_code)
+        if selected_group == "keyboard_mapping": names.append(OS.get_keycode_string(code))
+        else: names.append(String(GAMEPAD_NAMES.get(code,"패드 버튼 "+str(code))))
+    return names
+
+func binding_label(action: String, group: String = "", include_alternatives: bool = false, source_options: Dictionary = {}) -> String:
+    var names := binding_names(action,group,source_options)
+    if names.is_empty(): return "미지정"
+    return " / ".join(names) if include_alternatives else names[0]
+
+func group_label(group: String = "") -> String:
+    var selected_group := presentation_group if group.is_empty() else group
+    return "키" if selected_group == "keyboard_mapping" else "패드"
+
+func binding_phrase(action: String, group: String = "", include_alternatives: bool = false) -> String:
+    var selected_group := presentation_group if group.is_empty() else group
+    return group_label(selected_group)+" "+binding_label(action,selected_group,include_alternatives)
+
+func paired_binding_phrase(action: String) -> String:
+    return binding_phrase(action,"keyboard_mapping")+" / "+binding_phrase(action,"gamepad_mapping")
+
 func set_menu_bindings(enabled: bool):
     var actions={"ui_accept":"accept","ui_cancel":"cancel","ui_close_dialog":"cancel"}
     for ui_action in actions:
@@ -57,6 +98,7 @@ func event_intent(event: InputEvent) -> Dictionary:
         var matched = code in options[group][candidate] if group == "keyboard_mapping" else code == options[group][candidate]
         if matched: action = candidate; break
     if action.is_empty(): return {}
+    if pressed: presentation_group = group
     var source = group+":"+str(event.device)+":"+str(code)
     if not pressed:
         _sources.erase(source)

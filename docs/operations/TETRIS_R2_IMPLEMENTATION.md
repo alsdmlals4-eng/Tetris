@@ -8,9 +8,62 @@
 
 **Tech stack:** Godot 4.7.1, existing GUT 9.7.1, HiGodot 3.2.0 persistent authoring, existing candidate PNG atlases.
 
+## Current follow-up implementation closeout — 2026-09-12
+
+The five-item isolated R2 first-encounter scope is implemented and machine/sampled-native verified at `ae895bd6eb4015975f3f22d09656e8ab2dfab7e8`. Current machine state is `TETRIS_R2_IMPLEMENTATION_PROGRESS.json`; chronological pending statements below retain their original revision only. Publication-head CI/merge/readback is owned by the live repository [PR106](https://github.com/alsdmlals4-eng/Tetris/pull/106), not duplicated as a permanently pending pre-merge status here. Fresh-read its exact head/checks/merge result when resuming.
+
+Latest local executable: `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-ae895bd-20260912/START_R2_LOCAL_TRIAL.cmd`. Its independent Windows main is open for the user. Production main is unchanged; R2 has its separate save namespace. Original user options/save/backup SHA256 stayed identical throughout QA. Existing art pixels, published PDF SHA256 `95be15e57ade1175d736aa7dcb1e7535728ed56250fe67ed7ed1c9b6f3d8de50`, Base9.4.4 and unrelated drafts remain preserved.
+
+| Before | Implemented correction | Reason / effect / trade-off |
+|---|---|---|
+| R2 required the editor and export assumptions were unverified | Native selected-resource bundle, export-only R2 entry, explicit JSON/five-atlas probe and source hash sidecar | Editor-free local trial with no duplicate project; original raw bytes add a small amount of necessary package data. |
+| Changed keys still had default teaching text | Read-only guidance from existing mappings; Save/Cancel/reentry and keyboard/pad distinctions | One mapping owner prevents contradictory instructions; full alternatives live in tooltip. |
+| Practice pause claimed it could save | Explicit unsaved Practice and ordinary-checkpoint preservation message | Player can distinguish learning from progress saves; save behavior unchanged. |
+| Long125% Practice3 text overlapped Start | Bounded larger centered modal, complete copy and29px font retained | Timing warning stays readable without board shrink; overlay covers more paused background. |
+| Hidden package extras escaped enumeration; PowerShell5 lacked relative-path API | Force enumeration and normalized root-prefix-checked projection | Exact18-file validation works with Windows default and pwsh; no new dependency. |
+| Long Pause key name crossed into combat pane | Existing130px button uses ellipsis, complete real mapping remains in tooltip | Preserves50:50/control boundary; full long name needs hover rather than permanent width. |
+
+Final correction RED: package7/9, screen31/32 with192/186px buttons. GREEN: package9/9; screen32/32,382assertions; full GUT344/344,3656assertions58scripts exit0/empty stderr; tooling88/88. Parent native normal Settings V/R/P/F remap/save/cancel and LINE/CHAIN auto-casts are recorded separately from the final runtime-only ScrollLock layout fixture. Corrected Practice3, skill-details, unsaved Practice and final release main were actually inspected at1280x720125%. [Source/hash/native manifest](../validation/r2-package-20260912/manifest.json) retains the failed screenshot, fixed screenshots, exact package versions and bounds.
+
+Final follow-up review of main1e272c2..07a7007 found one Important/one Minor plus the reproduced long-label defect. One combined fix wave ae895bd, one independent scoped re-review: all3 ADDRESSED, Critical0/Important0/Minor0. Tasks1–3's already-completed exactly2 full reviews were not rerun. `REMAINING_WORK_COMPLETION_GATE: PASS_5_OF_5_IMPLEMENTATION_SCOPE`; `IMPLEMENTATION_CORRECTION_RESCAN: PASS`; `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED: SATISFIED`; `CLEAN_REVIEW_EXIT: PASS_SCOPED_IMPLEMENTATION_AND_NATIVE`.
+
+Lifecycle limitations: export creation still emits exactly8 version/count-bounded teardown diagnostics, `KNOWN_TOOLING_WARNING`; probe/smoke pass is not warning-clean or release-ready. Physical controllers, first-exposure Human/fun/balance, final art/rights, long-duration performance, power-loss durability and sound playback are unverified or excluded. Current blueprint makes sound optional; no silent audio-implementation claim. No Base migration/promotion/newframework: mapping-owned labels, actual wrapped-height checks and filesystem boundary tests were absorbed in existing project owners (`NO_NEW_REUSE_LEARNING` promotion action).
+
+Cleanup is move-only. The superseded fc51180/07a7007 packages moved to `C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지`,38files266334666bytes with matching hashes. Total user-review quarantine407files1058957563bytes excluding managementfiles. The two prior file manifests and new `패키지추가목록.json` retain original paths/restoration; no user cleanup candidate was directly deleted. Final source reports remain active verification evidence, not disposable by age. Rollback is a normal reviewed revert of this isolated follow-up; production entry/art/saves remain available.
+
 **Spec:** `docs/design/REPLANNING_AUTOCAST_R2.md`, `docs/design/R2_COMPLETE_HUMAN_BLUEPRINT.md`, `docs/design/r2-complete-session.json`, `docs/design/autocast-r2-data.json` at `7340c7f1216b190f91264149e69c1304cbdc6c42`.
 
 ## Global constraints and authority
+
+2026-09-12 continuation: user explicitly authorizes Base fresh-read, benchmark/professional-practice comparison and bounded implementation/improvement without repeated routine approvals. Current source/main `1e272c2668e8de102552608eb0ccd5d4718e40ca` contains merged PR105. Its two completed full reviews remain historical completed evidence; follow-up findings receive scoped correction/review, not a third full review of unchanged work. Latest Base remote `d830c0f6967678eed3c208ac6b24f9cd1b262ec3` informs intake; installed9.4.4/protected contract is not migrated.
+
+### Task 4: Portable local R2 trial
+
+Goal: launch the already implemented isolated R2 in a local native Windows package without requiring the editor; preserve production main entry, source art and existing saves. No public release/upload, paid service, plugin upgrade or deletion. Source/data/model rules remain unchanged unless an export failure demonstrates a bounded fix is required.
+
+Compare three real methods: distribute whole editable repository plus editor (REJECT excess unrelated assets/tooling); native Godot selected-resource export with explicit JSON/asset coverage and an R2 launcher (ADOPT dependency-driven package and reversible entry selection); separate copied project with rewritten settings (REJECT duplicated authority and drift). Existing Godot export templates and HiGodot export-strip plugin are reused. A native preset/launcher and package-specific tests fill the actual gap; no new export framework or bridge.
+
+Files: `export_presets.cfg`; minimal launcher/build-verification support under `tools/windows` and `tests/tooling`; only if reproduced necessary, `src/replanned_r2/r2_assets.gd` and its focused regression. Godot persistent writes use dedicated HiGodot; other scripts/docs use ordinary repository edits. Output is a clearly marked local trial outside tracked runtime assets, with exact build SHA and hash/readme. Preserve source PNG integrity checks rather than silently skip hashes in release. Test raw-byte availability/import remapping in the actual exported package before choosing the smallest correction.
+
+Acceptance: native export succeeds; R2 opens with all five correct atlas sources, JSON data, Korean text and no editor helper autoload; main→practice/battle flow works; missing/wrong assets remain explicit errors; original project entry/settings and saved state not overwritten by test setup; actual test counts/exit codes and package logs recorded. Export correctness, sampled runtime, Human/art/rights/release remain separate.
+
+Export preflight correction2026-09-12: the actual installed release template rejects `--path`; the [Godot4.7.1 startup implementation](https://raw.githubusercontent.com/godotengine/godot/4.7.1-stable/main/main.cpp) also guards positional scenes/`--scene` behind `OVERRIDE_PATH_ENABLED` (3783–3816). REJECT shipping an untested CLI override or recompiling the engine. ADAPT R2 entry selection in the export-only settings snapshot when necessary, retaining the original production setting on disk. The existing export-strip plugin demonstrates this snapshot/restore boundary; any implementation must verify original settings readback. The first selected-resource pack also missed preloaded model scripts: explicit dependency coverage and a pack-loaded probe are required. `assets.errors` is only displayed by the screen, so process exit0/log scanning alone cannot prove the five atlas consumers loaded. These are reproduced packaging defects, not authorization to change gameplay or disable asset hashes.
+
+Research2026-09-12: [SEGA rules](https://puyo.sega.jp/puyopuyotetris2/rule.html) ADAPT distinct-puzzle teaching/HP recovery, REJECT forced swap and MP for R2. [Tetris Effect](https://www.tetriseffect.game/) ADAPT action-linked payoff, no copied Zone/music/assets. [Into the Breach](https://store.steampowered.com/app/590380/Into_the_Breach/) REFERENCE_ONLY declared tactical/predictive design; developer-site fetch timed out and was not treated as read. Existing R2 current threat/DEF preview and LINE receipt are actual local consumers to verify, not missing features to rebuild. [Godot export](https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html) ADOPT preset, explicit non-resource filters and native executable validation; PCK alone is not a playable deliverable. Public descriptions are not proprietary-code inspection or firsthand playtesting.
+
+Preflight: source art reused, baseline owners COMPATIBILITY, R2 implementation ACTIVE_OWNER, published PDFs ARCHIVE snapshots, unknown import/UID metadata preserved. Base reuse profile remains a planned hint, not current runtime authority. No newly relevant cross-project exporter is indexed. System Blueprint entry NOT_APPLICABLE_WITH_REASON: packaging does not change connected gameplay meanings. FEASIBLE native packaging; actual asset/remap, helper exclusion and exported UI acceptance NOT_RUN. Revert only own package commit to roll back; do not delete original files.
+
+Benchmark-to-implementation audit2026-09-12 (public first-party descriptions, not private source inspection, interviews or firsthand play):
+
+| Reference/pattern | Current actual consumer | Decision and expected effect | Remaining evidence |
+|---|---|---|---|
+| Puyo Puyo Tetris2: separate puzzle modes, HP continuation after top-out | R2 practice1/2 and LINE top-out HP transaction | KEEP role-specific lessons and bounded recovery; REJECT forced timed swap/MP. Familiar recovery without blurring LINE preparation and CHAIN spending. | Player understanding, not implied by tests. |
+| Tetris Effect: response synchronized with player actions | `_events`, `_render_pose`, matched CHAIN cells and actual recent-cast receipt | KEEP event-owned feedback and pause semantics; REJECT copied Zone/time-stop and unauthorised music. Actual damage remains model-owned. | Long active-cascade frame-pacing and subjective impact. |
+| Into the Breach: explicit enemy attack telegraphs | `refresh` Current/Next/ETA, `def_target_reason` preview | KEEP same current ETA as response timer, next as order forecast; no turn-based schedule import. Makes defense decisions inspectable. | Normal rest/commit boundary readback remains scoped prior evidence. |
+| Riot: preserve meaningful information across graphics quality | `options.reduced_motion`, boss pose, text damage/resource/cast receipts | KEEP reduced motion without removing rule cues; no new shader framework or144FPS target. | Actual user accessibility remains unverified. |
+| Xbox XAG103: symbols plus explanatory text, not color-only | Four symbol atlases and labels exist; remapped-input guide remains hardcoded | FIX Task5 by deriving control text from actual options, keep symbols/text and options cancellation. Reduces contradictory guidance. | RED/GREEN and native125percent UI required. |
+
+No benchmark alone creates a new game system. Unchanged implemented patterns are reuse evidence; Task5 is the concrete discovered consumer inconsistency, Task4 makes the existing slice locally testable without the editor. Sound production remains optional under blueprint section32; release rights/branding are not certified by this local trial.
 
 - Latest user `좋아 진행해` continues the completed blueprint handoff into implementation. This does not confer runtime, Human, balance or release approval.
 - Existing production scenes/rules/assets, six unrelated draft PRs and historical PDF bytes are preserved. No automatic main-scene replacement.
@@ -24,7 +77,23 @@
 
 ## Preflight and rulings
 
-Start main and origin/main: `7340c7f1216b190f91264149e69c1304cbdc6c42`. Open draft PR100/85/46/33/23/19 read only, no overlap absorption.
+### Task 5: Controls and teaching text stay in sync
+
+Observed at source1e272c2: `r2_input.gd` reads configured mappings, but `r2_screen.gd` LINE footer, pause button, CHAIN footer and practice1/3/4 hardcode Space/Tab/Esc/2. This breaks guidance after a legitimate remap. Fix the presentation consumer, not gameplay mapping rules or save schema.
+
+Native package QA ated96b5a additionally reproduced an adjacent guidance mismatch: Practice pause claims the current whole state can be saved, while `checkpoint()` and `_exit_battle()` correctly preserve the ordinary checkpoint without saving practice. Include this in Task5's presentation-only correction: practice pause/main-exit text must explicitly distinguish unsaved practice from the retained ordinary checkpoint, with a failing-before-fix test and unchanged saved-file hash. Normal stable/unstable combat save messages and rules stay intact.
+
+Files: `src/replanned_r2/r2_screen.gd`, optionally a small existing-input-owner label helper in `r2_input.gd`, and focused R2 screen/input tests. Reuse actual saved `options.keyboard_mapping` and existing OS key name presentation; do not introduce a second mapping table. Display concise primary binding with full alternatives in a tooltip where needed. Practice text must use current hard-drop/switch/DEF/pause binding; keyboard/pad labels must not falsely describe another device. Saved settings refresh guidance; canceled draft leaves guidance unchanged. Keep default input behavior, pause and single-input boundaries unchanged. Native1280x720 and125percent typography must remain legible; no board shrink.
+
+TDD: remap hard_drop, switch, def and pause to valid unused keys; stale-default prompt assertion must fail before fix. Verify footer/pause/practice references, settings apply/cancel and scene re-entry; labels are read-only and do not mutate input or combat. Run focused and full tests, then normal settings UI remap→save→practice/input readback; preserve ordinary user checkpoint/options (use temporary fixture paths or restore exact known options after QA). Rebuild Task4 package with final source and recheck it.
+
+Alternatives: remove control hints (REJECT lost discoverability), prohibit remapping (REJECT existing accessibility feature regression), derive hints from the same mappings (ADOPT one owner and low maintenance). [Xbox XAG103](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/103) supports clear text/symbol cues; [Riot gameplay clarity](https://www.riotgames.com/en/news/valorant-shaders-and-gameplay-clarity) supports keeping useful information across presentation quality. These are professional design sources, not proof of our Human accessibility. Current reduced-motion/shape icons/threat previews are retained rather than rebuilt. Scope is a bounded user-facing inconsistency correction authorized by the latest continuous-improvement request.
+
+### Historical initial implementation provenance (Tasks1–3)
+
+Task5 source refinement2026-09-12: [Xbox XAG107](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107), control-remapping guidance, explicitly connects changed controls with updated hints/tutorial labels. ADOPT that presentation consistency through the existing mapping owner. [Godot OS.get_keycode_string](https://docs.godotengine.org/en/stable/classes/class_os.html#class-os-method-get-keycode-string) provides the existing read-only label mechanism. This is targeted input-guidance evidence, not an accessibility certification or authorization for unrelated input-system changes.
+
+Initial start main and origin/main: `7340c7f1216b190f91264149e69c1304cbdc6c42`. Open draft PR100/85/46/33/23/19 read only, no overlap absorption. This historical baseline is not the current Task4/5 source SHA.
 
 | Current comparison/source | Observed pattern | Disposition / fit / risk |
 | --- | --- | --- |

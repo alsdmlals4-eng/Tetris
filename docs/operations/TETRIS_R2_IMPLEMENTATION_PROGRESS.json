@@ -3,12 +3,19 @@
   "work_mode": "BUILD",
   "approval_state": "REUSED_APPROVAL",
   "approval_reference": "Latest user 좋아 진행해 following the completed R2 blueprint and implementation handoff",
-  "continuous_work_state": "CONTINUOUS_WORK_ACTIVE",
+  "continuous_work_state": "APPROVED_IMPLEMENTATION_SCOPE_COMPLETE",
+  "integration_authority":{"owner":"GITHUB_PR_CURRENT_STATE","pull_request":"https://github.com/alsdmlals4-eng/Tetris/pull/106","policy":"Fresh-read exact PR head, checks and merge/postmerge main; do not infer remote status from historical pending snapshots"},
   "contract": "docs/operations/TETRIS_R2_IMPLEMENTATION.md",
   "base_adapter": "9.4.4_UNCHANGED",
   "benchmark_preflight_receipt": {
     "state": "REUSED_EVIDENCE",
     "entries": [
+      {
+        "source_and_evidence": "2026-09-12 main1e272c2; actual r2_assets.gd/source-hash and HiGodot export-strip plugin; Godot official exporting_projects; SEGA Puyo Tetris2 rule page; Tetris Effect official; Into the Breach developer Steam description. Base remote d830c0f intake fresh-read, adapter9.4.4 retained.",
+        "observed_pattern": "Native export requires explicit preset and non-resource data coverage; existing helper strips tooling autoload. Comparable games teach puzzle roles and communicate clear-to-combat payoff or enemy intentions.",
+        "project_fit_and_difference": "Adapt native selected-resource packaging and actual exported-run validation; retain R2 automatic casts, free switching and readable ETA. No forced swap, MP, copied imagery or claimed access to proprietary code.",
+        "disposition": "ADAPT"
+      },
       {
         "source_and_evidence": "7340c7f1216b190f91264149e69c1304cbdc6c42 production LINE/CHAIN/scheduler and R2 package; fresh Windows 253 GUT and 79 tooling tests",
         "observed_pattern": "Existing geometry and committed-action boundaries; baseline manual MP rules differ from R2",
@@ -58,15 +65,47 @@
   },
   "project_work_kanban": {
     "goal_or_slice_issue_ref": "docs/operations/TETRIS_R2_IMPLEMENTATION.md",
-    "source_main_sha": "7340c7f1216b190f91264149e69c1304cbdc6c42",
+    "source_main_sha": "1e272c2668e8de102552608eb0ccd5d4718e40ca",
     "work_item_refs": [
       "R2-01",
       "R2-02",
-      "R2-03"
+      "R2-03",
+      "R2-04",
+      "R2-05"
     ],
-    "active_work_item_ref": "R2-03",
-    "next_action": "Publish own branch/PR, verify exact-head required checks and safe integration; do not mutate unrelated drafts or replace production entry.",
+    "active_work_item_ref": null,
+    "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
     "work_items": [
+      {
+        "work_item_id":"R2-05", "title":"Remapped controls and player instructions agree", "status":"DONE",
+        "canon_owner":"docs/operations/TETRIS_R2_IMPLEMENTATION.md",
+        "actual_consumers":["src/replanned_r2/r2_screen.gd","src/replanned_r2/r2_input.gd"],
+        "depends_on":["R2-04"], "acceptance_criteria":["R2-05-AC"], "required_evidence":["E2_TEST","E3_RUNTIME"],
+        "checklist":[{"id":"R2-05-AC","text":"After saving a key remap, visible battle/practice instructions use the actual mapping; cancel restores original hints; 125 percent text remains readable; gameplay semantics unchanged","status":"PASS","evidence":["d38a344 normalUI V/R/P/F remapSaveCancel; aacdf8a nativePractice3 fulltext separated; ae895bd native125 ScrollLock bounded130px/fulltooltip"]}],
+        "verification":[{"level":"E2_TEST","status":"PASS","evidence":["ae895bd focused32/32,382assertions; full344/344,3656assertions58scripts exit0; tooling88/88"]},{"level":"E3_RUNTIME","status":"PASS","evidence":["docs/validation/r2-package-20260912/manifest.json final_fix: exact native125 bounds/tooltip, fresh finalpackage main; ordinary3save/options hashes preserved"]}],
+        "verified_head_sha":"ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
+        "must_fix_remaining":0,"blocked_unverified_remaining":0,"user_decision_required_remaining":0,
+        "repository_readback":"PASS","readback_evidence":["Final four source/test hashes match report; independent final integration fix re-review all3addressed/no newfindings; nativecaptured exactimplementation"],
+        "rollback":"Revert isolated guidance/fix commits; no save migration or production replacement",
+        "next_action":"Implementation acceptance complete; exact publication-head PR checks and merge readback tracked separately"
+      },
+      {
+        "work_item_id": "R2-04",
+        "title": "Portable local R2 trial and export regression",
+        "status": "DONE",
+        "canon_owner": "docs/operations/TETRIS_R2_IMPLEMENTATION.md",
+        "actual_consumers": ["scenes/replanned_r2/main.tscn", "src/replanned_r2/r2_assets.gd"],
+        "depends_on": ["R2-03"],
+        "acceptance_criteria": ["R2-04-AC"],
+        "required_evidence": ["E2_TEST", "E3_RUNTIME"],
+        "checklist": [{"id":"R2-04-AC", "text":"Local Windows package launches R2 with all intended atlases/data; original project entry and saves preserved; missing assets fail visibly; export checks reproducible", "status":"PASS", "evidence":["fc51180 strict package18/18, settings pre/post SHA matched; independent fix re-review all3 findings addressed"]}],
+        "verification": [{"level":"E2_TEST","status":"PASS","evidence":["fc51180 package6/6, tooling85/85; unchanged Godot source full340/3403572 assertions reused; fresh export/probe/smoke exit0"]},{"level":"E3_RUNTIME","status":"PASS","evidence":["docs/validation/r2-package-20260912/manifest.json: native normal-input LINE receipt and two CHAIN casts, five atlas families, saved files preserved; final fc51180 EXE/PCK byte-identical"]}],
+        "verified_head_sha":"ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
+        "must_fix_remaining":0,"blocked_unverified_remaining":0,"user_decision_required_remaining":0,
+        "repository_readback":"PASS","readback_evidence":["Parent strict VerifyPackageOnly exit0 and source settings hash46ce5e3295b0807f57fd16e07573ca7f0aa470c8e55696a8f8ca360d74caf020; scoped re-review clean"],
+        "rollback":"Revert own export/asset-sidecar changes; production settings and source art remain unchanged; retain superseded packages in user-delete quarantine",
+        "next_action": "Final ae895bd rebuilt/probed and verified in pwsh7 and WinPS5; exact18 set includes Hidden entries. Known8 export teardown warning lines remain disclosed."
+      },
       {
         "work_item_id": "R2-01",
         "title": "Deterministic R2 combat transactions",
@@ -101,7 +140,7 @@
             ]
           }
         ],
-        "verified_head_sha": "240563a8863c332247fd629aacfc04e412cced56",
+        "verified_head_sha": "ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
         "must_fix_remaining": 0,
         "blocked_unverified_remaining": 0,
         "user_decision_required_remaining": 0,
@@ -150,7 +189,7 @@
             ]
           }
         ],
-        "verified_head_sha": "2547e6b32b55b5c7ef310813d4c213f20b9c560c",
+        "verified_head_sha": "ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
         "must_fix_remaining": 0,
         "blocked_unverified_remaining": 0,
         "user_decision_required_remaining": 0,
@@ -217,8 +256,8 @@
             ]
           }
         ],
-        "next_action": "Source/runtime trial ready; exact-head PR/required-check/integration gates pending.",
-        "verified_head_sha": "1dd2e46e404772275d26b40031c20c9ad5148ba9",
+        "next_action": "PR105 merged at1e272c2668e8de102552608eb0ccd5d4718e40ca; continue R2-04/05 package and instruction verification.",
+        "verified_head_sha": "ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
         "must_fix_remaining": 0,
         "blocked_unverified_remaining": 0,
         "user_decision_required_remaining": 0,
@@ -230,7 +269,9 @@
       }
     ]
   },
-  "evidence_ceiling": "Isolated first encounter implemented and machine/sampled runtime/visual verified. Exactly2whole reviews,0remaining findings. Remote CI/integration pending. Human/fun/balance/physical-device/export/audio/power-loss/final-art/release remain unverified or excluded.",
+  "evidence_ceiling": "Five-item approved isolated first-encounter scope implemented and machine/sampled native verified at exact implementation subject ae895bd. Full344/3443656assertions includes preserved Tasks1-3; their unchanged runtime evidence is reused explicitly. Final local Windows package18/probe5assets/3JSON/native main verified; known8export teardown diagnostics remain. Exactly2historic whole reviews completed for PR105; new follow-up delta received final integration review and one clean fix re-review. Exact publication-head remote CI/merge readback remains separate. Human/fun/balance/physical-controller/long-duration performance/audio playback/power-loss/final-art/rights/release NOT_RUN or excluded.",
+  "verified_implementation_subject_sha":"ae895bd6eb4015975f3f22d09656e8ab2dfab7e8",
+  "final_followup_review":{"base":"1e272c2668e8de102552608eb0ccd5d4718e40ca","reviewed_head":"07a7007fd1c13b5a036d494baafc10e794928d75","fix_head":"ae895bd6eb4015975f3f22d09656e8ab2dfab7e8","finding_result":"3_ADDRESSED_NO_NEW_CRITICAL_IMPORTANT_MINOR","clean_review_exit":"PASS_SCOPED_IMPLEMENTATION_AND_NATIVE","remaining_work_completion_gate":"PASS_5_OF_5_IMPLEMENTATION_SCOPE","implementation_correction_rescan":"PASS","post_completion_adversarial_review_required":"SATISFIED"},
   "runtime": "PASS_SCOPED_FIRST_ENCOUNTER",
   "human": "NOT_RUN",
   "release": "NOT_RUN",
@@ -241,6 +282,6 @@
     "minor": 0,
     "source_sha": "1dd2e46e404772275d26b40031c20c9ad5148ba9",
     "clean_review_exit": "PASS_CODE_AND_SAMPLED_RUNTIME",
-    "integration": "PENDING"
+    "integration": "PR105_MERGED_MAIN_1e272c2668e8de102552608eb0ccd5d4718e40ca; R2-04/05 implementation verified atae895bd; publication/checks/merge owner is live PR106"
   }
 }

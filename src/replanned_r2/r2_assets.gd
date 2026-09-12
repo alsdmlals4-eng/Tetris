@@ -6,16 +6,29 @@ var metadata: Dictionary = {}
 var errors: Array[String] = []
 var _atlases := {}
 var _regions := {}
-func _init():
+
+func _asset_source_root(source_root_override: String) -> String:
+    if not source_root_override.is_empty():
+        return source_root_override
+    var environment_root := OS.get_environment("TETRIS_R2_SOURCE_ASSET_ROOT")
+    if not environment_root.is_empty():
+        return environment_root
+    if OS.has_feature("editor"):
+        return ""
+    return OS.get_executable_path().get_base_dir().path_join("r2-source-assets")
+
+func _init(source_root_override: String = ""):
     var source = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
     if not source is Dictionary:
         errors.append("R2 asset manifest missing")
         return
     metadata = source.assets
+    var source_root: String = _asset_source_root(source_root_override)
     for id in metadata:
         var entry: Dictionary = metadata[id]
         var path = "res://"+String(entry.path)
-        if FileAccess.get_sha256(path) != entry.sha256:
+        var hash_path: String = path if source_root.is_empty() else source_root.path_join(String(entry.path))
+        if FileAccess.get_sha256(hash_path) != entry.sha256:
             errors.append("Asset hash mismatch: "+id)
             continue
         var atlas = load(path) as Texture2D
