@@ -33,26 +33,26 @@ Feasibility: FEASIBLE data projection and manual local write using existing Godo
 
 Files: new `src/replanned_r2/r2_playtest_report.gd`, new `tests/replanned_r2/test_r2_playtest_report.gd`.
 
-- [ ] RED: missing report builder; a real completed session fixture produces outcome/run/rule identity and independently expected metrics; input snapshot remains equal after report creation.
-- [ ] RED: ordinary running/empty snapshots rejected; practice completion distinctly labelled.
-- [ ] RED: write creates parseable bytes, repeated identical write does not change bytes, conflicting existing bytes fail without overwrite, unavailable directory fails without gameplay writes.
-- [ ] Implement only those boundaries through the pinned HiGodot authority; rerun focused GUT GREEN.
+- [x] RED: missing report builder; a real completed session fixture produces outcome/run/rule identity and independently expected metrics; input snapshot remains equal after report creation.
+- [x] RED: ordinary running/empty snapshots rejected; practice completion distinctly labelled.
+- [x] RED: write creates parseable bytes, repeated identical write does not change bytes, conflicting existing bytes fail without overwrite, unavailable directory fails without gameplay writes.
+- [x] Implement only those boundaries through the pinned HiGodot authority; rerun focused GUT GREEN.
 
 ### Task 2 — existing Result consumer integration
 
 Files: `src/replanned_r2/r2_screen.gd`, `tests/replanned_r2/test_r2_screen.gd`.
 
-- [ ] RED: Result exposes manual export; opening Result alone produces no report.
-- [ ] Connect the report builder to the existing snapshot and writer; separate status text and readable button.
-- [ ] Test preserved checkpoint/metrics on success and failure; existing Retry/Main remain usable.
-- [ ] Native result/keyboard navigation and 100%/125% layout readback, full GUT, packaging dependency coverage and exported-run check. Do not label signal-emission tests as normal native input evidence.
+- [x] RED: Result exposes manual export; opening Result alone produces no report.
+- [x] Connect the report builder to the existing snapshot and writer; separate status text and readable button.
+- [x] Test preserved checkpoint/metrics on success and failure; existing Retry/Main remain usable.
+- [x] Native result/keyboard navigation and 100%/125% layout readback, full GUT, packaging dependency coverage and exported-run check. Do not label signal-emission tests as normal native input evidence.
 
 ### Task 3 — human observation preparation and closure
 
-- [ ] Complete the observation instructions below and retain NOT_RUN for actual human answers.
-- [ ] Exactly two whole-result review loops; fix findings and rerun affected regressions.
-- [ ] Record exact commit, tests, runtime evidence, package location, source protection and remaining work in this owner. Keep the earlier five-item implementation receipt as completed history; this task has its own receipt.
-- [ ] Publish only after checks/review pass; no direct main push or unrelated PR mutation.
+- [x] Complete the observation instructions below and retain NOT_RUN for actual human answers.
+- [x] Exactly two whole-result review loops; fix findings and rerun affected regressions.
+- [x] Record exact commit, tests, runtime evidence, package location, source protection and remaining work in this owner. Keep the earlier five-item implementation receipt as completed history; this task has its own receipt.
+- [ ] Publication is handled by the current-task PR after exact-head checks; no direct main push or unrelated PR mutation. Current GitHub PR state owns merge/readback, not this pre-publication snapshot.
 
 ## Human observation procedure (prepared, not performed)
 
@@ -70,7 +70,7 @@ Preserve production, approved/frozen PDF bytes, artwork, combat/session/save sch
 
 ## Current evidence
 
-Current resumption: report projection/writer and manual Result export are implemented locally. Focused report tests 8/8 and screen tests 34/34 passed before final review corrections; fresh full-suite/package evidence is recorded below when available. Human remains NOT_RUN. No complete-game or release claim follows from this document.
+Current implementation subject: `719fd0096085d07a772bcabb544da58601ec1552`. Report projection/writer, manual Result export and selected-resource packaging are implemented and verified. Fresh full GUT:354/354,3736 assertions,59 scripts; tooling88/88. Package export/smoke/probe and independent package readback passed. Human remains NOT_RUN. No complete-game or release claim follows from this document.
 
 2026-09-13 preflight: receipt start validation initially rejected unsupported TODO states; replaced by existing BACKLOG vocabulary. Windows cp949 could not print the report em dash; current-process PYTHONIOENCODING=utf-8 rerun exited0 with start PASS and 0/3 implemented tasks. Neither was a product-test failure.
 
@@ -90,3 +90,14 @@ Historical deferred state intentionally had no active executable task. On resump
 - Runtime QA uses a controlled completed-session setup through real commands/timing and isolated test save/report paths, followed by engine mouse/key events (not direct pressed-signal emission). Tab twice from Retry focused ExportReport; Enter and mouse press/release each saved parseable JSON. At125% the result remained legible. This is technical input/runtime evidence, not a human first-exposure playtest.
 - Existing source main and read-only open drafts were rechecked: main9972c580db4854554399424fa05bd7343e83035d; drafts100/85/46/33/23/19 unchanged and not consumed.
 - Learning: use godot-ai's dedicated status/package/session identity, not FastMCP's initialize fallback version, when checking the adopted server pin. Record as a project-local diagnostic lesson; Base promotion remains a candidate only.
+
+## Closeout — implementation subject 719fd0096085d07a772bcabb544da58601ec1552
+
+- Review loop2: independent whole-result reread confirmed tooltip/lock fixes, source and capture hash bindings, unchanged gameplay/save/art/PDF/Base owners and no new blocking code findings. Native tooltip capture shows both folder and filename inside1280x720. REMAINING_WORK_COMPLETION_GATE / IMPLEMENTATION_CORRECTION_RESCAN / POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED: approved implementation scope has0 must-fix findings; CLEAN_REVIEW_EXIT after exactly2 whole-result loops. Remote publication is checked separately at exact PR HEAD.
+- Actual export exposed a missing selected resource: initial package1f00d95 could not preload the new module, despite engine exit0. The existing smoke log guard rejected it. Updated the preset and its regression expectation through the existing authoring route; missing-resource test RED → GREEN, rebuilt package719fd00 smoke/probe PASS. An existing scene preload alone is not selected-export completeness evidence.
+- Final runnable package: `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/reports-final-20260913/START_R2_LOCAL_TRIAL.cmd`. Source719fd00, sole tracked dirty path at build was the preserved user blank line in project.godot. Package manifest/probe copies live with runtime evidence. PowerShell7 build and WindowsPowerShell5.1 VerifyPackageOnly passed. Existing eight bounded export teardown warning lines remain KNOWN_TOOLING_WARNING, not warning-free or release approval. Windows standalone headless launch/main/practice and all five atlas checks passed; no claim of physical device or human playtest.
+- User options/save/backup SHA256 and project.godot SHA256 were rechecked unchanged. No changes to production, R2 game rules, existing assets or published PDF bytes. Screenshots are runtime evidence only. New assets were unnecessary for this bounded feature.
+- Failed package moved, not deleted: `C:/Users/user/Desktop/Tetris_삭제대기_20260912/reports-1f00d95-failed-20260913`; original location recorded in the sibling Korean cleanup note. Unknown/pre-existing import/UID files remain preserved.
+- Usage: finish a normal battle or practice, select **검수 기록 저장**, and hover the button for the actual folder/filename. Copy/share records only voluntarily; no automatic upload. Retry/Main remain available after export failure. Existing/stale locks and conflicting files are never forcibly reclaimed.
+- Remaining outside implementation scope: actual first-exposure Human observations, cross-build observer identity, final art/rights and release approval. Do not tune gameplay based solely on these automated tests. Recommended next input is a real same-build observation plus exported result; select subsequent UX/balance corrections from that evidence.
+- Reuse learning handoff: REUSE existing Session.metrics/restore, result screen and selected-export smoke guard. Project paths changed are report module/tests, existing result UI/tests and explicit export list/test; rollback is a bounded revert of those additions without save migration. Evidence ceiling MACHINE_VERIFIED + bounded RUNTIME_VERIFIED; HUMAN_NOT_RUN. Base candidate: distinguish package identity from transport-framework version and check explicit export closure. No Base files, release lock or registry were promoted or changed.

@@ -526,7 +526,7 @@ res://tests/replanned_r2/test_r2_screen.gd
 * test_line_time_receipt_survives_hard_drop_natural_lock_and_later_commands
 * test_receipt_and_def_preview_fit_existing_regions_at_125_percent
 * test_safety_recovery_emits_one_identified_diagnostic_from_real_wave_event
-[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-5d585d4c24447209f9f38f0eed7e33fe","wave":64}
+[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-64282f67f3e5d749bf0f594615876949","wave":64}
 [1m34/34 passed.
 [0m[4m
 
@@ -610,7 +610,7 @@ Scripts              59
 Tests               354
 Passing Tests       354
 Asserts            3736
-Time              26.492s
+Time              29.228s
 
 
 [32m---- All tests passed! ----

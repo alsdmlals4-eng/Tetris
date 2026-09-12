@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "package_kind": "TETRIS_R2_LOCAL_TRIAL_NOT_FOR_RELEASE",
+  "repository_head": "719fd0096085d07a772bcabb544da58601ec1552",
+  "project_godot_sha256": "46ce5e3295b0807f57fd16e07573ca7f0aa470c8e55696a8f8ca360d74caf020",
+  "tracked_worktree_dirty_paths_preserved": [
+    "project.godot"
+  ],
+  "preset": "Windows R2 Local Trial",
+  "entry_scene": "res://scenes/replanned_r2/main.tscn",
+  "launcher": "START_R2_LOCAL_TRIAL.cmd",
+  "generated_at_utc": "2026-09-12T15:50:07.4643107Z",
+  "evidence_ceiling": [
+    "EXPORT_CORRECTNESS",
+    "HEADLESS_EXPORTED_SCENE_SMOKE",
+    "KNOWN_TOOLING_WARNING"
+  ],
+  "tooling_warning_state": "KNOWN_TOOLING_WARNING",
+  "tooling_warning_lines": [
+    "ERROR: 6 RID allocations of type 'N16RendererViewport8ViewportE' were leaked at exit.",
+    "ERROR: 9 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.",
+    "ERROR: 1 RID allocations of type 'N17RendererSceneCull8ScenarioE' were leaked at exit.",
+    "ERROR: 83 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.",
+    "ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.",
+    "WARNING: 6 RIDs of type \"Canvas\" were leaked.",
+    "WARNING: 36 RIDs of type \"CanvasItem\" were leaked.",
+    "WARNING: 209 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+  ],
+  "not_claimed": [
+    "HUMAN_APPROVAL",
+    "ART_APPROVAL",
+    "RIGHTS_APPROVAL",
+    "PUBLIC_RELEASE_READINESS"
+  ],
+  "artifacts": [
+    {
+      "path": "TetrisR2LocalTrial.exe",
+      "sha256": "76269a403bb832599edeee4432a5b7a7e88c018eb5c9c798dfd8289359b0ec07",
+      "bytes": 109212160
+    },
+    {
+      "path": "TetrisR2LocalTrial.pck",
+      "sha256": "4d18e92e1c9dc4102b7fb5440d24e9681fcf4ff532a6a2cc256c1069ffcb4610",
+      "bytes": 8199468
+    },
+    {
+      "path": "START_R2_LOCAL_TRIAL.cmd",
+      "sha256": "f4bb97b8ecdfbd5f7afffeddec9ed306d45bd7f3c4df83eab5f3019fb1763d08",
+      "bytes": 83
+    },
+    {
+      "path": "README_LOCAL_TRIAL.txt",
+      "sha256": "df439a9924bb2890140e6aea41081b36a62cda987edf831f4399d51b8f2ef26d",
+      "bytes": 737
+    },
+    {
+      "path": "r2-package-smoke.json",
+      "sha256": "35b6997502747dfa6fefda222cf4ef31334fdb19ae06e5ef5a940186e727b040",
+      "bytes": 248
+    },
+    {
+      "path": "r2-export-probe.json",
+      "sha256": "d143ffa12c850d714c11303214f7aab104c0c1b097cdff1f86ddf61045298bcd",
+      "bytes": 1061
+    },
+    {
+      "path": "icudt_godot.dat",
+      "sha256": "64e407b570a21a4b740531a14cd95f0cefc46cef3d8224fd09a0dd386fb7016a",
+      "bytes": 4797472
+    },
+    {
+      "path": "export.stdout.log",
+      "sha256": "636ce24576b1406e0a20e79ce4b6cdf233ae23d3e46937111be4076a3449a10d",
+      "bytes": 6641
+    },
+    {
+      "path": "export.stderr.log",
+      "sha256": "344970ab87f2b052ad3b8e1233ba558d527facf0d0807d2b99ed0eb46ac49052",
+      "bytes": 372
+    },
+    {
+      "path": "smoke.stdout.log",
+      "sha256": "9d581ec5492fe988c9c06ba731f53831e0de994203e89ae19ffcf5b503748acc",
+      "bytes": 75
+    },
+    {
+      "path": "smoke.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "probe.stdout.log",
+      "sha256": "c618b0ee59eb01b684c39c89c98f9c21d9b3566086571ac2247b0deb79de2d44",
+      "bytes": 105
+    },
+    {
+      "path": "probe.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "r2-source-assets/docs/assets/reference/planned/replanning/blueprint/icons.png",
+      "sha256": "40d55313aeff152106a7bfd2a5f22615cace29ee8d4b8c483195bc02384cdbde",
+      "bytes": 1896519
+    },
+    {
+      "path": "r2-source-assets/docs/assets/reference/planned/replanning/blueprint/portrait-states.png",
+      "sha256": "cb2ea6fe04f765fe2baf6c782988f6a1346cbdd95c0bca60e875d0757bdb49e9",
+      "bytes": 1655712
+    },
+    {
+      "path": "r2-source-assets/docs/assets/reference/planned/replanning/blueprint/frontier.png",
+      "sha256": "982b48dcd60708440bd87fa701589c71b56d80832bc690209089a2d3d2e588c4",
+      "bytes": 2306637
+    },
+    {
+      "path": "r2-source-assets/docs/assets/reference/planned/replanning/autocast/tiles.png",
+      "sha256": "6da54b7be30ff875153d0dde7611b133709f78be8cfd0b0653f6efa3f0d7a21b",
+      "bytes": 2170830
+    },
+    {
+      "path": "r2-source-assets/docs/assets/reference/planned/replanning/autocast/boss-cutout.png",
+      "sha256": "59976e21209aac65fef13ae70c5976af4babed6ee00a11210bd8cf7bed89081f",
+      "bytes": 2919601
+    }
+  ]
+}
