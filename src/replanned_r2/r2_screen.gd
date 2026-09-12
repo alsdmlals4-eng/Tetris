@@ -73,6 +73,7 @@ func _ready():
     _rules = JSON.parse_string(FileAccess.get_file_as_string(Session.Combat.RULES_PATH))
     _catalog = Catalog.from_dictionary(JSON.parse_string(FileAccess.get_file_as_string(Session.Line.CATALOG_PATH)))
     _build_ui()
+    _refresh_control_guidance()
     _apply_font()
     _show_page("main")
     _refresh_continue()
@@ -140,6 +141,34 @@ func _image(parent: Node, node_name: String, rect: Rect2, texture: Texture2D) ->
     node.mouse_filter = Control.MOUSE_FILTER_IGNORE
     return node
 
+func _guidance_tooltip(entries: Array) -> String:
+    var lines := PackedStringArray()
+    for group in ["keyboard_mapping","gamepad_mapping"]:
+        var parts := PackedStringArray()
+        for entry in entries:
+            parts.append(String(entry["label"])+" "+inputs.binding_label(String(entry["action"]),group,true))
+        lines.append(("키보드" if group == "keyboard_mapping" else "게임패드")+": "+" · ".join(parts))
+    return "\n".join(lines)
+
+func _refresh_control_guidance():
+    if not has_node("Battle/Puzzle/Line/Input"): return
+    var group: String = inputs.presentation_group
+    var line: Label = $Battle/Puzzle/Line/Input
+    line.text = "%s %s/%s 이동 · %s/%s 회전 · %s 낙하 · %s 홀드" % [inputs.group_label(group),inputs.binding_label("left",group),inputs.binding_label("right",group),inputs.binding_label("rotate_left",group),inputs.binding_label("rotate_right",group),inputs.binding_label("hard_drop",group),inputs.binding_label("hold",group)]
+    line.tooltip_text = _guidance_tooltip([{"label":"왼쪽","action":"left"},{"label":"오른쪽","action":"right"},{"label":"왼쪽 회전","action":"rotate_left"},{"label":"오른쪽 회전","action":"rotate_right"},{"label":"낙하","action":"hard_drop"},{"label":"HOLD","action":"hold"}])
+    line.mouse_filter = Control.MOUSE_FILTER_STOP
+    var chain: Label = $Battle/Puzzle/Chain/Role
+    if practice_stage == 0:
+        chain.text = "인접 교환 → 파동마다 자동 기술\n타일 직접 보상 없음 · %s 보드 전환" % inputs.binding_phrase("switch",group)
+    chain.tooltip_text = _guidance_tooltip([{"label":"보드 전환","action":"switch"}])
+    chain.mouse_filter = Control.MOUSE_FILTER_STOP
+    var pause: Button = $Battle/Puzzle/Pause
+    pause.text = "정지 · "+inputs.binding_phrase("pause",group)
+    pause.tooltip_text = _guidance_tooltip([{"label":"전체 일시정지","action":"pause"}])
+
+func _practice_control_tooltip() -> String:
+    return _guidance_tooltip([{"label":"즉시 낙하","action":"hard_drop"},{"label":"보드 전환","action":"switch"},{"label":"DEF 선택","action":"def"},{"label":"전체 일시정지","action":"pause"}])
+
 func _build_ui():
     var font = SystemFont.new()
     font.font_names = PackedStringArray(["Malgun Gothic","맑은 고딕","sans-serif"])
@@ -188,7 +217,7 @@ func _build_battle():
     var puzzle = _panel(battle,"Puzzle",Rect2(16,16,616,688))
     _button(puzzle,"LineButton",Rect2(16,8,210,36),"LINE · 자원 준비",func(): _switch_to("LINE"))
     _button(puzzle,"ChainButton",Rect2(238,8,220,36),"CHAIN · 자동 기술",func(): _switch_to("CHAIN"))
-    _button(puzzle,"Pause",Rect2(470,8,130,36),"정지 / Esc",pause_game)
+    _button(puzzle,"Pause",Rect2(470,8,130,36),"정지",pause_game)
     var line = _container(puzzle,"Line",Rect2(0,0,616,688))
     var cells = _container(line,"Cells",Rect2(178,62,260,520))
     for y in range(20):
@@ -220,7 +249,7 @@ func _build_battle():
         for j in range(4): tiles.append(_image(preview,"Cell%d"%j,Rect2(0,29,13,13),null))
         _preview_cells.append(tiles)
     _label(line,"Receipt",Rect2(450,74,158,480),"최근 LINE 보상\n아직 없음",14,CYAN)
-    _label(line,"Input",Rect2(12,659,592,27),"←/→ 이동 · Z/X 회전 · Space 낙하 · C 홀드",14)
+    _label(line,"Input",Rect2(12,659,592,27),"",14)
     var chain = _container(puzzle,"Chain",Rect2(0,0,616,688))
     var grid = _container(chain,"Cells",Rect2(52,62,512,512))
     for color in [Color("#344550"),CYAN,GOLD]:
@@ -235,7 +264,7 @@ func _build_battle():
             _image(cell,"Art",Rect2(2,2,60,60),null)
             _chain_cells.append(cell)
     _label(chain,"State",Rect2(18,582,580,40),"",18,CYAN)
-    _label(chain,"Role",Rect2(18,628,580,52),"인접 교환 → 파동마다 자동 기술\n타일 직접 보상 없음 · Tab 보드 전환",17)
+    _label(chain,"Role",Rect2(18,628,580,52),"인접 교환 → 파동마다 자동 기술\n타일 직접 보상 없음",17)
     var combat = _panel(battle,"Combat",Rect2(648,16,616,688))
     var stage = _panel(combat,"Stage",Rect2(0,0,616,300))
     _image(stage,"Backdrop",Rect2(1,1,614,298),assets.texture("R1-ENV","full")).stretch_mode=TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -469,8 +498,13 @@ func pause_game(reason: String = ""):
         return
     $PausePanel.show()
     var stable: bool = session.can_checkpoint()
-    $PausePanel/Main.text = "체크포인트 보존 후 메인" if stable else "직전 안정 체크포인트로 메인"
-    $PausePanel/Checkpoint.text = "현재 전체 상태를 저장할 수 있습니다." if stable else "연쇄 진행 중: 부분 저장하지 않습니다. 계속하거나 직전 온전한 기록으로 돌아갑니다."
+    if practice_stage > 0:
+        var ordinary_checkpoint_exists := bool(disk.load_checkpoint().success)
+        $PausePanel/Main.text = "연습 저장 안 함 · 일반 체크포인트 유지 후 메인" if ordinary_checkpoint_exists else "연습 저장 안 함 · 메인"
+        $PausePanel/Checkpoint.text = "연습 상태는 저장하지 않습니다.\n"+("기존 일반 체크포인트는 그대로 유지됩니다." if ordinary_checkpoint_exists else "일반 체크포인트를 새로 만들지 않습니다.")
+    else:
+        $PausePanel/Main.text = "체크포인트 보존 후 메인" if stable else "직전 안정 체크포인트로 메인"
+        $PausePanel/Checkpoint.text = "현재 전체 상태를 저장할 수 있습니다." if stable else "연쇄 진행 중: 부분 저장하지 않습니다. 계속하거나 직전 온전한 기록으로 돌아갑니다."
     _sync_modal_boundary()
     refresh()
 func resume_game():
@@ -492,6 +526,8 @@ func open_details(stage: int = 1):
     $DetailsPanel.show()
     $DetailsPanel/Title.text = "기술 설명 · 전체 정지"
     $DetailsPanel/Close.text = "설명 닫기 · 이전 정지 상태로"
+    $DetailsPanel/Body.tooltip_text = ""
+    $DetailsPanel/Body.mouse_filter = Control.MOUSE_FILTER_IGNORE
     $DetailsPanel/Body.text = "T%d은 설명입니다. 자동 발동 단계나 선택 계열을 바꾸지 않습니다.\n\nATK · 균열 베기: 기본 피해 %d + 준비한 공격 가산치\nDEF · 방벽: 현재 미확정 피해 행동의 목표치 %d (큰 값 유지)\nSUP · 응급 회복: HP %d, 최대 HP까지만 회복\n\n연쇄 파동 번호가 단계를 결정하며 7번째 이후에도 T6입니다." % [stage,_rules.skills.ATK[stage-1],_rules.skills.DEF[stage-1],_rules.skills.SUP[stage-1]]
     _sync_modal_boundary()
 func close_details():
@@ -523,6 +559,7 @@ func close_options(save_changes: bool):
             return
         options = options_draft.duplicate(true)
     inputs.configure(options)
+    _refresh_control_guidance()
     _apply_font()
     $Options.hide()
     _sync_modal_boundary()
@@ -554,14 +591,8 @@ func _refresh_mapping_label():
     var action = String($Options/Action.get_item_metadata($Options/Action.selected))
     if action.is_empty(): return
     var group = _mapping_group()
-    var binding = options_draft[group][action]
-    var names := PackedStringArray()
-    if group == "keyboard_mapping":
-        for key in binding: names.append(OS.get_keycode_string(int(key)))
-    else:
-        var button_names={0:"A",1:"B",2:"X",3:"Y",4:"Back",5:"Guide",6:"Start",7:"왼쪽 스틱",8:"오른쪽 스틱",9:"LB",10:"RB",11:"십자키 위",12:"십자키 아래",13:"십자키 왼쪽",14:"십자키 오른쪽"}
-        names.append(button_names.get(int(binding),"패드 버튼 "+str(binding)))
-    $Options/Binding.text = $Options/Action.get_item_text($Options/Action.selected)+" : "+" / ".join(names)
+    var names := inputs.binding_label(action,group,true,options_draft)
+    $Options/Binding.text = $Options/Action.get_item_text($Options/Action.selected)+" : "+names
 func _begin_remap():
     inputs.begin_capture(_mapping_group(),String($Options/Action.get_item_metadata($Options/Action.selected)))
     $Options/Status.text = "새 입력을 누르세요. 취소 버튼은 현재 지정을 유지합니다."
@@ -663,6 +694,7 @@ func _input(event: InputEvent):
         _refresh_mapping_label()
         get_viewport().set_input_as_handled()
         return
+    _refresh_control_guidance()
     var action = String(intent.action)
     if $SaveFailurePanel.visible:
         inputs.clear()
@@ -885,14 +917,16 @@ func begin_practice(stage: int = 1):
     $DetailsPanel.show()
     $DetailsPanel/Title.text="연습 %d / 4 · 안내 중 전체 정지"%practice_stage
     $DetailsPanel/Body.text=_practice_instruction()
+    $DetailsPanel/Body.tooltip_text=_practice_control_tooltip()
+    $DetailsPanel/Body.mouse_filter=Control.MOUSE_FILTER_STOP
     $DetailsPanel/Close.text="학습 시작 · 정상 입력 사용"
     _sync_modal_boundary()
 func _practice_instruction() -> String:
     match practice_stage:
-        1: return "LINE · 자원 준비\n\n공격 I 조각을 오른쪽 네 빈칸에 놓고 Space로 낙하하세요.\n검4 · 방패2 · 하트2 · 시계2를 실제로 소거합니다.\n\n이 단계는 보스 시계만 멈춥니다. 퍼즐은 정상 동작합니다.\n줄을 지운 뒤 실제 자원 변화를 보고 다음 학습을 누르세요."
+        1: return "LINE · 자원 준비\n\n공격 I 조각을 오른쪽 네 빈칸에 놓고 %s로 낙하하세요.\n검4 · 방패2 · 하트2 · 시계2를 실제로 소거합니다.\n\n이 단계는 보스 시계만 멈춥니다. 퍼즐은 정상 동작합니다.\n줄을 지운 뒤 실제 자원 변화를 보고 다음 학습을 누르세요." % inputs.paired_binding_phrase("hard_drop")
         2: return "CHAIN · 파동마다 한 번 자동 발동\n\n좌상단을 (0,0)으로 (4,5)와 (5,5)를 교환하세요.\n두 그룹 동시 매치는 C1 한 번, 보충 매치는 C2 한 번입니다.\n타일 직접 보상은 0입니다. 최근 실제 발동을 확인하세요.\n\n이 단계는 보스 시계만 멈춥니다."
-        3: return "DEF · 공유 ETA에 대응\n\nLINE으로 방어·시간을 준비하고, Tab으로 CHAIN에 전환하세요.\n2 키로 DEF를 고른 뒤 연쇄를 만들어 현재 행동에 방벽을 묶으세요.\n첫 견제 뒤에는 강타가 옵니다. 실제 방벽 흡수 후 다음 단계로 갑니다.\n\n학습 시작 뒤 보스 시계는 정상 진행합니다."
-        _: return "정지와 보드 전환\n\nTab으로 보드를 바꾸고 Esc로 전체 정지한 뒤 계속을 선택하세요.\nETA·계열·보드가 그대로 보존되는지 확인하세요.\n\n보스 시계는 정상 진행합니다. 실패하면 이 단계만 다시 시작합니다."
+        3: return "DEF · 공유 ETA에 대응\n\nLINE으로 방어·시간을 준비하고, %s로 CHAIN에 전환하세요.\n%s로 DEF를 고른 뒤 연쇄를 만들어 현재 행동에 방벽을 묶으세요.\n첫 견제 뒤에는 강타가 옵니다. 실제 방벽 흡수 후 다음 단계로 갑니다.\n\n학습 시작 뒤 보스 시계는 정상 진행합니다." % [inputs.paired_binding_phrase("switch"),inputs.paired_binding_phrase("def")]
+        _: return "정지와 보드 전환\n\n%s로 보드를 바꾸고 %s로 전체 정지한 뒤 계속을 선택하세요.\nETA·계열·보드가 그대로 보존되는지 확인하세요.\n\n보스 시계는 정상 진행합니다. 실패하면 이 단계만 다시 시작합니다." % [inputs.paired_binding_phrase("switch"),inputs.paired_binding_phrase("pause")]
 func _practice_complete() -> bool:
     if session==null: return false
     match practice_stage:
@@ -919,7 +953,7 @@ func _render_practice():
         state.size=Vector2(580,40)
         help.position=Vector2(18,628)
         help.size=Vector2(580,52)
-        help.text="인접 교환 → 파동마다 자동 기술\n타일 직접 보상 없음 · Tab 보드 전환"
+        help.text="인접 교환 → 파동마다 자동 기술\n타일 직접 보상 없음 · %s 보드 전환" % inputs.binding_phrase("switch")
         state.add_theme_font_size_override("font_size",roundi(18.0*float(options.font_scale)/100.0))
         help.add_theme_font_size_override("font_size",roundi(17.0*float(options.font_scale)/100.0))
         return

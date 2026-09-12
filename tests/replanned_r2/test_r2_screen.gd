@@ -149,6 +149,87 @@ func test_options_cancel_reverts_and_font_scale_does_not_resize_boards():
     screen.open_options()
     screen.close_options(false)
     assert_true(screen.session.combat.paused)
+func test_saved_remaps_refresh_control_guidance_cancel_and_scene_reentry():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",41)
+    var gameplay_before=screen.session.snapshot()
+    screen.open_options()
+    for remap in [["hard_drop",KEY_V],["switch",KEY_B],["def",KEY_N],["pause",KEY_M]]:
+        var result=screen.Disk.remap(screen.options_draft,"keyboard_mapping",remap[0],remap[1])
+        assert_true(result.success,"Unused Task 5 fixture key must remap "+remap[0])
+    screen.close_options(true)
+    assert_eq(screen.session.snapshot(),gameplay_before,"Saving presentation mappings cannot mutate combat or puzzle state")
+    var line: Label=screen.get_node("Battle/Puzzle/Line/Input")
+    var chain: Label=screen.get_node("Battle/Puzzle/Chain/Role")
+    var pause: Button=screen.get_node("Battle/Puzzle/Pause")
+    assert_true(line.text.begins_with("키 "))
+    assert_false(line.text.contains("Space"))
+    assert_string_contains(chain.text,"키 B")
+    assert_false(chain.text.contains("Tab"))
+    assert_string_contains(pause.text,"키 M")
+    assert_false(pause.text.contains("Esc"))
+    assert_string_contains(line.tooltip_text,"키보드")
+    assert_string_contains(line.tooltip_text,"게임패드")
+    screen.practice_stage=1
+    assert_string_contains(screen._practice_instruction(),"키 V / 패드 A")
+    screen.practice_stage=3
+    var defense_instruction=screen._practice_instruction()
+    for expected in ["키 B / 패드 LB","키 N / 패드 RB"]: assert_string_contains(defense_instruction,expected)
+    screen.practice_stage=4
+    var pause_instruction=screen._practice_instruction()
+    for expected in ["키 B / 패드 LB","키 M / 패드 Start"]: assert_string_contains(pause_instruction,expected)
+    screen.practice_stage=0
+    var saved_guidance=[line.text,line.tooltip_text,chain.text,chain.tooltip_text,pause.text,pause.tooltip_text]
+    screen.open_options()
+    assert_true(screen.Disk.remap(screen.options_draft,"keyboard_mapping","hard_drop",KEY_Q).success)
+    screen.close_options(false)
+    assert_eq([line.text,line.tooltip_text,chain.text,chain.tooltip_text,pause.text,pause.tooltip_text],saved_guidance,"Canceled draft cannot leak into guidance")
+    var pad_event=InputEventJoypadButton.new()
+    pad_event.button_index=JOY_BUTTON_START
+    pad_event.pressed=true
+    assert_eq(screen.inputs.event_intent(pad_event).action,"pause")
+    assert_true(screen.has_method("_refresh_control_guidance"))
+    if not screen.has_method("_refresh_control_guidance"): return
+    screen._refresh_control_guidance()
+    assert_true(line.text.begins_with("패드 "))
+    assert_string_contains(chain.text,"패드 LB")
+    assert_string_contains(pause.text,"패드 Start")
+    assert_eq(screen.session.snapshot(),gameplay_before,"Reading another device guide cannot mutate gameplay")
+    var reentry=load("res://scenes/replanned_r2/main.tscn").instantiate()
+    reentry.save_path="user://replanned_r2_tests/screen/reentry-save.json"
+    reentry.options_path=screen.options_path
+    add_child_autofree(reentry)
+    reentry.set_process(false)
+    assert_string_contains(reentry.get_node("Battle/Puzzle/Line/Input").text,"V 낙하")
+    assert_string_contains(reentry.get_node("Battle/Puzzle/Chain/Role").text,"키 B")
+    assert_string_contains(reentry.get_node("Battle/Puzzle/Pause").text,"키 M")
+
+func test_practice_pause_keeps_ordinary_checkpoint_without_writing_practice():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",42)
+    assert_true(screen.checkpoint().success)
+    var ordinary_id=screen.session.run_id
+    var ordinary_hash=FileAccess.get_sha256(screen.save_path)
+    assert_false(ordinary_hash.is_empty())
+    screen.pause_game()
+    assert_eq(screen.get_node("PausePanel/Main").text,"체크포인트 보존 후 메인")
+    assert_eq(screen.get_node("PausePanel/Checkpoint").text,"현재 전체 상태를 저장할 수 있습니다.")
+    screen.resume_game()
+    screen.begin_practice(4)
+    screen.close_details()
+    screen.pause_game()
+    assert_string_contains(screen.get_node("PausePanel/Main").text,"연습 저장 안 함")
+    assert_string_contains(screen.get_node("PausePanel/Main").text,"일반 체크포인트 유지")
+    var practice_status=screen.get_node("PausePanel/Checkpoint").text
+    assert_string_contains(practice_status,"연습 상태는 저장하지 않습니다")
+    assert_string_contains(practice_status,"기존 일반 체크포인트는 그대로 유지됩니다")
+    screen.get_node("PausePanel/Main").pressed.emit()
+    assert_eq(screen.page,"main")
+    assert_eq(FileAccess.get_sha256(screen.save_path),ordinary_hash,"Leaving Practice must not rewrite the ordinary save")
+    var retained=screen.disk.load_checkpoint()
+    assert_true(retained.success)
+    assert_eq(retained.snapshot.identity.run_id,ordinary_id)
+
 func test_key_poses_follow_actual_event_clock_and_pause():
     if not ready_screen(): return
     screen.start_run("STANDARD",8)
