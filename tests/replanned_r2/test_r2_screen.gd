@@ -230,6 +230,31 @@ func test_practice_pause_keeps_ordinary_checkpoint_without_writing_practice():
     assert_true(retained.success)
     assert_eq(retained.snapshot.identity.run_id,ordinary_id)
 
+func test_practice_guidance_fits_above_start_button_at_125_percent():
+    if not ready_screen(): return
+    screen.options.font_scale=125
+    screen._apply_font()
+    screen.open_options()
+    assert_true(screen.Disk.remap(screen.options_draft,"keyboard_mapping","hard_drop",KEY_SCROLLLOCK).success)
+    assert_true(screen.Disk.remap(screen.options_draft,"keyboard_mapping","switch",KEY_R).success)
+    assert_true(screen.Disk.remap(screen.options_draft,"keyboard_mapping","def",KEY_F).success)
+    assert_true(screen.Disk.remap(screen.options_draft,"keyboard_mapping","pause",KEY_CAPSLOCK).success)
+    screen.close_options(true)
+    var safety_text={1:"이 단계는 보스 시계만 멈춥니다",2:"이 단계는 보스 시계만 멈춥니다",3:"학습 시작 뒤 보스 시계는 정상 진행합니다",4:"보스 시계는 정상 진행합니다"}
+    for stage in [1,2,3,4]:
+        screen.begin_practice(stage)
+        await get_tree().process_frame
+        var panel: Control=screen.get_node("DetailsPanel")
+        var body: Label=screen.get_node("DetailsPanel/Body")
+        var start: Button=screen.get_node("DetailsPanel/Close")
+        assert_string_contains(body.text,safety_text[stage],"Practice keeps its clock-safety guidance")
+        assert_eq(body.get_theme_font_size("font_size"),29,"Practice keeps the selected 125% text scale")
+        assert_lte(body.position.y+body.get_minimum_size().y+16.0,start.position.y,"Practice %d guidance needs a 16px clear gap above Start at 125%%"%stage)
+        var panel_content=Rect2(Vector2.ZERO,panel.size)
+        assert_true(panel_content.encloses(body.get_rect()))
+        assert_true(panel_content.encloses(start.get_rect()))
+    assert_string_contains(screen._practice_instruction(),"CapsLock","Long mapped key names stay in the fitted guidance")
+
 func test_key_poses_follow_actual_event_clock_and_pause():
     if not ready_screen(): return
     screen.start_run("STANDARD",8)

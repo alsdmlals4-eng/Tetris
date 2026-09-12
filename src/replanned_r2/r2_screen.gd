@@ -329,10 +329,10 @@ func _build_modals():
     _button(pause,"Options",Rect2(316,238,280,44),"설정",open_options)
     _button(pause,"Main",Rect2(24,300,572,48),"체크포인트 보존 후 메인",_exit_battle)
     _label(pause,"Checkpoint",Rect2(24,370,572,110),"",18,CYAN)
-    var details = _panel(self,"DetailsPanel",Rect2(170,90,940,540))
+    var details = _panel(self,"DetailsPanel",Rect2(170,45,940,630))
     _label(details,"Title",Rect2(25,20,890,50),"기술 설명 · 전체 정지",28,GOLD)
-    _label(details,"Body",Rect2(25,98,890,310),"",23)
-    _button(details,"Close",Rect2(25,452,890,54),"설명 닫기 · 이전 정지 상태로",close_details)
+    _label(details,"Body",Rect2(25,98,890,430),"",23)
+    _button(details,"Close",Rect2(25,550,890,54),"설명 닫기 · 이전 정지 상태로",close_details)
 
 func _build_options():
     var panel = _panel(self,"Options",Rect2(90,30,1100,660))
