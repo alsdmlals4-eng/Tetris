@@ -10,7 +10,7 @@
 
 ## Current follow-up implementation closeout — 2026-09-12
 
-The five-item isolated R2 first-encounter scope is implemented and machine/sampled-native verified at `ae895bd6eb4015975f3f22d09656e8ab2dfab7e8`. Current machine state is `TETRIS_R2_IMPLEMENTATION_PROGRESS.json`; chronological pending statements below retain their original revision only. Publication-head CI/merge/readback remains the final integration step, not an unimplemented gameplay task.
+The five-item isolated R2 first-encounter scope is implemented and machine/sampled-native verified at `ae895bd6eb4015975f3f22d09656e8ab2dfab7e8`. Current machine state is `TETRIS_R2_IMPLEMENTATION_PROGRESS.json`; chronological pending statements below retain their original revision only. Publication-head CI/merge/readback is owned by the live repository [PR106](https://github.com/alsdmlals4-eng/Tetris/pull/106), not duplicated as a permanently pending pre-merge status here. Fresh-read its exact head/checks/merge result when resuming.
 
 Latest local executable: `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-ae895bd-20260912/START_R2_LOCAL_TRIAL.cmd`. Its independent Windows main is open for the user. Production main is unchanged; R2 has its separate save namespace. Original user options/save/backup SHA256 stayed identical throughout QA. Existing art pixels, published PDF SHA256 `95be15e57ade1175d736aa7dcb1e7535728ed56250fe67ed7ed1c9b6f3d8de50`, Base9.4.4 and unrelated drafts remain preserved.
 

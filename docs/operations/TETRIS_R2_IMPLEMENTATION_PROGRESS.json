@@ -3,7 +3,8 @@
   "work_mode": "BUILD",
   "approval_state": "REUSED_APPROVAL",
   "approval_reference": "Latest user 좋아 진행해 following the completed R2 blueprint and implementation handoff",
-  "continuous_work_state": "IMPLEMENTED_VERIFIED_INTEGRATION_PENDING",
+  "continuous_work_state": "APPROVED_IMPLEMENTATION_SCOPE_COMPLETE",
+  "integration_authority":{"owner":"GITHUB_PR_CURRENT_STATE","pull_request":"https://github.com/alsdmlals4-eng/Tetris/pull/106","policy":"Fresh-read exact PR head, checks and merge/postmerge main; do not infer remote status from historical pending snapshots"},
   "contract": "docs/operations/TETRIS_R2_IMPLEMENTATION.md",
   "base_adapter": "9.4.4_UNCHANGED",
   "benchmark_preflight_receipt": {
@@ -281,6 +282,6 @@
     "minor": 0,
     "source_sha": "1dd2e46e404772275d26b40031c20c9ad5148ba9",
     "clean_review_exit": "PASS_CODE_AND_SAMPLED_RUNTIME",
-    "integration": "PR105_MERGED_MAIN_1e272c2668e8de102552608eb0ccd5d4718e40ca; R2-04/05 implementation verified atae895bd, follow-up publication pending"
+    "integration": "PR105_MERGED_MAIN_1e272c2668e8de102552608eb0ccd5d4718e40ca; R2-04/05 implementation verified atae895bd; publication/checks/merge owner is live PR106"
   }
 }
