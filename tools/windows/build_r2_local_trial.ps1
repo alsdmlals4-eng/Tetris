@@ -2,7 +2,13 @@
 param(
     [string]$GodotExe = 'C:\Users\user\Tools\Godot-Tetris-4.7.1\Godot_v4.7.1-stable_win64.exe',
     [string]$OutputDirectory = '',
-    [switch]$VerifyPackageOnly
+    [switch]$VerifyPackageOnly,
+    [switch]$VerifyProjectPreservationOnly,
+    [string]$ProjectSettingsPath = '',
+    [string]$ExpectedProjectSha256 = '',
+    [switch]$VerifyExportDiagnosticsOnly,
+    [string]$ExportStdoutPath = '',
+    [string]$ExportStderrPath = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -19,6 +25,7 @@ $ManifestName = 'BUILD_MANIFEST.json'
 $IcuName = 'icudt_godot.dat'
 $RawAssetDirectoryName = 'r2-source-assets'
 $EntryScene = 'res://scenes/replanned_r2/main.tscn'
+$ProductionMainScene = 'res://scenes/production/battle_briefing.tscn'
 $PackageKind = 'TETRIS_R2_LOCAL_TRIAL_NOT_FOR_RELEASE'
 $RepoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
@@ -65,6 +72,64 @@ function Assert-OutsideRepository([string]$Path) {
     }
 }
 
+function Assert-R2ProjectPreserved([string]$Path, [string]$ExpectedSha256) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) {
+        Fail-Build "project.godot preservation failure: file is missing: $Path"
+    }
+    $actualHash = Get-Sha256 $Path
+    if ($actualHash -ne $ExpectedSha256.ToLowerInvariant()) {
+        Fail-Build "project.godot preservation failure: on-disk SHA-256 changed (expected $ExpectedSha256, actual $actualHash)."
+    }
+    $projectText = [IO.File]::ReadAllText($Path)
+    $expectedMainSetting = 'run/main_scene="' + $ProductionMainScene + '"'
+    if (-not $projectText.Contains($expectedMainSetting)) {
+        Fail-Build "project.godot preservation failure: production main scene is not $ProductionMainScene."
+    }
+}
+
+function Verify-ExportDiagnostics([string]$StdoutPath, [string]$StderrPath) {
+    if (-not (Test-Path -LiteralPath $StdoutPath -PathType Leaf) -or -not (Test-Path -LiteralPath $StderrPath -PathType Leaf)) {
+        Fail-Build 'Export diagnostic validation requires both original stdout and stderr logs.'
+    }
+    $stdoutText = Get-Content -Raw -LiteralPath $StdoutPath -ErrorAction Stop
+    $expectedEngineBanner = 'Godot Engine v4.7.1.stable.official.a13da4feb'
+    $expectedDiagnostics = @(
+        "ERROR: 6 RID allocations of type 'N16RendererViewport8ViewportE' were leaked at exit.",
+        "ERROR: 9 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.",
+        "ERROR: 1 RID allocations of type 'N17RendererSceneCull8ScenarioE' were leaked at exit.",
+        "ERROR: 83 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.",
+        "ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.",
+        'WARNING: 6 RIDs of type "Canvas" were leaked.',
+        'WARNING: 36 RIDs of type "CanvasItem" were leaked.',
+        'WARNING: 209 ObjectDB instances were leaked at exit (run with `--verbose` for details).'
+    )
+    $observedDiagnostics = @(
+        @(Get-Content -LiteralPath $StdoutPath -ErrorAction Stop) +
+        @(Get-Content -LiteralPath $StderrPath -ErrorAction Stop) |
+            ForEach-Object { $_.Trim() } |
+            Where-Object { $_ -match '^(ERROR|WARNING|SCRIPT ERROR):' }
+    )
+    if ($observedDiagnostics.Count -eq 0) {
+        return [ordered]@{ state = 'NONE'; lines = @() }
+    }
+    if (-not $stdoutText.Contains($expectedEngineBanner)) {
+        Fail-Build 'Unexpected export warning/error: known lifecycle warnings are allowed only for exact Godot 4.7.1 stable official a13da4feb.'
+    }
+    $expectedSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    $observedSet = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    foreach ($line in $expectedDiagnostics) { [void]$expectedSet.Add($line) }
+    foreach ($line in $observedDiagnostics) {
+        if (-not $observedSet.Add($line) -or -not $expectedSet.Contains($line)) {
+            Fail-Build "Unexpected export warning/error: $line"
+        }
+    }
+    if ($observedDiagnostics.Count -ne $expectedDiagnostics.Count) {
+        $missing = @($expectedDiagnostics | Where-Object { -not $observedSet.Contains($_) })
+        Fail-Build "Unexpected export warning/error set: missing exact known lifecycle line(s): $($missing -join ' | ')"
+    }
+    return [ordered]@{ state = 'KNOWN_TOOLING_WARNING'; lines = $observedDiagnostics }
+}
+
 function Verify-Package([string]$PackageDirectory) {
     $root = [IO.Path]::GetFullPath($PackageDirectory)
     $manifestPath = Join-Path $root $ManifestName
@@ -77,26 +142,66 @@ function Verify-Package([string]$PackageDirectory) {
     if ([string]$manifest.repository_head -notmatch '^[0-9a-f]{40}$') { Fail-Build 'Invalid repository_head.' }
     if ([string]$manifest.entry_scene -ne $EntryScene) { Fail-Build 'Wrong R2 entry scene.' }
     if ([string]$manifest.launcher -ne $LauncherName) { Fail-Build 'Wrong launcher name.' }
-    $requiredArtifacts = @($ExecutableName, $PackName, $LauncherName, $ReadmeName, $SmokeName, $ProbeName, $IcuName)
-    $manifestPaths = @($manifest.artifacts | ForEach-Object { [string]$_.path })
-    foreach ($requiredArtifact in $requiredArtifacts) {
-        if ($manifestPaths -notcontains $requiredArtifact) {
-            Fail-Build "Missing required artifact entry: $requiredArtifact"
+    $requiredArtifacts = @(
+        $ExecutableName, $PackName, $LauncherName, $ReadmeName, $SmokeName, $ProbeName, $IcuName,
+        'export.stdout.log', 'export.stderr.log', 'smoke.stdout.log', 'smoke.stderr.log',
+        'probe.stdout.log', 'probe.stderr.log'
+    )
+    $manifestPaths = @($manifest.artifacts | ForEach-Object { ([string]$_.path).Replace('\', '/') })
+    $manifestExact = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    $manifestIgnoreCase = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::OrdinalIgnoreCase)
+    foreach ($relative in $manifestPaths) {
+        [void](Get-RelativeSafePath $root $relative)
+        if (-not $manifestIgnoreCase.Add($relative)) {
+            if ($manifestExact.Contains($relative)) {
+                Fail-Build "Duplicate manifest artifact path: $relative"
+            }
+            Fail-Build "Case-colliding manifest artifact path: $relative"
         }
+        [void]$manifestExact.Add($relative)
     }
     $assetManifestPath = Join-Path $RepoRoot 'docs\design\r2-complete-session.json'
     $assetManifest = Get-Content -Raw -LiteralPath $assetManifestPath -Encoding UTF8 | ConvertFrom-Json
     $assetEntries = @($assetManifest.assets.PSObject.Properties)
     if ($assetEntries.Count -ne 5) { Fail-Build 'R2 asset manifest must contain exactly five atlases.' }
+    $requiredRawArtifacts = @()
     foreach ($assetProperty in $assetEntries) {
         $relativeAssetPath = [string]$assetProperty.Value.path
         $rawRelativePath = ($RawAssetDirectoryName + '/' + $relativeAssetPath.Replace('\', '/'))
+        $requiredRawArtifacts += $rawRelativePath
         $rawArtifact = @($manifest.artifacts | Where-Object { [string]$_.path -eq $rawRelativePath })
         if ($rawArtifact.Count -ne 1) {
             Fail-Build "Missing required raw atlas artifact entry: $rawRelativePath"
         }
         if (([string]$rawArtifact[0].sha256).ToLowerInvariant() -ne ([string]$assetProperty.Value.sha256).ToLowerInvariant()) {
             Fail-Build "Raw atlas manifest hash differs from approved metadata: $rawRelativePath"
+        }
+    }
+    $expectedArtifactPaths = @($requiredArtifacts) + @($requiredRawArtifacts)
+    foreach ($requiredArtifact in $expectedArtifactPaths) {
+        if (-not $manifestExact.Contains($requiredArtifact)) {
+            Fail-Build "Missing required artifact entry: $requiredArtifact"
+        }
+    }
+    if ($manifestPaths.Count -ne $expectedArtifactPaths.Count) {
+        $unexpected = @($manifestPaths | Where-Object { $expectedArtifactPaths -cnotcontains $_ })
+        Fail-Build "Unlisted or unexpected manifest artifact entry count; unexpected: $($unexpected -join ', ')"
+    }
+    $actualPaths = @(
+        Get-ChildItem -LiteralPath $root -File -Recurse |
+            Where-Object { -not $_.FullName.Equals($manifestPath, [StringComparison]::OrdinalIgnoreCase) } |
+            ForEach-Object { [IO.Path]::GetRelativePath($root, $_.FullName).Replace('\', '/') }
+    )
+    $actualExact = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
+    foreach ($actualPath in $actualPaths) { [void]$actualExact.Add($actualPath) }
+    foreach ($actualPath in $actualPaths) {
+        if (-not $manifestExact.Contains($actualPath)) {
+            Fail-Build "Unlisted package file: $actualPath"
+        }
+    }
+    foreach ($manifestArtifactPath in $manifestPaths) {
+        if (-not $actualExact.Contains($manifestArtifactPath)) {
+            Fail-Build "Manifest path case or disk file mismatch: $manifestArtifactPath"
         }
     }
     foreach ($artifact in @($manifest.artifacts)) {
@@ -112,6 +217,21 @@ function Verify-Package([string]$PackageDirectory) {
         }
     }
     Write-Output 'R2_LOCAL_TRIAL_PACKAGE_VERIFIED'
+}
+
+if ($VerifyProjectPreservationOnly) {
+    if ([string]::IsNullOrWhiteSpace($ProjectSettingsPath) -or $ExpectedProjectSha256 -notmatch '^[0-9a-fA-F]{64}$') {
+        Fail-Build 'Project preservation verification requires a fixture path and 64-character expected SHA-256.'
+    }
+    Assert-R2ProjectPreserved $ProjectSettingsPath $ExpectedProjectSha256
+    Write-Output 'R2_PROJECT_SETTINGS_PRESERVED'
+    exit 0
+}
+
+if ($VerifyExportDiagnosticsOnly) {
+    $diagnosticResult = Verify-ExportDiagnostics $ExportStdoutPath $ExportStderrPath
+    Write-Output $diagnosticResult.state
+    exit 0
 }
 
 if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
@@ -144,7 +264,8 @@ $head = (& git -C $RepoRoot rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0 -or $head -notmatch '^[0-9a-f]{40}$') {
     Fail-Build 'Cannot resolve the exact repository HEAD.'
 }
-$projectHash = Get-Sha256 (Join-Path $RepoRoot 'project.godot')
+$projectSettingsPath = Join-Path $RepoRoot 'project.godot'
+$projectHash = Get-Sha256 $projectSettingsPath
 $trackedDirty = @(& git -C $RepoRoot diff --name-only)
 
 $exportStdout = Join-Path $OutputDirectory 'export.stdout.log'
@@ -167,11 +288,18 @@ $exportArgs = @(
     '--script', 'res://tools/windows/r2_export_driver.gd',
     '--export-pack', ('"' + $PresetName + '"'), ('"' + $pckPath + '"')
 )
-$exportProcess = Start-Process -FilePath $GodotExe -ArgumentList $exportArgs -WorkingDirectory $RepoRoot -WindowStyle Hidden -RedirectStandardOutput $exportStdout -RedirectStandardError $exportStderr -PassThru
-$exportProcess.WaitForExit()
-if ($exportProcess.ExitCode -ne 0) {
-    Fail-Build "Godot export exited $($exportProcess.ExitCode). See export logs."
+$exportExitCode = $null
+try {
+    $exportProcess = Start-Process -FilePath $GodotExe -ArgumentList $exportArgs -WorkingDirectory $RepoRoot -WindowStyle Hidden -RedirectStandardOutput $exportStdout -RedirectStandardError $exportStderr -PassThru
+    $exportProcess.WaitForExit()
+    $exportExitCode = $exportProcess.ExitCode
+} finally {
+    Assert-R2ProjectPreserved $projectSettingsPath $projectHash
 }
+if ($null -eq $exportExitCode -or $exportExitCode -ne 0) {
+    Fail-Build "Godot export exited $exportExitCode. See export logs."
+}
+$exportDiagnosticResult = Verify-ExportDiagnostics $exportStdout $exportStderr
 if (-not (Test-Path -LiteralPath $pckPath -PathType Leaf)) { Fail-Build "Export did not create $PackName" }
 Copy-Item -LiteralPath $releaseTemplate -Destination $exePath
 Copy-Item -LiteralPath $icuSource -Destination (Join-Path $OutputDirectory $IcuName)
@@ -309,7 +437,9 @@ $manifest = [ordered]@{
     entry_scene = $EntryScene
     launcher = $LauncherName
     generated_at_utc = [DateTime]::UtcNow.ToString('o')
-    evidence_ceiling = @('EXPORT_CORRECTNESS', 'HEADLESS_EXPORTED_SCENE_SMOKE')
+    evidence_ceiling = @('EXPORT_CORRECTNESS', 'HEADLESS_EXPORTED_SCENE_SMOKE', $exportDiagnosticResult.state)
+    tooling_warning_state = $exportDiagnosticResult.state
+    tooling_warning_lines = $exportDiagnosticResult.lines
     not_claimed = @('HUMAN_APPROVAL', 'ART_APPROVAL', 'RIGHTS_APPROVAL', 'PUBLIC_RELEASE_READINESS')
     artifacts = $artifacts
 }

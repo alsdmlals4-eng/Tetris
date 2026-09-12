@@ -41,6 +41,56 @@ def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def _write_valid_package_fixture(package: Path):
+    payloads = {
+        "TetrisR2LocalTrial.exe": b"native-placeholder",
+        "TetrisR2LocalTrial.pck": b"pack-placeholder",
+        "START_R2_LOCAL_TRIAL.cmd": b"launcher-placeholder",
+        "README_LOCAL_TRIAL.txt": "local trial 안내".encode("utf-8"),
+        "r2-package-smoke.json": b'{"ok":true}',
+        "r2-export-probe.json": b'{"ok":true}',
+        "icudt_godot.dat": b"icu-placeholder",
+        "export.stdout.log": b"export stdout",
+        "export.stderr.log": b"",
+        "smoke.stdout.log": b"smoke stdout",
+        "smoke.stderr.log": b"",
+        "probe.stdout.log": b"probe stdout",
+        "probe.stderr.log": b"",
+    }
+    artifacts = []
+    for name, payload in payloads.items():
+        path = package / name
+        path.write_bytes(payload)
+        artifacts.append({"path": name, "sha256": _sha256(path)})
+    asset_manifest = json.loads(
+        (ROOT / "docs" / "design" / "r2-complete-session.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    raw_artifact_paths = []
+    for entry in asset_manifest["assets"].values():
+        relative = Path("r2-source-assets") / entry["path"]
+        source = ROOT / entry["path"]
+        destination = package / relative
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, destination)
+        manifest_path = relative.as_posix()
+        raw_artifact_paths.append(manifest_path)
+        artifacts.append({"path": manifest_path, "sha256": _sha256(destination)})
+    manifest = {
+        "schema_version": 1,
+        "package_kind": "TETRIS_R2_LOCAL_TRIAL_NOT_FOR_RELEASE",
+        "repository_head": "a" * 40,
+        "entry_scene": "res://scenes/replanned_r2/main.tscn",
+        "launcher": "START_R2_LOCAL_TRIAL.cmd",
+        "artifacts": artifacts,
+    }
+    (package / "BUILD_MANIFEST.json").write_text(
+        json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
+    )
+    return manifest, artifacts, raw_artifact_paths
+
+
 class R2WindowsPackageContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -72,46 +122,7 @@ class R2WindowsPackageContractTests(unittest.TestCase):
     def test_verify_only_accepts_intact_package_and_rejects_tampering(self):
         with tempfile.TemporaryDirectory() as temporary:
             package = Path(temporary)
-            payloads = {
-                "TetrisR2LocalTrial.exe": b"native-placeholder",
-                "TetrisR2LocalTrial.pck": b"pack-placeholder",
-                "START_R2_LOCAL_TRIAL.cmd": b"launcher-placeholder",
-                "README_LOCAL_TRIAL.txt": "local trial 안내".encode("utf-8"),
-                "r2-package-smoke.json": b'{"ok":true}',
-                "r2-export-probe.json": b'{"ok":true}',
-                "icudt_godot.dat": b"icu-placeholder",
-            }
-            artifacts = []
-            for name, payload in payloads.items():
-                path = package / name
-                path.write_bytes(payload)
-                artifacts.append({"path": name, "sha256": _sha256(path)})
-            asset_manifest = json.loads(
-                (ROOT / "docs" / "design" / "r2-complete-session.json").read_text(
-                    encoding="utf-8"
-                )
-            )
-            raw_artifact_paths = []
-            for entry in asset_manifest["assets"].values():
-                relative = Path("r2-source-assets") / entry["path"]
-                source = ROOT / entry["path"]
-                destination = package / relative
-                destination.parent.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(source, destination)
-                manifest_path = relative.as_posix()
-                raw_artifact_paths.append(manifest_path)
-                artifacts.append({"path": manifest_path, "sha256": _sha256(destination)})
-            manifest = {
-                "schema_version": 1,
-                "package_kind": "TETRIS_R2_LOCAL_TRIAL_NOT_FOR_RELEASE",
-                "repository_head": "a" * 40,
-                "entry_scene": "res://scenes/replanned_r2/main.tscn",
-                "launcher": "START_R2_LOCAL_TRIAL.cmd",
-                "artifacts": artifacts,
-            }
-            (package / "BUILD_MANIFEST.json").write_text(
-                json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
-            )
+            manifest, artifacts, raw_artifact_paths = _write_valid_package_fixture(package)
 
             intact = subprocess.run(
                 [
@@ -215,6 +226,166 @@ class R2WindowsPackageContractTests(unittest.TestCase):
             )
             self.assertNotEqual(tampered.returncode, 0)
             self.assertIn("SHA-256 mismatch", tampered.stdout + tampered.stderr)
+
+    def test_verify_only_rejects_missing_log_unlisted_extra_and_path_collisions(self):
+        def verify(package: Path):
+            return subprocess.run(
+                [
+                    POWERSHELL,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(BUILDER),
+                    "-OutputDirectory",
+                    str(package),
+                    "-VerifyPackageOnly",
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+
+        with tempfile.TemporaryDirectory() as temporary:
+            package = Path(temporary)
+            manifest, artifacts, _ = _write_valid_package_fixture(package)
+
+            missing_log = dict(manifest)
+            missing_log["artifacts"] = [
+                item for item in artifacts if item["path"] != "export.stderr.log"
+            ]
+            (package / "BUILD_MANIFEST.json").write_text(
+                json.dumps(missing_log), encoding="utf-8"
+            )
+            result = verify(package)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("export.stderr.log", result.stdout + result.stderr)
+
+            (package / "BUILD_MANIFEST.json").write_text(
+                json.dumps(manifest), encoding="utf-8"
+            )
+            extra = package / "unlisted-extra.txt"
+            extra.write_text("must be rejected", encoding="utf-8")
+            result = verify(package)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("unlisted", (result.stdout + result.stderr).lower())
+            extra.unlink()
+
+            duplicate = dict(manifest)
+            duplicate["artifacts"] = artifacts + [dict(artifacts[0])]
+            (package / "BUILD_MANIFEST.json").write_text(
+                json.dumps(duplicate), encoding="utf-8"
+            )
+            result = verify(package)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("duplicate", (result.stdout + result.stderr).lower())
+
+            case_alias = dict(manifest)
+            alias = dict(artifacts[0])
+            alias["path"] = alias["path"].upper()
+            case_alias["artifacts"] = artifacts + [alias]
+            (package / "BUILD_MANIFEST.json").write_text(
+                json.dumps(case_alias), encoding="utf-8"
+            )
+            result = verify(package)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("case", (result.stdout + result.stderr).lower())
+
+    def test_project_preservation_check_rejects_isolated_postexport_change(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            project_file = Path(temporary) / "project.godot"
+            project_file.write_text(
+                '[application]\nrun/main_scene="res://scenes/production/battle_briefing.tscn"\n',
+                encoding="utf-8",
+            )
+            expected_hash = _sha256(project_file)
+            project_file.write_text(
+                '[application]\nrun/main_scene="res://scenes/replanned_r2/main.tscn"\n',
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    POWERSHELL,
+                    "-NoProfile",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-File",
+                    str(BUILDER),
+                    "-VerifyProjectPreservationOnly",
+                    "-ProjectSettingsPath",
+                    str(project_file),
+                    "-ExpectedProjectSha256",
+                    expected_hash,
+                ],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertIn("project.godot preservation", result.stdout + result.stderr)
+
+    def test_export_diagnostic_check_accepts_only_exact_known_lifecycle_warnings(self):
+        known_errors = [
+            "ERROR: 6 RID allocations of type 'N16RendererViewport8ViewportE' were leaked at exit.",
+            "ERROR: 9 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.",
+            "ERROR: 1 RID allocations of type 'N17RendererSceneCull8ScenarioE' were leaked at exit.",
+            "ERROR: 83 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.",
+            "ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.",
+        ]
+        known_warnings = [
+            'WARNING: 6 RIDs of type "Canvas" were leaked.',
+            'WARNING: 36 RIDs of type "CanvasItem" were leaked.',
+            "WARNING: 209 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        ]
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            stdout = root / "export.stdout.log"
+            stderr = root / "export.stderr.log"
+            stdout.write_text(
+                "Godot Engine v4.7.1.stable.official.a13da4feb\n"
+                + "\n".join(known_errors)
+                + "\n",
+                encoding="utf-8",
+            )
+            stderr.write_text("\n".join(known_warnings) + "\n", encoding="utf-8")
+
+            def check():
+                return subprocess.run(
+                    [
+                        POWERSHELL,
+                        "-NoProfile",
+                        "-ExecutionPolicy",
+                        "Bypass",
+                        "-File",
+                        str(BUILDER),
+                        "-VerifyExportDiagnosticsOnly",
+                        "-ExportStdoutPath",
+                        str(stdout),
+                        "-ExportStderrPath",
+                        str(stderr),
+                    ],
+                    cwd=ROOT,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    errors="replace",
+                )
+
+            known = check()
+            self.assertEqual(known.returncode, 0, known.stdout + known.stderr)
+            self.assertIn("KNOWN_TOOLING_WARNING", known.stdout)
+
+            stderr.write_text(
+                "\n".join(known_warnings + ["WARNING: new warning must fail"]) + "\n",
+                encoding="utf-8",
+            )
+            unexpected = check()
+            self.assertNotEqual(unexpected.returncode, 0)
+            self.assertIn("Unexpected export warning/error", unexpected.stdout + unexpected.stderr)
 
 
 if __name__ == "__main__":
