@@ -178,6 +178,8 @@ Fresh package readback:
 
 ## Remaining risks and next work
 
+Parent relocation readback2026-09-12: the six obsolete folders listed above were moved intact from `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/<name>` to `C:/Users/user/Desktop/Tetris_삭제대기_20260912/패키지/<name>`. Historical log paths in this report identify their original run location; use this relocation rule to read them now. `패키지목록.json` at the quarantine root maps all84 files and verifies matching before/after SHA-256,643852940 bytes,0 deleted. The active fc51180 package remains in Builds. No source/runtime consumer depended on the old paths; the screenshot manifest now records both original and relocated path. User may delete superseded packages; until then every original log remains available and recoverable by moving back without overwriting new files.
+
 - `KNOWN_TOOLING_WARNING`: scripted editor/export termination emits leak warnings as described above.
 - `TASK5_NOT_IMPLEMENTED_HERE`: native QA exposed a separate user-facing Practice pause description that says the current state is saveable even though `checkpoint()` correctly prohibits Practice saves. This belongs to the already queued Task 5 presentation/guidance correction and did not change Task 4 package behavior.
 - `HUMAN_UX_NOT_RUN`: no fresh-player comprehension, accessibility/device matrix or user acceptance was performed.
