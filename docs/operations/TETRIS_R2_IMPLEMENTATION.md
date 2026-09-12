@@ -12,6 +12,22 @@
 
 ## Global constraints and authority
 
+2026-09-12 continuation: user explicitly authorizes Base fresh-read, benchmark/professional-practice comparison and bounded implementation/improvement without repeated routine approvals. Current source/main `1e272c2668e8de102552608eb0ccd5d4718e40ca` contains merged PR105. Its two completed full reviews remain historical completed evidence; follow-up findings receive scoped correction/review, not a third full review of unchanged work. Latest Base remote `d830c0f6967678eed3c208ac6b24f9cd1b262ec3` informs intake; installed9.4.4/protected contract is not migrated.
+
+### Task 4: Portable local R2 trial
+
+Goal: launch the already implemented isolated R2 in a local native Windows package without requiring the editor; preserve production main entry, source art and existing saves. No public release/upload, paid service, plugin upgrade or deletion. Source/data/model rules remain unchanged unless an export failure demonstrates a bounded fix is required.
+
+Compare three real methods: distribute whole editable repository plus editor (REJECT excess unrelated assets/tooling); native Godot selected-resource export with explicit JSON/asset coverage and an R2 launcher (ADOPT dependency-driven package and reversible entry selection); separate copied project with rewritten settings (REJECT duplicated authority and drift). Existing Godot export templates and HiGodot export-strip plugin are reused. A native preset/launcher and package-specific tests fill the actual gap; no new export framework or bridge.
+
+Files: `export_presets.cfg`; minimal launcher/build-verification support under `tools/windows` and `tests/tooling`; only if reproduced necessary, `src/replanned_r2/r2_assets.gd` and its focused regression. Godot persistent writes use dedicated HiGodot; other scripts/docs use ordinary repository edits. Output is a clearly marked local trial outside tracked runtime assets, with exact build SHA and hash/readme. Preserve source PNG integrity checks rather than silently skip hashes in release. Test raw-byte availability/import remapping in the actual exported package before choosing the smallest correction.
+
+Acceptance: native export succeeds; R2 opens with all five correct atlas sources, JSON data, Korean text and no editor helper autoload; main→practice/battle flow works; missing/wrong assets remain explicit errors; original project entry/settings and saved state not overwritten by test setup; actual test counts/exit codes and package logs recorded. Export correctness, sampled runtime, Human/art/rights/release remain separate.
+
+Research2026-09-12: [SEGA rules](https://puyo.sega.jp/puyopuyotetris2/rule.html) ADAPT distinct-puzzle teaching/HP recovery, REJECT forced swap and MP for R2. [Tetris Effect](https://www.tetriseffect.game/) ADAPT action-linked payoff, no copied Zone/music/assets. [Into the Breach](https://store.steampowered.com/app/590380/Into_the_Breach/) REFERENCE_ONLY declared tactical/predictive design; developer-site fetch timed out and was not treated as read. Existing R2 current threat/DEF preview and LINE receipt are actual local consumers to verify, not missing features to rebuild. [Godot export](https://docs.godotengine.org/en/stable/tutorials/export/exporting_projects.html) ADOPT preset, explicit non-resource filters and native executable validation; PCK alone is not a playable deliverable. Public descriptions are not proprietary-code inspection or firsthand playtesting.
+
+Preflight: source art reused, baseline owners COMPATIBILITY, R2 implementation ACTIVE_OWNER, published PDFs ARCHIVE snapshots, unknown import/UID metadata preserved. Base reuse profile remains a planned hint, not current runtime authority. No newly relevant cross-project exporter is indexed. System Blueprint entry NOT_APPLICABLE_WITH_REASON: packaging does not change connected gameplay meanings. FEASIBLE native packaging; actual asset/remap, helper exclusion and exported UI acceptance NOT_RUN. Revert only own package commit to roll back; do not delete original files.
+
 - Latest user `좋아 진행해` continues the completed blueprint handoff into implementation. This does not confer runtime, Human, balance or release approval.
 - Existing production scenes/rules/assets, six unrelated draft PRs and historical PDF bytes are preserved. No automatic main-scene replacement.
 - Base 9.4.4 stays pinned. No additional paid dependency or new authoring bridge.

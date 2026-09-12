@@ -10,6 +10,12 @@
     "state": "REUSED_EVIDENCE",
     "entries": [
       {
+        "source_and_evidence": "2026-09-12 main1e272c2; actual r2_assets.gd/source-hash and HiGodot export-strip plugin; Godot official exporting_projects; SEGA Puyo Tetris2 rule page; Tetris Effect official; Into the Breach developer Steam description. Base remote d830c0f intake fresh-read, adapter9.4.4 retained.",
+        "observed_pattern": "Native export requires explicit preset and non-resource data coverage; existing helper strips tooling autoload. Comparable games teach puzzle roles and communicate clear-to-combat payoff or enemy intentions.",
+        "project_fit_and_difference": "Adapt native selected-resource packaging and actual exported-run validation; retain R2 automatic casts, free switching and readable ETA. No forced swap, MP, copied imagery or claimed access to proprietary code.",
+        "disposition": "ADAPT"
+      },
+      {
         "source_and_evidence": "7340c7f1216b190f91264149e69c1304cbdc6c42 production LINE/CHAIN/scheduler and R2 package; fresh Windows 253 GUT and 79 tooling tests",
         "observed_pattern": "Existing geometry and committed-action boundaries; baseline manual MP rules differ from R2",
         "project_fit_and_difference": "Reuse geometry and atlas bytes, isolate new transaction/timing owners rather than overwrite production",
@@ -58,15 +64,29 @@
   },
   "project_work_kanban": {
     "goal_or_slice_issue_ref": "docs/operations/TETRIS_R2_IMPLEMENTATION.md",
-    "source_main_sha": "7340c7f1216b190f91264149e69c1304cbdc6c42",
+    "source_main_sha": "1e272c2668e8de102552608eb0ccd5d4718e40ca",
     "work_item_refs": [
       "R2-01",
       "R2-02",
-      "R2-03"
+      "R2-03",
+      "R2-04"
     ],
-    "active_work_item_ref": "R2-03",
-    "next_action": "Publish own branch/PR, verify exact-head required checks and safe integration; do not mutate unrelated drafts or replace production entry.",
+    "active_work_item_ref": "R2-04",
+    "next_action": "Implement and verify isolated Windows R2 package; preserve production entry and unrelated drafts.",
     "work_items": [
+      {
+        "work_item_id": "R2-04",
+        "title": "Portable local R2 trial and export regression",
+        "status": "IN_PROGRESS",
+        "canon_owner": "docs/operations/TETRIS_R2_IMPLEMENTATION.md",
+        "actual_consumers": ["scenes/replanned_r2/main.tscn", "src/replanned_r2/r2_assets.gd"],
+        "depends_on": ["R2-03"],
+        "acceptance_criteria": ["R2-04-AC"],
+        "required_evidence": ["E2_TEST", "E3_RUNTIME"],
+        "checklist": [{"id":"R2-04-AC", "text":"Local Windows package launches R2 with all intended atlases/data; original project entry and saves preserved; missing assets fail visibly; export checks reproducible", "status":"NOT_RUN"}],
+        "verification": [{"level":"E2_TEST","status":"NOT_RUN","evidence":[]},{"level":"E3_RUNTIME","status":"NOT_RUN","evidence":[]}],
+        "next_action": "Reproduce packaged resource behavior using native Godot export before changing asset validation"
+      },
       {
         "work_item_id": "R2-01",
         "title": "Deterministic R2 combat transactions",
@@ -241,6 +261,6 @@
     "minor": 0,
     "source_sha": "1dd2e46e404772275d26b40031c20c9ad5148ba9",
     "clean_review_exit": "PASS_CODE_AND_SAMPLED_RUNTIME",
-    "integration": "PENDING"
+    "integration": "PR105_MERGED_MAIN_1e272c2668e8de102552608eb0ccd5d4718e40ca; R2-04 follow-up in progress"
   }
 }
