@@ -1,10 +1,10 @@
 # Task 4 report — portable local Windows R2 trial
 
 - status: `DONE_WITH_CONCERNS`
-- implementation commits: `ed96b5ab0b2d4386ddb19fa139bc012da571f563` (`build: package native R2 local trial`), `48b644d5843cbb2119459c7c838829a373199a8c` (`fix: render raw asset folder in trial readme`)
+- implementation commits: `ed96b5ab0b2d4386ddb19fa139bc012da571f563` (`build: package native R2 local trial`), `48b644d5843cbb2119459c7c838829a373199a8c` (`fix: render raw asset folder in trial readme`), `fc51180ccc68fc7ca5c262881db9abf9be01b4bd` (`fix: harden R2 package verification`)
 - task continuation base: `36d2f2a`; concurrent parent documentation commits through `8bee0ebaac116632ef0173e90b754915fd00afa7` were preserved before implementation
-- final package source HEAD: `48b644d5843cbb2119459c7c838829a373199a8c`
-- final retained package: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-48b644d-20260912-104000`
+- final package source HEAD: `fc51180ccc68fc7ca5c262881db9abf9be01b4bd`
+- final retained package: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-fc51180-20260912-111500`
 - launcher: `START_R2_LOCAL_TRIAL.cmd`
 - package purpose: local Windows candidate review only; no upload, public release, art approval, rights approval, accessibility approval or user approval is claimed
 
@@ -85,8 +85,8 @@ Preserved evidence folders (no files were deleted):
 
 ## Final package readback
 
-- Final directory: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-48b644d-20260912-104000`
-- `BUILD_MANIFEST.json` source HEAD: `48b644d5843cbb2119459c7c838829a373199a8c` (exactly matched `git rev-parse HEAD` at build time)
+- Final directory: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-fc51180-20260912-111500`
+- `BUILD_MANIFEST.json` source HEAD: `fc51180ccc68fc7ca5c262881db9abf9be01b4bd` (exactly matched `git rev-parse HEAD` at build time)
 - Source `project.godot` SHA-256 before export, in manifest and after export: `46ce5e3295b0807f57fd16e07573ca7f0aa470c8e55696a8f8ca360d74caf020`
 - Source production entry readback: `res://scenes/production/battle_briefing.tscn`
 - Preserved tracked dirty path recorded by final manifest: only `project.godot`
@@ -108,8 +108,8 @@ Preserved evidence folders (no files were deleted):
 
 - Focused asset GUT: exit `0`, `3/3`, 17 assertions.
 - Snapshot standalone test: exit `0`, `R2_EXPORT_SNAPSHOT_TEST_PASS`.
-- Package Python unit tests after final fix: exit `0`, `3/3`.
-- Full Python tooling suite: exit `0`, `82/82` tests.
+- Package Python unit tests after the initial build: exit `0`, `3/3`; after the scoped fix wave: exit `0`, `6/6`.
+- Full Python tooling suite before scoped review: exit `0`, `82/82` tests; after the scoped fix wave: exit `0`, `85/85` tests.
 - Full recursive GUT suite: exit `0`, 58 scripts, `340/340` tests, 3,572 assertions.
 - A preceding GUT invocation omitted `-ginclude_subdirs` and emitted `Nothing was run`; it is explicitly `NOT_EVIDENCE`. The corrected recursive invocation produced the counts above.
 
@@ -134,18 +134,47 @@ This is `RUNTIME_VERIFIED` for the sampled native flows and machine-assisted vis
 
 The export process log is intentionally **not clean**: the combined `--editor --script ... --export-pack` process exits `0` after writing and restoring the snapshot, but reports six Canvas RIDs, 36 CanvasItem RIDs, 209 ObjectDB instances and additional viewport/texture/scenario/text/font RID allocations leaked during shutdown. A comparison `--headless --editor --quit` process exited `0` without those warnings, so they are specific to this scripted editor/export termination path rather than a general headless startup baseline. The exported executable smoke and pack probe have empty stderr and the playable payload is unaffected in the sampled flows, but the warning remains a known tooling-lifecycle concern and prevents claiming a warning-clean export. Per parent direction it does not justify unrelated framework or gameplay work in Task 4.
 
+## Scoped review fix wave
+
+The scoped package review of source `36d2f2a → 48b644d` returned three valid findings. Commit `fc51180ccc68fc7ca5c262881db9abf9be01b4bd` resolves them without changing GDScript, gameplay, assets, the export snapshot, or Task 5:
+
+1. `project.godot` preservation is now enforced rather than merely recorded. The builder captures the on-disk SHA-256, runs export inside `try/finally`, and in `finally` re-hashes the same path and re-reads the exact production main setting. This check therefore also executes after an export failure or launch exception. A dedicated isolated-fixture mode lets the regression change a temporary `project.godot`; it never mutates the user's file. The test observes an explicit `project.godot preservation failure` for changed bytes/main.
+2. `-VerifyPackageOnly` now requires the exact complete 18-file set: EXE, PCK, ICU, launcher, README, smoke/probe JSON, six original logs and five canonical raw atlases. It rejects exact duplicate paths, case-colliding aliases, missing required entries, unexpected manifest entries, unlisted recursive disk files, disk/manifest case mismatches, unsafe paths and hash mismatches. It enumerates every package file except `BUILD_MANIFEST.json` and requires exact equality with the manifest. Tests independently reject a missing log, unlisted extra file, duplicate entry and case alias.
+3. The known export shutdown diagnostics are no longer merely mentioned after the build. The builder accepts either no warning/error diagnostics or the exact eight-line set observed only with Godot `4.7.1.stable.official.a13da4feb`: five allocation `ERROR` lines and three Canvas/CanvasItem/ObjectDB `WARNING` lines with exact counts and type strings. Any new, missing, duplicated or version-mismatched warning/error fails the build. The original stdout/stderr remain visible and hashed artifacts. The manifest reports `tooling_warning_state="KNOWN_TOOLING_WARNING"` and preserves all eight original lines; this is a bounded validator, not suppression.
+
+TDD evidence for this wave:
+
+- RED: the former verifier returned exit `0` when `export.stderr.log` was omitted.
+- RED: the preservation-only fixture option did not exist and therefore could not emit the required preservation failure.
+- RED: the export-diagnostic fixture option did not exist and could not classify the exact known warning set.
+- GREEN: package tests exit `0`, `6/6`; changed project fixture, missing log, unlisted file, duplicate, case alias and unexpected warning all fail for their intended reasons.
+- Full tooling GREEN: exit `0`, `85/85`.
+- Full GUT `340/340`, 3,572 assertions is reused from the immediately preceding Task 4 run because this wave changes only PowerShell/Python package verification; no `.gd`, `.tscn`, gameplay, asset or project setting was changed.
+
+Fresh package readback:
+
+- Path: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-fc51180-20260912-111500`
+- Builder and strict `-VerifyPackageOnly`: exit `0`, `R2_LOCAL_TRIAL_PACKAGE_VERIFIED`.
+- Manifest HEAD = build HEAD = `fc51180ccc68fc7ca5c262881db9abf9be01b4bd`.
+- Source and manifest `project.godot` SHA-256 remain `46ce5e3295b0807f57fd16e07573ca7f0aa470c8e55696a8f8ca360d74caf020`; source main remains production.
+- Manifest entries = 18; recursively enumerated disk files excluding the manifest = 18.
+- `tooling_warning_state=KNOWN_TOOLING_WARNING`; exact diagnostic lines = 8.
+- Pack probe `ok=true`, `asset_errors=[]`, Practice entered; native smoke and probe stderr remain empty.
+- EXE/PCK hashes remain byte-identical to the parent-inspected payload, so prior native visual/gameplay and saved-file preservation evidence remains applicable.
+
 ## Preservation, rollback and retained folders
 
 - HiGodot was the only persistent Godot writer for `.gd`/`export_presets.cfg`; the exact editor PID 37444 was released after write/readback and confirmed exited. Other project editors/processes were not touched.
 - Dirty `project.godot`, untracked imports, unrelated UIDs, baseline assets and parent-owned native captures were preserved and not staged by this task.
 - Rollback source changes by reverting `48b644d` then `ed96b5a`; this does not require touching production saves or deleting source assets.
-- Keep as the valid user-facing trial: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-48b644d-20260912-104000`.
+- Keep as the valid user-facing trial: `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-fc51180-20260912-111500`.
 - Exact obsolete/intermediate folders eligible for the parent's later move to `C:\Users\user\Desktop\Tetris_삭제대기_20260912` (not deleted or moved by Task 4):
   - `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\preflight-20260912-100001`
   - `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\preflight-pack-20260912-100413`
   - `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\snapshot-20260912-101539`
   - `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\rawfix-20260912-102500`
   - `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-ed96b5a-20260912-102800`
+  - `C:\Users\user\Documents\Tetris R2 Local Trial\Builds\final-48b644d-20260912-104000`
 
 ## Remaining risks and next work
 
