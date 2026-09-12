@@ -1,0 +1,25 @@
+{
+  "source_commit": "ed96b5ab0b2d4386ddb19fa139bc012da571f563",
+  "scene": "res://scenes/replanned_r2/main.tscn",
+  "date": "2026-09-12",
+  "engine": "Godot 4.7.1 stable Windows release template",
+  "package": "C:/Users/user/Documents/Tetris R2 Local Trial/Builds/final-ed96b5a-20260912-102800",
+  "executable_sha256": "76269a403bb832599edeee4432a5b7a7e88c018eb5c9c798dfd8289359b0ec07",
+  "pack_sha256": "4b9ba1748ab48f3eda4e9fd6bce57bde75b8090bd5ab198a4bf896c7cc4baff6",
+  "font_scale_percent": 125,
+  "embedding": false,
+  "acquisition": "Native Windows Computer Use window capture; decorations included; no image edits. Initial unrelated-window occlusion resolved by maximizing the target trial window only.",
+  "input": "Normal mouse and keyboard; no model injection or editor required. Main Practice button, Start, Space, Next lesson, Start, swap(4,5)-(5,5), Escape, return Main.",
+  "images": [
+    {"file":"main-1280-ed96b5a.png","sha256":"20b400665262675113f8ab5895a7687538f8f8df99e31a3adbd115896e7d83f0","observation":"Restored default window with1280x720 logical content, readable Korean main and transparent boss over separate environment; original Continue still available."},
+    {"file":"line-receipt-ed96b5a.png","sha256":"3baf813fdd11841d4735ecdc41103d170a35802f687a8ad814229e57da74917c","observation":"Maximized native window: Space clear A4 D2 H2 T2; bank4 armor2 HP82 ETA10.5, actual+0.500s and0wasted; all five asset families visible."},
+    {"file":"chain-two-casts-ed96b5a.png","sha256":"6d4fa3ca8b3227f64999dd5b565582f9183c62434ab5c8db90666b9ce984cc75","observation":"Practice2 actual UI swap generated two automatic ATK casts, boss240to230, last ATK T2 actual6, tile direct rewards0. Restored1280window also visually inspected."}
+  ],
+  "original_files_before_after_identical": {
+    "user://replanned_r2/options.json":"9d5e9dba265f31673e311326d112ef47ea354e1da1544ce981896fd9614ab703",
+    "user://replanned_r2/save.json":"0500831f3666bdafa102311773fa3f324db688f049ec0234d79e3b7aed2a65a7",
+    "user://replanned_r2/save.json.bak":"6f55a6073c48d70009b03263bbebd89c71c331d2f4700c3b6bb24fb88684117c"
+  },
+  "finding": "Practice pause says current whole state can be saved although checkpoint() intentionally rejects practice. Task5 will correct presentation while preserving the save rule.",
+  "limits": ["Sampled native keyboard/mouse/runtime visuals, not Human/fun/art approval or physical-gamepad/accessibility certification.","Export-driver shutdown resource warnings remain a separately recorded investigation; native smoke/probe correctness is not a clean-export-log claim.","No regular-run checkpoint was overwritten; practice stages reset their tutorial fixtures by the existing rules."]
+}
