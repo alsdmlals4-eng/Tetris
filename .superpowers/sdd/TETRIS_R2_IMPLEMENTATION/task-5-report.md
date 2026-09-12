@@ -2,7 +2,7 @@
 
 - status: `DONE_WITH_PARENT_NATIVE_QA_PENDING`
 - implementation base: `9ec92bae2035184f21452524343ac8f6ad821c6e`
-- implementation commit: `d38a344` (`fix: keep R2 guidance aligned with remaps`)
+- implementation commits: `d38a344` (`fix: keep R2 guidance aligned with remaps`), `aacdf8a` (`fix: keep R2 practice guidance clear at 125 percent`)
 - branch: `codex/r2-package-verification`
 - source comparison: latest completed `origin/main` `1e272c2668e8de102552608eb0ccd5d4718e40ca`; Base `9.4.4` remains pinned
 - owned implementation: `src/replanned_r2/r2_input.gd`, `src/replanned_r2/r2_screen.gd`, `tests/replanned_r2/test_r2_screen.gd`
@@ -79,8 +79,8 @@ The final three persistent `.gd` files were read back through the dedicated HiGo
 | File | Lines | Bytes | SHA-256 |
 | --- | ---: | ---: | --- |
 | `src/replanned_r2/r2_input.gd` | 130 | 5,627 | `80c75502f58d480216729b280aeccbba0ee2f0e632f8966e42791e6d87c8d317` |
-| `src/replanned_r2/r2_screen.gd` | 1,066 | 53,638 | `839fd4a42f5a679ccf935b281e85a5f1a088a4193845df9faee9f1da05873748` |
-| `tests/replanned_r2/test_r2_screen.gd` | 726 | 35,657 | `b740a2840b3644a2e8bc7cab63ee4f7f7567cff3ed4a50c86364b789f8054ef1` |
+| `src/replanned_r2/r2_screen.gd` | 1,066 | 53,638 | `b9fd094bba437d1cf9e1904fc73aeeb01357e1e374b68bc8f5f8911184d0ad6b` |
+| `tests/replanned_r2/test_r2_screen.gd` | 751 | 37,360 | `d95632016064a0cb37fc9e047e70a2ae60c6c16f73b45a4d0ea2729bdb65b272` |
 
 Final script patch diagnostics were `[]`. HiGodot state readback was exact project `Tetris`, scene `res://scenes/replanned_r2/main.tscn`, Godot `4.7.1-stable`, readiness `ready`, game `stopped`; the editor was then released to the parent for native QA.
 
@@ -115,11 +115,34 @@ After game readiness, replace the just-launched root with a runtime-only instanc
 
 This runtime setup reads the original root during its brief startup but cannot write the ordinary files by itself; all subsequent normal Settings Save/checkpoint operations on `qa` target only `user://replanned_r2_task5_parent_qa/...`. The parent should read back the returned paths before interacting, then perform the required normal UI flow: Settings remap → Save → Practice guidance/input/pause → main, plus 1280x720 and 125% typography inspection. No cleanup deletion is authorized by this report.
 
+## Native finding correction — 125% Practice guidance separation
+
+Parent native QA of `d38a344` reproduced one Important presentation regression at 1280x720 and 125%: Practice 3's retained clock-safety sentence painted through the Start button. The parent preserved the source screenshot as `docs/validation/r2-package-20260912/practice3-overlap-d38a344.jpg`; its evidence/document ownership remains outside this worker's commit.
+
+Systematic trace found the cause in the shared Details modal geometry. The Body is a word-wrapped `Label`; at 125% its Practice 3 minimum content height was 427px, but the fixed region began at local y98 and the Start button began at y452. Label drawing was not clipped or scrolled, so content required through y525 before separation and painted into the button. A long `ScrollLock` Practice 1 binding also required through y439 and missed the intended 16px gap by 3px. Practice 2/4 and the 29px selected font size were otherwise correct.
+
+Alternatives were compared against the actual bounded text:
+
+- scroll the modal body: valid for unbounded content, but adds interaction and hidden safety text when all four current stages can fit;
+- compact/delete the final safety sentence: rejected because it removes timing guidance the brief requires;
+- enlarge the centered modal and body while preserving font and complete copy: adopted as the smallest reversible fix.
+
+The Details modal now uses y45/height630, Body height430 and Start y550. It remains inside the 720px canvas with 45px outer margins, keeps the exact 125% body font at 29px, preserves every sentence and provides at least 16px between actual wrapped content and Start. It does not change the 50:50 battle halves, boards, gameplay, font-scale option, save/options data, or input behavior.
+
+Correction TDD and regression evidence:
+
+1. Final RED exercised all Practice stages at 125%, with `ScrollLock`/`CapsLock` long names plus the native R/F mapping pattern: **30/31 tests**, **365/367 assertions**, exit `1`, time `18.800s`. Practice 1 reported required y455 > Start y452; Practice 3 reported required y541 > Start y452. All safety-copy and exact 29px assertions passed.
+2. Focused GREEN after the three geometry changes: **31/31 tests**, **367 assertions**, exit `0`, time `18.776s`; stderr empty.
+3. Final full recursive GUT on correction bytes: **343/343 tests**, **3,641 assertions**, **58 scripts**, exit `0`, time `24.716s`; stderr empty. An immediately preceding identical full run also printed a complete 343/343 summary but its outer command exceeded the 30-second capture window before returning the process exit; it is not used as exit-code evidence.
+4. Final HiGodot readback of screen/test matched filesystem SHA-256 exactly as updated in the table above; diagnostics were `[]`. Editor state remained exact Tetris, `main.tscn` open, readiness ready, game stopped.
+
+Parent native recheck of the corrected bytes and the rebuilt package remains separate; automated minimum-size assertions do not replace that visual acceptance.
+
 ## Remaining evidence and handoff
 
 - Native normal-UI remap/save/Practice readback, 1280x720 and 125% visual legibility, physical-controller behavior, Human/player/accessibility approval and release readiness are `NOT_RUN` by this worker. The parent owns that acceptance and must not treat GUT layout coverage as native/Human proof.
 - The Task 4 package still contains its earlier source. Rebuild and package verification against final Task 5 source are parent-owned and pending. No package-builder byte was edited here.
 - The visible Pause button still occupies its existing 130x36 rectangle; automated tests and source review found no geometry change, but translated/native 125% clipping requires the parent's visual check.
-- Rollback is revert of implementation commit `d38a344` plus this report commit. It changes no schema or player data and needs no migration.
+- Rollback is revert of implementation commits `d38a344` and `aacdf8a` plus this report commit. It changes no schema or player data and needs no migration.
 - Reuse learning: keep display labels beside the existing mapping consumer and pass Settings drafts into that read-only formatter. This is a project-only application; `NO_NEW_REUSE_LEARNING` for Base, so no Base registry or memory update was made.
 - `REMAINING_WORK_COMPLETION_GATE`: implementation and machine regression complete; parent native QA and package rebuild remain. `IMPLEMENTATION_CORRECTION_RESCAN`: no machine blocker. `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED`: two scoped loops complete with zero new valid blocking findings. Machine scope exits clean; overall Task 5 remains bounded by parent-owned native/package evidence.
