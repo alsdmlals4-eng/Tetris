@@ -2,6 +2,8 @@
 
 ## 1. Authority and status
 
+- Current bounded follow-up (2026-09-13): [local playtest-record plan](../operations/TETRIS_R2_PLAYTEST_RECORDS.md) and its sibling progress receipt own the user-approved plan-first result export and human-observation preparation. Existing result statistics are reused, not rebuilt; no new gameplay/balance/art decision. Plan prepared; product implementation remains deferred pending an allowed, identity-verified Tetris authoring connection. The completed five-item R2 implementation below remains completed history, not an unfinished task reopened by this follow-up.
+
 - Current continuation (2026-09-11, latest user `좋아 진행해`): begin the reviewed R2 blueprint's isolated Godot implementation. [Implementation plan and evidence](../operations/TETRIS_R2_IMPLEMENTATION.md) owns current execution progress. The production baseline and published PDF/source bytes remain preserved. Older implementation-deferred statements below describe their original design/preparation stage, not a prohibition on this explicitly resumed R2 work. Runtime, Human, balance and release approval remain separate.
 
 - Latest approved direction (2026-09-11): [R2 automatic-cast rules](REPLANNING_AUTOCAST_R2.md) own LINE four-type resources → CHAIN per-wave automatic skill casting. User approved recommended B; numerical seeds remain untested recommendations. [Complete reader](R2_COMPLETE_HUMAN_BLUEPRINT.md), [session/asset data](r2-complete-session.json), and [complete derived PDF](../blueprints/TETRIS_R2_COMPLETE_HUMAN_BLUEPRINT.pdf) supersede the old amendment's incomplete preparation status. Final art/design approval and runtime remain separate. Production runtime and Base 9.4.4 are unchanged.
