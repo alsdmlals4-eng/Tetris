@@ -69,11 +69,21 @@
       "R2-01",
       "R2-02",
       "R2-03",
-      "R2-04"
+      "R2-04",
+      "R2-05"
     ],
     "active_work_item_ref": "R2-04",
     "next_action": "Implement and verify isolated Windows R2 package; preserve production entry and unrelated drafts.",
     "work_items": [
+      {
+        "work_item_id":"R2-05", "title":"Remapped controls and player instructions agree", "status":"BACKLOG",
+        "canon_owner":"docs/operations/TETRIS_R2_IMPLEMENTATION.md",
+        "actual_consumers":["src/replanned_r2/r2_screen.gd","src/replanned_r2/r2_input.gd"],
+        "depends_on":["R2-04"], "acceptance_criteria":["R2-05-AC"], "required_evidence":["E2_TEST","E3_RUNTIME"],
+        "checklist":[{"id":"R2-05-AC","text":"After saving a key remap, visible battle/practice instructions use the actual mapping; cancel restores original hints; 125 percent text remains readable; gameplay semantics unchanged","status":"NOT_RUN"}],
+        "verification":[{"level":"E2_TEST","status":"NOT_RUN","evidence":[]},{"level":"E3_RUNTIME","status":"NOT_RUN","evidence":[]}],
+        "next_action":"After package writer releases shared screen consumer, reproduce stale default instructions with remapped controls then repair presentation"
+      },
       {
         "work_item_id": "R2-04",
         "title": "Portable local R2 trial and export regression",

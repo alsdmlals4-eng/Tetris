@@ -40,6 +40,16 @@ Preflight: source art reused, baseline owners COMPATIBILITY, R2 implementation A
 
 ## Preflight and rulings
 
+### Task 5: Controls and teaching text stay in sync
+
+Observed at source1e272c2: `r2_input.gd` reads configured mappings, but `r2_screen.gd` LINE footer, pause button, CHAIN footer and practice1/3/4 hardcode Space/Tab/Esc/2. This breaks guidance after a legitimate remap. Fix the presentation consumer, not gameplay mapping rules or save schema.
+
+Files: `src/replanned_r2/r2_screen.gd`, optionally a small existing-input-owner label helper in `r2_input.gd`, and focused R2 screen/input tests. Reuse actual saved `options.keyboard_mapping` and existing OS key name presentation; do not introduce a second mapping table. Display concise primary binding with full alternatives in a tooltip where needed. Practice text must use current hard-drop/switch/DEF/pause binding; keyboard/pad labels must not falsely describe another device. Saved settings refresh guidance; canceled draft leaves guidance unchanged. Keep default input behavior, pause and single-input boundaries unchanged. Native1280x720 and125percent typography must remain legible; no board shrink.
+
+TDD: remap hard_drop, switch, def and pause to valid unused keys; stale-default prompt assertion must fail before fix. Verify footer/pause/practice references, settings apply/cancel and scene re-entry; labels are read-only and do not mutate input or combat. Run focused and full tests, then normal settings UI remap→save→practice/input readback; preserve ordinary user checkpoint/options (use temporary fixture paths or restore exact known options after QA). Rebuild Task4 package with final source and recheck it.
+
+Alternatives: remove control hints (REJECT lost discoverability), prohibit remapping (REJECT existing accessibility feature regression), derive hints from the same mappings (ADOPT one owner and low maintenance). [Xbox XAG103](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/103) supports clear text/symbol cues; [Riot gameplay clarity](https://www.riotgames.com/en/news/valorant-shaders-and-gameplay-clarity) supports keeping useful information across presentation quality. These are professional design sources, not proof of our Human accessibility. Current reduced-motion/shape icons/threat previews are retained rather than rebuilt. Scope is a bounded user-facing inconsistency correction authorized by the latest continuous-improvement request.
+
 Start main and origin/main: `7340c7f1216b190f91264149e69c1304cbdc6c42`. Open draft PR100/85/46/33/23/19 read only, no overlap absorption.
 
 | Current comparison/source | Observed pattern | Disposition / fit / risk |
