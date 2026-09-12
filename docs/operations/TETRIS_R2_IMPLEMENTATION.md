@@ -68,6 +68,8 @@ Alternatives: remove control hints (REJECT lost discoverability), prohibit remap
 
 ### Historical initial implementation provenance (Tasks1–3)
 
+Task5 source refinement2026-09-12: [Xbox XAG107](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/107), control-remapping guidance, explicitly connects changed controls with updated hints/tutorial labels. ADOPT that presentation consistency through the existing mapping owner. [Godot OS.get_keycode_string](https://docs.godotengine.org/en/stable/classes/class_os.html#class-os-method-get-keycode-string) provides the existing read-only label mechanism. This is targeted input-guidance evidence, not an accessibility certification or authorization for unrelated input-system changes.
+
 Initial start main and origin/main: `7340c7f1216b190f91264149e69c1304cbdc6c42`. Open draft PR100/85/46/33/23/19 read only, no overlap absorption. This historical baseline is not the current Task4/5 source SHA.
 
 | Current comparison/source | Observed pattern | Disposition / fit / risk |
