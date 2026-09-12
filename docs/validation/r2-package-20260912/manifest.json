@@ -14,15 +14,31 @@
   "acquisition": "Native Windows Computer Use window capture; decorations included; no image edits. Initial unrelated-window occlusion resolved by maximizing the target trial window only.",
   "input": "Normal mouse and keyboard; no model injection or editor required. Main Practice button, Start, Space, Next lesson, Start, swap(4,5)-(5,5), Escape, return Main.",
   "images": [
-    {"file":"main-1280-ed96b5a.png","sha256":"20b400665262675113f8ab5895a7687538f8f8df99e31a3adbd115896e7d83f0","observation":"Restored default window with1280x720 logical content, readable Korean main and transparent boss over separate environment; original Continue still available."},
-    {"file":"line-receipt-ed96b5a.png","sha256":"3baf813fdd11841d4735ecdc41103d170a35802f687a8ad814229e57da74917c","observation":"Maximized native window: Space clear A4 D2 H2 T2; bank4 armor2 HP82 ETA10.5, actual+0.500s and0wasted; all five asset families visible."},
-    {"file":"chain-two-casts-ed96b5a.png","sha256":"6d4fa3ca8b3227f64999dd5b565582f9183c62434ab5c8db90666b9ce984cc75","observation":"Practice2 actual UI swap generated two automatic ATK casts, boss240to230, last ATK T2 actual6, tile direct rewards0. Restored1280window also visually inspected."}
+    {"file":"main-1280-ed96b5a.jpg","sha256":"20b400665262675113f8ab5895a7687538f8f8df99e31a3adbd115896e7d83f0","observation":"Restored default window with1280x720 logical content, readable Korean main and transparent boss over separate environment; original Continue still available."},
+    {"file":"line-receipt-ed96b5a.jpg","sha256":"3baf813fdd11841d4735ecdc41103d170a35802f687a8ad814229e57da74917c","observation":"Maximized native window: Space clear A4 D2 H2 T2; bank4 armor2 HP82 ETA10.5, actual+0.500s and0wasted; all five asset families visible."},
+    {"file":"chain-two-casts-ed96b5a.jpg","sha256":"6d4fa3ca8b3227f64999dd5b565582f9183c62434ab5c8db90666b9ce984cc75","observation":"Practice2 actual UI swap generated two automatic ATK casts, boss240to230, last ATK T2 actual6, tile direct rewards0. Restored1280window also visually inspected."}
   ],
   "original_files_before_after_identical": {
     "user://replanned_r2/options.json":"9d5e9dba265f31673e311326d112ef47ea354e1da1544ce981896fd9614ab703",
     "user://replanned_r2/save.json":"0500831f3666bdafa102311773fa3f324db688f049ec0234d79e3b7aed2a65a7",
     "user://replanned_r2/save.json.bak":"6f55a6073c48d70009b03263bbebd89c71c331d2f4700c3b6bb24fb88684117c"
   },
-  "finding": "Practice pause says current whole state can be saved although checkpoint() intentionally rejects practice. Task5 will correct presentation while preserving the save rule.",
+  "finding": "Original ed96b5a finding: Practice pause incorrectly describes saving. Corrected by Task5 d38a344 and native checked below; historical screenshot bytes preserved.",
+  "evidence_format_correction": "Three ed96b5a captures arrived as image/jpeg but were originally named .png. JPEG/JFIF magic FF D8 FF E0 confirmed; renamed .jpg without changing bytes or SHA256. Six pre-run editor import errors came from those evidence suffixes, not runtime atlases. New captures retain the actual image/jpeg extension.",
+  "task5_native": {
+    "source_commit": "d38a3441fe4ab87dba5646ca2f827fd7d4dcdc86",
+    "engine": "Godot4.7.1 Windows debug, dedicated existing editor tetris@89f7, independent game window14746186 run2",
+    "logical_size": [1280,720], "font_scale_percent":125,
+    "setup": "Runtime-only main-page disk target redirected to user://r2_guidance_qa_20260912; no gameplay model injection or persistent source edit. Initial mixed-indent eval compile failure required stopping/restarting only game; corrected setup read back before input.",
+    "normal_input": "Settings capture/save V=hard_drop,R=switch,P=pause,F=DEF; Practice1 V gives A4/D2/H2/T2 bank4 armor2 HP82 ETA10.5; F selectsDEF; R switchesCHAIN; P pauses. Settings reset draft then Cancel preserves saved/applied V/R/P/F and paused snapshot. Practice2 normal swap(4,5)-(5,5) generates two actual casts, boss240to230, no direct tile resources.",
+    "original_user_files_after": "All three original options/save/backup SHA256 values above remained identical after stopping game.",
+    "images": [
+      {"file":"remapped-line-d38a344.jpg","sha256":"7b95eb9757893198bcb434310a666fd82c88f8ce0d284cf310755c730678bbf9","observation":"Actual V hard drop, receipt and remapped V/P instructions readable at125%."},
+      {"file":"practice-pause-d38a344.jpg","sha256":"8e3abfa6a2f6bfb8ecfa1f02a85a101cf6db2ae7dddbd094afc5066a2205a7cd","observation":"Practice explicitly unsaved, no ordinary checkpoint created; controls/actions readable."},
+      {"file":"practice3-overlap-d38a344.jpg","sha256":"d3cb1f87bccbaa1753a5963decdef5a97788c25eea68c6812cb8ec9da1ecf231","observation":"FAIL: correct R/F tutorial bindings, but final running-clock sentence overlaps Start button at125%. Fix round1 pending; not native completion."}
+    ],
+    "status":"PARTIAL_NATIVE_MODAL_LAYOUT_FIX_REQUIRED",
+    "limitations":["No physical controller or Human/accessibility certification.","Practice3 overlap blocks Task5 closure until fix and native recheck."]
+  },
   "limits": ["Sampled native keyboard/mouse/runtime visuals, not Human/fun/art approval or physical-gamepad/accessibility certification.","Export-driver shutdown resource warnings remain a separately recorded investigation; native smoke/probe correctness is not a clean-export-log claim.","No regular-run checkpoint was overwritten; practice stages reset their tutorial fixtures by the existing rules."]
 }

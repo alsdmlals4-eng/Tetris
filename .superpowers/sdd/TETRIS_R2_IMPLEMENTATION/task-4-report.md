@@ -123,7 +123,7 @@ The parent verifier launched the native executable built at `ed96b5a`; its EXE a
 - Practice 2 UI swap `(4,5) ↔ (5,5)` produced two automatic casts, boss HP `240 → 230`, and direct tile resource `0`, preserving the LINE/CHAIN role split.
 - Pause returned to main.
 - Pre-existing R2 options, primary save and backup were unchanged before/after QA. QA used Practice instead of New Run: `options.json` `9d5e9dba265f31673e311326d112ef47ea354e1da1544ce981896fd9614ab703`; `save.json` `0500831f3666bdafa102311773fa3f324db688f049ec0234d79e3b7aed2a65a7`; `save.json.bak` `6f55a6073c48d70009b03263bbebd89c71c331d2f4700c3b6bb24fb88684117c`.
-- Parent-owned captures and their evidence manifest were committed in `a60bd2d`: `docs/validation/r2-package-20260912/main-1280-ed96b5a.png`, `line-receipt-ed96b5a.png`, `chain-two-casts-ed96b5a.png`, `manifest.json`.
+- Parent-owned captures and their evidence manifest were committed in `a60bd2d`: `docs/validation/r2-package-20260912/main-1280-ed96b5a.jpg`, `line-receipt-ed96b5a.jpg`, `chain-two-casts-ed96b5a.jpg`, `manifest.json`. The original commit misnamed JPEG bytes as PNG; parent later corrected only the extensions with identical hashes. That evidence-format correction does not regenerate the original captures.
 
 This is `RUNTIME_VERIFIED` for the sampled native flows and machine-assisted visual inspection. It is not a fresh-player study, accessibility/device matrix, balance/fun conclusion, final art approval or user approval.
 
