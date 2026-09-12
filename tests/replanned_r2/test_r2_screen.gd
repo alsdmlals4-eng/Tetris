@@ -255,6 +255,27 @@ func test_practice_guidance_fits_above_start_button_at_125_percent():
         assert_true(panel_content.encloses(start.get_rect()))
     assert_string_contains(screen._practice_instruction(),"CapsLock","Long mapped key names stay in the fitted guidance")
 
+func test_long_pause_remap_stays_inside_fixed_left_button_at_125_percent():
+    if not ready_screen(): return
+    screen.options.font_scale=125
+    screen._apply_font()
+    for keycode in [KEY_SCROLLLOCK,KEY_CAPSLOCK]:
+        screen.open_options()
+        assert_true(screen.Disk.remap(screen.options_draft,"keyboard_mapping","pause",keycode).success)
+        screen.close_options(true)
+        await get_tree().process_frame
+        var pause: Button=screen.get_node("Battle/Puzzle/Pause")
+        var puzzle: Control=screen.get_node("Battle/Puzzle")
+        var combat: Control=screen.get_node("Battle/Combat")
+        assert_eq(pause.size.x,130.0,"Pause keeps its fixed reviewed button width")
+        assert_lte(pause.get_global_rect().end.x,puzzle.get_global_rect().end.x,"Pause button stays inside the left pane")
+        assert_lte(pause.get_global_rect().end.x,combat.get_global_rect().position.x,"Pause button cannot enter the right pane")
+        assert_string_contains(pause.tooltip_text,OS.get_keycode_string(keycode),"Tooltip retains the complete actual pause mapping")
+        var visible_text_fits := pause.get_combined_minimum_size().x<=pause.size.x
+        var bounded_ellipsis := pause.clip_text and pause.text_overrun_behavior==TextServer.OVERRUN_TRIM_ELLIPSIS
+        assert_true(visible_text_fits or bounded_ellipsis,"Long pause labels need a bounded visible label or ellipsis")
+        assert_string_contains(pause.text,"키","Visible guidance retains keyboard distinction")
+
 func test_key_poses_follow_actual_event_clock_and_pause():
     if not ready_screen(): return
     screen.start_run("STANDARD",8)

@@ -63,6 +63,16 @@ function Get-RelativeSafePath([string]$Root, [string]$RelativePath) {
     return $candidate
 }
 
+function Get-RootBoundedRelativePath([string]$Root, [string]$Path) {
+    $separator = [IO.Path]::DirectorySeparatorChar
+    $rootFull = [IO.Path]::GetFullPath($Root).TrimEnd($separator, [IO.Path]::AltDirectorySeparatorChar) + $separator
+    $pathFull = [IO.Path]::GetFullPath($Path)
+    if (-not $pathFull.StartsWith($rootFull, [StringComparison]::OrdinalIgnoreCase)) {
+        Fail-Build "Package file escapes package directory: $pathFull"
+    }
+    return $pathFull.Substring($rootFull.Length).Replace('\', '/')
+}
+
 function Assert-OutsideRepository([string]$Path) {
     $separator = [IO.Path]::DirectorySeparatorChar
     $repoPrefix = $RepoRoot.TrimEnd($separator, [IO.Path]::AltDirectorySeparatorChar) + $separator
@@ -188,9 +198,9 @@ function Verify-Package([string]$PackageDirectory) {
         Fail-Build "Unlisted or unexpected manifest artifact entry count; unexpected: $($unexpected -join ', ')"
     }
     $actualPaths = @(
-        Get-ChildItem -LiteralPath $root -File -Recurse |
+        Get-ChildItem -LiteralPath $root -File -Recurse -Force |
             Where-Object { -not $_.FullName.Equals($manifestPath, [StringComparison]::OrdinalIgnoreCase) } |
-            ForEach-Object { [IO.Path]::GetRelativePath($root, $_.FullName).Replace('\', '/') }
+            ForEach-Object { Get-RootBoundedRelativePath $root $_.FullName }
     )
     $actualExact = New-Object 'System.Collections.Generic.HashSet[string]' ([StringComparer]::Ordinal)
     foreach ($actualPath in $actualPaths) { [void]$actualExact.Add($actualPath) }

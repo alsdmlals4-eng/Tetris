@@ -11,7 +11,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PRESET = ROOT / "export_presets.cfg"
 BUILDER = ROOT / "tools" / "windows" / "build_r2_local_trial.ps1"
-POWERSHELL = shutil.which("pwsh") or shutil.which("powershell")
+PWSH = shutil.which("pwsh")
+WINDOWS_POWERSHELL = shutil.which("powershell")
+POWERSHELL = PWSH or WINDOWS_POWERSHELL
 
 EXPECTED_SELECTED = {
     "res://scenes/replanned_r2/main.tscn",
@@ -89,6 +91,27 @@ def _write_valid_package_fixture(package: Path):
         json.dumps(manifest, ensure_ascii=False), encoding="utf-8"
     )
     return manifest, artifacts, raw_artifact_paths
+
+
+def _verify_package(package: Path, shell: str = POWERSHELL):
+    return subprocess.run(
+        [
+            shell,
+            "-NoProfile",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            str(BUILDER),
+            "-OutputDirectory",
+            str(package),
+            "-VerifyPackageOnly",
+        ],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
 
 
 class R2WindowsPackageContractTests(unittest.TestCase):
@@ -228,26 +251,6 @@ class R2WindowsPackageContractTests(unittest.TestCase):
             self.assertIn("SHA-256 mismatch", tampered.stdout + tampered.stderr)
 
     def test_verify_only_rejects_missing_log_unlisted_extra_and_path_collisions(self):
-        def verify(package: Path):
-            return subprocess.run(
-                [
-                    POWERSHELL,
-                    "-NoProfile",
-                    "-ExecutionPolicy",
-                    "Bypass",
-                    "-File",
-                    str(BUILDER),
-                    "-OutputDirectory",
-                    str(package),
-                    "-VerifyPackageOnly",
-                ],
-                cwd=ROOT,
-                capture_output=True,
-                text=True,
-                encoding="utf-8",
-                errors="replace",
-            )
-
         with tempfile.TemporaryDirectory() as temporary:
             package = Path(temporary)
             manifest, artifacts, _ = _write_valid_package_fixture(package)
@@ -259,7 +262,7 @@ class R2WindowsPackageContractTests(unittest.TestCase):
             (package / "BUILD_MANIFEST.json").write_text(
                 json.dumps(missing_log), encoding="utf-8"
             )
-            result = verify(package)
+            result = _verify_package(package)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("export.stderr.log", result.stdout + result.stderr)
 
@@ -268,7 +271,7 @@ class R2WindowsPackageContractTests(unittest.TestCase):
             )
             extra = package / "unlisted-extra.txt"
             extra.write_text("must be rejected", encoding="utf-8")
-            result = verify(package)
+            result = _verify_package(package)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("unlisted", (result.stdout + result.stderr).lower())
             extra.unlink()
@@ -278,7 +281,7 @@ class R2WindowsPackageContractTests(unittest.TestCase):
             (package / "BUILD_MANIFEST.json").write_text(
                 json.dumps(duplicate), encoding="utf-8"
             )
-            result = verify(package)
+            result = _verify_package(package)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("duplicate", (result.stdout + result.stderr).lower())
 
@@ -289,9 +292,66 @@ class R2WindowsPackageContractTests(unittest.TestCase):
             (package / "BUILD_MANIFEST.json").write_text(
                 json.dumps(case_alias), encoding="utf-8"
             )
-            result = verify(package)
+            result = _verify_package(package)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("case", (result.stdout + result.stderr).lower())
+
+    @unittest.skipUnless(WINDOWS_POWERSHELL, "Windows PowerShell 5.1 is unavailable")
+    def test_verify_only_accepts_intact_package_in_windows_powershell_5(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            package = Path(temporary)
+            _write_valid_package_fixture(package)
+
+            result = _verify_package(package, WINDOWS_POWERSHELL)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("R2_LOCAL_TRIAL_PACKAGE_VERIFIED", result.stdout)
+
+    @unittest.skipUnless(PWSH, "PowerShell 7 is unavailable")
+    def test_verify_only_accepts_intact_package_in_pwsh(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            package = Path(temporary)
+            _write_valid_package_fixture(package)
+
+            result = _verify_package(package, PWSH)
+
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("R2_LOCAL_TRIAL_PACKAGE_VERIFIED", result.stdout)
+
+    @unittest.skipUnless(
+        WINDOWS_POWERSHELL,
+        "Windows Hidden attributes require Windows PowerShell",
+    )
+    def test_verify_only_rejects_hidden_file_and_file_nested_in_hidden_directory(self):
+        def set_hidden(path: Path):
+            result = subprocess.run(
+                ["attrib", "+H", str(path)],
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+            )
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+        for case in ["hidden-file", "hidden-directory"]:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as temporary:
+                package = Path(temporary)
+                _write_valid_package_fixture(package)
+                if case == "hidden-file":
+                    hidden_file = package / "hidden-extra.txt"
+                    hidden_file.write_text("must be rejected", encoding="utf-8")
+                    set_hidden(hidden_file)
+                    expected_path = "hidden-extra.txt"
+                else:
+                    hidden_directory = package / "hidden-directory"
+                    hidden_directory.mkdir()
+                    nested_file = hidden_directory / "nested-extra.txt"
+                    nested_file.write_text("must also be rejected", encoding="utf-8")
+                    set_hidden(hidden_directory)
+                    expected_path = "hidden-directory/nested-extra.txt"
+                result = _verify_package(package, WINDOWS_POWERSHELL)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(expected_path, result.stdout + result.stderr)
 
     def test_project_preservation_check_rejects_isolated_postexport_change(self):
         with tempfile.TemporaryDirectory() as temporary:

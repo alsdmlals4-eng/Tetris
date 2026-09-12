@@ -217,7 +217,9 @@ func _build_battle():
     var puzzle = _panel(battle,"Puzzle",Rect2(16,16,616,688))
     _button(puzzle,"LineButton",Rect2(16,8,210,36),"LINE · 자원 준비",func(): _switch_to("LINE"))
     _button(puzzle,"ChainButton",Rect2(238,8,220,36),"CHAIN · 자동 기술",func(): _switch_to("CHAIN"))
-    _button(puzzle,"Pause",Rect2(470,8,130,36),"정지",pause_game)
+    var pause_button := _button(puzzle,"Pause",Rect2(470,8,130,36),"정지",pause_game)
+    pause_button.clip_text = true
+    pause_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
     var line = _container(puzzle,"Line",Rect2(0,0,616,688))
     var cells = _container(line,"Cells",Rect2(178,62,260,520))
     for y in range(20):
