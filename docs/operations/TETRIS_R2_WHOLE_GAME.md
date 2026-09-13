@@ -66,8 +66,8 @@ The first three-battle run is an implementation bridge, NOT the entire completio
 | WG-02 | Different encounter profiles execute through same combat owner; forecasts/save validation agree; first encounter remains compatible | r2_combat/r2_session, profile-bound expedition envelope | MACHINE_VERIFIED; native profile path exercised |
 | WG-03 | Main→route→battle→intermission→ending is usable with mouse/keyboard; campaign save never overwrites single-battle save | r2_screen/r2_expedition_save and export preset | IMPLEMENTED; package/input completion in progress |
 | WG-04 | Enemy identity/pattern purpose and story arc are distinct; rewards support choices rather than mandatory grinding | encounter catalogue, presentation text, route preview and ending screens | IMPLEMENTED/MACHINE_VERIFIED text and real cycle preview; player balance NOT_RUN |
-| WG-05 | Required enemy/portrait/skill/tile states, UI images, motion and audio have actual consumers and provenance | r2_assets / view / planned audio consumer | TODO |
-| WG-06 | Complete supported-resolution, input, failure/resume, package and blueprint/source readback; two full review loops clean | tests, native Godot, PDF and local executable | TODO |
+| WG-05 | Required enemy/portrait/skill/tile states, UI images, motion and audio have actual consumers and provenance | r2_assets / view / r2_audio | PARTIAL: effects, jingle and looping battle music verified; distinct enemy art/motion and listening remain |
+| WG-06 | Complete supported-resolution, input, failure/resume, package and blueprint/source readback; two full review loops clean | tests, native Godot, PDF and local executable | PARTIAL:8 native flow cases, source-bound reader and package verified; physical input/Human and final asset readback remain |
 | WG-HUMAN | Real first-exposure/fun/accessibility/balance evidence | existing human evidence contract and local playtest reports | NOT_RUN; not substituted by automation |
 
 ## First expedition design / interface (WG-01 through WG-03)
