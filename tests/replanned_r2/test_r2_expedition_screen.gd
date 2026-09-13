@@ -9,6 +9,7 @@ func before_each():
     screen = load("res://scenes/replanned_r2/main.tscn").instantiate()
     screen.save_path = "user://replanned_r2_tests/expedition-screen/standalone.json"
     screen.options_path = "user://replanned_r2_tests/expedition-screen/options.json"
+    screen.report_directory = "user://replanned_r2_tests/expedition-screen/reports"
     if screen.get("expedition_save_path") != null:
         screen.expedition_save_path = "user://replanned_r2_tests/expedition-screen/expedition.json"
     add_child_autofree(screen)

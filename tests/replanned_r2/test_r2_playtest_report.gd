@@ -49,6 +49,25 @@ func test_rejects_running_empty_and_inconsistent_snapshot():
     snapshot.ui.metrics.casts = 1
     assert_false(report.build(snapshot).success)
 
+func test_encounter_identity_changes_cannot_select_another_validation_profile():
+    if not ready_report(): return
+    var catalogue = JSON.parse_string(FileAccess.get_file_as_string(Session.Combat.EXPEDITION_PATH))
+    var ids: Array = catalogue.encounters.keys()
+    assert_gt(ids.size(), 1)
+    var session = Session.new("STANDARD",42,"r2:report-profile",ids[0])
+    session.command("switch")
+    session.tick(1000000000)
+    assert_eq(session.combat.outcome,"DEFEAT")
+    var original = session.snapshot()
+    assert_true(report.build(original).success)
+    var unknown = original.duplicate(true)
+    unknown.identity.encounter_id = "unknown-untrusted-encounter"
+    assert_false(report.build(unknown).success)
+    var changed = original.duplicate(true)
+    changed.identity.encounter_id = ids[1]
+    assert_false(report.build(changed).success)
+    assert_eq(session.snapshot(),original)
+
 func test_practice_classification_cannot_disguise_ordinary_run():
     if not ready_report(): return
     var session = Session.new()

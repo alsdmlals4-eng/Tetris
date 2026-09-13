@@ -1,8 +1,10 @@
 ## Shared deterministic wiring driver for GUT and native scene inspection.
 ## No deliberation time: never treat its wins as human balance evidence.
 extends RefCounted
+const Storage=preload("res://tests/tooling/r2_probe_storage.gd")
 
 func drive_one_battle(screen) -> Dictionary:
+    if not Storage.new().is_isolated(screen): return {"success":false,"reason":"UNSAFE_PROBE_STORAGE"}
     if screen.page != "battle": return {"success":false,"reason":"NOT_IN_BATTLE"}
     if screen.session.mode != "CHAIN": screen.dispatch("switch")
     for step in 300:
