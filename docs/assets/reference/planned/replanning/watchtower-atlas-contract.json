@@ -1,0 +1,22 @@
+{
+  "schema": "r2-watchtower-atlas-contract-v1",
+  "state": "USER_STYLE_PREFERRED_TECHNICAL_PREPARATION",
+  "source_path": "docs/assets/reference/planned/replanning/watchtower-source.png",
+  "source_sha256": "615eec1e3cd8fc3322f17b4921e8c5d32e6d9f2e6665165307b369ecc9f13e03",
+  "source_size": [1254, 1254],
+  "source_mode": "RGBA",
+  "transparent_pixels": 912820,
+  "preference_evidence": "User reattached the six-pose sheet and said these images are good; preserve this identity. Preference does not certify technical frame readiness.",
+  "consumer": "Battle/Combat/Stage/BodyClip/BossVisual and Result/BossVisual, watchtower encounter only",
+  "rendering_plan": "Preserve source pixels. Use measured nonuniform regions; impact/recovery need complementary clipping because their bounding boxes overlap. Do not redraw or use uniform 627x418 cells.",
+  "poses": ["idle", "anticipation", "impact", "recovery", "hurt", "defeat"],
+  "row_boundaries": [0, 427, 835, 1254],
+  "regions": {"idle":[0,0,627,427],"anticipation":[627,0,627,427],"impact":[0,427,740,408],"recovery":[680,427,574,408],"hurt":[0,835,627,419],"defeat":[627,835,627,419]},
+  "logical_canvas": [900,460],
+  "offsets": {"idle":[100,18],"anticipation":[70,18],"impact":[150,18],"recovery":[140,18],"hurt":[115,18],"defeat":[100,18]},
+  "middle_row_clip": {"split_y":637,"upper_x":740,"lower_x":680,"purpose":"Complementary source-space masks; keep every source pixel in exactly one middle-row pose without changing the PNG."},
+  "required_checks": ["exact source hash", "true alpha", "no neighboring pose contamination", "no weapon clipping", "consistent torso anchor", "pause-safe state transition", "native battle and result", "export source readback"],
+  "runtime_state": "IMPLEMENTED_NATIVE_POSE_FIXTURES_VERIFIED",
+  "runtime_evidence": "docs/validation/r2-watchtower-20260913/README.md",
+  "final_visual_state": "NOT_RUN"
+}

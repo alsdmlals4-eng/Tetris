@@ -77,6 +77,8 @@ func _verify() -> void:
         result.asset_count = assets.consumer_manifest().assets.size()
         _record(assets.errors.is_empty(), "ASSET_OWNER_REJECTED_PACKAGE", failures)
         _record(result.asset_count == 5, "ASSET_COUNT_NOT_FIVE", failures)
+        result["watchtower_loaded"] = assets.enemy_binding("watchtower").get("asset_id","")=="R2-WATCHTOWER"
+        _record(result.watchtower_loaded,"WATCHTOWER_MISSING",failures)
     var font := SystemFont.new()
     font.font_names = PackedStringArray(["Malgun Gothic", "맑은 고딕", "sans-serif"])
     result.korean_font_chars = font.has_char(0xAC00) and font.has_char(0xD55C)

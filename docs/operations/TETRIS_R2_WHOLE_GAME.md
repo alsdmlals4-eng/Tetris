@@ -2,6 +2,8 @@
 
 ## Direction anchor / authority
 
+Current WG-05 follow-up2026-09-13: original watchtower sheet preference is reused under standing runtime-trial authority. Plan: preserve exact source → measured regions/clip/anchor → existing simulation-owned six-pose consumer → regression/native/export → two reviews and protected delivery. This corrects the earlier uniform-grid REVISION_REQUIRED result, without replacing preserved production art or claiming final visual approval. [Current contract and evidence](../validation/r2-watchtower-20260913/README.md). Dedicated foundry art, later reader synchronization and Human/device/final art gates remain open; do not restart completed expedition/audio work from historical paragraphs below.
+
 Continue until the dual-puzzle game is implemented as a complete playable product, not only a first encounter or one verification feature. Latest user2026-09-13 explicitly delegates research, detail design and implementation without routine approval checkpoints. `REUSED_APPROVAL`; `CONTINUOUS_WORK_ACTIVE`. Implementation authorization is not Human/fun, final branding, rights or release approval.
 
 Source main: `a75e93006f950bc21332205a314d1ac53e061675` (readability PR108 merged and locally read back). Prior R2 first-encounter blueprint remains a preserved publication. Its campaign exclusion described the first implementation scope; this contract owns the newly requested whole-game extension. R2 automatic-cast rules retain combat authority. Base9.4.4 and protected production documents/assets remain unchanged; current Base methods inform work without replacing the adapter.

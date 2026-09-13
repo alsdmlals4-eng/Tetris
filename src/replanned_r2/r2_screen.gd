@@ -996,6 +996,8 @@ func _render_pose():
     elif _hurt_us>0: boss_pose="hurt"
     var boss: TextureRect=$Battle/Combat/Stage/BodyClip/BossVisual
     boss.texture=assets.enemy_texture(combat.encounter_info().id,boss_pose)
+    boss.material=assets.enemy_material(combat.encounter_info().id,boss_pose)
+    boss.size.y=602.0*460.0/900.0 if combat.encounter_info().id=="watchtower" else 602.0*460.0/651.0
     var binding = assets.enemy_binding(combat.encounter_info().id)
     $Battle/Combat/Stage/HP.tooltip_text = "공용 적 시안 · 전용 상태별 그림 준비 중" if binding.get("state","")=="SHARED_TRIAL_FALLBACK" else "적 시안 · 최종 시각 검수 전"
     boss.scale=Vector2.ONE
@@ -1112,6 +1114,7 @@ func _show_result(training_complete: bool = false, persist: bool = true):
     _show_page("result")
     $Result/Portrait.texture=assets.texture("R1-PORTRAIT","victory" if session.combat.outcome=="VICTORY" or training_complete else "defeat")
     $Result/BossVisual.texture=assets.enemy_texture(session.combat.encounter_info().id,"defeat" if session.combat.outcome=="VICTORY" else "idle")
+    $Result/BossVisual.material=assets.enemy_material(session.combat.encounter_info().id,"defeat" if session.combat.outcome=="VICTORY" else "idle")
     var metrics: Dictionary=session.metrics
     var outcome="연습 완료" if training_complete else ("승리" if session.combat.outcome=="VICTORY" else "패배")
     $Result/Title.text=("연습 · " if practice_stage>0 else "")+"전투 결과 · "+outcome

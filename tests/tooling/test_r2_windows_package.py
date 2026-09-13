@@ -16,6 +16,9 @@ WINDOWS_POWERSHELL = shutil.which("powershell")
 POWERSHELL = PWSH or WINDOWS_POWERSHELL
 
 EXPECTED_SELECTED = {
+    "res://src/replanned_r2/watchtower_clip.gdshader",
+    "res://docs/assets/reference/planned/replanning/watchtower-atlas-contract.json",
+    "res://docs/assets/reference/planned/replanning/watchtower-source.png",
     "res://assets/replanned_r2/audio/confirm.ogg",
     "res://assets/replanned_r2/audio/line.ogg",
     "res://assets/replanned_r2/audio/chain.ogg",
@@ -83,7 +86,9 @@ def _write_valid_package_fixture(package: Path):
         )
     )
     raw_artifact_paths = []
-    for entry in asset_manifest["assets"].values():
+    watchtower = json.loads((ROOT / "docs/assets/reference/planned/replanning/watchtower-atlas-contract.json").read_text(encoding="utf-8"))
+    entries = list(asset_manifest["assets"].values()) + [{"path": watchtower["source_path"], "sha256": watchtower["source_sha256"]}]
+    for entry in entries:
         relative = Path("r2-source-assets") / entry["path"]
         source = ROOT / entry["path"]
         destination = package / relative
