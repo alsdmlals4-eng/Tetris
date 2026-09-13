@@ -1,6 +1,8 @@
 ## Presentation only. Never reads or mutates combat/save state.
 extends Node
 
+const BATTLE_MUSIC = "res://assets/replanned_r2/audio/battle.ogg"
+
 const CUES = {
     "confirm":"res://assets/replanned_r2/audio/confirm.ogg",
     "line":"res://assets/replanned_r2/audio/line.ogg",
@@ -11,6 +13,9 @@ const CUES = {
 }
 var effects: Array[AudioStreamPlayer] = []
 var music: AudioStreamPlayer
+var background: AudioStreamPlayer
+var _battle_active := false
+var _battle_paused := false
 var _next_voice := 0
 var _effects_level := 0.7
 var _music_level := 0.5
@@ -24,6 +29,12 @@ func _ready():
     music = AudioStreamPlayer.new()
     music.name = "Music"
     add_child(music)
+    background = AudioStreamPlayer.new()
+    background.name = "BattleMusic"
+    var stream = load(BATTLE_MUSIC).duplicate() as AudioStreamOggVorbis
+    stream.loop = true
+    background.stream = stream
+    add_child(background)
     configure({"effects":70,"music":50})
 
 func configure(levels: Dictionary):
@@ -35,6 +46,29 @@ func configure(levels: Dictionary):
     if music != null:
         music.volume_linear = _music_level
         if _music_level == 0.0: music.stop()
+    _sync_background()
+
+func set_battle_state(active: bool, paused: bool):
+    _battle_active = active
+    _battle_paused = paused
+    _sync_background()
+
+func _sync_background():
+    if background == null: return
+    background.volume_linear = _music_level * 0.35
+    if not _battle_active:
+        background.stop()
+        background.stream_paused = false
+        return
+    var suspended = _battle_paused or _music_level == 0.0
+    background.stream_paused = suspended
+    if not suspended and not background.playing: background.play()
+
+func pause_presentation():
+    for player in effects: player.stop()
+    if music != null: music.stop()
+    _battle_paused = true
+    _sync_background()
 
 func play_cue(cue: String) -> bool:
     if not CUES.has(cue) or music == null: return false
@@ -50,6 +84,7 @@ func play_cue(cue: String) -> bool:
 func stop_all():
     for player in effects: player.stop()
     if music != null: music.stop()
+    set_battle_state(false,false)
 
 func cue_for_event(event: Dictionary) -> String:
     if not event.get("success",false): return ""

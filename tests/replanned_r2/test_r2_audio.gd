@@ -39,3 +39,23 @@ func test_all_registered_streams_are_real_and_have_positive_duration():
         var stream = load(audio.CUES[cue])
         assert_true(stream is AudioStream, cue)
         assert_gt(stream.get_length(),0.0,cue)
+
+func test_battle_loop_pause_mute_and_end_are_separate():
+    var audio = _make_audio()
+    assert_true(audio.has_method("set_battle_state"))
+    if not audio.has_method("set_battle_state"): return
+    audio.set_battle_state(true,false)
+    assert_true(audio.background.playing)
+    assert_true(audio.background.stream.loop)
+    audio.set_battle_state(true,true)
+    assert_true(audio.background.stream_paused)
+    audio.configure({"effects":70,"music":0})
+    audio.set_battle_state(true,false)
+    assert_true(audio.background.stream_paused)
+    audio.configure({"effects":70,"music":50})
+    assert_false(audio.background.stream_paused)
+    assert_true(audio.background.playing)
+    audio.set_battle_state(false,false)
+    assert_false(audio.background.playing)
+    assert_true(audio.play_cue("victory"))
+    assert_false(audio.background.playing)

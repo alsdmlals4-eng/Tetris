@@ -1,5 +1,7 @@
 # R2 audio sources
 
+Battle background: **Fairy Battles**, MintoDog, original unmodified Ogg from [creator page](https://opengameart.org/content/fairy-battles), retrieved 2026-09-13. Creator declares CC0 and loopable fantasy battle music. Original URL: https://opengameart.org/sites/default/files/fairy_battles_bpm180_0.ogg . Local `battle.ogg` SHA-256 `3cb573bdd9ea449f8851d3249fa1ec1a8d0d843cbabcdfb060e97a3c132f0cde`; decoded duration 97.333336 seconds, embedded artist/title agree. Consumer: `r2_audio.gd` BattleMusic player, loop enabled on a private stream resource. Listening quality and final mix remain NOT_RUN; source declaration is not independent legal clearance. Original download is retained in deletion-wait/music-source-review-20260913.
+
 Selected unmodified Ogg files only; downloaded from the creator on 2026-09-13. Actual consumer: `src/replanned_r2/r2_audio.gd`, triggered by `r2_screen.gd`. State: IMPLEMENTED; listening/mix approval NOT_RUN. No claim that the short victory jingle is a full background soundtrack.
 
 All three source archives include License.txt declaring Creative Commons Zero (CC0), permitting personal/commercial use and optional credit to Kenney. Creator: Kenney / Kenney Vleugels, https://kenney.nl. License: https://creativecommons.org/publicdomain/zero/1.0/ . No endorsement is implied; no independent legal clearance is claimed.

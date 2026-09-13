@@ -22,6 +22,7 @@ EXPECTED_SELECTED = {
     "res://assets/replanned_r2/audio/attack.ogg",
     "res://assets/replanned_r2/audio/enemy.ogg",
     "res://assets/replanned_r2/audio/victory.ogg",
+    "res://assets/replanned_r2/audio/battle.ogg",
     "res://src/replanned_r2/r2_audio.gd",
     "res://data/replanned_r2/encounter-presentation.json",
     "res://data/replanned_r2/expedition.json",
