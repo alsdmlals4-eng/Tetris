@@ -291,7 +291,7 @@ func _build_battle():
     var threat = _panel(combat,"Threat",Rect2(0,312,616,116))
     _label(threat,"Current",Rect2(12,4,230,29),"",16)
     _image(threat,"Icon",Rect2(12,36,32,32),assets.texture("R1-ICONS","strike"))
-    _label(threat,"Damage",Rect2(49,35,192,63),"",15)
+    _label(threat,"Damage",Rect2(49,35,174,76),"",14).mouse_filter=Control.MOUSE_FILTER_STOP
     _label(threat,"TimerTitle",Rect2(235,2,145,26),"공유 타이머",16,GOLD)
     _label(threat,"ETA",Rect2(249,29,120,43),"",29,CYAN)
     _label(threat,"Extension",Rect2(226,80,175,28),"",14)
@@ -308,9 +308,12 @@ func _build_battle():
     for i in range(6):
         var button = _button(dock,"Tier%d"%(i+1),Rect2(12+i*98,47,92,27),"T%d"%(i+1),open_details.bind(i+1))
         button.set_meta("base_font",14)
-    _image(dock,"NextIcon",Rect2(12,84,44,44),assets.texture("R1-ICONS","strike"))
-    _label(dock,"Next",Rect2(64,79,540,28),"",15)
-    _label(dock,"Recent",Rect2(64,108,540,27),"",14,CYAN)
+    _image(dock,"NextIcon",Rect2(25,80,25,25),assets.texture("R1-ICONS","strike"))
+    _image(dock,"LastIcon",Rect2(25,109,25,25),null).visible=false
+    for entry in [["Next",79,15,Color.WHITE],["Recent",108,14,CYAN]]:
+        var info = _label(dock,entry[0],Rect2(64,entry[1],540,28),"",entry[2],entry[3])
+        info.mouse_filter=Control.MOUSE_FILTER_STOP
+        info.text_overrun_behavior=TextServer.OVERRUN_TRIM_ELLIPSIS
     _label(battle,"PracticeStatus",Rect2(28,73,145,400),"",16,CYAN)
     _button(battle,"PracticeNext",Rect2(28,485,140,42),"다음 학습",_next_practice)
     _button(battle,"PracticeRetry",Rect2(28,533,140,42),"단계 다시",func(): begin_practice(practice_stage))
@@ -798,7 +801,10 @@ func refresh():
     $Battle/Combat/Threat/Current.text = "현재 · "+current.label
     $Battle/Combat/Threat/Icon.texture = assets.texture("R1-ICONS","heavy" if current.id=="slam" else "strike")
     $Battle/Combat/Threat/Icon.visible = int(current.damage)>0
-    $Battle/Combat/Threat/Damage.text = ("직접 피해 %d\n현재 행동 방벽 적용"%current.damage) if int(current.damage)>0 else "공격 없음\n균열핵 안정"
+    var threat = combat.threat_preview()
+    var damage_label: Label = $Battle/Combat/Threat/Damage
+    damage_label.text = ("피해 %d → HP -%d\n예상 HP %d%s\n현재 상태 기준" % [threat.damage,threat.damage_to_hp,threat.hp_after," · 치명" if threat.lethal else ""]) if int(current.damage)>0 else "공격 없음\n균열핵 안정"
+    damage_label.tooltip_text = "현재 상태 기준 · 이후 준비에 따라 변동\n원래 피해 %d → 방벽 %d → 방어도 %d\n예상 HP 피해 %d / 남은 HP %d" % [threat.damage,threat.ward_absorbed,threat.armor_absorbed,threat.damage_to_hp,threat.hp_after]
     $Battle/Combat/Threat/ETA.text = "%.1f초"%(float(combat.eta_us)/1000000.0)
     $Battle/Combat/Threat/Extension.text = "연장 %.2f / 3초"%(float(combat.extension_us)/1000000.0)
     $Battle/Combat/Threat/Next.text = "다음 · %s\n피해 %d\n순서 예고" % [next.label,next.damage]
@@ -819,7 +825,7 @@ func _render_line():
         var event=_last_line_receipt
         var unapplied=int(event.time_requested_us)-int(event.time_applied_us)
         var reason="전체 적용" if String(event.time_reason).is_empty() else _target_reason_text(String(event.time_reason))
-        receipt.text="최근 LINE 보상\n검 %d / 방패 %d\n하트 %d / 시계 %d\n\n시계 결과\n적용 +%.3f초\n미적용 %.3f초\n%s"%[event.counts.A,event.counts.D,event.counts.H,event.counts.T,float(event.time_applied_us)/1000000.0,float(unapplied)/1000000.0,reason]
+        receipt.text="최근 LINE 보상\n검 %d / 방패 %d\n하트 %d / 시계 %d\n회복 %d / %d\n\n시계 결과\n적용 +%.3f초\n미적용 %.3f초\n%s"%[event.counts.A,event.counts.D,event.counts.H,event.counts.T,event.healing_applied,event.healing_requested,float(event.time_applied_us)/1000000.0,float(unapplied)/1000000.0,reason]
     var rows: Array = session.line.rows()
     for y in range(20):
         for x in range(10):
@@ -870,27 +876,38 @@ func _render_skills():
         button.text=("✓ " if key==category else "")+key+" "+{"ATK":"공격","DEF":"방어","SUP":"치유"}[key]
         button.tooltip_text="연쇄가 끝날 때까지 "+category+" 고정" if session.chain.resolving else "다음 연쇄의 계열 선택"
     var power=int(_rules.skills[category][stage-1])
+    var preview=session.combat.skill_preview(category,stage)
+    if not preview.success: return
     var effect=""
-    if category=="ATK": effect="기본 피해 %d + 가산 %d"%[power,session.combat.attack_bank]
+    if category=="ATK": effect="피해 %d (%d+%d)"%[preview.damage_applied,power,preview.bank_consumed]
     elif category=="DEF": effect="방벽 목표 %d · 현재 %d 유지"%[power,session.combat.ward]
-    else: effect="회복 %d · HP 상한까지"%power
-    $Battle/Combat/SkillDock/Next.text="다음 %s T%d · %s"%[category,stage,effect]
+    else: effect="회복 %d / %d · HP 상한 적용"%[preview.healing_applied,power]
+    $Battle/Combat/SkillDock/Next.text="예상 %s T%d · %s"%[category,stage,effect]
+    var detail="현재 상태 기준의 다음 파동 예상 · 발동 시 재계산\n"
+    if category=="ATK": detail+="기본 %d + 가산 %d = 요청 피해 %d\n실효 피해 %d · 초과 %d\n가산치는 다음 유효 공격에 한 번만 소비"%[power,preview.bank_consumed,preview.damage_requested,preview.damage_applied,preview.damage_requested-preview.damage_applied]
+    elif category=="SUP": detail+="요청 회복 %d · 실효 %d · 초과 %d\n초과 회복은 다른 자원으로 전환하지 않음"%[power,preview.healing_applied,power-preview.healing_applied]
     if category=="DEF":
-        var reason=session.combat.def_target_reason()
-        var target="방벽 %d · 대상 있음"%power if reason.is_empty() else "무효 예고: "+_target_reason_text(reason)
+        var reason=String(preview.reason)
+        var target="방벽 %d · 대상 있음"%preview.ward_after if reason.is_empty() else "무효 예고: "+_target_reason_text(reason)
         $Battle/Combat/SkillDock/Next.text="DEF T%d %s · 발동 시 무효 가능"%[stage,target]
+        detail+="목표 %d · 현재 %d · 예상 %d\n방벽은 더하지 않고 큰 값으로 갱신\n%s"%[power,session.combat.ward,preview.ward_after,"현재 행동만 보호 · 확정 전 발동 필요" if reason.is_empty() else _target_reason_text(reason)]
+    $Battle/Combat/SkillDock/Next.tooltip_text=detail
     $Battle/Combat/SkillDock/NextIcon.texture=assets.texture("R1-ICONS",{"ATK":"strike","DEF":"ward","SUP":"recover"}[category])
     var last: Dictionary=session.last_cast
+    $Battle/Combat/SkillDock/LastIcon.visible=not last.is_empty()
+    if not last.is_empty():
+        $Battle/Combat/SkillDock/LastIcon.texture=assets.texture("R1-ICONS",{"ATK":"strike","DEF":"ward","SUP":"recover"}[last.category])
     var recent="최근: 없음 · 연쇄 시작 전 계열 선택"
     if not last.is_empty():
         var result=""
         match last.effect:
-            "ATK_DAMAGE": result="실제 피해 %d"%last.damage_applied
+            "ATK_DAMAGE": result="피해 %d · 기본 %d + 가산 %d"%[last.damage_applied,last.power,last.bank_consumed]
             "DEF_WARD": result="현재 방벽 %d"%last.ward_after
             "DEF_NO_TARGET": result="대상 없음 · "+_target_reason_text(String(last.reason))
             "SUP_HEAL": result="실제 회복 %d"%last.healing_applied
         recent="최근 %s T%d · %s"%[last.category,last.stage,result]
     $Battle/Combat/SkillDock/Recent.text=recent
+    $Battle/Combat/SkillDock/Recent.tooltip_text=recent
 func _target_reason_text(reason: String) -> String:
     return {"ACTION_FINISHED":"행동 종료","ACTION_COMMITTED":"행동 확정","NO_DAMAGE_ACTION":"휴식","EXTENSION_CAP_REACHED":"상한 도달"}.get(reason,reason)
 func _render_pose():

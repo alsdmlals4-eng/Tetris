@@ -9,6 +9,99 @@ func _state(mode: String = "STANDARD"):
     assert_not_null(script, "R2 combat owner must exist")
     return script.new(mode) if script != null else null
 
+func test_threat_projection_is_pure_and_matches_action_resolution():
+    var state = _state()
+    assert_true(state.has_method("threat_preview"))
+    if not state.has_method("threat_preview"): return
+    state.armor = 2
+    state.cast("ward", "DEF", 1)
+    var before = state.snapshot()
+    var preview = state.threat_preview()
+    assert_eq(preview.damage, 12)
+    assert_eq(preview.ward_absorbed, 3)
+    assert_eq(preview.armor_absorbed, 2)
+    assert_eq(preview.damage_to_hp, 7)
+    assert_eq(preview.hp_after, 93)
+    assert_false(preview.lethal)
+    assert_eq(state.snapshot(), before)
+    var events = state.tick(state.eta_us)
+    for key in ["damage", "ward_absorbed", "armor_absorbed", "damage_to_hp"]:
+        assert_eq(events[0][key], preview[key])
+    assert_eq(state.hp, preview.hp_after)
+
+func test_threat_projection_keeps_existing_ward_at_commit_and_ignores_foreign_ward():
+    var state = _state()
+    if not state.has_method("threat_preview"): assert_true(false, "Missing threat forecast"); return
+    state.cast("ward", "DEF", 1)
+    state.tick(state.eta_us - 1000)
+    assert_eq(state.def_target_reason(), "ACTION_COMMITTED")
+    assert_eq(state.threat_preview().ward_absorbed, 3)
+    state.ward_target = "foreign-action"
+    state.hp = 5
+    var before = state.snapshot()
+    var preview = state.threat_preview()
+    assert_eq(preview.ward_absorbed, 0)
+    assert_eq(preview.damage_to_hp, 5)
+    assert_eq(preview.hp_after, 0)
+    assert_true(preview.lethal)
+    assert_eq(state.snapshot(), before)
+    state.tick(1000)
+    assert_false(state.threat_preview().active)
+
+func test_skill_projection_caps_effect_without_spending_bank_or_healing():
+    var state = _state()
+    assert_true(state.has_method("skill_preview"))
+    if not state.has_method("skill_preview"): return
+    state.attack_bank = 7
+    state.boss_hp = 8
+    state.hp = 99
+    var before = state.snapshot()
+    var attack = state.skill_preview("ATK", 1)
+    assert_eq(attack.power, 4)
+    assert_eq(attack.bank_consumed, 7)
+    assert_eq(attack.damage_requested, 11)
+    assert_eq(attack.damage_applied, 8)
+    var heal = state.skill_preview("SUP", 1)
+    assert_eq(heal.healing_requested, 2)
+    assert_eq(heal.healing_applied, 1)
+    assert_eq(state.snapshot(), before)
+    var actual = state.cast("hit", "ATK", 1)
+    assert_eq(actual.damage_applied, attack.damage_applied)
+    assert_eq(actual.bank_consumed, attack.bank_consumed)
+
+func test_skill_projection_respects_stage_target_and_pause_boundaries():
+    var state = _state()
+    if not state.has_method("skill_preview"): assert_true(false, "Missing skill forecast"); return
+    state.cast("ward", "DEF", 3)
+    var before = state.snapshot()
+    var defense = state.skill_preview("DEF", 1)
+    assert_eq(defense.ward_after, 7)
+    assert_eq(state.skill_preview("ATK", 7).stage, 6)
+    assert_eq(state.skill_preview("ATK", 7).power, 18)
+    assert_false(state.skill_preview("UNKNOWN", 1).success)
+    assert_false(state.skill_preview("ATK", 0).success)
+    assert_eq(state.snapshot(), before)
+    state.paused = true
+    assert_true(state.skill_preview("SUP", 1).success)
+    assert_eq(state.ward, 7)
+    state.paused = false
+    state.tick(state.eta_us - 1000)
+    assert_eq(state.skill_preview("DEF", 1).reason, "ACTION_COMMITTED")
+
+func test_rest_forecast_does_not_claim_damage_or_ward_target():
+    var state = _state()
+    if not state.has_method("threat_preview"): assert_true(false, "Missing threat forecast"); return
+    for i in range(10):
+        if int(state.current_action().damage) == 0: break
+        state.armor = 1000
+        state.tick(state.eta_us)
+    assert_eq(state.current_action().damage, 0)
+    var before = state.snapshot()
+    assert_eq(state.threat_preview().damage_to_hp, 0)
+    assert_false(state.threat_preview().lethal)
+    assert_eq(state.skill_preview("DEF", 1).reason, "NO_DAMAGE_ACTION")
+    assert_eq(state.snapshot(), before)
+
 func _cells(prefix: String, kinds: Array) -> Array:
     var cells: Array = []
     for index in range(kinds.size()):
