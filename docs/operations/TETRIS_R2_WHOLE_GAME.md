@@ -36,6 +36,12 @@ Sources read2026-09-13; official descriptions, not hands-on play or interviews:
 
 ## Whole-game completion coverage
 
+Audio PR111 merged normally at14866c0a033ca3c6dde9e86464356881eae49753 after exact5f3ed27 CI2SUCCESS and unresolved threads0. Local/origin main readback matched. Next WG06 reader branch starts there.
+
+Reader plan: current original37-page preimplementation PDF remains a historical source, not current implementation status. Compare A overwrite original (reject provenance loss), B separate small status PDF only (risk reader misses detailed rules/atlases), C current implementation supplement first plus unchanged original pages in one derived reader (ADOPT). Reuse existing Korean ReportLab/table helpers, real runtime screenshots and existing asset manifest; no decorative raster reconstruction. Generate encounter/skill/resource tables from actual JSON and bind code/data/source hashes to exact commit. Include detailed SWOT response, failure paths, deferred art/audio/Human limits, actual screenshots versus old design projections. Validate hashes/text/page count and visually inspect all new pages; preserve original PDF bytes.
+
+Watchtower bounded layout correction v2 returned RGB1254×1254 with a painted checkerboard, no alpha: `.asset-vault/r2-watchtower-20260913/watchtower-layout-v2-rejected.png`, SHA256fea7c9b21d01102044d26831f13fdc1aab940498f5efd5c42e5255634b19b476. REJECTED_ALPHA; not atlas-ready, no runtime replacement. Original and first candidate preserved. No repeated automatic generation batch.
+
 Content publication: PR110 merged at `9b980c1c9c0bd00abbbe71f24550ea2bd0ee882e`, exact head c0fe1a7 had both CI checks SUCCESS, no unresolved threads, CLEAN. Local main was fast-forwarded and read back before audio work.
 
 ### Audio implementation plan / WG-05
