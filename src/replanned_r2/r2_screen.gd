@@ -408,7 +408,7 @@ func _build_options():
         slider.value_changed.connect(func(value):
             options_draft.audio[key]=int(value)
             audio.configure(options_draft.audio))
-    _label(panel,"AudioCredit",Rect2(24,432,480,62),"음향: Kenney · CC0\n효과음과 짧은 승리 징글을 따로 조절",16,CYAN)
+    _label(panel,"AudioCredit",Rect2(24,432,480,62),"음향: Kenney / 음악: MintoDog · CC0\n음악 음량은 전투 배경음과 승리 징글에 적용",16,CYAN)
     _button(panel,"TestEffects",Rect2(24,500,228,40),"효과음 들어보기",func(): audio.play_cue("line"))
     _button(panel,"TestMusic",Rect2(264,500,240,40),"승리 징글 들어보기",func(): audio.play_cue("victory"))
     _label(panel,"MappingTitle",Rect2(560,62,500,40),"조작 재지정 · 키 / 패드",20,GOLD)
@@ -562,7 +562,7 @@ func _close_requested():
     else: get_tree().quit()
 func pause_game(reason: String = ""):
     if session == null: return
-    audio.stop_all()
+    audio.pause_presentation()
     session.command("pause")
     inputs.clear()
     _practice_saw_pause = true
@@ -594,7 +594,7 @@ func resume_game():
     refresh()
 func open_details(stage: int = 1):
     if session == null or _blocking_modal()!=null: return
-    audio.stop_all()
+    audio.pause_presentation()
     _details_was_paused = session.combat.paused
     session.command("pause")
     inputs.clear()
@@ -615,7 +615,7 @@ func close_details():
 
 func open_options():
     if _blocking_modal()!=null: return
-    audio.stop_all()
+    audio.pause_presentation()
     options_draft = options.duplicate(true)
     _options_return = page
     _options_was_paused = session != null and session.combat.paused
@@ -858,6 +858,7 @@ func _preserve_external_pause():
     if $Options.visible: _options_was_paused=true
 
 func refresh():
+    _sync_audio_context()
     if session == null or not has_node("Battle"): return
     $Battle/Puzzle/Line.visible = session.mode=="LINE"
     $Battle/Puzzle/Chain.visible = session.mode=="CHAIN"
@@ -1138,7 +1139,13 @@ func _top_modal() -> Control:
     if blocking!=null: return blocking
     var pause=get_node_or_null("PausePanel") as Control
     return pause if pause!=null and pause.visible else null
+func _sync_audio_context():
+    if audio == null: return
+    var active = page == "battle" and session != null and session.combat.outcome == "RUNNING"
+    audio.set_battle_state(active,active and (session.combat.paused or _top_modal()!=null))
+
 func _sync_modal_boundary():
+    _sync_audio_context()
     var top=_top_modal()
     inputs.set_menu_bindings(page!="battle" or top!=null)
     var shield=get_node_or_null("ModalShield") as Control
@@ -1162,7 +1169,7 @@ func _guard_unsaved_state() -> bool:
     _show_save_failure(_pending_save_failure,_save_failure_reason)
     return true
 func _show_save_failure(context: String, reason: String):
-    audio.stop_all()
+    audio.pause_presentation()
     _pending_save_failure=context
     _save_failure_reason=reason
     if session: session.command("pause")

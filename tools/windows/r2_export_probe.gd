@@ -30,6 +30,8 @@ func _verify() -> void:
     if audio_script == null:
         failures.append("AUDIO_OWNER_MISSING")
     else:
+        var background = load(audio_script.BATTLE_MUSIC)
+        _record(background is AudioStreamOggVorbis and background.get_length()>90.0,"BATTLE_MUSIC_MISSING",failures)
         for cue in audio_script.CUES:
             var stream = load(audio_script.CUES[cue])
             _record(stream is AudioStream and stream.get_length()>0.0,"AUDIO_MISSING:"+cue,failures)
