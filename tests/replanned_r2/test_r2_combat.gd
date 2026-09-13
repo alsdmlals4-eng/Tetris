@@ -456,8 +456,8 @@ func test_explicit_combat_run_id_survives_restore_and_rejects_foreign_ward() -> 
     var constructor_arguments := 0
     for method in state.get_method_list():
         if method.name == "_init": constructor_arguments = method.args.size()
-    assert_eq(constructor_arguments,2,"Combat owns the same explicit run identity as session")
-    if constructor_arguments != 2: return
+    assert_eq(constructor_arguments,3,"Optional encounter profile extends the original mode/run identity boundary")
+    if constructor_arguments != 3: return
     var source = load(COMBAT_PATH).new("STANDARD","combat-run-A")
     var other = load(COMBAT_PATH).new("STANDARD","combat-run-B")
     assert_eq(source.action_id(),"combat-run-A:0")
