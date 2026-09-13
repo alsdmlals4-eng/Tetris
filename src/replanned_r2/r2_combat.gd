@@ -3,6 +3,7 @@ extends RefCounted
 
 const SESSION_PATH := "res://docs/design/r2-complete-session.json"
 const RULES_PATH := "res://docs/design/autocast-r2-data.json"
+const EXPEDITION_PATH := "res://data/replanned_r2/expedition.json"
 const SAVE_SCHEMA := "r2-combat-snapshot-v1"
 const STANDARD_MODE := "STANDARD"
 const DEFAULT_RUN_ID := "standalone-r2"
@@ -40,10 +41,10 @@ var _processed_line_cells: Dictionary = {}
 var _processed_cast_events: Dictionary = {}
 var _processed_topout_events: Dictionary = {}
 
-func _init(mode: String = STANDARD_MODE, run_id: String = DEFAULT_RUN_ID) -> void:
+func _init(mode: String = STANDARD_MODE, run_id: String = DEFAULT_RUN_ID, encounter_profile: String = "") -> void:
     _mode = RELAXED_MODE if mode == RELAXED_MODE else STANDARD_MODE
     _run_id = run_id
-    _ready = _load_rule_pack() and valid_run_id(run_id)
+    _ready = _load_rule_pack(encounter_profile) and valid_run_id(run_id)
     if not _ready:
         outcome = "DEFEAT"
         return
@@ -68,6 +69,11 @@ func next_action() -> Dictionary:
     if not _ready:
         return {}
     return _action_for_index(action_index + 1)
+
+func encounter_info() -> Dictionary:
+    if not _ready: return {}
+    return {"id":String(_encounter.id), "label":String(_encounter.get("label", "균열 파괴자")),
+        "boss_hp":int(_encounter.boss_hp)}
 
 func apply_line(event_id: String, cells: Array) -> Dictionary:
     var rejected := _line_result(false, "NO_EFFECT", "")
@@ -511,7 +517,7 @@ func restore(value: Dictionary) -> bool:
     _action_finished = false
     return true
 
-func _load_rule_pack() -> bool:
+func _load_rule_pack(encounter_profile: String = "") -> bool:
     if not FileAccess.file_exists(SESSION_PATH) or not FileAccess.file_exists(RULES_PATH):
         return false
     var session = JSON.parse_string(FileAccess.get_file_as_string(SESSION_PATH))
@@ -523,6 +529,31 @@ func _load_rule_pack() -> bool:
     if not rules.has("schema") or not rules.has("skills") or not rules["skills"] is Dictionary:
         return false
     var encounter: Dictionary = session["encounter"]
+    var profile_hash := ""
+    if not encounter_profile.is_empty():
+        var catalogue = JSON.parse_string(FileAccess.get_file_as_string(EXPEDITION_PATH))
+        if not catalogue is Dictionary or catalogue.get("schema") != "r2-expedition-catalog-v1": return false
+        if not catalogue.get("encounters") is Dictionary or not catalogue.encounters.get(encounter_profile) is Dictionary: return false
+        var profile: Dictionary = catalogue.encounters[encounter_profile]
+        if not profile.get("label") is String or not profile.get("combat") is Dictionary: return false
+        var content: Dictionary = profile.combat
+        if _normalized_integer(content.get("boss_hp"),1,100000) == null or not content.get("actions") is Array: return false
+        if content.actions.size() != 4: return false
+        for raw in content.actions:
+            if not raw is Dictionary: return false
+            for key in ["id", "label"]:
+                if not raw.get(key) is String or raw[key].is_empty(): return false
+            if _normalized_integer(raw.get("damage"),0,1000) == null: return false
+            for key in ["seconds", "anticipation"]:
+                if not (raw.get(key) is int or raw.get(key) is float) or not is_finite(float(raw[key])): return false
+            if float(raw.seconds) < 0.1 or float(raw.seconds) > 120.0: return false
+            if float(raw.anticipation) < 0.0 or float(raw.anticipation) > 1.0: return false
+        encounter = encounter.duplicate(true)
+        encounter.id = encounter_profile
+        encounter.label = profile.label
+        encounter.boss_hp = int(content.boss_hp)
+        encounter.actions = content.actions.duplicate(true)
+        profile_hash = ":"+encounter_profile+":"+FileAccess.get_sha256(EXPEDITION_PATH)
     if not encounter.has("actions") or not encounter["actions"] is Array or encounter["actions"].size() != 4:
         return false
     for key in ["id", "player_hp", "boss_hp", "attack_bank", "armor", "ward", "repeat", "relaxed_windup_multiplier", "commit_lead_seconds"]:
@@ -557,6 +588,7 @@ func _load_rule_pack() -> bool:
     }
     _rule_pack = String(rules["schema"])
     _rule_pack_hash = "%s:%s" % [FileAccess.get_sha256(RULES_PATH), FileAccess.get_sha256(SESSION_PATH)]
+    _rule_pack_hash += profile_hash
     return not _rule_pack.is_empty() and not _rule_pack_hash.begins_with(":") and not _rule_pack_hash.ends_with(":")
 
 func _resolve_current_action() -> Dictionary:

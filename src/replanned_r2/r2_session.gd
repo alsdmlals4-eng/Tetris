@@ -29,16 +29,18 @@ var _rule_pack_hash := ""
 var _transaction := false
 var _skill_powers: Dictionary = {}
 var _boss_hp_limit := 0
+var _encounter_profile := ""
 
-func _init(difficulty: String = "STANDARD", seed_value: int = 9112026, requested_run_id: String = "") -> void:
+func _init(difficulty: String = "STANDARD", seed_value: int = 9112026, requested_run_id: String = "", encounter_profile: String = "") -> void:
     encounter_mode = "RELAXED" if difficulty == "RELAXED" else "STANDARD"
     run_id = "r2:%d" % seed_value if requested_run_id.is_empty() else requested_run_id
-    combat = Combat.new(encounter_mode,run_id)
+    _encounter_profile = encounter_profile
+    combat = Combat.new(encounter_mode,run_id,encounter_profile)
     line = Line.new(seed_value)
     chain = Chain.new(hash("r2-chain:%d" % seed_value))
     _rule_pack_hash = (combat.snapshot().rule_pack_hash + ":" + FileAccess.get_sha256(Line.CATALOG_PATH)).sha256_text()
     _skill_powers = JSON.parse_string(FileAccess.get_file_as_string(Combat.RULES_PATH))["skills"]
-    _boss_hp_limit = int(JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))["encounter"]["boss_hp"])
+    _boss_hp_limit = int(combat.encounter_info().get("boss_hp",0))
 
 func command(action: String, args: Dictionary = {}) -> Dictionary:
     if action == "pause":
@@ -211,7 +213,7 @@ func restore(data: Dictionary) -> bool:
     if not identity.training_boss_frozen is bool: return false
     if identity.training_boss_frozen and identity.training_mode == "": return false
     if not Chain.valid_integer(identity.elapsed_simulation_us,0,9007199254740991) or not Chain.valid_integer(identity.checkpoint_sequence,0,2147483647): return false
-    var candidate_combat = Combat.new(identity.mode,identity.run_id)
+    var candidate_combat = Combat.new(identity.mode,identity.run_id,_encounter_profile)
     if not candidate_combat.restore(data.combat): return false
     var canonical_combat: Dictionary = candidate_combat.snapshot()
     if identity.encounter_id != canonical_combat.encounter_id or identity.mode != canonical_combat.mode or identity.run_id != canonical_combat.run_id: return false

@@ -16,6 +16,9 @@ WINDOWS_POWERSHELL = shutil.which("powershell")
 POWERSHELL = PWSH or WINDOWS_POWERSHELL
 
 EXPECTED_SELECTED = {
+    "res://data/replanned_r2/expedition.json",
+    "res://src/replanned_r2/r2_expedition.gd",
+    "res://src/replanned_r2/r2_expedition_save.gd",
     "res://scenes/replanned_r2/main.tscn",
     "res://docs/design/r2-complete-session.json",
     "res://docs/design/autocast-r2-data.json",

@@ -1,0 +1,188 @@
+{
+  "schema": "r2-expedition-catalog-v1",
+  "title": "균열 봉쇄 원정",
+  "opening": "외곽 방벽이 무너지고 있습니다. 두 퍼즐로 힘을 모아 균열의 핵을 봉쇄하세요.",
+  "ending": "균열의 맥동이 멎고 요새의 새벽이 돌아왔습니다. 당신이 선택한 길이 방벽을 지켜냈습니다.",
+  "stages": [
+    [
+      "outer_breach"
+    ],
+    [
+      "foundry",
+      "watchtower"
+    ],
+    [
+      "rift_core"
+    ]
+  ],
+  "encounters": {
+    "outer_breach": {
+      "label": "외곽 균열",
+      "intent": "짧은 견제와 빈틈을 읽고 두 퍼즐의 준비를 연결하세요.",
+      "combat": {
+        "boss_hp": 120,
+        "actions": [
+          {
+            "id": "probe",
+            "label": "균열 견제",
+            "seconds": 12,
+            "damage": 6,
+            "anticipation": 0.25
+          },
+          {
+            "id": "heavy",
+            "label": "방벽 타격",
+            "seconds": 16,
+            "damage": 16,
+            "anticipation": 0.25
+          },
+          {
+            "id": "probe",
+            "label": "균열 견제",
+            "seconds": 12,
+            "damage": 6,
+            "anticipation": 0.25
+          },
+          {
+            "id": "rest",
+            "label": "균열 안정",
+            "seconds": 8,
+            "damage": 0,
+            "anticipation": 0
+          }
+        ]
+      }
+    },
+    "foundry": {
+      "label": "무너진 주조소",
+      "intent": "느린 강타에 맞춰 방어를 준비할 여유가 있지만 한 번의 피해가 큽니다.",
+      "combat": {
+        "boss_hp": 180,
+        "actions": [
+          {
+            "id": "heavy",
+            "label": "용광 강타",
+            "seconds": 14,
+            "damage": 20,
+            "anticipation": 0.25
+          },
+          {
+            "id": "rest",
+            "label": "과열 냉각",
+            "seconds": 8,
+            "damage": 0,
+            "anticipation": 0
+          },
+          {
+            "id": "heavy",
+            "label": "주조 붕괴",
+            "seconds": 16,
+            "damage": 26,
+            "anticipation": 0.25
+          },
+          {
+            "id": "probe",
+            "label": "불씨 견제",
+            "seconds": 10,
+            "damage": 8,
+            "anticipation": 0.25
+          }
+        ]
+      }
+    },
+    "watchtower": {
+      "label": "침묵의 감시탑",
+      "intent": "작고 빠른 견제가 이어집니다. 짧은 연쇄로 꾸준히 대응하세요.",
+      "combat": {
+        "boss_hp": 160,
+        "actions": [
+          {
+            "id": "probe",
+            "label": "파편 사격",
+            "seconds": 7,
+            "damage": 7,
+            "anticipation": 0.25
+          },
+          {
+            "id": "probe",
+            "label": "추적 사격",
+            "seconds": 8,
+            "damage": 8,
+            "anticipation": 0.25
+          },
+          {
+            "id": "heavy",
+            "label": "집중 사격",
+            "seconds": 11,
+            "damage": 16,
+            "anticipation": 0.25
+          },
+          {
+            "id": "rest",
+            "label": "재장전",
+            "seconds": 8,
+            "damage": 0,
+            "anticipation": 0
+          }
+        ]
+      }
+    },
+    "rift_core": {
+      "label": "균열의 핵",
+      "intent": "균열 파괴자의 강약이 교차하는 행동을 읽고 봉쇄를 완수하세요.",
+      "combat": {
+        "boss_hp": 240,
+        "actions": [
+          {
+            "id": "probe",
+            "label": "망치 견제",
+            "seconds": 10,
+            "damage": 12,
+            "anticipation": 0.25
+          },
+          {
+            "id": "heavy",
+            "label": "균열 분쇄",
+            "seconds": 14,
+            "damage": 35,
+            "anticipation": 0.25
+          },
+          {
+            "id": "probe",
+            "label": "망치 견제",
+            "seconds": 10,
+            "damage": 12,
+            "anticipation": 0.25
+          },
+          {
+            "id": "rest",
+            "label": "균열 안정",
+            "seconds": 8,
+            "damage": 0,
+            "anticipation": 0
+          }
+        ]
+      }
+    }
+  },
+  "supplies": {
+    "repair": {
+      "label": "응급 정비",
+      "heal": 20,
+      "attack_bank": 0,
+      "armor": 0
+    },
+    "attack": {
+      "label": "공격 준비",
+      "heal": 0,
+      "attack_bank": 12,
+      "armor": 0
+    },
+    "armor": {
+      "label": "방벽 보강",
+      "heal": 0,
+      "attack_bank": 0,
+      "armor": 12
+    }
+  }
+}

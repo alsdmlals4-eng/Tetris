@@ -3,6 +3,11 @@ extends Control
 signal diagnostic_recorded(record: Dictionary)
 const Session = preload("res://src/replanned_r2/r2_session.gd")
 const Disk = preload("res://src/replanned_r2/r2_save.gd")
+const Expedition = preload("res://src/replanned_r2/r2_expedition.gd")
+const ExpeditionDisk = preload("res://src/replanned_r2/r2_expedition_save.gd")
+@export var expedition_save_path := ExpeditionDisk.EXPEDITION_PATH
+var expedition
+var expedition_disk
 const PlaytestReport = preload("res://src/replanned_r2/r2_playtest_report.gd")
 var report_directory := PlaytestReport.DEFAULT_DIRECTORY
 var _result_practice_complete := false
@@ -70,6 +75,7 @@ func _ready():
     Input.joy_connection_changed.connect(device_connection_changed)
     assets = Assets.new()
     disk = Disk.new(save_path,options_path)
+    expedition_disk = ExpeditionDisk.new(expedition_save_path)
     options = disk.load_options()
     inputs.configure(options)
     _source = JSON.parse_string(FileAccess.get_file_as_string(Session.DATA_PATH))
@@ -190,6 +196,17 @@ func _build_ui():
     _button(main,"Settings",Rect2(66,416,426,44),"설정",open_options)
     _button(main,"Quit",Rect2(66,474,426,44),"종료",func(): get_tree().quit())
     _label(main,"Status",Rect2(66,542,426,108),"",16,CYAN)
+    _button(main,"ExpeditionNew",Rect2(66,242,426,44),"새 원정 · 세 전투와 경로 선택",request_new_expedition)
+    _button(main,"ExpeditionContinue",Rect2(66,294,426,44),"원정 이어하기",continue_expedition)
+    main.get_node("Continue").position.y = 346
+    main.get_node("Continue").text = "단일 전투 이어하기"
+    main.get_node("NewRun").position.y = 398
+    main.get_node("NewRun").text = "단일 전투 · 연습용 도전"
+    main.get_node("Practice").position.y = 450
+    main.get_node("Settings").position.y = 502
+    main.get_node("Quit").position.y = 554
+    main.get_node("Status").position.y = 606
+    main.get_node("Status").size.y = 64
     var briefing = _panel(self,"Briefing",Rect2(40,40,1200,640))
     _label(briefing,"Title",Rect2(26,24,680,55),"출격 · 균열 파괴자",29,GOLD)
     _label(briefing,"Rules",Rect2(26,110,690,310),"목표: 보스 HP 240 → 0 / 내 HP 100\nLINE: 검·방패·하트·시계 자원 준비\nCHAIN: 인접 교환 → 파동마다 선택 계열 자동 발동\nATK 공격 / DEF 현재 행동 방벽 / SUP 회복\n공유 타이머는 현재 적 행동까지 남은 시간입니다.\n읽는 동안 전투 시계는 흐르지 않습니다.",23)
@@ -216,6 +233,20 @@ func _build_ui():
     overwrite.dialog_text = "이어하기 기록이 있습니다. 새 도전으로 체크포인트를 바꾸시겠습니까?"
     overwrite.confirmed.connect(_open_briefing)
     add_child(overwrite)
+    var expedition_overwrite = ConfirmationDialog.new()
+    expedition_overwrite.name = "ExpeditionOverwrite"
+    expedition_overwrite.title = "새 원정"
+    expedition_overwrite.dialog_text = "이전 원정 기록을 새 원정으로 바꿉니다. 단일 전투 기록은 유지합니다."
+    expedition_overwrite.confirmed.connect(func(): start_expedition(difficulty,run_seed))
+    add_child(expedition_overwrite)
+    var route = _panel(self,"Expedition",Rect2(40,30,1200,660))
+    _label(route,"Title",Rect2(30,20,1120,55),"균열 봉쇄 원정",29,GOLD)
+    _label(route,"Progress",Rect2(30,80,1120,65),"",20,CYAN)
+    _label(route,"Description",Rect2(30,155,1120,170),"",22)
+    for i in 3:
+        _button(route,"Choice%d"%i,Rect2(30+i*385,360,365,110),"",func(): _choose_expedition(i))
+    _label(route,"Status",Rect2(30,485,1120,85),"전투 밖에서는 시간이 흐르지 않습니다.",18,CYAN)
+    _button(route,"Main",Rect2(30,580,350,50),"기록을 유지하고 메인",return_to_main)
 
 func _build_battle():
     var battle = _container(self,"Battle",Rect2(0,0,1280,720))
@@ -388,7 +419,7 @@ func _build_options():
 
 func _show_page(next: String):
     page = next
-    for node_name in ["Main","Briefing","Battle","Result"]:
+    for node_name in ["Main","Briefing","Battle","Result","Expedition"]:
         get_node(node_name).visible = node_name.to_lower() == page
     for node_name in ["PausePanel","DetailsPanel","Options","SaveFailurePanel"]: get_node(node_name).hide()
     _sync_modal_boundary()
@@ -397,10 +428,12 @@ func _show_page(next: String):
     if page == "main": $Main/NewRun.grab_focus()
     elif page == "briefing": $Briefing/Deploy.grab_focus()
     elif page == "result": $Result/Retry.grab_focus()
+    elif page == "expedition": $Expedition/Main.grab_focus()
     else:
         var focus = get_viewport().gui_get_focus_owner()
         if focus: focus.release_focus()
 func _refresh_continue():
+    $Main/ExpeditionContinue.disabled = not expedition_disk.load_expedition().success
     var valid = disk.load_checkpoint()
     $Main/Continue.disabled = not valid.success
     if valid.success:
@@ -411,6 +444,7 @@ func request_new_run():
     else: _open_briefing()
 func _open_briefing():
     if _guard_unsaved_state(): return
+    expedition = null
     session = null
     practice_stage = 0
     _show_page("briefing")
@@ -420,6 +454,7 @@ func _refresh_mode():
     $Briefing/Relaxed.text = ("✓ " if difficulty=="RELAXED" else "")+"여유 · 준비시간 1.25배"
 func start_run(mode: String = "STANDARD", seed_value: int = 9112026):
     if _guard_unsaved_state(): return
+    expedition = null
     difficulty = mode
     run_seed = seed_value
     practice_stage = 0
@@ -432,6 +467,9 @@ func start_run(mode: String = "STANDARD", seed_value: int = 9112026):
     if not saved.success: _show_save_failure("START",saved.reason)
 func retry_run():
     if _guard_unsaved_state(): return
+    if expedition != null:
+        if expedition.retry_battle().success: _deploy_expedition()
+        return
     if practice_stage > 0: begin_practice(practice_stage)
     else: start_run(difficulty,run_seed)
 func _reset_view():
@@ -458,6 +496,7 @@ func continue_run():
         $Main/Status.text = "전체 기록 검증 실패 · 새 도전을 선택하세요."
         return
     session = restored
+    expedition = null
     difficulty = session.encounter_mode
     # The original shape RNG seed is stored by the model as a decimal string.
     run_seed = int(saved.snapshot.line.shape_seed)
@@ -471,12 +510,14 @@ func continue_run():
         pause_game("체크포인트를 복원했습니다. 입력 선택을 해제하고 전체 정지로 시작합니다.")
         refresh()
 func checkpoint() -> Dictionary:
+    if expedition != null: return expedition_disk.save_expedition(expedition,session,_clock_ns)
     if session == null or practice_stage > 0: return {"success":false,"reason":"연습은 일반 이어하기를 덮어쓰지 않습니다."}
     return disk.save_session(session,_clock_ns)
 func return_to_main():
     if _guard_unsaved_state(): return
     if session: session.command("pause")
     session = null
+    expedition = null
     practice_stage = 0
     _show_page("main")
     _refresh_continue()
@@ -645,6 +686,9 @@ func advance_seconds(delta: float):
         remaining -= step
         for action in inputs.elapse(step): _action(action)
         _autosave_us += step
+    if session != null and session.combat.outcome != "RUNNING":
+        _show_result()
+        return
     if _autosave_us >= 5000000 and session.can_checkpoint() and practice_stage==0:
         var saved = checkpoint()
         _autosave_us = 0
@@ -796,10 +840,12 @@ func refresh():
     var combat = session.combat
     var current: Dictionary = combat.current_action()
     var next: Dictionary = combat.next_action()
-    $Battle/Combat/Stage/HP.text = "균열 파괴자   HP %d / %d" % [combat.boss_hp,_source.encounter.boss_hp]
+    var encounter: Dictionary = combat.encounter_info()
+    $Battle/Combat/Stage/HP.text = "%s   HP %d / %d" % [encounter.label,combat.boss_hp,encounter.boss_hp]
+    $Battle/Combat/Stage/HealthBar.max_value=encounter.boss_hp
     $Battle/Combat/Stage/HealthBar.value=combat.boss_hp
     $Battle/Combat/Threat/Current.text = "현재 · "+current.label
-    $Battle/Combat/Threat/Icon.texture = assets.texture("R1-ICONS","heavy" if current.id=="slam" else "strike")
+    $Battle/Combat/Threat/Icon.texture = assets.texture("R1-ICONS","heavy" if current.id in ["slam","heavy"] else "strike")
     $Battle/Combat/Threat/Icon.visible = int(current.damage)>0
     var threat = combat.threat_preview()
     var damage_label: Label = $Battle/Combat/Threat/Damage
@@ -928,6 +974,8 @@ func _render_pose():
         elif boss_pose=="impact": boss.position.x=4.0*sin(TAU*float(_impact_us)/120000.0)
 
 func begin_practice(stage: int = 1):
+    if _guard_unsaved_state(): return
+    expedition = null
     practice_stage=clampi(stage,1,4)
     session=Session.new(difficulty,run_seed,"practice-"+Crypto.new().generate_random_bytes(16).hex_encode())
     session.setup_training("CHAIN" if practice_stage==2 else "LINE",practice_stage<=2)
@@ -1015,6 +1063,14 @@ func export_playtest_report():
 
 func _show_result(training_complete: bool = false, persist: bool = true):
     if session==null: return
+    if expedition != null:
+        if expedition.view().phase == "BATTLE":
+            var ended = expedition.finish_battle({"run_id":session.run_id,"outcome":session.combat.outcome,"hp":session.combat.hp})
+            if not ended.success: return
+        if session.combat.outcome == "VICTORY":
+            _show_expedition()
+            if persist: _save_expedition_boundary("RESULT")
+            return
     _result_practice_complete = training_complete
     $Result/ExportStatus.text = "검수 기록은 버튼을 눌러 저장합니다.\n개인정보 수집·자동 업로드 없음"
     $Result/ExportReport.tooltip_text = ""
@@ -1033,6 +1089,9 @@ func _show_result(training_complete: bool = false, persist: bool = true):
         float(metrics.time_applied_us)/1000000.0,float(metrics.time_wasted_us)/1000000.0,
         "연습 기록은 일반 전투 통계·체크포인트와 분리됩니다." if practice_stage>0 else "같은 seed 재도전은 새 실행 ID와 초기 전투 자원으로 시작합니다."])
     $Result/Retry.text="이 학습 단계 다시" if practice_stage>0 else "같은 seed로 재도전"
+    if expedition != null:
+        $Result/Retry.text = "이 전투 시작 상태로 재도전"
+        $Result/Title.text = "원정 중 패배 · 경로와 정비 선택 유지"
     if practice_stage==0 and persist:
         var saved=checkpoint()
         if not saved.success: _show_save_failure("RESULT",saved.reason)
@@ -1084,7 +1143,7 @@ func _show_save_failure(context: String, reason: String):
     $SaveFailurePanel/Status.text=subject+"를 저장하지 못했습니다.\n현재 상태는 이 화면에 보존되어 있습니다.\n저장을 다시 시도하거나, 현재 상태를 버리고 이전 기록으로 돌아갈 수 있습니다.\n오류: "+reason
     _sync_modal_boundary()
 func _retry_failed_save():
-    if _pending_save_failure.is_empty() or session==null: return
+    if _pending_save_failure.is_empty() or (session==null and expedition==null): return
     var saved=checkpoint()
     if not saved.success:
         _show_save_failure(_pending_save_failure,saved.reason)
@@ -1102,3 +1161,106 @@ func _discard_unsaved_to_main():
     $SaveFailurePanel.hide()
     _sync_modal_boundary()
     return_to_main()
+
+func request_new_expedition():
+    if _guard_unsaved_state(): return
+    if expedition_disk.load_expedition().success:
+        $ExpeditionOverwrite.popup_centered(Vector2i(600,180))
+    else: start_expedition(difficulty,run_seed)
+
+func start_expedition(mode: String = "STANDARD", seed_value: int = 9112026):
+    if _guard_unsaved_state(): return
+    var candidate = Expedition.new("exp-"+Crypto.new().generate_random_bytes(16).hex_encode(),seed_value,mode)
+    if candidate.view().is_empty():
+        $Main/Status.text = "원정 구성 검증 실패 · 기존 기록을 유지합니다."
+        return
+    expedition = candidate
+    session = null
+    practice_stage = 0
+    difficulty = mode
+    run_seed = seed_value
+    _reset_view()
+    _show_expedition()
+    _save_expedition_boundary("START")
+
+func continue_expedition():
+    if _guard_unsaved_state(): return
+    var loaded = expedition_disk.load_expedition()
+    if not loaded.success:
+        $Main/Status.text = loaded.reason
+        return
+    expedition = loaded.expedition
+    session = loaded.session
+    practice_stage = 0
+    difficulty = expedition.view().difficulty
+    run_seed = expedition.view().seed
+    _reset_view()
+    _clock_ns = loaded.clock_remainder_ns
+    if expedition.view().phase == "BATTLE":
+        _show_page("battle")
+        refresh()
+        pause_game("원정을 복원했습니다. 계속하면 같은 전투가 이어집니다.")
+    elif expedition.view().phase == "DEFEAT": _show_result(false,false)
+    else: _show_expedition()
+
+func _show_expedition():
+    _show_page("expedition")
+    var state: Dictionary = expedition.view()
+    var catalogue: Dictionary = expedition.catalog()
+    $Expedition/Title.text = catalogue.title + (" · 봉쇄 완료" if state.phase == "COMPLETE" else "")
+    $Expedition/Progress.text = "전투 %d / %d · HP %d / 100 · %s" % [mini(int(state.stage)+1,catalogue.stages.size()),catalogue.stages.size(),state.hp,"여유 모드" if state.difficulty == "RELAXED" else "표준 모드"]
+    $Expedition/Description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+    var choices: Array = expedition.available_encounters() if state.phase == "ROUTE" else (catalogue.supplies.keys() if state.phase == "SUPPLY" else [])
+    for i in 3:
+        var button: Button = get_node("Expedition/Choice%d" % i)
+        button.visible = i < choices.size()
+        if not button.visible: continue
+        var id: String = choices[i]
+        if state.phase == "ROUTE":
+            button.text = catalogue.encounters[id].label+"\n출격"
+            button.tooltip_text = catalogue.encounters[id].intent
+        else:
+            var supply: Dictionary = expedition.supply_preview(id)
+            button.text = catalogue.supplies[id].label+"\nHP +%d / 공격 +%d / 방어 +%d" % [supply.healing_applied,supply.attack_bank,supply.armor]
+            button.tooltip_text = "한 번만 선택합니다. 다음 전투의 시작 상태에 적용됩니다."
+    if state.phase == "ROUTE":
+        var lines := PackedStringArray([String(catalogue.opening) if state.stage == 0 else "다음 접근로를 선택하세요."])
+        for id in choices: lines.append(catalogue.encounters[id].label+": "+catalogue.encounters[id].intent)
+        $Expedition/Description.text = "\n".join(lines)
+        $Expedition/Status.text = "전투마다 보드를 새로 준비합니다. HP와 선택한 정비만 이어집니다.\n적별 그림·연출은 제작 중이며, 현재는 공통 임시 자산을 사용합니다."
+    elif state.phase == "SUPPLY":
+        $Expedition/Description.text = "전투를 돌파했습니다. 세 정비 중 하나를 선택하세요.\n응급 정비는 손실 HP만 회복합니다. 공격 준비와 방벽 보강은 다음 전투의 시작 자원입니다."
+        $Expedition/Status.text = "선택은 한 번만 적용되며 기록에 보존됩니다. 다음 전투에서 패배해도 같은 정비 상태로 재도전할 수 있습니다."
+    else:
+        var names := PackedStringArray()
+        for id in state.route: names.append(catalogue.encounters[id].label)
+        $Expedition/Description.text = catalogue.ending+"\n\n지켜낸 경로: "+" → ".join(names)
+        $Expedition/Status.text = "원정의 결말에 도달했습니다. 다른 접근로와 정비를 선택해 다시 도전할 수 있습니다.\n콘텐츠·개별 이미지·연출의 최종 완성도 검증은 별도 진행 중입니다."
+    if not choices.is_empty(): $Expedition/Choice0.grab_focus()
+
+func _choose_expedition(index: int):
+    if expedition == null or page != "expedition" or _blocking_modal() != null: return
+    var state: Dictionary = expedition.view()
+    var choices: Array = expedition.available_encounters() if state.phase == "ROUTE" else (expedition.catalog().supplies.keys() if state.phase == "SUPPLY" else [])
+    if index < 0 or index >= choices.size(): return
+    if state.phase == "ROUTE":
+        if expedition.launch(choices[index]).success: _deploy_expedition()
+    elif expedition.choose_supply(choices[index]).success:
+        session = null
+        _clock_ns = 0
+        _show_expedition()
+        _save_expedition_boundary("SUPPLY")
+
+func _deploy_expedition():
+    session = expedition.make_battle_session()
+    if session == null:
+        $Expedition/Status.text = "전투 구성 검증 실패 · 메인으로 돌아가 이전 원정 기록을 복원하세요."
+        return
+    _reset_view()
+    _show_page("battle")
+    refresh()
+    _save_expedition_boundary("START")
+
+func _save_expedition_boundary(context: String):
+    var saved = checkpoint()
+    if not saved.success: _show_save_failure(context,saved.reason)

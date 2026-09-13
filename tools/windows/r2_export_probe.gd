@@ -4,6 +4,7 @@ const ENTRY_SCENE := "res://scenes/replanned_r2/main.tscn"
 const RAW_ASSET_ROOT_ENV := "TETRIS_R2_SOURCE_ASSET_ROOT"
 const MANIFEST_PATH := "res://docs/design/r2-complete-session.json"
 const REQUIRED_JSON := [
+    "res://data/replanned_r2/expedition.json",
     "res://docs/design/r2-complete-session.json",
     "res://docs/design/autocast-r2-data.json",
     "res://data/production/line_tetrominoes.json",
@@ -72,6 +73,7 @@ func _verify() -> void:
     var packed = load(ENTRY_SCENE)
     if packed is PackedScene:
         var screen = packed.instantiate()
+        screen.expedition_save_path = "user://replanned_r2_tests/export-probe/expedition.json"
         root.add_child(screen)
         await process_frame
         result.entry_instantiated = screen != null and String(screen.page) == "main"
@@ -83,6 +85,14 @@ func _verify() -> void:
             await process_frame
             result.practice_entered = String(screen.page) == "battle" and screen.get_node("Battle").visible
             _record(result.practice_entered, "R2_PRACTICE_NOT_ENTERED", failures)
+            screen.return_to_main()
+            screen.start_expedition("STANDARD",41)
+            screen.get_node("Expedition/Choice0").pressed.emit()
+            await process_frame
+            var connected = screen.page == "battle" and screen.session.combat.encounter_info().id == "outer_breach"
+            result["expedition_entered"] = connected
+            _record(connected,"R2_EXPEDITION_NOT_ENTERED",failures)
+            _record(not screen.get_node("SaveFailurePanel").visible,"R2_EXPEDITION_SAVE_FAILED",failures)
         screen.queue_free()
     else:
         failures.append("R2_ENTRY_SCENE_MISSING")

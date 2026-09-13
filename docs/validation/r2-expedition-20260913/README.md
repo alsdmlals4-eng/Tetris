@@ -1,0 +1,11 @@
+# Expedition connection evidence
+
+Implementation subject: `376d0f534dbdeb81604a5fd85c9926a7ed67ca3a`; source main `a75e93006f950bc21332205a314d1ac53e061675`.
+
+- Full GUT:380/380,4010 assertions,61 scripts,exit0,empty stderr (`full-gut.log`). Tooling unittest:88/88,17.626s,exit0.
+- Native Godot4.7.1,1280×720,125% text: main, supply and ending captured on the same implementation tree before its commit. Target `tetris@3e5d`, run11; game log readback running/helper-live, no error entries. The test-only driver dispatches real puzzle operations; watchtower route reached COMPLETE with88HP. Diagnostic setup disables wall-clock processing; this is not human timing or balance proof.
+- Package at `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/expedition-376d0f5-20260913`: `R2_LOCAL_TRIAL_PACKAGE_VERIFIED`; source SHA above; probe confirms practice and actual outer_breach expedition entry, JSON/font/5 existing asset hashes, no helper autoload. Headless package probe is not device or full packaged campaign proof. Eight known export teardown warning lines remain; not warning-clean or release-ready.
+- Existing user `project.godot` blank-line change preserved, SHA256 `46ce5e3295b0807f57fd16e07573ca7f0aa470c8e55696a8f8ca360d74caf020`. Single-battle save and options are separate from expedition save; native uses `replanned_r2_tests/expedition-native` only.
+- Independent adversarial review: exactly2 complete loops. Loop1 found same-ID wrong-seed acceptance and heavy icon mismatch; failing regressions reproduced both, then corrected. Loop2 re-read entire slice:0 new blockers, `CLEAN_REVIEW_EXIT` for WG-01–03 connection only. Reviewer did not independently rerun Godot.
+
+`REMAINING_WORK_COMPLETION_GATE`: whole game remains ACTIVE. WG-04 distinct content, WG-05 art/motion/audio, WG-06 complete input/resolution/package/blueprint and Human evidence remain. `IMPLEMENTATION_CORRECTION_RESCAN` and `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED` found no further blocking defect in this connection slice. No art/fun/accessibility/rights/release approval inferred. Rollback this isolated extension; preserve standalone saves and original blueprint/assets. No Base promotion and no file deletion.
