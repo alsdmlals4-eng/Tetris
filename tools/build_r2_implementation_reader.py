@@ -45,6 +45,9 @@ def table_lines(kind):
         for key, asset in read_json('docs/design/r2-complete-session.json')['assets'].items():
             rows.append([key,asset['path'],str(len(asset.get('regions',{})))+' / r2_assets → r2_screen'])
     elif kind == 'verification':
+        package=read_json('docs/validation/r2-audio-20260913/package-probe.json')
+        if not package.get('ok') or package.get('failures') or not package.get('expedition_entered'):
+            raise ValueError('Package evidence does not prove claimed entry')
         log = (ROOT/'docs/validation/r2-audio-20260913/full-gut.log').read_text(encoding='utf-8')
         tests = re.findall(r'^Tests\s+(\d+)',log,re.M)[-1]
         passing = re.findall(r'^Passing Tests\s+(\d+)',log,re.M)[-1]
@@ -62,6 +65,11 @@ def inputs():
              ROOT/'docs/design/autocast-r2-data.json',ROOT/'docs/design/r2-complete-session.json',
              ROOT/'docs/validation/r2-audio-20260913/full-gut.log']
     paths += list((ROOT/'src/replanned_r2').glob('*.gd'))
+    paths += [p for p in (ROOT/'assets/replanned_r2/audio').iterdir() if p.suffix in ['.ogg','.md','.txt']]
+    paths += [ROOT/'export_presets.cfg',ROOT/'tools/windows/r2_export_probe.gd',
+              ROOT/'tools/windows/build_r2_local_trial.ps1']
+    for folder in ['r2-audio-20260913','r2-content-20260913','r2-expedition-20260913']:
+        paths += [ROOT/'docs/validation'/folder/'README.md',ROOT/'docs/validation'/folder/'package-probe.json']
     paths += list((ROOT/'data/replanned_r2').glob('*.json'))
     paths += [ROOT/p for p in re.findall(r'^@image (.+)$',SOURCE.read_text(encoding='utf-8'),re.M)]
     paths += [ROOT/a['path'] for a in read_json('docs/design/r2-complete-session.json')['assets'].values()]
@@ -76,7 +84,7 @@ def build(revision):
         # Git may normalize textual line endings. Bind repository object bytes,
         # and independently require current checkout text/binary content parity.
         current=path.read_bytes()
-        if current!=raw and not (path.suffix in ['.md','.py','.gd','.json','.log'] and current.replace(b'\r\n',b'\n')==raw):
+        if current!=raw and not (path.suffix in ['.md','.py','.gd','.json','.log','.txt','.cfg','.ps1'] and current.replace(b'\r\n',b'\n')==raw):
             raise ValueError('Uncommitted source: '+relative)
         hashes[relative]=hashlib.sha256(raw).hexdigest()
     b.register_fonts()
