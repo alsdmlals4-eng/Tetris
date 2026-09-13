@@ -8,4 +8,4 @@ Final serial GUT393/393,4081assertions,63scripts,64.972s,exit0,no stderr. Toolin
 
 Provenance: six unmodified selected creator Oggs, source/hash table and three original CC0 license files beside assets. No source archive bulk import or deletion. Existing user project.godot remains SHA25646ce5e3295b0807f57fd16e07573ca7f0aa470c8e55696a8f8ca360d74caf020.
 
-Remaining delivery checks: exact implementation package/export, PR CI/merge/readback. Whole-game WG05/06 art, soundtrack, device/Human and blueprint gaps remain tracked; this slice does not close them.
+Implementation31d41ba06a8c8f317632d6820fa378209a321397 exported to `C:/Users/user/Documents/Tetris R2 Local Trial/Builds/audio-20260913`; builder returned R2_LOCAL_TRIAL_PACKAGE_VERIFIED,exit0. Probe verifies all6 audio streams and credits as well as actual expedition entry. Existing8 known export-teardown warnings remain allowlisted, not warning-clean/release proof. Remaining delivery checks: PR CI/merge/readback. Whole-game WG05/06 art, soundtrack, device/Human and blueprint gaps remain tracked; this slice does not close them.
