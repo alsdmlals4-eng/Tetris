@@ -2,6 +2,24 @@ extends GutTest
 
 const Assets = preload("res://src/replanned_r2/r2_assets.gd")
 
+func test_enemy_binding_exposes_shared_trial_and_never_uses_player_art():
+    var assets = Assets.new(ProjectSettings.globalize_path("res://"))
+    assert_true(assets.has_method("enemy_binding"))
+    if not assets.has_method("enemy_binding"): return
+    for encounter in ["outer_breach","foundry","watchtower","rift_core","rift_breaker_r2_intro",""]:
+        var binding = assets.enemy_binding(encounter)
+        assert_true(binding.success)
+        assert_eq(binding.asset_id,"R2-BOSS")
+        for pose in ["idle","anticipation","impact","recovery","hurt","defeat"]:
+            assert_same(assets.enemy_texture(encounter,pose),assets.texture("R2-BOSS",pose))
+    assert_eq(assets.enemy_binding("watchtower").state,"SHARED_TRIAL_FALLBACK")
+    assert_false(assets.enemy_binding("unknown").success)
+    assert_null(assets.enemy_texture("unknown","idle"))
+    assert_null(assets.enemy_texture("watchtower","neutral"))
+    assets._regions.erase("R2-BOSS:hurt")
+    assert_false(assets.enemy_binding("watchtower").success)
+    assert_null(assets.enemy_texture("watchtower","idle"))
+
 func test_external_source_root_preserves_original_hashes_and_remapped_textures():
     var source_root := ProjectSettings.globalize_path("res://")
     var assets = Assets.new(source_root)

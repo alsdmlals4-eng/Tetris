@@ -2,6 +2,7 @@
 extends RefCounted
 const DATA_PATH := "res://docs/design/r2-complete-session.json"
 const TILE_REGIONS := {"A":"attack","D":"defense","H":"healing","T":"time"}
+const ENEMY_POSES := ["idle","anticipation","impact","recovery","hurt","defeat"]
 var metadata: Dictionary = {}
 var errors: Array[String] = []
 var _atlases := {}
@@ -47,6 +48,21 @@ func texture(id: String, region: String) -> AtlasTexture:
     return _regions.get(id+":"+region)
 func tile(symbol: String) -> AtlasTexture:
     return texture("R2-TILES",TILE_REGIONS.get(symbol,"attack"))
+
+func enemy_binding(encounter_id: String) -> Dictionary:
+    if encounter_id not in ["","rift_breaker_r2_intro","outer_breach","foundry","watchtower","rift_core"]:
+        return {"success":false,"reason":"UNKNOWN_ENEMY"}
+    # The shared trial is explicit. Do not use portraits or unreviewed vault files.
+    for pose in ENEMY_POSES:
+        if texture("R2-BOSS",pose)==null:
+            return {"success":false,"reason":"INCOMPLETE_ENEMY_POSES"}
+    return {"success":true,"asset_id":"R2-BOSS",
+        "state":"SHARED_TRIAL_FALLBACK" if encounter_id in ["outer_breach","foundry","watchtower"] else "CANDIDATE_RUNTIME_TRIAL_PENDING_FINAL_USER_REVIEW"}
+
+func enemy_texture(encounter_id: String, pose: String) -> AtlasTexture:
+    var binding = enemy_binding(encounter_id)
+    if not binding.success or pose not in ENEMY_POSES: return null
+    return texture(binding.asset_id,pose)
 func consumer_manifest() -> Dictionary:
     return {"state":"CANDIDATE_RUNTIME_TRIAL_PENDING_FINAL_USER_REVIEW","assets":metadata.duplicate(true),
         "consumers":{"R2-TILES":"Battle/Puzzle/Line and Chain cells; ghost; HOLD/NEXT",
