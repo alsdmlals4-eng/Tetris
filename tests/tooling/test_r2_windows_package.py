@@ -16,6 +16,13 @@ WINDOWS_POWERSHELL = shutil.which("powershell")
 POWERSHELL = PWSH or WINDOWS_POWERSHELL
 
 EXPECTED_SELECTED = {
+    "res://assets/replanned_r2/audio/confirm.ogg",
+    "res://assets/replanned_r2/audio/line.ogg",
+    "res://assets/replanned_r2/audio/chain.ogg",
+    "res://assets/replanned_r2/audio/attack.ogg",
+    "res://assets/replanned_r2/audio/enemy.ogg",
+    "res://assets/replanned_r2/audio/victory.ogg",
+    "res://src/replanned_r2/r2_audio.gd",
     "res://data/replanned_r2/encounter-presentation.json",
     "res://data/replanned_r2/expedition.json",
     "res://src/replanned_r2/r2_expedition.gd",

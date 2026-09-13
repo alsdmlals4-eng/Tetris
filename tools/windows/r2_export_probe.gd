@@ -26,6 +26,14 @@ func _record(condition: bool, message: String, failures: Array[String]) -> void:
 
 func _verify() -> void:
     var failures: Array[String] = []
+    var audio_script = load("res://src/replanned_r2/r2_audio.gd")
+    if audio_script == null:
+        failures.append("AUDIO_OWNER_MISSING")
+    else:
+        for cue in audio_script.CUES:
+            var stream = load(audio_script.CUES[cue])
+            _record(stream is AudioStream and stream.get_length()>0.0,"AUDIO_MISSING:"+cue,failures)
+    _record(FileAccess.file_exists("res://assets/replanned_r2/audio/SOURCES.md"),"AUDIO_CREDITS_MISSING",failures)
     var result := {
         "engine_version": Engine.get_version_info().string,
         "main_scene": String(ProjectSettings.get_setting("application/run/main_scene", "")),

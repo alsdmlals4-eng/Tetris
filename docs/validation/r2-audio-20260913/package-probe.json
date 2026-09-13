@@ -1,0 +1,28 @@
+{
+  "asset_count": 5,
+  "asset_errors": [],
+  "engine_version": "4.7.1-stable (official)",
+  "entry_instantiated": true,
+  "expedition_entered": true,
+  "failures": [],
+  "helper_autoload_present": false,
+  "json_files": {
+    "res://data/production/line_tetrominoes.json": true,
+    "res://data/replanned_r2/encounter-presentation.json": true,
+    "res://data/replanned_r2/expedition.json": true,
+    "res://docs/design/autocast-r2-data.json": true,
+    "res://docs/design/r2-complete-session.json": true
+  },
+  "korean_font_chars": true,
+  "main_scene": "res://scenes/replanned_r2/main.tscn",
+  "ok": true,
+  "practice_entered": true,
+  "raw_asset_hashes": {
+    "R1-ENV": "982b48dcd60708440bd87fa701589c71b56d80832bc690209089a2d3d2e588c4",
+    "R1-ICONS": "40d55313aeff152106a7bfd2a5f22615cace29ee8d4b8c483195bc02384cdbde",
+    "R1-PORTRAIT": "cb2ea6fe04f765fe2baf6c782988f6a1346cbdd95c0bca60e875d0757bdb49e9",
+    "R2-BOSS": "59976e21209aac65fef13ae70c5976af4babed6ee00a11210bd8cf7bed89081f",
+    "R2-TILES": "6da54b7be30ff875153d0dde7611b133709f78be8cfd0b0653f6efa3f0d7a21b"
+  },
+  "raw_asset_root": "C:\\Users\\user\\Documents\\Tetris R2 Local Trial\\Builds\\audio-20260913\\r2-source-assets"
+}
