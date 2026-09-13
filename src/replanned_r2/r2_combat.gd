@@ -266,6 +266,39 @@ func def_target_reason() -> String:
     if int(current_action()["damage"]) <= 0: return "NO_DAMAGE_ACTION"
     return ""
 
+## Current-state estimate, not a reservation or a promise about later waves.
+func threat_preview() -> Dictionary:
+    if not _ready or outcome != "RUNNING" or _action_finished:
+        return {"active": false, "damage": 0, "ward_absorbed": 0, "armor_absorbed": 0,
+            "damage_to_hp": 0, "hp_after": hp, "lethal": false}
+    var damage := int(current_action()["damage"])
+    var ward_absorbed := mini(ward, damage) if ward_target == action_id() else 0
+    var armor_absorbed := mini(armor, damage - ward_absorbed)
+    var damage_to_hp := mini(hp, damage - ward_absorbed - armor_absorbed)
+    return {"active": true, "action_id": action_id(), "damage": damage,
+        "ward_absorbed": ward_absorbed, "armor_absorbed": armor_absorbed,
+        "damage_to_hp": damage_to_hp, "hp_after": hp - damage_to_hp,
+        "lethal": damage_to_hp >= hp and damage > 0}
+
+## Safe while paused: reads never consume resources or register cast IDs.
+func skill_preview(category: String, wave: int) -> Dictionary:
+    if not _ready or outcome != "RUNNING":
+        return {"success": false, "reason": "COMBAT_TERMINAL"}
+    if not _skills.has(category) or wave < 1 or wave > MAX_WAVE:
+        return {"success": false, "reason": "INVALID_SKILL"}
+    var stage := mini(wave, 6)
+    var power := int(_skills[category][stage - 1])
+    var result := {"success": true, "reason": "", "category": category, "stage": stage, "power": power}
+    if category == "ATK":
+        result.merge({"bank_consumed": attack_bank, "damage_requested": power + attack_bank,
+            "damage_applied": mini(power + attack_bank, boss_hp)})
+    elif category == "DEF":
+        result.reason = def_target_reason()
+        result["ward_after"] = maxi(ward, power) if String(result.reason).is_empty() else ward
+    else:
+        result.merge({"healing_requested": power, "healing_applied": mini(power, MAX_HP - hp)})
+    return result
+
 func apply_topout(event_id: String) -> Dictionary:
     var rejected := {
         "success": false,
@@ -527,14 +560,11 @@ func _load_rule_pack() -> bool:
     return not _rule_pack.is_empty() and not _rule_pack_hash.begins_with(":") and not _rule_pack_hash.ends_with(":")
 
 func _resolve_current_action() -> Dictionary:
-    var action := current_action()
-    var damage := int(action["damage"])
-    var ward_absorbed := 0
-    if ward_target == action_id():
-        ward_absorbed = mini(ward, damage)
-    var after_ward := damage - ward_absorbed
-    var armor_absorbed := mini(armor, after_ward)
-    var damage_to_hp := mini(hp, after_ward - armor_absorbed)
+    var preview := threat_preview()
+    var damage := int(preview.damage)
+    var ward_absorbed := int(preview.ward_absorbed)
+    var armor_absorbed := int(preview.armor_absorbed)
+    var damage_to_hp := int(preview.damage_to_hp)
     ward = 0
     ward_target = ""
     armor -= armor_absorbed

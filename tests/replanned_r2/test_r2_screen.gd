@@ -66,6 +66,89 @@ func test_practice_export_and_enlarged_result_controls():
 func ready_screen() -> bool:
     assert_not_null(screen,"Separate R2 runnable main entry must exist")
     return screen != null
+
+func test_live_threat_and_skill_estimates_explain_effective_values_without_mutation():
+    if not ready_screen(): return
+    screen.start_run("STANDARD", 42)
+    var combat = screen.session.combat
+    combat.armor = 2
+    combat.cast("ward-preview", "DEF", 1)
+    combat.attack_bank = 7
+    combat.boss_hp = 8
+    var before = screen.session.snapshot()
+    screen.refresh()
+    var threat = screen.get_node("Battle/Combat/Threat/Damage")
+    assert_true("HP -7" in threat.text, "Show actual protected HP loss, not only raw damage")
+    assert_true("93" in threat.text)
+    assert_ne(threat.mouse_filter, Control.MOUSE_FILTER_IGNORE, "Breakdown tooltip must be reachable")
+    assert_true("방벽 3" in threat.tooltip_text)
+    assert_true("방어도 2" in threat.tooltip_text)
+    var next = screen.get_node("Battle/Combat/SkillDock/Next")
+    assert_true("8" in next.text)
+    assert_true("가산 7" in next.tooltip_text)
+    assert_eq(screen.session.snapshot(), before)
+    combat.hp = 5
+    combat.armor = 0
+    screen.refresh()
+    assert_true("치명" in threat.text)
+    screen.session.selected_category = "SUP"
+    combat.hp = 99
+    screen.refresh()
+    assert_true("회복 1 / 2" in next.text)
+    screen.options.font_scale = 125
+    screen._apply_font()
+    for path in ["Battle/Combat/Threat/Damage", "Battle/Combat/SkillDock/Next", "Battle/Combat/SkillDock/Recent"]:
+        var label = screen.get_node(path)
+        assert_lte(label.get_line_height() * label.get_line_count(), int(label.size.y))
+
+func test_line_heal_receipt_and_recent_attack_reveal_waste_and_bank_consumption():
+    if not ready_screen(): return
+    screen.start_run("STANDARD", 42)
+    screen.session.combat.hp = 99
+    var event = screen.session.combat.apply_line("preview-line", [
+        {"id":"h1", "kind":"H"}, {"id":"h2", "kind":"H"}, {"id":"a1", "kind":"A"}])
+    screen._events([event])
+    screen.refresh()
+    assert_true("회복 1 / 2" in screen.get_node("Battle/Puzzle/Line/Receipt").text)
+    screen.session.last_cast = screen.session.combat.cast("preview-hit", "ATK", 1)
+    screen.refresh()
+    var recent = screen.get_node("Battle/Combat/SkillDock/Recent")
+    assert_true("가산 1" in recent.text)
+    assert_true("피해 5" in recent.text)
+
+func test_long_forecasts_stay_inside_allocated_rows_at_both_font_scales():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",42)
+    for scale in [100,125]:
+        screen.options.font_scale=scale
+        screen._apply_font()
+        for category in ["ATK","DEF","SUP"]:
+            screen.session.selected_category=category
+            screen.session.combat.attack_bank=2000000000
+            screen.session.combat.eta_us=1000
+            screen.session.last_cast={"effect":"ATK_DAMAGE","category":"ATK","stage":6,"power":18,"bank_consumed":2000000000,"damage_applied":160}
+            screen.refresh()
+            await get_tree().process_frame
+            var next=screen.get_node("Battle/Combat/SkillDock/Next")
+            var recent=screen.get_node("Battle/Combat/SkillDock/Recent")
+            assert_lte(next.position.y+next.size.y,recent.position.y,"Forecast must not push into recent receipt")
+            assert_lte(recent.position.y+recent.size.y,140.0,"Recent receipt must remain inside dock")
+            assert_lte(next.size.x,540.0)
+
+func test_recent_skill_icon_follows_actual_cast_not_next_selected_category():
+    if not ready_screen(): return
+    screen.start_run("STANDARD",42)
+    var recent=screen.get_node_or_null("Battle/Combat/SkillDock/LastIcon")
+    assert_not_null(recent,"Blueprint LastIcon consumer must exist")
+    if recent==null: return
+    assert_false(recent.visible,"No fabricated previous skill before a cast")
+    screen.session.last_cast=screen.session.combat.cast("actual-strike","ATK",1)
+    screen.session.selected_category="SUP"
+    screen.refresh()
+    assert_true(recent.visible)
+    assert_eq(recent.texture.region,screen.assets.texture("R1-ICONS","strike").region)
+    assert_eq(screen.get_node("Battle/Combat/SkillDock/NextIcon").texture.region,screen.assets.texture("R1-ICONS","recover").region)
+    assert_false(recent.get_rect().intersects(screen.get_node("Battle/Combat/SkillDock/NextIcon").get_rect()))
 func test_main_briefing_and_distinct_retry_identity():
     if not ready_screen(): return
     assert_eq(screen.page,"main")
