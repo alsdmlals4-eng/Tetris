@@ -1,6 +1,10 @@
 extends GutTest
 var screen
 
+class InvalidBriefExpedition extends "res://src/replanned_r2/r2_expedition.gd":
+    func encounter_brief(_encounter_id: String) -> Dictionary:
+        return {}
+
 func before_each():
     screen = load("res://scenes/replanned_r2/main.tscn").instantiate()
     screen.save_path = "user://replanned_r2_tests/expedition-screen/standalone.json"
@@ -13,6 +17,59 @@ func before_each():
 func _ready_campaign() -> bool:
     assert_true(screen.has_method("start_expedition"), "Real screen must expose expedition flow")
     return screen.has_method("start_expedition")
+
+func test_route_displays_enemy_and_first_threat_before_commit():
+    screen.start_expedition("STANDARD",41)
+    var button: Button = screen.get_node("Expedition/Choice0")
+    assert_true("방벽 침식자" in button.text)
+    assert_true("120" in button.text)
+    assert_true("12.0" in button.text)
+    assert_true("16" in button.tooltip_text)
+    assert_eq(screen.expedition.view().phase,"ROUTE")
+    button.pressed.emit()
+    assert_true("방벽 침식자" in screen.get_node("Battle/Combat/Stage/HP").text)
+
+func test_route_cycle_visible_on_keyboard_focus_and_cleared_outside_route():
+    screen.start_expedition("STANDARD",41)
+    assert_true(screen.has_node("Expedition/ThreatPreview"))
+    if not screen.has_node("Expedition/ThreatPreview"): return
+    screen.get_node("Expedition/Choice0").focus_entered.emit()
+    var preview: Label = screen.get_node("Expedition/ThreatPreview")
+    assert_true(preview.visible)
+    assert_true("방벽 타격" in preview.text)
+    assert_true("16.0" in preview.text)
+    screen.get_node("Expedition/Choice0").pressed.emit()
+    _play_chain_to_result()
+    assert_false(preview.visible)
+
+func test_invalid_brief_disables_departure_and_keeps_safe_exit():
+    screen.expedition = InvalidBriefExpedition.new("invalid-brief",41,"STANDARD")
+    screen._show_expedition()
+    assert_true(screen.get_node("Expedition/Choice0").disabled)
+    assert_true("검증 실패" in screen.get_node("Expedition/Status").text)
+    assert_true(screen.get_node("Expedition/Main").visible)
+    screen.get_node("Expedition/Choice0").pressed.emit()
+    assert_eq(screen.page,"expedition")
+    assert_eq(screen.expedition.view().phase,"ROUTE")
+
+func test_fork_description_preview_and_buttons_have_spacing_at_125_percent():
+    screen.options.font_scale=125
+    screen._apply_font()
+    screen.start_expedition("STANDARD",41)
+    # UI-only progression fixture; not a claim of combat completion.
+    var run = screen.expedition
+    run.launch("outer_breach")
+    run.finish_battle({"run_id":run.view().active_battle.run_id,"outcome":"VICTORY","hp":80})
+    run.choose_supply("repair")
+    screen._show_expedition()
+    await get_tree().process_frame
+    var description: Label = screen.get_node("Expedition/Description")
+    var preview: Label = screen.get_node("Expedition/ThreatPreview")
+    var button: Button = screen.get_node("Expedition/Choice0")
+    var description_bottom = description.global_position.y+description.get_line_count()*description.get_theme_font("font").get_height(description.get_theme_font_size("font_size"))
+    var preview_bottom = preview.global_position.y+preview.get_line_count()*preview.get_theme_font("font").get_height(preview.get_theme_font_size("font_size"))
+    assert_lte(description_bottom,preview.global_position.y-8.0)
+    assert_lte(preview_bottom,button.global_position.y-8.0)
 
 func test_main_launch_defeat_retry_and_resume_preserve_standalone_save():
     if not _ready_campaign(): return

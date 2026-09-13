@@ -2,6 +2,33 @@ extends GutTest
 
 const PATH := "res://src/replanned_r2/r2_expedition.gd"
 
+func test_route_brief_uses_real_profile_cycle_without_mutating_progress():
+    var run = _new_run()
+    assert_true(run.has_method("encounter_brief"))
+    if not run.has_method("encounter_brief"): return
+    var before = run.snapshot()
+    var brief = run.encounter_brief("watchtower")
+    assert_eq(brief.enemy_name,"감시탑 파수꾼")
+    assert_eq(brief.boss_hp,160)
+    assert_eq(brief.actions.size(),4)
+    assert_eq(brief.actions[0].duration_us,7000000)
+    assert_eq(brief.actions[2].damage,16)
+    brief.actions[0].damage=999
+    assert_eq(run.encounter_brief("watchtower").actions[0].damage,7)
+    assert_eq(run.snapshot(),before)
+    assert_eq(run.encounter_brief("unknown"),{})
+
+func test_relaxed_route_preview_agrees_with_actual_first_action():
+    var run = load(PATH).new("brief-relaxed",41,"RELAXED")
+    assert_true(run.has_method("encounter_brief"))
+    if not run.has_method("encounter_brief"): return
+    var brief = run.encounter_brief("outer_breach")
+    run.launch("outer_breach")
+    var battle = run.make_battle_session()
+    assert_eq(brief.actions[0].duration_us,battle.combat.eta_us)
+    assert_gt(brief.actions[0].duration_us,12000000)
+    assert_eq(brief.actions[0].damage,battle.combat.current_action().damage)
+
 func _new_run():
     assert_true(ResourceLoader.exists(PATH), "Whole-game progression owner must exist")
     if not ResourceLoader.exists(PATH): return null
