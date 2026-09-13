@@ -1,0 +1,9 @@
+# Native flow matrix — 2026-09-13
+
+Godot4.7.1 native run16,8cases:1280×720/1920×1080 ×100/125% font ×foundry/watchtower. Actual command driver completed all cases with88HP. Each receipt reads actual Window size, actual launched/ending route, new restored Session object, identity/ETA/paused invariants, first/fork/final route viewport bounds. No HP/resource/reward injection. Native JSON is direct tool readback, not expected-fixture fabrication.
+
+This covers engine command flow and selected Control viewport overflow ONLY. It does not prove between-element overlap, clipped text, physical input devices, human readability, thinking time, fun, balance, final art or release. A separate native1920/125% CHAIN capture was visually inspected; prior1280 captures remain evidence for their own revisions. Probe is test-only and excluded by existing `tests/**` export filter. Normal userdata never used for writes; dedicated `replanned_r2_tests/native-matrix` only. GUT/native runs using that path were serialized.
+
+Final GUT396/396,4092assertions,64scripts,50.319s,exit0,empty stderr. Tooling90/90,20.185s,exit0. TDD missing helper then actual-window/restore/route receipt assertions failed before fixes. Exactly2 independent full reviews. Loop1 found missing intermediate route checks and unverified actual route; corrected with launch/ending ID checks, fork/final geometry, successful switch validation, actual window comparison and restored object identity. Loop2zero new blockers, CLEAN_REVIEW_EXIT. No runtime changes in this slice; previous packaged runtime is reused rather than claiming a new export.
+
+Existing driver reuse strengthened; project-only false-positive lesson recorded. No new Base promotion, NO_NEW_REUSE_LEARNING. Whole-game art/motion/soundtrack and Human/device gates remain open.
