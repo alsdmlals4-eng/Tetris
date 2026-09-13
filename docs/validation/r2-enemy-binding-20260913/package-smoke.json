@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "ok": true,
+  "exit_code": 0,
+  "entry_scene": "res://scenes/replanned_r2/main.tscn",
+  "forbidden_output_hits": [],
+  "note": "Headless exported-scene smoke; native visual and Human acceptance remain separate."
+}

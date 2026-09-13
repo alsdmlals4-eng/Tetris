@@ -6,4 +6,6 @@ TDD missing-method test failed3/4 then4/4 passed72 assertions; screen consumer t
 
 Native run18 inspection script failed compile; no PASS claimed. Restarted run19 and used a bounded watchtower inspection: battle_match=true,result_match=true,tooltip="공용 적 시안 · 전용 상태별 그림 준비 중". Read-only in-memory session, persist=false; no user save write. Whole-suite tests cover all five profiles. This readback proves resource binding, not a new visual design.
 
-Review1 found0 blockers. Review2/package pending. Revert presentation helper/hooks only for rollback; no save migration. NO_NEW_REUSE_LEARNING: existing owner/guard pattern reused, no Base changes.
+Review1 found0 blockers. Review2 at95d79571a7f1dfcea078a66b8dd0fb14a24b667b found0 new blockers; exactly2 loops,CLEAN_REVIEW_EXIT. Windows package enemy-binding-20260913 returned R2_LOCAL_TRIAL_PACKAGE_VERIFIED; probe/smoke JSON both ok. Revert presentation helper/hooks only for rollback; no save migration. NO_NEW_REUSE_LEARNING: existing owner/guard pattern reused, no Base changes.
+
+Rejected RGB layout-v2/single-pose workspace copies were moved, not deleted, to `Desktop/Tetris_삭제대기_20260912/rejected-watchtower-20260913`. Runtime source/data/tests/export references were zero; destination hashes read back identical. Local Korean manifest records original path/hash/restore. Usable original RGBA sheet and editable master preserved. No final art readiness is inferred.
