@@ -36,6 +36,16 @@ Sources read2026-09-13; official descriptions, not hands-on play or interviews:
 
 ## Whole-game completion coverage
 
+Content publication: PR110 merged at `9b980c1c9c0bd00abbbe71f24550ea2bd0ee882e`, exact head c0fe1a7 had both CI checks SUCCESS, no unresolved threads, CLEAN. Local main was fast-forwarded and read back before audio work.
+
+### Audio implementation plan / WG-05
+
+Implementation receipt: isolated native audio owner, four effect voices plus one short-jingle player,6 selected CC0 files, real event/menu/settings hooks, preview/cancel/mute and pause boundaries. Final GUT393/393 and tooling88/88; native playing/volume/mute readback and125% layout inspected. Exactly2 reviews,0 remaining blockers. Evidence `docs/validation/r2-audio-20260913/README.md`. Complete soundtrack, listening/mix and distinct enemy art remain required WG05 work. No Base promotion: NO_NEW_REUSE_LEARNING; existing Godot facility was sufficient.
+
+Current actual consumer gap: saved effects/music sliders have no playback owner. Existing visual receipts remain authoritative and sound must never grant resources, advance the shared clock or replay restored actions. Reuse preflight read existing screen/event/settings code, targeted Base reuse registry (no applicable audio module), and official Godot AudioStreamPlayer documentation. No addon required. Alternatives: silent presentation (safe fallback but ineffective volume controls), native non-positional players with selected CC0 sounds (ADOPT, small bounded dependency), custom synthesis/middleware (REJECT unnecessary authoring and maintenance). Official Kenney Interface Sounds, Impact Sounds and Music Jingles pages and each downloaded archive License.txt declare CC0; retain source/hash/license evidence and do not imply third-party legal review. Source archives stay in user deletion-wait folder, only consumed files enter project.
+
+Plan: failing tests → isolated audio presentation owner with bounded voices and true zero-volume mute → existing successful event and menu consumers → preview/cancel/save settings semantics → explicit export/provenance → full regression and native playback-state checks → two independent reviews. One short ending jingle is not a looping soundtrack or completed audio mix. Sound-on-device/listening quality remains separate from engine playback verification. No new gameplay or save schema. Rollback removes audio owner/hooks/assets, preserving all gameplay/settings compatibility.
+
 The first three-battle run is an implementation bridge, NOT the entire completion gate. Final scope is a finite, repeatable single-player campaign with a clear beginning and ending, distinct encounters and useful choices, complete in-game art/motion/audio, readable supported screens/input, robust resume/failure flows, player-facing help and a source-bound updated blueprint. Extra classes, commerce, online services and endless content are not implicit requirements.
 
 | outcome ID | required result / acceptance | actual or planned consumer | state |

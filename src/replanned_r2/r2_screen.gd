@@ -13,6 +13,9 @@ const PlaytestReport = preload("res://src/replanned_r2/r2_playtest_report.gd")
 var report_directory := PlaytestReport.DEFAULT_DIRECTORY
 var _result_practice_complete := false
 const Assets = preload("res://src/replanned_r2/r2_assets.gd")
+const Audio = preload("res://src/replanned_r2/r2_audio.gd")
+var audio
+var _audio_result_run := ""
 const Inputs = preload("res://src/replanned_r2/r2_input.gd")
 const Catalog = preload("res://src/production/line/tetromino_catalog.gd")
 @export var save_path := "user://replanned_r2/save.json"
@@ -78,6 +81,10 @@ func _ready():
     disk = Disk.new(save_path,options_path)
     expedition_disk = ExpeditionDisk.new(expedition_save_path)
     options = disk.load_options()
+    audio = Audio.new()
+    audio.name = "Audio"
+    add_child(audio)
+    audio.configure(options.audio)
     inputs.configure(options)
     _source = JSON.parse_string(FileAccess.get_file_as_string(Session.DATA_PATH))
     _rules = JSON.parse_string(FileAccess.get_file_as_string(Session.Combat.RULES_PATH))
@@ -136,6 +143,7 @@ func _button(parent: Node, node_name: String, rect: Rect2, text: String, callbac
     node.text = text
     node.focus_mode = Control.FOCUS_ALL
     node.pressed.connect(callback)
+    node.pressed.connect(func(): audio.play_cue("confirm"))
     node.set_meta("base_font",17)
     _labels.append(node)
     return node
@@ -385,7 +393,7 @@ func _build_options():
     _label(panel,"Language",Rect2(24,65,400,34),"언어: 한국어",19)
     _button(panel,"FontScale",Rect2(24,111,480,40),"",_toggle_font)
     _button(panel,"Motion",Rect2(24,162,480,40),"",_toggle_motion)
-    _label(panel,"AudioNote",Rect2(24,218,480,56),"무음으로 모든 정보를 읽을 수 있습니다.\n현재 추가 사운드 의존성 없음",17,CYAN)
+    _label(panel,"AudioNote",Rect2(24,218,480,56),"무음으로 모든 정보를 읽을 수 있습니다.\n음량 0은 완전 음소거입니다.",17,CYAN)
     for i in range(2):
         var key = ["effects","music"][i]
         _label(panel,key+"Label",Rect2(24,289+i*68,480,28),"효과음" if i==0 else "음악",17)
@@ -397,7 +405,12 @@ func _build_options():
         slider.max_value = 100
         slider.step = 1
         panel.add_child(slider)
-        slider.value_changed.connect(func(value): options_draft.audio[key]=int(value))
+        slider.value_changed.connect(func(value):
+            options_draft.audio[key]=int(value)
+            audio.configure(options_draft.audio))
+    _label(panel,"AudioCredit",Rect2(24,432,480,62),"음향: Kenney · CC0\n효과음과 짧은 승리 징글을 따로 조절",16,CYAN)
+    _button(panel,"TestEffects",Rect2(24,500,228,40),"효과음 들어보기",func(): audio.play_cue("line"))
+    _button(panel,"TestMusic",Rect2(264,500,240,40),"승리 징글 들어보기",func(): audio.play_cue("victory"))
     _label(panel,"MappingTitle",Rect2(560,62,500,40),"조작 재지정 · 키 / 패드",20,GOLD)
     var device = OptionButton.new()
     device.name = "Device"
@@ -417,7 +430,7 @@ func _build_options():
     _button(panel,"Remap",Rect2(560,280,240,44),"새 입력 받기",_begin_remap)
     _button(panel,"CancelCapture",Rect2(815,280,240,44),"입력 취소",func(): inputs.cancel_capture(); _refresh_mapping_label())
     _button(panel,"Reset",Rect2(560,340,495,44),"키 / 패드 기본값 복원",_reset_mappings)
-    _label(panel,"Status",Rect2(24,435,1030,115),"충돌하는 입력은 저장하지 않습니다. 취소는 변경 전 설정으로 돌아갑니다.",18,CYAN)
+    _label(panel,"Status",Rect2(560,410,495,140),"충돌하는 입력은 저장하지 않습니다. 취소는 변경 전 설정으로 돌아갑니다.",18,CYAN)
     _button(panel,"Save",Rect2(24,581,495,50),"저장하고 돌아가기",func(): close_options(true))
     _button(panel,"Cancel",Rect2(560,581,495,50),"취소 / 되돌리기",func(): close_options(false))
 
@@ -477,6 +490,8 @@ func retry_run():
     if practice_stage > 0: begin_practice(practice_stage)
     else: start_run(difficulty,run_seed)
 func _reset_view():
+    audio.stop_all()
+    _audio_result_run = ""
     _expedition_enemy_name = ""
     if expedition != null and session != null:
         var brief: Dictionary = expedition.encounter_brief(session.combat.encounter_info().get("id",""))
@@ -547,6 +562,7 @@ func _close_requested():
     else: get_tree().quit()
 func pause_game(reason: String = ""):
     if session == null: return
+    audio.stop_all()
     session.command("pause")
     inputs.clear()
     _practice_saw_pause = true
@@ -578,6 +594,7 @@ func resume_game():
     refresh()
 func open_details(stage: int = 1):
     if session == null or _blocking_modal()!=null: return
+    audio.stop_all()
     _details_was_paused = session.combat.paused
     session.command("pause")
     inputs.clear()
@@ -598,6 +615,7 @@ func close_details():
 
 func open_options():
     if _blocking_modal()!=null: return
+    audio.stop_all()
     options_draft = options.duplicate(true)
     _options_return = page
     _options_was_paused = session != null and session.combat.paused
@@ -620,6 +638,7 @@ func close_options(save_changes: bool):
     inputs.configure(options)
     _refresh_control_guidance()
     _apply_font()
+    audio.configure(options.audio)
     $Options.hide()
     _sync_modal_boundary()
     if _options_return == "battle":
@@ -723,6 +742,7 @@ func _switch_to(workspace: String):
 func _events(events: Array):
     for event in events:
         if not event.get("success",false): continue
+        audio.play_cue(audio.cue_for_event(event))
         match event.get("effect",""):
             "ENEMY_ACTION_RESOLVED":
                 if int(event.damage)>0: _impact_us = 360000
@@ -1071,6 +1091,9 @@ func export_playtest_report():
 
 func _show_result(training_complete: bool = false, persist: bool = true):
     if session==null: return
+    if persist and session.combat.outcome=="VICTORY" and _audio_result_run!=session.run_id:
+        audio.play_cue("victory")
+        _audio_result_run=session.run_id
     if expedition != null:
         if expedition.view().phase == "BATTLE":
             var ended = expedition.finish_battle({"run_id":session.run_id,"outcome":session.combat.outcome,"hp":session.combat.hp})
@@ -1139,6 +1162,7 @@ func _guard_unsaved_state() -> bool:
     _show_save_failure(_pending_save_failure,_save_failure_reason)
     return true
 func _show_save_failure(context: String, reason: String):
+    audio.stop_all()
     _pending_save_failure=context
     _save_failure_reason=reason
     if session: session.command("pause")
