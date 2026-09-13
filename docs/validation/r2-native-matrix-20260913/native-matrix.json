@@ -1,0 +1,351 @@
+{
+  "engine": "Godot 4.7.1",
+  "native_run": 16,
+  "evidence_ceiling": "ENGINE_COMMAND_FLOW_AND_VIEWPORT_BOUNDS_NOT_HUMAN_DEVICE_OR_BALANCE",
+  "cases": [
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1280,
+          720
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 100,
+        "hp": 88,
+        "middle_choice": 0,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1280,
+          720
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1280,
+          720
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 100,
+        "hp": 88,
+        "middle_choice": 1,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1280,
+          720
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1280,
+          720
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 125,
+        "hp": 88,
+        "middle_choice": 0,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1280,
+          720
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1280,
+          720
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 125,
+        "hp": 88,
+        "middle_choice": 1,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1280,
+          720
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1920,
+          1080
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 100,
+        "hp": 88,
+        "middle_choice": 0,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1920,
+          1080
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1920,
+          1080
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 100,
+        "hp": 88,
+        "middle_choice": 1,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1920,
+          1080
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1920,
+          1080
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "foundry",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 125,
+        "hp": 88,
+        "middle_choice": 0,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1920,
+          1080
+        ]
+      },
+      "source": "game"
+    },
+    {
+      "result": {
+        "actual_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "actual_window_size": [
+          1920,
+          1080
+        ],
+        "checks": [
+          "ROUTE",
+          "LINE",
+          "CHAIN",
+          "PAUSED_RESTORE",
+          "SUPPLY",
+          "FORK_ROUTE",
+          "SUPPLY",
+          "FINAL_ROUTE",
+          "COMPLETE"
+        ],
+        "ending_phase": "COMPLETE",
+        "expected_encounters": [
+          "outer_breach",
+          "watchtower",
+          "rift_core"
+        ],
+        "failures": [],
+        "font_scale": 125,
+        "hp": 88,
+        "middle_choice": 1,
+        "ok": true,
+        "restored_new_session": true,
+        "synthetic_commands_not_human": true,
+        "user_data_scope": "replanned_r2_tests/native-matrix",
+        "window_size": [
+          1920,
+          1080
+        ]
+      },
+      "source": "game"
+    }
+  ]
+}
