@@ -1,6 +1,14 @@
 # R3 Falling Chain and Disruption Implementation Plan
 
-> **For agentic workers:** 구현 재개 시 `superpowers:executing-plans`로 항목별 수행한다. 현재는 명세 준비 요청이며 실행 지시가 아니다. 사용자 최신 지시와 프로젝트 AGENTS가 우선한다. 병렬 에이전트 실행을 자동 승인하지 않는다.
+## Current execution — 2026-09-14
+
+Latest user approved the recommended implementation. Prior design-only wording is historical, not a stop instruction. Task0 safety and Task1–5 source/models are implemented and tested to the limits recorded in [current checkpoint](../../operations/R3_IMPLEMENTATION_CHECKPOINT.md); delivery gates are not all closed. Task6–8 remain. Preserve user project.godot and all previous unrelated files. Same exact checkout/dedicated branch isolation is reused because the adopted slot8 launcher is path-pinned (R2 implementation ledger109). Plan-first/reuse benchmark from the preceding design delivery is REUSED_EVIDENCE; current main/code/PR and official Godot storage + SEGA lesson sources rechecked. Base profiles are reference-only and contain stale ordered-turn identity; no Base module/adapter installation. FEASIBLE for pure model work; UI/runtime remain verification gates.
+
+Ruling: proceed with tightly coupled tasks sequentially and use bounded independent review; no parallel source writers. Task0 safety must precede live write probes; pure model tasks do not require a live player save. Cost if wrong: delayed integration, not save migration.
+
+Connection receipts: dedicated Tetris Godot4.7.1 / HiGodot3.2.0 was verified earlier. Latest Hera inventory does not contain Tetris; the live UI skill requires its exact editor connection before UI work. Other project editors are untouched. No new authoring provider installed or global route changed.
+
+> **For agentic workers:** 구현 재개 시 `superpowers:executing-plans`로 항목별 수행한다. 최신 사용자가 구현을 승인했다. 이전 명세 준비 시점의 실행 금지는 과거 기록이다. 사용자 최신 지시와 프로젝트 AGENTS가 우선한다. 병렬 에이전트 실행을 자동 승인하지 않는다.
 
 **Goal:** LINE 준비→낙하 연결 연쇄→자동 기술의 역할을 연결하고, 예고된 적 보드 파괴를 안전하게 처리한다.
 **Architecture:** 새 R3 규칙/보드/세션은 R2와 격리한다. 입력/저장/원정/화면 연결은 실제 기존 소비처를 재사용하되 구형 swap 인터페이스를 새 보드처럼 위장하지 않는다.
@@ -57,13 +65,13 @@ restore(snapshot: Dictionary) -> bool
 plan은 `{event_id, revision, cause, phase, cells, wave, category}`. cells는 `{cell_id,x,y,kind}` 배열, 중복ID/범위밖/낡은revision이면 무변경실패. Board는 순수 배치·소거계획만 반환. Session이 HP/스킬과 함께 확정한 뒤 revision증가. Board 단독 commit으로 자원을 지급하지 않는다.
 Session command는 기존 move/rotate/soft_drop/hard_drop/switch/category/pause/resume를 유지하되 활성보드로 dispatch. `hold`는 LINE에서만 허용, `chain_swap`는 `UNSUPPORTED_R3_COMMAND`. frame `_process`가 아닌 `tick(delta_us:int)`이 논리 시간을 소유.
 Supply API `credit(clear_id:String,unique_cell_ids:Array[String])->Dictionary`, `consume(spawn_id:String)->Dictionary`, `snapshot/restore`. 반환 `{success,applied,overflow,reason}`. 고유LINE event만 전달; 적파괴event는 세션단에서 라우팅하지 않음.
-Disruption API `reserve(action_id:String,board_id:String,candidates:Array,count:int,seed:int)->Dictionary`, `resolve(reservation:Dictionary,board_snapshot:Dictionary)->Dictionary`. 반환 `{event_id,target_board,target_ids,removed_ids,missing_ids,cause}`. RNG별도스트림/정렬후추첨, 같은예약을 반복 resolve해도 Session의 event guard가중복변경을막음.
+Disruption actual API: constructor(seed), `begin(action_id,board,count)`, `reserve(eta_us,candidates)`, `preview()`, `commit()`, `cancel_uncommitted()`, snapshot/restore. Session merges the committed reservation and actual board result into `{event_id,target_board,target_ids,removed_ids,missing_ids,cause}`. This separates Current board binding from the last2s cell selection. RNG별도스트림/정렬후추첨; 중복action은재처리하지않음.
 
 ## D. 구현 작업 순서 / 독립 완료조건
 
 각 작업은 **실패 테스트 작성→실패 원인 확인→최소 구현→해당 회귀 통과→문서/커밋** 순서. 다음 작업으로 넘어가기 전 예상과 실제 증거를 기록한다. 테스트 이름은 예정 이름이며 현재 존재하는 것으로 인용하지 않는다.
 
-### Task0 — 안전한 실행 기반 마무리 (AC15)
+### Task 0 — 안전한 실행 기반 마무리 (AC15)
 
 대상: 기존 저장안전helper/probe와 `test_r2_probe_storage.gd`. 목표: 화면속성과 실제disk불일치가 있으면 native probe진입 거부. 새 scene을 트리에 넣기 전 모든경로설정, 정상저장files/.bak의 존재여부+SHA 전후동일.
 
@@ -72,7 +80,7 @@ Disruption API `reserve(action_id:String,board_id:String,candidates:Array,count:
 - [ ] 일반save/options/expedition/.bak가 하나라도 달라지면 실패, 자동복원금지.
 - [ ] 두전체검토,정확한HEAD검사와보호된출판. 게임규칙의R3승인으로위장하지않음.
 
-### Task1 — 규칙 데이터와 공급 (AC03~05)
+### Task 1 — 규칙 데이터와 공급 (AC03~05)
 
 대상: rules.json, r3_pair_supply.gd, `test_r3_pair_supply.gd`.
 
@@ -91,7 +99,7 @@ state pairs=0; consume("p2") ->success false,NO_PAIR_SUPPLY
 - [ ] RNG/bag/NEXT저장원본을정의하고중복spawn소비0검사.
 - [ ] 커밋후다음보드구현에 API인계.
 
-### Task2 — 낙하 pair와 연결 해소 (AC01/02/06/12)
+### Task 2 — 낙하 pair와 연결 해소 (AC01/02/06/12)
 
 대상: r3_pair_board.gd, `test_r3_pair_board.gd`, `test_r3_pair_chain.gd`.
 
@@ -116,7 +124,7 @@ AA.DD.  => two groups, one wave
 - [ ] 공급없음,spawn실패,소거후숨김생존,topout한번만/환급0검사.
 - [ ] 전체상태 저장/복원동일성과기존R2보드불변회귀후커밋.
 
-### Task3 — 세션/기술/보급 연결 (AC03/06/10)
+### Task 3 — 세션/기술/보급 연결 (AC03/06/10)
 
 대상: r3_line.gd,r3_session.gd,r3_combat.gd, `test_r3_line_identity.gd`, `test_r3_session.gd`, `test_r3_autocast.gd`.
 
@@ -136,7 +144,7 @@ boss lethal event and SUP due same microsecond => DEFEAT, heal0
 - [ ] R2효과이식의차이는R3rulehash로구분,구형save는바꾸지않음.
 - [ ] 기존R2+새R3전체회귀통과후커밋.
 
-### Task4 — 적 파괴/예고/정리 (AC07~11)
+### Task 4 — 적 파괴/예고/정리 (AC07~11)
 
 대상: r3_disruption.gd, r3_session.gd, expedition.json, `test_r3_disruption.gd`.
 
@@ -154,7 +162,7 @@ no occupied eligible cells => 0 board deletion, authored HP damage remains
 - [ ] Enemy원인 전파중player캐스트취소/기지급효과취소없음,무보상정리/빈보드검사.
 - [ ] 완화모드계산값이예고·실제피해/파괴수와일치하는지회귀후커밋.
 
-### Task5 — 저장/원정 연결 (AC11/13/15)
+### Task 5 — 저장/원정 연결 (AC11/13/15)
 
 대상: r3_save.gd,r3_expedition.gd, `test_r3_save.gd`, `test_r3_expedition.gd`.
 
@@ -164,7 +172,7 @@ no occupied eligible cells => 0 board deletion, authored HP damage remains
 - [ ] 두분기 모두시작→3전투→보급→결말,패배/재도전/완화모드/손상복구검사.
 - [ ] 반복새원정이과거원정pair/ID를재사용하지않는지검사후커밋.
 
-### Task6 — 실제 UI·입력·학습 (AC04/06/14)
+### Task 6 — 실제 UI·입력·학습 (AC04/06/14)
 
 대상: main.tscn,r3_screen.gd,r3_chain_view.gd, `test_r3_screen.gd`.
 
@@ -174,7 +182,7 @@ no occupied eligible cells => 0 board deletion, authored HP damage remains
 - [ ] 키재배치/마우스/패드focus/창복귀후명시resume/긴한국어/125%글꼴검사.
 - [ ] no-supply상태의오해·색각보조문양·무음예고를실제화면검토후커밋.
 
-### Task7 — 이미지/모션/음향 (AC14)
+### Task 7 — 이미지/모션/음향 (AC14)
 
 대상: R3시안manifest,실제R3뷰소비처,기존r2_assets/r2_audio의검증된재사용면.
 
@@ -184,7 +192,7 @@ no occupied eligible cells => 0 board deletion, authored HP damage remains
 - [ ] 주조소전용적상태군,원정/메인/결과의실제미충족이미지만제작. 모든필수상태제작후소비처와hash등록.
 - [ ] 원본투명도/경계/축/글자가시성/native스크린·청취검토. 최종사용자비주얼승인별도.
 
-### Task8 — 비교 검증·패키지·블루프린트 (전체AC)
+### Task 8 — 비교 검증·패키지·블루프린트 (전체AC)
 
 - [ ] 20seed 합성명령검사와세전략계측표작성. 0사고시간봇의승리를Human재미로표시하지않음.
 - [ ] R2 vs R3무한공급 vs R3LINE보급 비교; 새공급량외변수를고정하고사용자방향과맞는지검토.
