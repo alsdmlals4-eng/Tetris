@@ -7,7 +7,108 @@
   "remaining_user_decision_count": 0,
   "readback_state": "PASS",
   "rollback_plan": "Revert this isolated readability slice; keep production and original saves",
-  "benchmark_preflight_receipt": {"state":"PASS","entries":[{"source_and_evidence":"7da62cf r2_combat/r2_screen; R2 rules sections7-11,15; SEGA official rules and Godot Label docs read2026-09-13","observed_pattern":"Existing combat receipts own exact effects; UI shows raw rather than effective values","project_fit_and_difference":"Expose current-state read-only forecasts without adopting forced swap or MP","disposition":"ADAPT"}]},
-  "context_configuration_hygiene": {"scope":"R2 combat forecasts and direct UI/tests","inventory":[{"path":"src/replanned_r2/r2_combat.gd","classification":"ACTIVE_OWNER","owner_or_provenance":"merged main R2 transactions","references_and_consumers":"r2_session and r2_screen","removal_proposed":false},{"path":"docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md","classification":"COMPATIBILITY","owner_or_provenance":"preserved production baseline, not R2","references_and_consumers":"src/production unchanged","removal_proposed":false}]},
-  "project_work_kanban": {"goal_or_slice_issue_ref":"latest-user-approved R2 improvement loop; TETRIS_R2_COMBAT_READABILITY.md","source_main_sha":"7da62cf093197a88c75b372eb83517bd61f0b515","work_item_refs":["R2-READABILITY"],"active_work_item_ref":"R2-READABILITY","next_action":"Exact publication checks and merge; continue whole-game research and implementation","work_items":[{"work_item_id":"R2-READABILITY","title":"Connect preparation, skill and threat consequences","status":"DONE","canon_owner":"docs/design/REPLANNING_AUTOCAST_R2.md","actual_consumers":["src/replanned_r2/r2_combat.gd","src/replanned_r2/r2_screen.gd"],"depends_on":[],"acceptance_criteria":["PROJECTION_AND_UI"],"required_evidence":["E2_TEST","E3_RUNTIME"],"checklist":[{"id":"PROJECTION_AND_UI","text":"Pure forecast agrees with actual effects, UI readable and original rules preserved","status":"PASS"}],"verification":[{"level":"E2_TEST","status":"PASS","evidence":["docs/validation/r2-readability-20260913/full-gut.log:363tests3830assertions; tooling88PASS"],"verified_head_sha":"35c6dca1117391a54391693acb9f8b7c13bb294f"},{"level":"E3_RUNTIME","status":"PASS","evidence":["docs/validation/r2-readability-20260913/final-icons-125.png; diagnostic setup and real practice mouse input; local package verified"],"verified_head_sha":"35c6dca1117391a54391693acb9f8b7c13bb294f"}],"remaining_must_fix_count":0,"remaining_blocked_count":0,"remaining_user_decision_count":0,"readback_state":"PASS","rollback_plan":"Revert isolated slice","next_action":"Continue full-game gap sequence after publication"}]}
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "7da62cf r2_combat/r2_screen; R2 rules sections7-11,15; SEGA official rules and Godot Label docs read2026-09-13",
+        "observed_pattern": "Existing combat receipts own exact effects; UI shows raw rather than effective values",
+        "project_fit_and_difference": "Expose current-state read-only forecasts without adopting forced swap or MP",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "R2 combat forecasts and direct UI/tests",
+    "inventory": [
+      {
+        "path": "src/replanned_r2/r2_combat.gd",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "merged main R2 transactions",
+        "references_and_consumers": "r2_session and r2_screen",
+        "removal_proposed": false
+      },
+      {
+        "path": "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "preserved production baseline, not R2",
+        "references_and_consumers": "src/production unchanged",
+        "removal_proposed": false
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "latest-user-approved R2 improvement loop; TETRIS_R2_COMBAT_READABILITY.md",
+    "source_main_sha": "7da62cf093197a88c75b372eb83517bd61f0b515",
+    "work_item_refs": [
+      "R2-READABILITY"
+    ],
+    "active_work_item_ref": null,
+    "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
+    "work_items": [
+      {
+        "work_item_id": "R2-READABILITY",
+        "title": "Connect preparation, skill and threat consequences",
+        "status": "DONE",
+        "canon_owner": "docs/design/REPLANNING_AUTOCAST_R2.md",
+        "actual_consumers": [
+          "src/replanned_r2/r2_combat.gd",
+          "src/replanned_r2/r2_screen.gd"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "PROJECTION_AND_UI"
+        ],
+        "required_evidence": [
+          "E2_TEST",
+          "E3_RUNTIME"
+        ],
+        "checklist": [
+          {
+            "id": "PROJECTION_AND_UI",
+            "text": "Pure forecast agrees with actual effects, UI readable and original rules preserved",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/r2-readability-20260913/full-gut.log",
+              "docs/validation/r2-readability-20260913/final-icons-125.png"
+            ]
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/r2-readability-20260913/full-gut.log:363tests3830assertions; tooling88PASS"
+            ],
+            "verified_head_sha": "35c6dca1117391a54391693acb9f8b7c13bb294f"
+          },
+          {
+            "level": "E3_RUNTIME",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/r2-readability-20260913/final-icons-125.png; diagnostic setup and real practice mouse input; local package verified"
+            ],
+            "verified_head_sha": "35c6dca1117391a54391693acb9f8b7c13bb294f"
+          }
+        ],
+        "remaining_must_fix_count": 0,
+        "remaining_blocked_count": 0,
+        "remaining_user_decision_count": 0,
+        "readback_state": "PASS",
+        "rollback_plan": "Revert isolated slice",
+        "next_action": "Continue full-game gap sequence after publication",
+        "verified_head_sha": "35c6dca1117391a54391693acb9f8b7c13bb294f",
+        "must_fix_remaining": 0,
+        "blocked_unverified_remaining": 0,
+        "user_decision_required_remaining": 0,
+        "repository_readback": "PASS",
+        "readback_evidence": [
+          "35c6dca source, 363 GUT tests and 3830 assertions; runtime image final-icons-125.png; BUILD_MANIFEST at readability-35c6dca-20260913"
+        ],
+        "rollback": "Revert isolated readability change; preserve original saves and production"
+      }
+    ]
+  },
+  "follow_on_authority": "This receipt closes only R2-READABILITY. Latest user separately authorizes whole-game completion; continue with its research and implementation contract, not a whole-game completion claim."
 }
