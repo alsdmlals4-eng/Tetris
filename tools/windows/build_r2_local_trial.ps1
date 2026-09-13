@@ -174,6 +174,8 @@ function Verify-Package([string]$PackageDirectory) {
     $assetManifest = Get-Content -Raw -LiteralPath $assetManifestPath -Encoding UTF8 | ConvertFrom-Json
     $assetEntries = @($assetManifest.assets.PSObject.Properties)
     if ($assetEntries.Count -ne 5) { Fail-Build 'R2 asset manifest must contain exactly five atlases.' }
+    $watchtower = Get-Content -Raw -LiteralPath (Join-Path $RepoRoot 'docs/assets/reference/planned/replanning/watchtower-atlas-contract.json') -Encoding UTF8 | ConvertFrom-Json
+    $assetEntries += [pscustomobject]@{ Name = 'R2-WATCHTOWER'; Value = [pscustomobject]@{ path = $watchtower.source_path; sha256 = $watchtower.source_sha256 } }
     $requiredRawArtifacts = @()
     foreach ($assetProperty in $assetEntries) {
         $relativeAssetPath = [string]$assetProperty.Value.path
@@ -319,6 +321,8 @@ $assetManifestPath = Join-Path $RepoRoot 'docs\design\r2-complete-session.json'
 $assetManifest = Get-Content -Raw -LiteralPath $assetManifestPath -Encoding UTF8 | ConvertFrom-Json
 $assetEntries = @($assetManifest.assets.PSObject.Properties)
 if ($assetEntries.Count -ne 5) { Fail-Build 'R2 asset manifest must contain exactly five atlases.' }
+$watchtower = Get-Content -Raw -LiteralPath (Join-Path $RepoRoot 'docs/assets/reference/planned/replanning/watchtower-atlas-contract.json') -Encoding UTF8 | ConvertFrom-Json
+$assetEntries += [pscustomobject]@{ Name = 'R2-WATCHTOWER'; Value = [pscustomobject]@{ path = $watchtower.source_path; sha256 = $watchtower.source_sha256 } }
 $rawArtifactNames = @()
 foreach ($assetProperty in $assetEntries) {
     $relativeAssetPath = [string]$assetProperty.Value.path

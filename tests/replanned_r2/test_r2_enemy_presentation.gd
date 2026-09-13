@@ -14,6 +14,14 @@ func test_battle_and_result_share_enemy_owner_for_every_profile():
         screen.refresh()
         var id=screen.session.combat.encounter_info().id
         assert_same(screen.get_node("Battle/Combat/Stage/BodyClip/BossVisual").texture,screen.assets.enemy_texture(id,screen.boss_pose))
+        screen._impact_us=360000
+        screen.refresh()
+        var expected_material=screen.assets.enemy_material(id,screen.boss_pose)
+        if expected_material==null:
+            assert_null(screen.get_node("Battle/Combat/Stage/BodyClip/BossVisual").material)
+        else:
+            assert_same(screen.get_node("Battle/Combat/Stage/BodyClip/BossVisual").material,expected_material)
         screen._show_result(false,false)
         assert_same(screen.get_node("Result/BossVisual").texture,screen.assets.enemy_texture(id,"idle"))
-    assert_eq(screen.assets.consumer_manifest().assets.size(),5,"No unreviewed art promoted")
+    assert_eq(screen.assets.consumer_manifest().assets.size(),5,"Preserved original manifest")
+    assert_true(screen.assets.consumer_manifest().consumers.has("R2-WATCHTOWER"))
