@@ -1,0 +1,29 @@
+{
+  "schema": "r2-encounter-presentation-v1",
+  "encounters": {
+    "outer_breach": {
+      "enemy_name": "방벽 침식자",
+      "scene_line": "방벽 틈에서 갑주가 일어섭니다. 뒤에는 피난 행렬이 있습니다.",
+      "tactical_hint": "견제 뒤 강타. LINE으로 준비하고 CHAIN으로 발동하세요.",
+      "victory_line": "침식자가 무너지고 피난로가 열렸습니다. 핵으로 갈 길을 고르세요."
+    },
+    "foundry": {
+      "enemy_name": "잿불 주조병",
+      "scene_line": "멎은 용광로를 지키는 거체가 달아오른 팔을 들어 올립니다.",
+      "tactical_hint": "느리고 무거운 강타. 방어를 쌓고 냉각 중 공격하세요.",
+      "victory_line": "용광로가 식고 핵으로 향하는 지하 통로가 드러났습니다."
+    },
+    "watchtower": {
+      "enemy_name": "감시탑 파수꾼",
+      "scene_line": "높은 회랑의 파수꾼이 소리 없이 빛의 활시위를 당깁니다.",
+      "tactical_hint": "빠른 연속 사격. 짧게 대응하고 재장전 틈을 활용하세요.",
+      "victory_line": "파편 사격이 멎었습니다. 감시탑에서 균열의 핵이 보입니다."
+    },
+    "rift_core": {
+      "enemy_name": "균열 파괴자",
+      "scene_line": "균열의 맥동에 맞춰 거대한 망치가 요새의 마지막 문을 두드립니다.",
+      "tactical_hint": "견제와 분쇄가 교차합니다. 다음 강타까지 자원을 배분하세요.",
+      "victory_line": "망치가 떨어지고 보랏빛 맥동이 사라집니다. 봉쇄가 끝났습니다."
+    }
+  }
+}

@@ -4,6 +4,7 @@ const ENTRY_SCENE := "res://scenes/replanned_r2/main.tscn"
 const RAW_ASSET_ROOT_ENV := "TETRIS_R2_SOURCE_ASSET_ROOT"
 const MANIFEST_PATH := "res://docs/design/r2-complete-session.json"
 const REQUIRED_JSON := [
+    "res://data/replanned_r2/encounter-presentation.json",
     "res://data/replanned_r2/expedition.json",
     "res://docs/design/r2-complete-session.json",
     "res://docs/design/autocast-r2-data.json",

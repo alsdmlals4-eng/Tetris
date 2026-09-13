@@ -2,6 +2,7 @@
 extends RefCounted
 
 const CATALOG_PATH := "res://data/replanned_r2/expedition.json"
+const PRESENTATION_PATH := "res://data/replanned_r2/encounter-presentation.json"
 const Combat = preload("res://src/replanned_r2/r2_combat.gd")
 const Chain = preload("res://src/replanned_r2/r2_chain.gd")
 const Session = preload("res://src/replanned_r2/r2_session.gd")
@@ -26,6 +27,26 @@ func view() -> Dictionary:
 
 func catalog() -> Dictionary:
     return _catalog.duplicate(true)
+
+## Presentation text does not participate in the gameplay save hash.
+func encounter_brief(encounter_id: String) -> Dictionary:
+    if _state.is_empty() or not _catalog.encounters.has(encounter_id): return {}
+    var combat = Combat.new(_state.difficulty,"route-preview",encounter_id)
+    var result: Dictionary = combat.encounter_info()
+    if result.is_empty(): return {}
+    result["actions"] = combat.action_cycle()
+    var fallback: Dictionary = _catalog.encounters[encounter_id]
+    result["enemy_name"] = fallback.label
+    result["scene_line"] = ""
+    result["tactical_hint"] = fallback.intent
+    result["victory_line"] = "전투를 돌파했습니다."
+    var source = JSON.parse_string(FileAccess.get_file_as_string(PRESENTATION_PATH))
+    if source is Dictionary and source.get("schema") == "r2-encounter-presentation-v1" and source.get("encounters") is Dictionary:
+        var entry = source.encounters.get(encounter_id,{})
+        if entry is Dictionary:
+            for key in ["enemy_name","scene_line","tactical_hint","victory_line"]:
+                if entry.get(key) is String and not entry[key].is_empty(): result[key]=entry[key]
+    return result
 
 func available_encounters() -> Array:
     if _state.is_empty() or _state.phase != "ROUTE": return []

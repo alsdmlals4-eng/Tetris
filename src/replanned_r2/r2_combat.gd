@@ -75,6 +75,13 @@ func encounter_info() -> Dictionary:
     return {"id":String(_encounter.id), "label":String(_encounter.get("label", "균열 파괴자")),
         "boss_hp":int(_encounter.boss_hp)}
 
+## Read-only first-cycle forecast. Timing stays owned by the active rule pack.
+func action_cycle() -> Array:
+    if not _ready: return []
+    var result: Array = []
+    for index in _actions.size(): result.append(_action_for_index(index))
+    return result
+
 func apply_line(event_id: String, cells: Array) -> Dictionary:
     var rejected := _line_result(false, "NO_EFFECT", "")
     if not _ready:

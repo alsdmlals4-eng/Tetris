@@ -8,6 +8,7 @@ const ExpeditionDisk = preload("res://src/replanned_r2/r2_expedition_save.gd")
 @export var expedition_save_path := ExpeditionDisk.EXPEDITION_PATH
 var expedition
 var expedition_disk
+var _expedition_enemy_name := ""
 const PlaytestReport = preload("res://src/replanned_r2/r2_playtest_report.gd")
 var report_directory := PlaytestReport.DEFAULT_DIRECTORY
 var _result_practice_complete := false
@@ -242,9 +243,12 @@ func _build_ui():
     var route = _panel(self,"Expedition",Rect2(40,30,1200,660))
     _label(route,"Title",Rect2(30,20,1120,55),"균열 봉쇄 원정",29,GOLD)
     _label(route,"Progress",Rect2(30,80,1120,65),"",20,CYAN)
-    _label(route,"Description",Rect2(30,155,1120,170),"",22)
+    _label(route,"Description",Rect2(30,132,1120,104),"",22)
+    _label(route,"ThreatPreview",Rect2(30,258,1120,94),"",17,CYAN).autowrap_mode=TextServer.AUTOWRAP_WORD_SMART
     for i in 3:
-        _button(route,"Choice%d"%i,Rect2(30+i*385,360,365,110),"",func(): _choose_expedition(i))
+        var choice = _button(route,"Choice%d"%i,Rect2(30+i*385,360,365,110),"",func(): _choose_expedition(i))
+        choice.focus_entered.connect(_preview_expedition.bind(i))
+        choice.mouse_entered.connect(_preview_expedition.bind(i))
     _label(route,"Status",Rect2(30,485,1120,85),"전투 밖에서는 시간이 흐르지 않습니다.",18,CYAN)
     _button(route,"Main",Rect2(30,580,350,50),"기록을 유지하고 메인",return_to_main)
 
@@ -473,6 +477,10 @@ func retry_run():
     if practice_stage > 0: begin_practice(practice_stage)
     else: start_run(difficulty,run_seed)
 func _reset_view():
+    _expedition_enemy_name = ""
+    if expedition != null and session != null:
+        var brief: Dictionary = expedition.encounter_brief(session.combat.encounter_info().get("id",""))
+        _expedition_enemy_name = brief.get("enemy_name","")
     inputs.clear()
     chain_selected = Vector2i(-1,-1)
     chain_cursor = Vector2i.ZERO
@@ -841,7 +849,7 @@ func refresh():
     var current: Dictionary = combat.current_action()
     var next: Dictionary = combat.next_action()
     var encounter: Dictionary = combat.encounter_info()
-    $Battle/Combat/Stage/HP.text = "%s   HP %d / %d" % [encounter.label,combat.boss_hp,encounter.boss_hp]
+    $Battle/Combat/Stage/HP.text = "%s   HP %d / %d" % [encounter.label if _expedition_enemy_name.is_empty() else _expedition_enemy_name,combat.boss_hp,encounter.boss_hp]
     $Battle/Combat/Stage/HealthBar.max_value=encounter.boss_hp
     $Battle/Combat/Stage/HealthBar.value=combat.boss_hp
     $Battle/Combat/Threat/Current.text = "현재 · "+current.label
@@ -1207,36 +1215,72 @@ func _show_expedition():
     _show_page("expedition")
     var state: Dictionary = expedition.view()
     var catalogue: Dictionary = expedition.catalog()
+    $Expedition/ThreatPreview.visible = state.phase == "ROUTE"
+    $Expedition/Description.size.y = 104 if state.phase == "ROUTE" else 212
     $Expedition/Title.text = catalogue.title + (" · 봉쇄 완료" if state.phase == "COMPLETE" else "")
     $Expedition/Progress.text = "전투 %d / %d · HP %d / 100 · %s" % [mini(int(state.stage)+1,catalogue.stages.size()),catalogue.stages.size(),state.hp,"여유 모드" if state.difficulty == "RELAXED" else "표준 모드"]
     $Expedition/Description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
     var choices: Array = expedition.available_encounters() if state.phase == "ROUTE" else (catalogue.supplies.keys() if state.phase == "SUPPLY" else [])
+    var invalid_brief := false
     for i in 3:
         var button: Button = get_node("Expedition/Choice%d" % i)
         button.visible = i < choices.size()
         if not button.visible: continue
+        button.disabled = false
         var id: String = choices[i]
         if state.phase == "ROUTE":
-            button.text = catalogue.encounters[id].label+"\n출격"
-            button.tooltip_text = catalogue.encounters[id].intent
+            var brief: Dictionary = expedition.encounter_brief(id)
+            if brief.is_empty():
+                invalid_brief = true
+                button.disabled = true
+                button.text = catalogue.encounters[id].label+"\n전투 구성 검증 실패"
+                button.tooltip_text = "출격할 수 없습니다. 메인으로 돌아가세요."
+                continue
+            var first: Dictionary = brief.actions[0]
+            button.text = "%s · HP %d\n첫 행동 %.1f초 / 피해 %d\n출격" % [brief.enemy_name,brief.boss_hp,float(first.duration_us)/1000000.0,first.damage]
+            var cycle := PackedStringArray([brief.scene_line,"행동 주기 · 각 행동의 준비 시간 / 원래 피해"])
+            for action in brief.actions:
+                cycle.append("%s · %.1f초 / %d" % [action.label,float(action.duration_us)/1000000.0,action.damage])
+            cycle.append("주기는 반복됩니다. 타일 시간 보너스·방어 적용 전 수치입니다.")
+            button.tooltip_text = "\n".join(cycle)
         else:
             var supply: Dictionary = expedition.supply_preview(id)
             button.text = catalogue.supplies[id].label+"\nHP +%d / 공격 +%d / 방어 +%d" % [supply.healing_applied,supply.attack_bank,supply.armor]
             button.tooltip_text = "한 번만 선택합니다. 다음 전투의 시작 상태에 적용됩니다."
     if state.phase == "ROUTE":
         var lines := PackedStringArray([String(catalogue.opening) if state.stage == 0 else "다음 접근로를 선택하세요."])
-        for id in choices: lines.append(catalogue.encounters[id].label+": "+catalogue.encounters[id].intent)
+        for id in choices:
+            var brief: Dictionary = expedition.encounter_brief(id)
+            lines.append(catalogue.encounters[id].label+": "+String(brief.get("tactical_hint","전투 구성 검증 실패")))
         $Expedition/Description.text = "\n".join(lines)
         $Expedition/Status.text = "전투마다 보드를 새로 준비합니다. HP와 선택한 정비만 이어집니다.\n적별 그림·연출은 제작 중이며, 현재는 공통 임시 자산을 사용합니다."
     elif state.phase == "SUPPLY":
-        $Expedition/Description.text = "전투를 돌파했습니다. 세 정비 중 하나를 선택하세요.\n응급 정비는 손실 HP만 회복합니다. 공격 준비와 방벽 보강은 다음 전투의 시작 자원입니다."
+        var brief: Dictionary = expedition.encounter_brief(state.active_battle.encounter_id)
+        $Expedition/Description.text = String(brief.get("victory_line","전투를 돌파했습니다."))+"\n세 정비 중 하나를 선택하세요.\n응급 정비는 HP 회복, 나머지는 다음 전투의 시작 자원입니다."
         $Expedition/Status.text = "선택은 한 번만 적용되며 기록에 보존됩니다. 다음 전투에서 패배해도 같은 정비 상태로 재도전할 수 있습니다."
     else:
         var names := PackedStringArray()
         for id in state.route: names.append(catalogue.encounters[id].label)
-        $Expedition/Description.text = catalogue.ending+"\n\n지켜낸 경로: "+" → ".join(names)
+        $Expedition/Description.text = String(catalogue.ending).replace(". ",".\n")+"\n\n지켜낸 경로: "+" → ".join(names)
         $Expedition/Status.text = "원정의 결말에 도달했습니다. 다른 접근로와 정비를 선택해 다시 도전할 수 있습니다.\n콘텐츠·개별 이미지·연출의 최종 완성도 검증은 별도 진행 중입니다."
-    if not choices.is_empty(): $Expedition/Choice0.grab_focus()
+    if not choices.is_empty():
+        $Expedition/Choice0.grab_focus()
+        _preview_expedition(0)
+    if invalid_brief:
+        $Expedition/Status.text = "전투 구성 검증 실패 · 잘못된 경로는 출격할 수 없습니다.\n메인으로 돌아가 이전 기록을 유지할 수 있습니다."
+        $Expedition/ThreatPreview.visible = false
+        $Expedition/Main.grab_focus()
+
+func _preview_expedition(index: int):
+    if expedition == null or page != "expedition": return
+    var choices: Array = expedition.available_encounters()
+    if index < 0 or index >= choices.size(): return
+    var brief: Dictionary = expedition.encounter_brief(choices[index])
+    if brief.is_empty(): return
+    var cycle := PackedStringArray()
+    for action in brief.actions:
+        cycle.append("%s %.1f초/%d" % [action.label,float(action.duration_us)/1000000.0,action.damage])
+    $Expedition/ThreatPreview.text = brief.enemy_name+" · 행동별 준비 시간 / 원래 피해\n"+" → ".join(cycle)+"\n반복 주기 · 시간 보너스와 방어 적용 전"
 
 func _choose_expedition(index: int):
     if expedition == null or page != "expedition" or _blocking_modal() != null: return
@@ -1244,6 +1288,7 @@ func _choose_expedition(index: int):
     var choices: Array = expedition.available_encounters() if state.phase == "ROUTE" else (expedition.catalog().supplies.keys() if state.phase == "SUPPLY" else [])
     if index < 0 or index >= choices.size(): return
     if state.phase == "ROUTE":
+        if expedition.encounter_brief(choices[index]).is_empty(): return
         if expedition.launch(choices[index]).success: _deploy_expedition()
     elif expedition.choose_supply(choices[index]).success:
         session = null
