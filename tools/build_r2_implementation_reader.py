@@ -7,7 +7,7 @@ import re
 import subprocess
 from pathlib import Path
 from pypdf import PdfReader, PdfWriter
-from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer, Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer, Image, KeepTogether
 import build_replanning_blueprint as b
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -90,8 +90,11 @@ def build(revision):
             line=lines[i].strip();i+=1
             if not line: continue
             if line.startswith('@image '):
-                story.append(Image(str(ROOT/line[7:]),width=650,height=650*720/1280))
-                story.append(Spacer(1,8))
+                block=[Image(str(ROOT/line[7:]),width=580,height=580*720/1280),Spacer(1,8)]
+                while i<len(lines) and not lines[i].strip():i+=1
+                if i<len(lines) and not lines[i].startswith(('@','|')):
+                    block.append(b.para(lines[i]));i+=1
+                story.append(KeepTogether(block))
             elif line.startswith('@'):
                 story.append(b.md_table(table_lines(line[1:]).splitlines(),b.PAGE[0]-72))
                 story.append(Spacer(1,10))
