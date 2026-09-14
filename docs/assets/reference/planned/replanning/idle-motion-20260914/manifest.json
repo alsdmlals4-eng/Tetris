@@ -4,7 +4,7 @@
   "source_sha256": "71749c80e43c0bff5e57bb86a4e0e37530483264b4cfae760372c462554cc75e",
   "rejected_extraction": "exec-4128f387-9a5c-4caf-9824-c0b2de21bb0b: RGB baked checkerboard; zero alpha pixels",
   "processing": "Green excess matte, edge despill, translation-only fixed bottom/center alignment; no redrawn foreground; no invented inbetween frames",
-  "transparent_pixels": 779306,
+  "transparent_pixels": 845190,
   "partial_pixels": 15802,
   "atlas_size": [
     1280,
@@ -338,7 +338,7 @@
       "duration_ms": 140
     }
   ],
-  "consumer_candidate": "res://scenes/replanned_r2/main.tscn::Battle/Combat/Stage/BodyClip/BossVisual idle only; not bound until continuity review",
+  "consumer_candidate": "res://scenes/replanned_r3/enemy_motion_preview.tscn::Enemy; separate candidate preview only, not a battle replacement",
   "scope": "idle only; attack/hurt/defeat transition not complete",
   "files": {
     "source-chroma.png": "71749c80e43c0bff5e57bb86a4e0e37530483264b4cfae760372c462554cc75e",

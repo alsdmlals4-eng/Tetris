@@ -4,6 +4,14 @@ Approved scope: R3 finite falling-pair CHAIN, LINE supply and selected enemy cel
 
 ## Actual implementation and boundaries
 
+Latest performer follow-through: v2 chroma-derived nine-pose Vanguard now binds the isolated R3 cut-in as a candidate trial, superseding the temporary portrait-only statement below. Full regression484/484 and three native category fixtures are in [the current screen/cast receipt](../validation/r3-screen-cast-20260914/README.md). Smooth final motion, full UI and whole-game delivery remain open.
+
+Latest continuation: separate `scenes/replanned_r3/main.tscn` now binds the actual R3 session to equal-width board/combat regions, finite falling pairs, category-only automatic skills, current/next threat and the shared ETA. Existing R2 main remains unchanged. A read-only cast presentation consumes committed unique receipts (620ms full / 240ms bounded follow-up), freezes during pause and suppresses restored receipts. The actor currently reuses the portrait as a **temporary presentation**, not the requested final animated skill performer. Full motion states, tutorial, remapping, route/save UI, audio and delivery are still required.
+
+Screen/cut-in checks: initial screen 4/4; added focus/release/overlap regressions failed as expected, then corrected (LINE key release/focus loss must not lower a piece; CHAIN S release must end soft drop; bottom labels must not overlap boards). Actual chain clear → cast ledger → visible cut-in/recent-skill test initially failed its missing recent label, then passed. Latest R3 directory: 74/74 tests,2920 assertions,12 scripts, `r3-screen-cast-green.log`, stderr empty. This is source evidence, not whole-game completion.
+
+Live correction: exact Tetris editor5852 was already connected through its own HiGodot8008/9508 route. Hera was enabled and verified at8773; the earlier absent-Hera blocker below is historical and resolved. R3 native run6 at1280×720 was live with no reported launch errors; actual command readback confirmed CHAIN,3 remaining pairs, pause and unchanged ETA4772639us. Asset resolver errors were empty. Screenshot initially remained stale while the window was not rendering; restoring/focusing the exact game window and forcing a frame produced the matching CHAIN view. A nonblank screenshot alone is therefore insufficient state evidence. Other editors and normal saves were not changed by the R3 screen (no disk consumer yet).
+
 | Owner | Implemented | Remaining proof |
 |---|---|---|
 | Probe storage | isolated factory before ready, actual writer/path/report validation; real scene flow leaves normal save/backup hashes unchanged | Native visible probe |
@@ -13,7 +21,7 @@ Approved scope: R3 finite falling-pair CHAIN, LINE supply and selected enemy cel
 | Session/combat | candidate resource/supply transaction, one cast per player wave, category lock, finite spawn, shared ETA, inactive freeze, R3 skill hash; two scoped review loops closed | Whole-game flow/native presentation |
 | Disruption | Current board lock, last2s ID reservation, sorted seeded selection, misses without reroll, no enemy rewards, wave-boundary queue, normalized receipts, profile/action/RELAXED counts | Readability and play balance |
 | Save/route | separate R3 envelope/path, inherited readback/backup mechanics, R2 rejection, route progression uses R3 sessions | Both routes played to actual victory; package |
-| UI/assets/PDF | existing R2 assets and screen untouched | Task6–8 not implemented; no R3 main scene yet |
+| UI/assets/PDF | isolated R3 screen and receipt-driven cut-in; existing R2 assets and main preserved | Task6–8 partial; final motion, tutorial/options/route, audio, package and updated PDF remain |
 
 ## Verification receipts
 
