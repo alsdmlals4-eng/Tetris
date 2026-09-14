@@ -184,6 +184,14 @@ no occupied eligible cells => 0 board deletion, authored HP damage remains
 
 ### Task 7 — 이미지/모션/음향 (AC14)
 
+Latest user motion addition2026-09-14: skill performer cut-ins are required alongside enemy continuity. Reference GIF SHA256 `51da2ec05f18cff7f8bad2b6af38e6a97ab7f06e9c962d55ea01e0874418a75e`,172×40ms; multiple actions edited together, not a single6.88s duration. Use current Vanguard identity, not copied reference characters. Proposed initial presentation timing: entrance120ms, cast/impact260ms, recovery/exit240ms (620ms total); following chain casts use240ms compact effects. These durations are trial values requiring actual readability review, not user-approved final timings.
+
+- [ ] Bind to all newly committed `casts` ledger events by unique event ID, not polling only `last_cast` (several waves can resolve in one update). Effects already belong to Combat; visual playback never calls cast/damage/heal.
+- [ ] Right combat-stage cut-in layer only; mouse_filter IGNORE, no board/input blocker, shared ETA/Current/Next and resources remain readable. Do not darken the whole board. ATK weapon slash; DEF guarding motion/shield; SUP restorative gesture, retaining canonical technique effect meaning.
+- [ ] Continuous chain: first full entrance, bounded/merged follow-up visual notification with count; no accumulating multi-second queue. Keep every mechanical receipt, even if effects are visually coalesced.
+- [ ] Explicit pause freezes the same presentation clock; normal cut-ins never pause simulation. Restore initializes presentation cursor to current ledger end so historical attacks do not replay. Defeat cancels cosmetic queue; reduced-motion uses a short static portrait/skill pulse without motion or screen flashes.
+- [ ] Generate chroma-key candidate state frames with common canvas/pivot, remove key and inspect true alpha/edge spill. Cross-frame identity/limb/weapon continuity and last-first boundary must pass before claiming natural animation. Native evidence and final player/art approval remain separate.
+
 대상: R3시안manifest,실제R3뷰소비처,기존r2_assets/r2_audio의검증된재사용면.
 
 - [ ] 기존4문양타일/감시탑/초상/스킬아이콘소비처와statefamily를다시대조.
