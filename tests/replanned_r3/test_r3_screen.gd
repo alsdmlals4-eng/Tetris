@@ -82,3 +82,33 @@ func test_chain_clear_drives_cut_in_and_recent_skill_without_replaying_damage():
     var hp=s.combat.boss_hp
     for i in 4:screen.refresh()
     assert_eq(s.combat.boss_hp,hp)
+
+func test_screen_checkpoint_uses_isolated_writer_and_restores_paused():
+    var disk=load("res://src/replanned_r3/r3_save.gd").new("user://replanned_r3_tests/screen-"+Crypto.new().generate_random_bytes(8).hex_encode()+"/save.json")
+    screen.disk=disk
+    screen.dispatch("pause")
+    var before=screen.session.line.active_cells().duplicate(true)
+    assert_true(screen.save_checkpoint().success)
+    screen.dispatch("resume")
+    screen.dispatch("move",{"dx":1})
+    screen.dispatch("pause")
+    assert_true(screen.restore_checkpoint().success)
+    assert_eq(screen.session.line.active_cells(),before)
+    assert_true(screen.session.combat.paused)
+    assert_true(screen.presentation.view().is_empty())
+
+func test_missing_checkpoint_preserves_live_session():
+    screen.disk=load("res://src/replanned_r3/r3_save.gd").new("user://replanned_r3_tests/missing-"+Crypto.new().generate_random_bytes(8).hex_encode()+"/save.json")
+    screen.dispatch("pause")
+    var before=screen.session.snapshot()
+    assert_false(screen.restore_checkpoint().success)
+    assert_eq(screen.session.snapshot(),before)
+
+func test_paused_time_keeps_fractional_clock_and_running_save_is_rejected():
+    screen._fraction_us=0.375
+    screen.dispatch("pause")
+    screen._process(0.1234567)
+    assert_eq(screen._fraction_us,0.375)
+    screen.dispatch("resume")
+    assert_eq(screen.save_checkpoint().reason,"PAUSE_REQUIRED")
+    assert_eq(screen.restore_checkpoint().reason,"PAUSE_REQUIRED")

@@ -3,9 +3,11 @@ const Session=preload("res://src/replanned_r3/r3_session.gd")
 const Assets=preload("res://src/replanned_r2/r2_assets.gd")
 const Presentation=preload("res://src/replanned_r3/r3_cast_presentation.gd")
 const Performer=preload("res://src/replanned_r3/r3_performer.gd")
+const Disk=preload("res://src/replanned_r3/r3_save.gd")
 var session=Session.new()
 var assets
 var performer
+var disk
 var presentation=Presentation.new()
 var reduced_motion=false
 var _line_tiles:Array=[]
@@ -28,6 +30,7 @@ func _ready()->void:
     get_window().focus_exited.connect(focus_lost)
     assets=Assets.new()
     performer=Performer.new()
+    if disk==null:disk=Disk.new()
     _rules=JSON.parse_string(FileAccess.get_file_as_string("res://data/replanned_r3/rules.json"))
     var left=_panel(self,"Puzzle",Rect2(12,12,622,696))
     var right=_panel(self,"Combat",Rect2(646,12,622,696))
@@ -72,6 +75,12 @@ func _ready()->void:
     _image(cut,"Effect",Rect2(308,70,90,90),assets.texture("R1-ICONS","strike"))
     _label(cut,"Caption",Rect2(413,65,183,100),"",21)
     cut.visible=false
+    var pause_menu=_panel(right,"PauseMenu",Rect2(8,511,606,177))
+    _label(pause_menu,"Title",Rect2(14,8,580,30),"일시정지 · 전투와 연출이 멈췄습니다",21)
+    _button(pause_menu,"Save",Rect2(10,48,190,36),"현재 진행 저장",save_checkpoint)
+    _button(pause_menu,"Load",Rect2(208,48,190,36),"저장 기록 불러오기",restore_checkpoint)
+    _button(pause_menu,"Motion",Rect2(406,48,190,36),"동작 줄이기",func():reduced_motion=not reduced_motion;refresh())
+    _label(pause_menu,"Status",Rect2(14,96,580,70),"",17)
     refresh()
 
 func _panel(parent:Node,node_name:String,rect:Rect2)->Panel:
@@ -144,10 +153,11 @@ func focus_lost()->void:
     refresh()
 
 func _process(delta:float)->void:
-    _fraction_us+=delta*1000000.0
-    var us=int(_fraction_us)
-    _fraction_us-=us
+    var us=0
     if not session.combat.paused:
+        _fraction_us+=delta*1000000.0
+        us=int(_fraction_us)
+        _fraction_us-=us
         session.tick(us)
         _pose_us+=us
     presentation.tick(us,session.combat.paused)
@@ -181,6 +191,9 @@ func refresh()->void:
     $Puzzle/ChainBoard.visible=session.mode=="CHAIN"
     $Puzzle/Hold.disabled=session.mode=="CHAIN"
     $Puzzle/Pause.text="재개" if combat.paused else "정지"
+    $Combat/PauseMenu.visible=combat.paused
+    $Combat/PauseMenu/Motion.text="동작 줄이기: "+("켜짐" if reduced_motion else "꺼짐")
+    $Combat/PauseMenu/Status.text=_message if not _message.is_empty() else "재개 버튼 또는 Esc로 계속합니다.\n연쇄 정산 중에는 저장할 수 없습니다."
     var rows:Array=session.line.rows() if session.mode=="LINE" else session.chain.rows().slice(2)
     var tiles:Array=_line_tiles if session.mode=="LINE" else _chain_tiles
     var width=10 if session.mode=="LINE" else 6
@@ -233,7 +246,7 @@ func refresh()->void:
     var visual=presentation.view(reduced_motion)
     $Combat/CutIn.visible=not visual.is_empty()
     if not visual.is_empty():
-        var actor=performer.texture(visual.category,visual.phase)
+        var actor=performer.texture(visual.category,"impact" if reduced_motion else visual.phase)
         $Combat/CutIn/Actor.texture=actor if actor!=null else assets.texture("R1-PORTRAIT","neutral")
         $Combat/CutIn.position.x=8+visual.offset_x
         $Combat/CutIn.modulate.a=visual.alpha
@@ -247,3 +260,27 @@ func _overlay(tiles:Array,width:int,x:int,y:int,kind:String,alpha:float)->void:
 
 func _pair_label(pair:Dictionary)->String:
     return "비어 있음" if String(pair.get("shape","")).is_empty() else "%s:%s"%[pair.shape,pair.resource]
+
+func save_checkpoint()->Dictionary:
+    if not session.combat.paused:return {"success":false,"reason":"PAUSE_REQUIRED"}
+    var result:Dictionary=disk.save_session(session,clampi(roundi(_fraction_us*1000.0),0,999))
+    _message="진행을 저장했습니다." if result.success else "저장하지 못했습니다: "+str(result.get("reason",""))
+    refresh()
+    return result
+
+func restore_checkpoint()->Dictionary:
+    if not session.combat.paused:return {"success":false,"reason":"PAUSE_REQUIRED"}
+    var result:Dictionary=disk.load_checkpoint()
+    if result.success:
+        var state:Dictionary=result.snapshot
+        var candidate=Session.new(state.difficulty,int(state.seed),state.run_id,state.profile)
+        if not candidate.restore(state):return {"success":false,"reason":"INVALID_CHECKPOINT"}
+        candidate.command("pause")
+        session=candidate
+        _fraction_us=float(result.clock_remainder_ns)/1000.0
+        presentation.sync(session._casts,true)
+        _ledger_count=session._casts.size()
+        _message="기록을 불러왔습니다. 재개를 눌러 계속하세요."+(" (백업 복구)" if result.source=="backup" else "")
+    else:_message="불러오지 못했습니다: "+str(result.get("reason",""))
+    refresh()
+    return result

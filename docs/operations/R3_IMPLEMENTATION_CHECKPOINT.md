@@ -4,6 +4,8 @@ Approved scope: R3 finite falling-pair CHAIN, LINE supply and selected enemy cel
 
 ## Actual implementation and boundaries
 
+Checkpoint UI follow-through: explicit pause save/load and reduced-motion switch now exist in R3. Native isolated writer/readback and487/487 full regression recorded in the screen/cast receipt. Do not treat older “no disk consumer” or “reduced-motion model only” statements below as the current view implementation. Options persistence, route/main menu/tutorial/input and full motion remain unfinished.
+
 Latest performer follow-through: v2 chroma-derived nine-pose Vanguard now binds the isolated R3 cut-in as a candidate trial, superseding the temporary portrait-only statement below. Full regression484/484 and three native category fixtures are in [the current screen/cast receipt](../validation/r3-screen-cast-20260914/README.md). Smooth final motion, full UI and whole-game delivery remain open.
 
 Latest continuation: separate `scenes/replanned_r3/main.tscn` now binds the actual R3 session to equal-width board/combat regions, finite falling pairs, category-only automatic skills, current/next threat and the shared ETA. Existing R2 main remains unchanged. A read-only cast presentation consumes committed unique receipts (620ms full / 240ms bounded follow-up), freezes during pause and suppresses restored receipts. The actor currently reuses the portrait as a **temporary presentation**, not the requested final animated skill performer. Full motion states, tutorial, remapping, route/save UI, audio and delivery are still required.
