@@ -28,6 +28,7 @@ func test_case_reads_actual_window_and_restores_a_new_session_object():
     screen.save_path="user://replanned_r2_tests/native-probe-gut/save.json"
     screen.options_path="user://replanned_r2_tests/native-probe-gut/options.json"
     screen.expedition_save_path="user://replanned_r2_tests/native-probe-gut/expedition.json"
+    screen.report_directory="user://replanned_r2_tests/native-probe-gut/reports"
     add_child_autofree(screen)
     var result=load("res://tests/tooling/r2_native_flow_probe.gd").new().run_case(screen,100,Vector2i(1280,720),0)
     assert_true(result.ok,str(result.failures))

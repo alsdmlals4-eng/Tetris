@@ -1,0 +1,147 @@
+[gd_scene load_steps=19 format=3]
+
+[ext_resource type="Texture2D" path="res://docs/assets/reference/planned/replanning/idle-motion-20260914/idle-atlas.png" id="1"]
+
+[sub_resource type="AtlasTexture" id="Frame_0"]
+atlas = ExtResource("1")
+region = Rect2(0, 0, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_1"]
+atlas = ExtResource("1")
+region = Rect2(320, 0, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_2"]
+atlas = ExtResource("1")
+region = Rect2(640, 0, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_3"]
+atlas = ExtResource("1")
+region = Rect2(960, 0, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_4"]
+atlas = ExtResource("1")
+region = Rect2(0, 320, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_5"]
+atlas = ExtResource("1")
+region = Rect2(320, 320, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_6"]
+atlas = ExtResource("1")
+region = Rect2(640, 320, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_7"]
+atlas = ExtResource("1")
+region = Rect2(960, 320, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_8"]
+atlas = ExtResource("1")
+region = Rect2(0, 640, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_9"]
+atlas = ExtResource("1")
+region = Rect2(320, 640, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_10"]
+atlas = ExtResource("1")
+region = Rect2(640, 640, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_11"]
+atlas = ExtResource("1")
+region = Rect2(960, 640, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_12"]
+atlas = ExtResource("1")
+region = Rect2(0, 960, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_13"]
+atlas = ExtResource("1")
+region = Rect2(320, 960, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_14"]
+atlas = ExtResource("1")
+region = Rect2(640, 960, 320, 320)
+filter_clip = true
+
+[sub_resource type="AtlasTexture" id="Frame_15"]
+atlas = ExtResource("1")
+region = Rect2(960, 960, 320, 320)
+filter_clip = true
+
+[sub_resource type="SpriteFrames" id="Frames"]
+animations = [{
+"frames": [
+{"duration": 1.0, "texture": SubResource("Frame_0")},
+{"duration": 1.0, "texture": SubResource("Frame_1")},
+{"duration": 1.0, "texture": SubResource("Frame_2")},
+{"duration": 1.0, "texture": SubResource("Frame_3")},
+{"duration": 1.0, "texture": SubResource("Frame_4")},
+{"duration": 1.0, "texture": SubResource("Frame_5")},
+{"duration": 1.0, "texture": SubResource("Frame_6")},
+{"duration": 1.0, "texture": SubResource("Frame_7")},
+{"duration": 1.0, "texture": SubResource("Frame_8")},
+{"duration": 1.0, "texture": SubResource("Frame_9")},
+{"duration": 1.0, "texture": SubResource("Frame_10")},
+{"duration": 1.0, "texture": SubResource("Frame_11")},
+{"duration": 1.0, "texture": SubResource("Frame_12")},
+{"duration": 1.0, "texture": SubResource("Frame_13")},
+{"duration": 1.0, "texture": SubResource("Frame_14")},
+{"duration": 1.0, "texture": SubResource("Frame_15")}
+],
+"loop": true,
+"name": &"idle_candidate",
+"speed": 7.142857
+}]
+
+[node name="EnemyMotionCandidate" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+color = Color(0.08, 0.1, 0.15, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 25.0
+offset_right = 1240.0
+offset_bottom = 70.0
+theme_override_font_sizes/font_size = 20
+text = "ENEMY IDLE MOTION - CANDIDATE / NOT FINAL GAMEPLAY"
+
+[node name="Enemy" type="AnimatedSprite2D" parent="."]
+position = Vector2(480, 270)
+scale = Vector2(1.05, 1.05)
+sprite_frames = SubResource("Frames")
+animation = &"idle_candidate"
+autoplay = "idle_candidate"
+
+[node name="Status" type="Label" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 465.0
+offset_right = 940.0
+offset_bottom = 530.0
+theme_override_font_sizes/font_size = 16
+text = "16 authored candidate frames / 2.24s loop / keyed alpha / no save writes\nAttack, hurt, defeat transitions remain unimplemented. Reference: 56 frames / 2.24s."

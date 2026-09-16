@@ -5,6 +5,13 @@ const DEFAULT_DIRECTORY := "user://replanned_r2/playtest_reports"
 
 func build(snapshot: Dictionary, practice_complete: bool = false) -> Dictionary:
     var validated = Session.new()
+    # Expedition snapshots must be validated against their authored encounter,
+    # never against the standalone encounter or an untrusted copied rule pack.
+    var identity = snapshot.get("identity",{})
+    if identity is Dictionary and identity.get("encounter_id") is String:
+        var catalogue = JSON.parse_string(FileAccess.get_file_as_string(Session.Combat.EXPEDITION_PATH))
+        if catalogue is Dictionary and catalogue.get("encounters") is Dictionary and catalogue.encounters.has(identity.encounter_id):
+            validated = Session.new("STANDARD",9112026,"",identity.encounter_id)
     if not validated.restore(snapshot):
         return _failure("INVALID_OR_UNSTABLE_SNAPSHOT")
     var state: Dictionary = validated.snapshot()

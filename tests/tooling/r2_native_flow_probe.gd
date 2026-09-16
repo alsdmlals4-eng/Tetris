@@ -1,6 +1,7 @@
 ## Test-only actual-command flow probe. Not human play or physical-device evidence.
 extends RefCounted
 const Driver=preload("res://tests/tooling/r2_expedition_runtime_driver.gd")
+const Storage=preload("res://tests/tooling/r2_probe_storage.gd")
 
 func visible_bounds(root: Node) -> Array:
     var failures=[]
@@ -16,11 +17,10 @@ func run_case(screen, font_scale: int, window_size: Vector2i, middle_choice: int
     if screen==null: return {"ok":false,"failures":["SCREEN_REQUIRED"]}
     if font_scale not in [100,125] or window_size not in [Vector2i(1280,720),Vector2i(1920,1080)] or middle_choice not in [0,1]:
         return {"ok":false,"failures":["UNSUPPORTED_CASE"]}
+    if not Storage.new().is_isolated(screen): return {"ok":false,"failures":["UNSAFE_PROBE_STORAGE"]}
     var failures=[]
     var checks=[]
     screen.set_process(false)
-    screen.disk=screen.Disk.new("user://replanned_r2_tests/native-matrix/save.json","user://replanned_r2_tests/native-matrix/options.json")
-    screen.expedition_disk=screen.ExpeditionDisk.new("user://replanned_r2_tests/native-matrix/expedition.json")
     screen.options=screen.Disk.default_options()
     screen.options.font_scale=font_scale
     screen.options.audio={"effects":0,"music":0}
@@ -93,4 +93,4 @@ func run_case(screen, font_scale: int, window_size: Vector2i, middle_choice: int
         "actual_window_size":[screen.get_window().size.x,screen.get_window().size.y],"restored_new_session":restored_new_session,
         "actual_encounters":ending.route,"expected_encounters":expected_encounters,
         "ending_phase":ending.phase,"hp":ending.hp,"synthetic_commands_not_human":true,
-        "user_data_scope":"replanned_r2_tests/native-matrix"}
+        "user_data_scope":screen.expedition_disk.save_path.get_base_dir()}

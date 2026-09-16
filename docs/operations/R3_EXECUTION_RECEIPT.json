@@ -1,0 +1,360 @@
+{
+  "work_level": "L2",
+  "approval_reference": "2026-09-14 user: 좋아 권장안대로 작업진행해",
+  "benchmark_preflight_receipt": {
+    "state": "REUSED_EVIDENCE",
+    "entries": [
+      {
+        "source_and_evidence": "main69f4f591e038b4912d9761bf943aefd986170ace; R3 design sections2-3; 2026-09-14 Godot data_paths and SEGA lesson readback",
+        "observed_pattern": "R2 refill/independent CHAIN; ready-bound save writers; four-connected falling groups",
+        "project_fit_and_difference": "Reuse existing LINE/combat and test storage, new finite falling-pair model only; no forced swap",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "R3 model and preceding probe safety; preserve production and R2",
+    "inventory": [
+      {
+        "path": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "latest approved recommendation",
+        "references_and_consumers": "implementation plan Task0-8, AC01-15",
+        "removal_proposed": false
+      },
+      {
+        "path": "src/replanned_r2",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "running R2 baseline",
+        "references_and_consumers": "R2 scene/tests/package",
+        "removal_proposed": false
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "R3 approved implementation 2026-09-14",
+    "source_main_sha": "69f4f591e038b4912d9761bf943aefd986170ace",
+    "work_item_refs": [
+      "Task0",
+      "Task1",
+      "Task2",
+      "Task3",
+      "Task4",
+      "Task5",
+      "Task6",
+      "Task7",
+      "Task8"
+    ],
+    "active_work_item_ref": "Task0",
+    "next_action": "Publish verified safety boundary; later tasks contain machine-verified source but await delivery gates and are not DONE.",
+    "work_items": [
+      {
+        "work_item_id": "Task0",
+        "title": "Storage isolation",
+        "status": "VERIFY_REVIEW",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "tests/tooling/r2_native_flow_probe.gd"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "R3-Task0"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task0",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/operations/R3_IMPLEMENTATION_CHECKPOINT.md"
+            ]
+          }
+        ],
+        "next_action": "Native isolated probe still required; source/report tests verified."
+      },
+      {
+        "work_item_id": "Task1",
+        "title": "Pair supply",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_session.gd"
+        ],
+        "depends_on": [
+          "Task0"
+        ],
+        "acceptance_criteria": [
+          "R3-Task1"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task1",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/operations/R3_IMPLEMENTATION_CHECKPOINT.md"
+            ]
+          }
+        ],
+        "next_action": "Reviewed supply replay; awaiting grouped publication."
+      },
+      {
+        "work_item_id": "Task2",
+        "title": "Falling pair board",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_session.gd"
+        ],
+        "depends_on": [
+          "Task1"
+        ],
+        "acceptance_criteria": [
+          "R3-Task2"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task2",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/operations/R3_IMPLEMENTATION_CHECKPOINT.md"
+            ]
+          }
+        ],
+        "next_action": "Falling pair and terminal phases machine verified; UI integration pending."
+      },
+      {
+        "work_item_id": "Task3",
+        "title": "Session and skills",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_session.gd"
+        ],
+        "depends_on": [
+          "Task2"
+        ],
+        "acceptance_criteria": [
+          "R3-Task3"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task3",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/operations/R3_IMPLEMENTATION_CHECKPOINT.md"
+            ]
+          }
+        ],
+        "next_action": "Close second source review and rerun regression after corrections."
+      },
+      {
+        "work_item_id": "Task4",
+        "title": "Enemy disruption",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_session.gd"
+        ],
+        "depends_on": [
+          "Task3"
+        ],
+        "acceptance_criteria": [
+          "R3-Task4"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task4",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/operations/R3_IMPLEMENTATION_CHECKPOINT.md"
+            ]
+          }
+        ],
+        "next_action": "Verify authored counts/terminal normalized receipts and persistence."
+      },
+      {
+        "work_item_id": "Task5",
+        "title": "Save and expedition",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_expedition_save.gd"
+        ],
+        "depends_on": [
+          "Task4"
+        ],
+        "acceptance_criteria": [
+          "R3-Task5"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task5",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/operations/R3_IMPLEMENTATION_CHECKPOINT.md"
+            ]
+          }
+        ],
+        "next_action": "Route/save tests verified; full playable route proof remains."
+      },
+      {
+        "work_item_id": "Task6",
+        "title": "UI input learning",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "scenes/replanned_r3/main.tscn (planned)"
+        ],
+        "depends_on": [
+          "Task5"
+        ],
+        "acceptance_criteria": [
+          "R3-Task6"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task6",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "Exact Tetris live-editor connection needed; do not operate other project editors."
+      },
+      {
+        "work_item_id": "Task7",
+        "title": "Assets motion audio",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "scenes/replanned_r3/main.tscn (planned)"
+        ],
+        "depends_on": [
+          "Task6"
+        ],
+        "acceptance_criteria": [
+          "R3-Task7"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task7",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "Reuse existing assets first; new state family and visual QA not started."
+      },
+      {
+        "work_item_id": "Task8",
+        "title": "Comparison package blueprint",
+        "status": "BACKLOG",
+        "canon_owner": "docs/superpowers/plans/2026-09-14-r3-falling-chain-disruption.md",
+        "actual_consumers": [
+          "scenes/replanned_r3/main.tscn (planned)"
+        ],
+        "depends_on": [
+          "Task7"
+        ],
+        "acceptance_criteria": [
+          "R3-Task8"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "R3-Task8",
+            "text": "Implement and verify the corresponding task requirements",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "Full regression running; package, visual evidence and new PDF remain."
+      }
+    ]
+  }
+}
