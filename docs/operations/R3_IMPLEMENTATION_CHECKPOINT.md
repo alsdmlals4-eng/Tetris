@@ -1,5 +1,24 @@
 # R3 implementation checkpoint — 2026-09-14
 
+## 2026-09-16 bounded input/supply correction
+
+Latest user scope: fix Space unexpectedly pausing and apparent four-pair stall; append dated summaries to the **existing** monthly journal, then finish this slice and synchronize GitHub. This is current-task continuation on PR118, not permission to merge unrelated/draft work or declare all R3 complete.
+
+Plan executed: reproduce through real Viewport input routing with a focused Pause button → fix reserved battle keys before GUI handling → verify four-pair exhaustion/LINE replenishment/re-entry → full regression → append existing monthly PDF → current-branch publication/readback. No balance quantities, art, normal saves, Base9.4.4, R2 entry, or user's existing project.godot changes were replaced.
+
+Preflight (`REUSED_EVIDENCE` + directly read primary source): current r3_screen/r3_session/supply consumer and R3 specification §supply own the behavior. [Godot input routing](https://docs.godotengine.org/en/stable/tutorials/inputs/inputevent.html) documents `_input` before GUI before unhandled events. Compared: disable all Button focus (REJECT: harms keyboard navigation); change global ui_accept (REJECT: affects unrelated menus/R2); consume only reserved Space and running Tab at the R3 screen boundary (ADAPT: bounded fix, preserves Enter/menu focus). Existing finite supply and explicit, non-forced LINE return are ADOPT; free automatic refill is REJECT because it restores the chain-only advantage. No new framework/assets or Base promotion required (`NO_NEW_REUSE_LEARNING`).
+
+Root causes/results:
+- Space reached GUI first and activated a retained Pause focus. Space press/release/echo is now reserved to battle; only a fresh running press drops. Paused Space never resumes. Running Tab is likewise intercepted; paused Tab remains available to menu focus navigation.
+- Four pairs were intentionally finite, not a spawn failure. Previously the supply text did not provide the specified emphasized return control. Exhausted CHAIN now disables placement buttons and emphasizes `LINE 보급 →`, with row-to-three-pairs and continuing enemy-timer guidance. A real LINE clear followed by re-entry resumes the fifth pair. No forced switch/reset/free refill.
+- Journal owner remains the private monthly `Tetris_2026-09_AI활용_작업일지_증빙집_v1.1.pdf`. Append date summaries there; do not generate v1.2/v1.3 or daily public journals. `Tetris_원본대조_v1.1/append_daily.py` has a duplicate-entry guard and preserves pre-append bytes/source hashes privately. Existing historical pages are not rewritten as new work.
+
+Verification: initial screen RED **11/14**, three expected failures; review-loop-1 added focused-Tab RED **14/15** and corrected it. Full corrected regression **491/491, 7212 assertions, 80 scripts, 84.561s, exit0**, empty stderr (`r3-input-full-0916.log/.err` in local Temp). Review-loop-2 reread scope, pause/release/echo routing, supply/restore invariants, old-page preservation and selected diff: no new scoped blocker. These are engine/automated input tests, **not physical-keyboard/Human UX approval**. Current Hera inventory contains only Blacksmith; no command was sent to that unrelated editor and no new Tetris native screenshot is claimed.
+
+Monthly PDF: 9/16 one-page summary appended to the existing 12-page document, total13; all12 historical page content streams unchanged. Page13 rendered and visually checked; final SHA256 `091fa6153b8a318afb48b1d3774d2ff2ed2f9e64c94bd92cee9cf6caa2558c19`. Private sources remain outside GitHub. Historical v1.0 is preserved, not a newly created journal.
+
+`REMAINING_WORK_COMPLETION_GATE`: bounded correction machine-verified; exact pushed HEAD/CI readback is the publication gate. `IMPLEMENTATION_CORRECTION_RESCAN` and two scoped review loops: closed. `CLEAN_REVIEW_EXIT`: scoped only. Full-game UI/tutorial/routes/motion/art/balance/Human/package gates below remain open. Rollback: revert only this screen/test/document patch; private journal pre-append backup restores its original12pages. Do not revert the user's project.godot or delete historical sources.
+
 Approved scope: R3 finite falling-pair CHAIN, LINE supply and selected enemy cell destruction. Source main `69f4f591e038b4912d9761bf943aefd986170ace`; current branch `codex/r3-runtime`, approved design commit `0937f4083eaea1fd14ce4fed474e5c4d2de210b3`. This is an implementation checkpoint, **not full-game completion**. R2 runtime, player files, existing art and protected Base9.4.4 contract remain preserved.
 
 ## Actual implementation and boundaries

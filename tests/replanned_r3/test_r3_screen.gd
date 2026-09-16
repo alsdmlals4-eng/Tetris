@@ -112,3 +112,64 @@ func test_paused_time_keeps_fractional_clock_and_running_save_is_rejected():
     screen.dispatch("resume")
     assert_eq(screen.save_checkpoint().reason,"PAUSE_REQUIRED")
     assert_eq(screen.restore_checkpoint().reason,"PAUSE_REQUIRED")
+
+func _send_space(pressed:bool,echo:bool=false):
+    var event=InputEventKey.new()
+    event.keycode=KEY_SPACE
+    event.pressed=pressed
+    event.echo=echo
+    screen.get_viewport().push_input(event)
+
+func test_focused_pause_cannot_steal_space_hard_drop():
+    screen.get_node("Puzzle/Pause").grab_focus()
+    var before=screen.session.line.rows().duplicate()
+    _send_space(true)
+    _send_space(false)
+    assert_false(screen.session.combat.paused)
+    assert_ne(screen.session.line.rows(),before,"Space must place the piece, not activate Pause")
+
+func test_paused_space_does_not_resume_or_repeat_drop():
+    screen.dispatch("pause")
+    screen.get_node("Puzzle/Pause").grab_focus()
+    var before=screen.session.snapshot()
+    _send_space(true)
+    _send_space(true,true)
+    _send_space(false)
+    assert_eq(screen.session.snapshot(),before)
+
+func test_four_pairs_exhaustion_offers_explicit_line_return():
+    screen.dispatch("switch")
+    for i in 4:
+        screen.dispatch("hard_drop")
+        screen.session.tick(1000000)
+    screen.refresh()
+    assert_eq(screen.session.supply.pairs,0)
+    assert_true(screen.session.chain.active_pair.is_empty())
+    assert_eq(screen.session.mode,"CHAIN","No forced board switch")
+    assert_true(screen.get_node("Puzzle/Drop").disabled)
+    assert_string_contains(screen.get_node("Puzzle/Switch").text,"LINE")
+    screen.get_node("Puzzle/Switch").pressed.emit()
+    assert_eq(screen.session.mode,"LINE")
+    assert_false(screen.get_node("Puzzle/Drop").disabled)
+    var s=screen.session
+    var engine=s.line._engine
+    for x in 6:
+        engine.board.set_cell(Vector2i(x,23),"A")
+        s.line._cells.append({"cell_id":s._run_id+":line:"+str(x+1),"x":x,"y":23,"kind":"A"})
+    s.line._sequence=6
+    engine.active=load("res://src/production/line/active_tetromino.gd").new("I",Vector2i(6,0),engine.catalog)
+    engine.active_resource="D"
+    screen.dispatch("hard_drop")
+    assert_eq(s.supply.pairs,3)
+    screen.dispatch("switch")
+    assert_eq(s.supply.pairs,2)
+    assert_false(s.chain.active_pair.is_empty(),"LINE replenishment must resume pair spawning")
+    assert_false(screen.get_node("Puzzle/Drop").disabled)
+
+func test_focused_button_cannot_steal_tab_board_switch():
+    screen.get_node("Puzzle/Pause").grab_focus()
+    var event=InputEventKey.new()
+    event.keycode=KEY_TAB
+    event.pressed=true
+    screen.get_viewport().push_input(event)
+    assert_eq(screen.session.mode,"CHAIN")

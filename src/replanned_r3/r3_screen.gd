@@ -163,6 +163,17 @@ func _process(delta:float)->void:
     presentation.tick(us,session.combat.paused)
     refresh()
 
+func _input(event:InputEvent)->void:
+    # Space belongs to battle, even when a clicked Button retains GUI focus.
+    # Consume release/echo too; paused Space must not become ui_accept/resume.
+    if event is InputEventKey and event.keycode==KEY_SPACE:
+        get_viewport().set_input_as_handled()
+        if event.pressed and not event.echo and not session.combat.paused:
+            dispatch("hard_drop")
+    elif event is InputEventKey and event.keycode==KEY_TAB and not session.combat.paused:
+        get_viewport().set_input_as_handled()
+        if event.pressed and not event.echo:dispatch("switch")
+
 func _unhandled_key_input(event:InputEvent)->void:
     if not event is InputEventKey:return
     if event.keycode in [KEY_DOWN,KEY_S] and not event.pressed:
@@ -175,9 +186,7 @@ func _unhandled_key_input(event:InputEvent)->void:
         KEY_UP,KEY_X:dispatch("rotate",{"direction":1})
         KEY_Z:dispatch("rotate",{"direction":-1})
         KEY_DOWN,KEY_S:dispatch("soft_drop",{"enabled":true})
-        KEY_SPACE:dispatch("hard_drop")
         KEY_C,KEY_H:dispatch("hold")
-        KEY_TAB:dispatch("switch")
         KEY_ESCAPE:dispatch("resume" if session.combat.paused else "pause")
         _:return
     get_viewport().set_input_as_handled()
@@ -185,11 +194,18 @@ func _unhandled_key_input(event:InputEvent)->void:
 func refresh()->void:
     if not is_node_ready() or assets==null:return
     var combat=session.combat
+    var exhausted=session.mode=="CHAIN" and session.supply.pairs==0 and session.chain.active_pair.is_empty() and not session.chain.is_resolving()
     $Puzzle/Heading.text="LINE · 자원 준비" if session.mode=="LINE" else "CHAIN · 낙하 연결 / 연쇄 자동 스킬"
     $Puzzle/Supply.text="보급 %d / 12쌍 · LINE 한 줄 → 3쌍\n%s"%[session.supply.pairs,"보급 소진 · LINE에서 줄을 지워 충전" if session.mode=="CHAIN" and session.supply.pairs==0 and session.chain.active_pair.is_empty() else "공격 A · 방어 D · 치유 H · 시간 T"]
     $Puzzle/LineBoard.visible=session.mode=="LINE"
     $Puzzle/ChainBoard.visible=session.mode=="CHAIN"
     $Puzzle/Hold.disabled=session.mode=="CHAIN"
+    $Puzzle/Switch.text="LINE 보급 →" if exhausted else "보드 전환"
+    $Puzzle/Switch.modulate=Color("#ffe09a") if exhausted else Color.WHITE
+    for control in ["Left","Right","Rotate","Drop"]:
+        get_node("Puzzle/"+control).disabled=exhausted
+    if exhausted:
+        $Puzzle/Supply.text="낙하쌍 0 · LINE 한 줄로 3쌍 보급\n하단 LINE 보급 → 버튼 / Tab · 적 타이머는 계속 진행"
     $Puzzle/Pause.text="재개" if combat.paused else "정지"
     $Combat/PauseMenu.visible=combat.paused
     $Combat/PauseMenu/Motion.text="동작 줄이기: "+("켜짐" if reduced_motion else "꺼짐")
