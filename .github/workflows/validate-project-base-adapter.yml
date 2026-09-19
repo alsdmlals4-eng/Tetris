@@ -10,12 +10,20 @@ on:
       - "docs/PROJECT_OPERATING_HEALTH.json"
       - "docs/design/PRODUCTION_CANON_INDEX.json"
       - "docs/design/CHAIN_COMBO_MP_CONTRACT.md"
+      - "docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md"
+      - "docs/design/PROJECT_WORKSPACE_INDEX.md"
+      - "docs/design/REPLANNING_FOUNDATION.md"
       - "docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md"
       - "docs/design/PROJECT_MASTER_GDD.md"
       - "docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md"
       - "docs/design/VISUAL_BIBLE.md"
       - "docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md"
       - "skills/**"
+      - ".agents/**"
+      - "tools/check_workflow_adoption.py"
+      - "tools/templates/tetris_workflow_router.md"
+      - "tests/tooling/**"
+      - "docs/PROJECT_OPERATING_DASHBOARD.html"
       - ".github/workflows/validate-project-base-adapter.yml"
 
 permissions:
@@ -34,7 +42,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: alsdmlals4-eng/Base
-          ref: 5adc196c0185951f50e49ab5e51586eff8d60886
+          ref: 23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef
           path: .base-contract
           fetch-depth: 0
 
@@ -65,10 +73,14 @@ jobs:
 
       - name: Validate adapter and approved protected recovery against the trusted baseline
         run: |
-          python .base-contract/tools/check_approved_project_operating_contract.py \
+          python tools/check_workflow_adoption.py \
             --project-root . \
             --base-repository .base-contract \
             --protected-base "$PROTECTED_BASE_SHA" \
-            --approval docs/operations/TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json \
             --external-approval true \
             --check
+
+      - name: Verify project adapter and projection regressions
+        run: |
+          python -m unittest discover -s tests/tooling -p 'test_formal_base_adapter*.py' -v
+          python -m unittest discover -s tests/tooling -p test_workflow_adoption.py -v

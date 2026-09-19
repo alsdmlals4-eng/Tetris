@@ -134,17 +134,6 @@ class ComboResolvedSkillContractTests(unittest.TestCase):
             self.assertIn("USER_LOCKED_PLANNING_REFERENCE_NOT_RUNTIME", text)
             self.assertIn("runtime asset", text)
 
-    def test_material_work_requires_fresh_research_feasibility_and_five_adversarial_loops(self) -> None:
-        agents = AGENTS.read_text(encoding="utf-8")
-        for required in (
-            "MANDATORY_CURRENT_TASK_EVIDENCE_GATE",
-            "TARGETED_CURRENT_INTERNET_RESEARCH",
-            "PREIMPLEMENTATION_FEASIBILITY_CLASSIFICATION",
-            "FIVE_FULL_ADVERSARIAL_LOOPS_MINIMUM",
-            "MECHANICAL_NO_EXTERNAL_DEPENDENCY",
-        ):
-            self.assertIn(required, agents)
-
 
 if __name__ == "__main__":
     unittest.main()

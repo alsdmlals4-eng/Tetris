@@ -58,8 +58,7 @@ class ProjectMasterGddContractTests(unittest.TestCase):
         self.assertIn("no per-candidate user lock request", contract)
         self.assertIn("exact Godot runtime consumer", contract)
         self.assertIn("does not become a runtime asset", contract)
-        self.assertIn("USER_STANDING_IMAGE_APPROVAL_2026-09-02", agents)
-        self.assertIn("GENERATED_EXPLORATION", agents)
+        self.assertIn("docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md", agents)
 
     def test_core_scene_board_is_a_planning_reference_not_a_runtime_asset(self) -> None:
         self.assertTrue(BOARD_PATH.is_file())

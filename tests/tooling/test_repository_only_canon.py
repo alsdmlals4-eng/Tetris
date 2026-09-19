@@ -30,7 +30,7 @@ class RepositoryOnlyCanonTests(unittest.TestCase):
         gdd = GDD.read_text(encoding="utf-8")
         visual = VISUAL_BIBLE.read_text(encoding="utf-8")
 
-        self.assertIn("REPOSITORY_ONLY_CURRENT_OWNER", agents)
+        self.assertIn(index["project_workspace_index"], agents)
         self.assertEqual(index["project_human_facing_owner"], "REPOSITORY_ONLY")
         self.assertEqual(index["project_workspace_index"], "docs/design/PROJECT_WORKSPACE_INDEX.md")
         self.assertEqual(index["visual_bible"], "docs/design/VISUAL_BIBLE.md")

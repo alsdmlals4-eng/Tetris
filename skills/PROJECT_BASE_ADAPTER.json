@@ -25,7 +25,7 @@
   "protected_baseline": {
     "authority_kind": "REMOTE_TRACKING_REF",
     "authority_ref": "refs/remotes/origin/main",
-    "commit": "c2093d7796cf8948dff613c41407c7e857d7a3e2",
+    "commit": "69f4f591e038b4912d9761bf943aefd986170ace",
     "policy_sha256": "d832a4b8a03ca1d5dfb75ec9c0c559d30596a4daf30051d884d4ac976cbdae71",
     "policy_source_path": "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json",
     "policy_source_type": "FIRST_MIGRATION_LEGACY_SOURCE",
@@ -60,7 +60,35 @@
     "project_routes": []
   },
   "schema_version": 2,
-  "shared_overrides": {},
+  "shared_overrides": {
+    "workflow_adoption": {
+      "source_commit": "23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef",
+      "source_prs": [883, 885],
+      "reviewed_on": "2026-09-20",
+      "scope": "Operational slimming and fun/presentation verification; no release, engine, gameplay, save or asset migration",
+      "owner": "docs/design/PROJECT_WORKSPACE_INDEX.md#6-base-operational-adoption",
+      "recheck_policy": "Fresh-read remote main and relevant PR drift at task intake; retain reviewed adoption until scoped change approval",
+      "router_template": "tools/templates/tetris_workflow_router.md",
+      "validator": "tools/check_workflow_adoption.py",
+      "reference_paths": [
+        "docs/GPT_CODEX_WORKFLOW_POLICY.md",
+        "skills/managing-project-intake-and-work-contract/SKILL.md",
+        "skills/analyzing-and-refining-game-concepts/references/concept-evidence-and-gates.md",
+        "docs/knowledge/game-development/EXPERIENCE_TO_PRESENTATION_GUIDE.md",
+        "skills/auditing-and-refining-ui-art/references/project-adapter-contract.md"
+      ],
+      "route_skill_ids": [
+        "auditing-canonical-reference-freshness",
+        "managing-base-change-proposals",
+        "managing-game-project-operating-system",
+        "managing-project-intake-and-work-contract",
+        "reviewing-and-validating-project-changes",
+        "running-adversarial-review-and-refinement",
+        "synchronizing-local-and-github-state"
+      ],
+      "previous_protected_baseline": "c2093d7796cf8948dff613c41407c7e857d7a3e2"
+    }
+  },
   "skill_registry": {
     "base": {
       "hash_definition": "RAW_FILE_BYTES_SHA256",
