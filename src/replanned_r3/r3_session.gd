@@ -145,6 +145,7 @@ func tick(delta_us:int)->Array:
     return events
 
 func _spawn_if_needed()->void:
+    if _board_blocked():return
     if mode!="CHAIN" or chain.phase!="NEED_PAIR" or supply.pairs<=0 or combat.outcome!="RUNNING":return
     var id=_run_id+":pair:"+str(_spawn_sequence+1)
     var result:Dictionary=chain.spawn(id)
@@ -156,6 +157,7 @@ func _spawn_if_needed()->void:
 func _drain_board()->Array:
     var events:Array=[]
     for safety in 256:
+        if _board_blocked():break
         if combat.outcome=="DEFEAT":break
         if combat.outcome=="VICTORY" and _pending.is_empty():break
         var changed=false
@@ -197,17 +199,13 @@ func _drain_board()->Array:
             var plan:Dictionary=chain.plan_due_event()
             if not plan.is_empty():
                 if combat.outcome=="RUNNING" and plan.type=="WAVE_RESOLVED" and plan.cause=="PLAYER_LOCK":
-                    var cast:Dictionary=combat.cast(plan.event_id,plan.category,int(plan.wave))
-                    events.append(cast)
-                    if cast.success:
-                        last_cast=cast.duplicate(true)
-                        _casts.append(cast.duplicate(true))
-                        metrics.casts+=1
-                        metrics.max_combo=maxi(metrics.max_combo,int(plan.wave))
+                    events.append_array(_resolve_player_wave(plan))
                 if combat.outcome=="RUNNING" and plan.type=="TOP_OUT":
                     events.append(combat.apply_topout(plan.event_id))
                     metrics.topouts+=1
-                events.append(chain.commit(plan))
+                var committed:Dictionary=chain.commit(plan)
+                events.append(committed)
+                if committed.success:_after_chain_commit(plan)
                 changed=true
         if not chain.is_resolving() and not (resource_mode=="SWAP" and swap.resolving) and not queued_workspace.is_empty():
             mode=queued_workspace
@@ -218,6 +216,21 @@ func _drain_board()->Array:
         if not changed:break
     if combat.outcome!="RUNNING" and _pending.is_empty():events.append_array(_finalize_terminal())
     return events
+
+func _board_blocked()->bool:return false
+
+func _resolve_player_wave(plan:Dictionary)->Array:
+    var cast:Dictionary=combat.cast(plan.event_id,plan.category,int(plan.wave))
+    if cast.success:_record_cast(cast)
+    return [cast]
+
+func _record_cast(cast:Dictionary)->void:
+    last_cast=cast.duplicate(true)
+    _casts.append(cast.duplicate(true))
+    metrics.casts+=1
+    metrics.max_combo=maxi(metrics.max_combo,int(cast.wave))
+
+func _after_chain_commit(_plan:Dictionary)->void:pass
 
 func _finalize_terminal()->Array:
     var events:Array=[]
@@ -399,6 +412,10 @@ func restore(data:Dictionary)->bool:
 
 func _valid_ledgers(data:Dictionary)->bool:
     if not data.get("casts") is Array or not data.get("destruction_events") is Array:return false
+    if not _valid_cast_ledger(data):return false
+    return _valid_resource_and_destruction_ledgers(data)
+
+func _valid_cast_ledger(data:Dictionary)->bool:
     var ids:Array=[]
     var maximum=0
     var skills:Dictionary=JSON.parse_string(FileAccess.get_file_as_string(Supply.RULES_PATH)).skills
@@ -438,6 +455,9 @@ func _valid_ledgers(data:Dictionary)->bool:
     sorted.sort()
     if sorted!=data.combat.processed_cast_event_ids or ids.size()!=int(data.metrics.casts) or maximum!=int(data.metrics.max_combo):return false
     if data.last_cast!=({} if data.casts.is_empty() else data.casts[-1]):return false
+    return true
+
+func _valid_resource_and_destruction_ledgers(data:Dictionary)->bool:
     if resource_mode=="LINE" and int(data.metrics.line_clears)*10!=data.supply.cells.size():return false
     if int(data.metrics.supply_overflow)!=int(data.supply.discarded):return false
     if data.combat.processed_topout_event_ids.size()!=int(data.metrics.topouts):return false

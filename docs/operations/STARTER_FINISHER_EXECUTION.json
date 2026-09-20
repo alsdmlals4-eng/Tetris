@@ -1,0 +1,45 @@
+{
+  "work_level": "L2",
+  "approval_reference": "2026-09-20 user approved the preceding starter-symbol, single end-of-chain cast and symmetric presentation-pause proposal with 좋아 작업 계속 진행해.",
+  "benchmark_preflight_receipt": {
+    "state": "REUSED_EVIDENCE",
+    "entries": [{
+      "source_and_evidence": "Completed main d4fe8130342d0e0714e1cc0089fb67766a3595cc; current pair board/session/combat/save/presentation and their tests read; previous same-day SEGA rule research retained in RESOURCE_CHOICE_EXECUTION.json.",
+      "observed_pattern": "Current pair matching yields one WAVE_RESOLVED per cascade step; combat independently consumes attack bank and retains target-bound maximum ward. Cosmetic presenter must not apply effects.",
+      "project_fit_and_difference": "ADAPT first-symbol category and one finisher. Compare per-wave casts (REJECT user superseded), highest-tier-only finisher (REJECT silent damage nerf), accumulated attack/heal plus maximum ward (SELECT). Preserve finite supply, resources, old schemas and assets. Symmetric action scheduler pauses both boards and ETA, distinct from capped time reward.",
+      "disposition": "ADAPT"
+    }]
+  },
+  "context_configuration_hygiene": {
+    "scope": "resource-choice starter finisher only; no broad cleanup",
+    "inventory": [
+      {"path":"src/replanned_r3/r3_session.gd","classification":"COMPATIBILITY","owner_or_provenance":"merged legacy R3 per-wave session","references_and_consumers":"legacy R3/expedition/tests and shared transaction hooks","removal_proposed":false},
+      {"path":"scenes/replanned_r3/resource_choice.tscn","classification":"ACTIVE_OWNER","owner_or_provenance":"approved selectable resource entry","references_and_consumers":"new opt-in finisher session; same board/UI/art consumers","removal_proposed":false},
+      {"path":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md","classification":"ACTIVE_OWNER","owner_or_provenance":"latest additive decisions precede dated historical rules","references_and_consumers":"finisher config, session, UI and tests","removal_proposed":false}
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref":"2026-09-20 approved starter-finisher follow-up",
+    "source_main_sha":"d4fe8130342d0e0714e1cc0089fb67766a3595cc",
+    "work_item_refs":["FINISHER-01"],
+    "active_work_item_ref":"FINISHER-01",
+    "next_action":"Implement tests, deterministic starter, one effect at contact, UI, isolated saves; runtime and full regression; review and normal current-task merge",
+    "work_items":[{
+      "work_item_id":"FINISHER-01",
+      "title":"Starter decides one end-of-chain skill with readable symmetric action presentation",
+      "status":"IN_PROGRESS",
+      "next_action":"Finish runtime, full regression and reviews, then current-task PR",
+      "canon_owner":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+      "actual_consumers":["src/replanned_r3/r3_finisher_session.gd","src/replanned_r3/r3_screen.gd"],
+      "depends_on":[],
+      "acceptance_criteria":["FINISHER-AC"],
+      "required_evidence":["E2_TEST"],
+      "checklist":[{"id":"FINISHER-AC","text":"Deterministic first starter, one end-cascade effect, conserved aggregate attack/heal, target ward, capped time, shared action freeze, safe save/load, no manual category UI, legacy regressions and native capture","status":"NOT_RUN","evidence":[]}],
+      "verification":[{"level":"E2_TEST","status":"NOT_RUN","evidence":[]}],
+      "rollback":"Normal reviewed revert of current-task change; legacy scenes/saves/assets preserved, never reset original user worktree."
+    }]
+  },
+  "evidence_ceiling":"Implementation in progress. HUMAN new-rule fun/pacing NOT_RUN; previous positive user feedback applies to the preceding build only.",
+  "protected":["production default","R2 and legacy R3 saves","approved assets","original dirty worktree","other draft PRs","Base release9.4.4","plugins and global settings"],
+  "reuse_learning_handoff":"PROJECT_ONLY; no new Base rule or skill planned"
+}

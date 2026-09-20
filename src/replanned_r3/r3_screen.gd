@@ -1,10 +1,13 @@
 extends Control
 const Session=preload("res://src/replanned_r3/r3_session.gd")
+const FinisherSession=preload("res://src/replanned_r3/r3_finisher_session.gd")
+const Finisher=preload("res://src/replanned_r3/r3_finisher.gd")
 const Assets=preload("res://src/replanned_r2/r2_assets.gd")
 const Presentation=preload("res://src/replanned_r3/r3_cast_presentation.gd")
 const Performer=preload("res://src/replanned_r3/r3_performer.gd")
 const Disk=preload("res://src/replanned_r3/r3_save.gd")
 @export var show_preparation:bool=false
+@export var use_finishers:bool=false
 var preparing:=false
 var preference_path="user://resource_choice/preference.cfg"
 var preferred_resource="LINE"
@@ -28,6 +31,7 @@ const GOLD=Color("#dfbf7d")
 const INK=Color("#0c1420")
 
 func _ready()->void:
+    if use_finishers:session=FinisherSession.new()
     if get_tree().current_scene==self:
         get_window().content_scale_size=Vector2i(1280,720)
         get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
@@ -37,7 +41,9 @@ func _ready()->void:
     get_window().focus_exited.connect(focus_lost)
     assets=Assets.new()
     performer=Performer.new()
-    if disk==null:disk=Disk.new("user://resource_choice/save.json","user://resource_choice/options.json") if show_preparation else Disk.new()
+    if disk==null:
+        if use_finishers:disk=Disk.new("user://starter_finisher/save.json","user://starter_finisher/options.json")
+        else:disk=Disk.new("user://resource_choice/save.json","user://resource_choice/options.json") if show_preparation else Disk.new()
     _rules=JSON.parse_string(FileAccess.get_file_as_string("res://data/replanned_r3/rules.json"))
     var left=_panel(self,"Puzzle",Rect2(12,12,622,696))
     var right=_panel(self,"Combat",Rect2(646,12,622,696))
@@ -75,10 +81,11 @@ func _ready()->void:
     _label(player,"Resources",Rect2(98,10,495,68),"",19)
     var skills=_panel(right,"Skills",Rect2(8,511,606,177))
     var index=0
-    for category in ["ATK","DEF","SUP"]:
+    for category in ([] if use_finishers else ["ATK","DEF","SUP"]):
         var selected=category
         _button(skills,category,Rect2(10+index*198,8,190,33),{"ATK":"공격 ATK","DEF":"방어 DEF","SUP":"지원 SUP"}[category],func():dispatch("category",{"category":selected}))
         index+=1
+    if use_finishers:_label(skills,"Starter",Rect2(14,8,580,33),"시동 문양 → 연쇄 완성 → 스킬 1회",21)
     _label(skills,"Stage",Rect2(14,47,580,26),"",18)
     _image(skills,"Icon",Rect2(14,82,76,76),assets.texture("R1-ICONS","strike"))
     _label(skills,"Description",Rect2(101,80,490,85),"",17)
@@ -308,6 +315,18 @@ func refresh()->void:
     $Combat/Current.text="현재 · %s%s"%[current.get("label",""),destruction]
     $Combat/Next.text="다음 · "+str(next.get("label","없음"))
     $Combat/Player/Resources.text="HP %d / 100   방어 %d   보호 %d\n공격 가산 +%d   이번 연쇄 %d"%[combat.hp,combat.armor,combat.ward,combat.attack_bank,session.chain.wave_index]
+    if use_finishers:
+        _refresh_finisher()
+    else:
+        _refresh_legacy_skills()
+    if has_node("Preparation"):
+        $Preparation.visible=preparing
+        $Preparation/Line.modulate=Color("#ffe09a") if preferred_resource=="LINE" else Color.WHITE
+        $Preparation/Swap.modulate=Color("#ffe09a") if preferred_resource=="SWAP" else Color.WHITE
+        $Preparation/Status.text=_message
+
+func _refresh_legacy_skills()->void:
+    var combat=session.combat
     var preview:Dictionary=combat.skill_preview(session.selected_category,mini(6,maxi(1,session.chain.wave_index+1)))
     $Combat/Skills/Stage.text="T1   T2   T3   T4   T5   T6    예고 T%d"%preview.get("stage",1)
     var recent="4개 연결 소거마다 자동 발동" if session.last_cast.is_empty() else "최근 %s T%d · 자동 발동"%[session.last_cast.category,session.last_cast.get("stage",1)]
@@ -330,15 +349,47 @@ func refresh()->void:
         $Combat/CutIn.modulate.a=visual.alpha
         $Combat/CutIn/Effect.texture=assets.texture("R1-ICONS",{"ATK":"strike","DEF":"ward","SUP":"recover"}[visual.category])
         $Combat/CutIn/Caption.text="%s T%d\n연쇄 ×%d"%[visual.category,visual.get("stage",1),visual.coalesced_count]
-    if has_node("Preparation"):
-        $Preparation.visible=preparing
-        $Preparation/Line.modulate=Color("#ffe09a") if preferred_resource=="LINE" else Color.WHITE
-        $Preparation/Swap.modulate=Color("#ffe09a") if preferred_resource=="SWAP" else Color.WHITE
-        $Preparation/Status.text=_message
+func _refresh_finisher()->void:
+    var preview:Dictionary=session.starter_preview()
+    var kind=String(preview.starter)
+    var names={"A":"공격","D":"방어","H":"치유","T":"시간"}
+    var waves=maxi(1,int(preview.waves))
+    var label=names.get(kind,"아직 연결 없음")
+    $Combat/Skills/Starter.text="시동 %s · %s"%[label,"확정 / 연쇄 종료 후 1회" if preview.locked else "현재 착지 예고"]
+    $Combat/Skills/Stage.text="T1   T2   T3   T4   T5   T6    %s"%("%d연쇄 · T%d"%[waves,mini(waves,6)] if not kind.is_empty() else "4개 연결로 시동")
+    var amount=Finisher.power(kind,waves)
+    var power_label=("시간 +%.2f초 (행동당 상한 3초)"%(amount/1000000.0)) if kind=="T" else "기본 위력 %d"%amount
+    if kind=="A" and session.action.get("applied",false)==false:power_label+=" + 자원 %d"%session.combat.attack_bank
+    var recent="" if session.last_cast.is_empty() else "최근 %s · %d연쇄 1회 발동"%[names.get(session.last_cast.starter,""),session.last_cast.wave]
+    $Combat/Skills/Description.text="%s\n시동은 첫 소거 문양 · 이후 연쇄로 강화\n%s"%[power_label if not kind.is_empty() else "뿌요 4개를 연결하세요",recent]
+    $Combat/Skills/Icon.texture=assets.tile(kind) if not kind.is_empty() else assets.texture("R1-ICONS","strike")
+    var visual:Dictionary=session.action_view(reduced_motion)
+    var busy=not visual.is_empty()
+    $Combat/CutIn.visible=busy
+    $Combat/Stage/Enemy.visible=true
+    $Puzzle/Switch.disabled=busy
+    if busy:
+        for control in ["Left","Right","Rotate","Drop","Hold"]:get_node("Puzzle/"+control).disabled=true
+    $Combat/ReturnToPreparation.visible=show_preparation and session.combat.outcome!="RUNNING" and not preparing and not busy
+    if not busy:return
+    $Combat/SharedTimer.text=("일시정지 · 연출" if session.combat.paused else "연출 중 · 양쪽 정지")+"  %.1f초"%(float(session.combat.eta_us)/1000000.0)
+    var enemy=visual.owner=="ENEMY"
+    $Combat/Stage/Enemy.visible=not enemy
+    if not enemy:
+        $Combat/Player/Resources.text="HP %d / 100   방어 %d   보호 %d\n공격 가산 +%d   완성 연쇄 %d"%[session.combat.hp,session.combat.armor,session.combat.ward,session.combat.attack_bank,visual.wave]
+    else:
+        $Combat/Current.text="발동 · "+visual.label
+        $Combat/Next.text="대기 · "+str((session.combat.current_action() if visual.applied else session.combat.next_action()).get("label",""))
+    var category="SUP" if visual.category=="TIME" else String(visual.category)
+    $Combat/CutIn/Actor.texture=assets.enemy_texture("", "idle") if enemy else performer.texture(category,"impact" if reduced_motion else visual.phase)
+    $Combat/CutIn.position.x=8+visual.offset_x
+    $Combat/CutIn.modulate.a=visual.alpha
+    $Combat/CutIn/Effect.texture=assets.texture("R1-ICONS","strike") if enemy else assets.tile(visual.starter)
+    $Combat/CutIn/Caption.text=("적 행동\n"+visual.label) if enemy else "%s T%d\n%d연쇄 · 1회"%[names[visual.starter],visual.stage,visual.wave]
 
 func start_resource_battle(producer:String)->void:
     if not preparing or producer not in ["LINE","SWAP"]:return
-    var candidate=Session.new()
+    var candidate=FinisherSession.new() if use_finishers else Session.new()
     if not candidate.command("prepare_resource",{"mode":producer}).success:return
     session=candidate
     preferred_resource=producer
@@ -356,12 +407,14 @@ func start_resource_battle(producer:String)->void:
 
 func return_to_preparation()->void:
     if not show_preparation or session.combat.outcome=="RUNNING":return
+    if use_finishers and not session.action.is_empty():return
     preparing=true
     session.combat.paused=true
     _message=""
     refresh()
 
 func select_swap_cell(xy:Vector2i)->void:
+    if use_finishers and not session.action.is_empty():return
     if preparing or session.resource_mode!="SWAP" or session.mode!="LINE" or session.combat.paused or session.combat.outcome!="RUNNING" or session.swap.resolving:return
     if xy.x<0 or xy.x>=8 or xy.y<0 or xy.y>=8:return
     _swap_cursor=xy
@@ -394,7 +447,8 @@ func restore_checkpoint()->Dictionary:
     var result:Dictionary=disk.load_checkpoint()
     if result.success:
         var state:Dictionary=result.snapshot
-        var candidate=Session.new(state.difficulty,int(state.seed),state.run_id,state.profile)
+        var script=FinisherSession if use_finishers else Session
+        var candidate=script.new(state.difficulty,int(state.seed),state.run_id,state.profile)
         if not candidate.restore(state):return {"success":false,"reason":"INVALID_CHECKPOINT"}
         candidate.command("pause")
         session=candidate
