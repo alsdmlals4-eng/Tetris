@@ -9,8 +9,8 @@
 기능 계약: resource_choice의 화면 전용 feedback consumer가 확정 command/tick 결과만 읽는다. 데이터 `data/replanned_r3/presentation.json`→순수 기술 설명 `skill_feedback.gd`→`puzzle_feedback.gd`→`r3_screen.gd`. 기존 R1-ICONS strike/ward/recover와 R2-TILES time, line/chain/confirm 음원을 재사용한다. 새 이미지나 오디오 서비스/플러그인 설치 없음. 기술명은 균열 참격/수호의 인장/생명의 맥동/시간의 매듭; 최초 시동·T단계 유지. 적용 전 예상/역할과 적용 후 실제 수치를 구분하며 과잉 회복0, 시간상한0, 방어 대상없음도 설명한다.
 
 실행 순서 (writing-plans/executing-plans, 프로젝트 기존 정본 내 기록):
-- [ ] 기술 정보: 실제 screen에서 이름/아이콘/효과 부재 RED → 순수 receipt formatter와 데이터 → 실효량/무효사유/최근기술 지속 표시 GREEN.
-- [ ] 퍼즐 성취: 실제 FOUR/SPIN/COMBO 연습과 SWAP/CHAIN events에서 feedback 부재 RED → 칸 반응/상승 콤보/짧은 음정 팡파레 → 중복 억제·실패 교체·적파괴 무보상·보정 비용 GREEN.
+- [x] 기술 정보: 실제 screen에서 이름/아이콘/효과 부재 RED → 순수 receipt formatter와 데이터 → 실효량/무효사유/최근기술 지속 표시 GREEN.
+- [x] 퍼즐 성취: 실제 FOUR/SPIN/COMBO 연습과 SWAP/CHAIN events에서 feedback 부재 RED → 칸 반응/상승 콤보/짧은 음정 팡파레 → 중복 억제·실패 교체·적파괴 무보상·보정 비용 GREEN.
 - [ ] 검증/전달: 전체 검사, 1280/960 native capture, mute/reduced/pause/restore/세션교체, 두 전체 검토+독립검토, 기존 누적 기록, current-task 정상 PR/main readback.
 
 표현 예산: 일반 성공 짧은 팝, 고난도/연속/연쇄 성장 시 더 큰 배지와 3음 상승 신호. 보드 영역 밖 침범·전체 번쩍임·추가 hitstop 없음. 음소거는 기존 버튼 공유, reduced motion은 정보 유지/이동파편 생략. 한 번의 사건은 한 번 재생, 과거 저장 결과 재생 금지, 보드 전환/세션교체에서 transient 정리. 장식 시계는 전투 판정/보상/ETA를 바꾸지 않는다. rollback은 표시 파일과 screen 연결만 Git revert, save migration 없음.

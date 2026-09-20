@@ -51,6 +51,21 @@ func test_same_swap_receipt_does_not_replay_fanfare():
     f.observe([event])
     assert_eq(f.sound_count,count,"Re-reading an authoritative clear must not celebrate it twice")
 
+func test_swap_clear_keeps_actual_non_attack_symbol_in_feedback():
+    var s=make_screen()
+    s.start_resource_battle("SWAP")
+    s.session.swap.setup_training()
+    var move=s.session.swap._teaching.swap
+    s.dispatch("resource_swap",{"a":Vector2i(move[0][0],move[0][1]),"b":Vector2i(move[1][0],move[1][1])})
+    # A presentation fixture: preserve the reserved match, vary its actual symbol.
+    for xy in s.session.swap.matched_cells():s.session.swap.cells[xy[1]][xy[0]]="H"
+    var f=s.get_node("Puzzle/Feedback")
+    f.capture_before()
+    var events=s.session.tick(300000)
+    f.observe(events)
+    assert_gt(f.bursts.size(),0)
+    for particle in f.bursts:assert_eq(particle.kind,"H","Reserved cells retain their actual symbol")
+
 func test_reduced_motion_and_pause_preserve_state_and_mute_stops_all_cues():
     var s=make_screen()
     s.start_line_practice("SPIN")

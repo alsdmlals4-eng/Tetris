@@ -28,4 +28,14 @@
 
 HUMAN 재미/최종 청취·믹스/물리기기/최종자산/출시 NOT_RUN. 에디터 연결 도구는 session0; 플러그인 설치 대신 직접 Godot native로 검증, editor-connected라고 주장하지 않는다. benchmark는 직전 제안의 공식 Tetris Effect gameplay-synchronized presentation 조사 REUSED_EVIDENCE; 현재 구현/기존 자산이 첫 비교 기준. Base 환류는 아직 후보 없음, NO_NEW_REUSE_LEARNING.
 
-현재 REMAINING_WORK: 최종 테스트/후속 전체검토/독립검토/누적일지/PR 정상병합/main readback/사용자 실행 확인. 코드 완료나 전체게임완료로 닫지 않는다. 롤백은 본 표시 소비자와 연결만 bounded Git revert; 기존 saves/schema/rules 그대로.
+## 독립 검토 후 좁은 교정
+
+독립 reviewer가 fab1af1의 전체 diff/consumer/native 캡처와 focused10/49를 확인하여 Critical0/Important0/Minor1을 보고했다. SWAP enemy target 후보가 예약 소거 칸을 제외하여 피드백 문양이 기본 A가 되는 문제다. 적 대상 API는 유지하고 표시 snapshot만 전체 ids/cells를 읽게 교정했다. H 예약 매치 실제 tick 회귀는 RED(10칸 A 오표시)→GREEN. reviewer 재실행11/11·60assertions 및 diff-check PASS, 해당 finding 해결, 남은 finding0. 전체 검토 두 회차는 초기화하지 않았다.
+
+교정 후 전체571/571·7758assertions·87scripts(87.523s), tooling95/95. native probe18장 재실행 exit0. `runtime.json`의 scripted fixture는 실제 scene/dispatch/process/render 경로이며 사람의 물리 입력·재미·최종 음질 검수가 아니다. 대표 캡처 `four-1280.png`, `chain2-1280.png`, `skill-impact-960.png`, `swap-960.png`; 다른 캡처는 동일 실행의 크기/상태 경계 대조 증거다.
+
+## 동기화와 완료 게이트
+
+HYBRID: local Git/test/native + GitHub connector PR/merge. 현재 작업 소유자는 사용자 승인에 따라 실행 중인 coordinator, `codex/puzzle-celebration-20260921`; 다른 Draft118/117/100/85/46/33/23/19는 read-only, cross-workstream absorption=false. PR 생성 전 fetch의 main은 b2b3ab91422ac03436653e3e1dd813488a036260 그대로다. semantic scope는 resource_choice presentation consumer이며 rules/save/assets/production/Base adapter 변경 없음. follow-up 검증과 원격 상태는 current-task PR에서 exact HEAD로 연결한다.
+
+현재 REMAINING_WORK: claim gate/누적일지 발행/PR 정상병합/main readback/사용자 실행본 전달. 구현 교정 rescan과 두 전체검토 및 독립검토는 닫혔다. 전체 게임 완료는 아님. 롤백은 본 표시 소비자와 연결만 bounded Git revert; 기존 saves/schema/rules 그대로. 누적 일지는 기존 v1.1의17쪽을 보존한18쪽 staged render 검수 진행 중이며 별도 기획 정본이 아니다.

@@ -85,7 +85,14 @@ func capture_before()->void:
     sync()
     before={}
     var s=screen.session
-    for cell in s.resource_candidates():before[cell.cell_id] = {"board":"LINE","cell":cell.duplicate(true)}
+    if s.resource_mode=="SWAP":
+        # Target selection excludes reserved matches; presentation must still see them.
+        for y in 8:
+            for x in 8:
+                var cell={"cell_id":s.swap.ids[y][x],"x":x,"y":y,"kind":s.swap.cells[y][x]}
+                before[cell.cell_id]={"board":"LINE","cell":cell}
+    else:
+        for cell in s.resource_candidates():before[cell.cell_id] = {"board":"LINE","cell":cell.duplicate(true)}
     for cell in s.chain.cells:before[cell.cell_id] = {"board":"CHAIN","cell":cell.duplicate(true)}
 
 func point(board:String,cell:Dictionary)->Vector2:

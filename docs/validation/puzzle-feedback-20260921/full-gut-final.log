@@ -596,7 +596,7 @@ res://tests/replanned_r2/test_r2_screen.gd
 * test_line_time_receipt_survives_hard_drop_natural_lock_and_later_commands
 * test_receipt_and_def_preview_fit_existing_regions_at_125_percent
 * test_safety_recovery_emits_one_identified_diagnostic_from_real_wave_event
-[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-1d318a4bb685c54c5b097d8f064c4cab","wave":64}
+[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-feff2cb8e1002c57200064babb201db6","wave":64}
 [1m38/38 passed.
 [0m[4m
 
@@ -610,6 +610,7 @@ res://tests/replanned_r3/test_puzzle_feedback.gd
 [0m* test_successful_four_clear_has_celebration_not_just_resource_text
 * test_skill_name_image_and_actual_effect_survive_cut_in
 * test_same_swap_receipt_does_not_replay_fanfare
+* test_swap_clear_keeps_actual_non_attack_symbol_in_feedback
 * test_reduced_motion_and_pause_preserve_state_and_mute_stops_all_cues
 * test_rejected_swap_never_rewards_or_plays_success
 * test_paid_change_failure_has_no_success_but_applied_change_has_cost
@@ -617,7 +618,7 @@ res://tests/replanned_r3/test_puzzle_feedback.gd
 * test_enemy_destruction_never_celebrates_or_gives_supply
 * test_session_transition_clears_visuals_and_never_replays_history
 * test_celebration_text_does_not_cover_playable_cells
-[1m10/10 passed.
+[1m11/11 passed.
 [0m[4m
 
 res://tests/replanned_r3/test_r3_assist.gd
@@ -935,10 +936,10 @@ res://tests/unit/test_skill_executor.gd
 Totals
 ------
 Scripts              87
-Tests               570
-Passing Tests       570
-Asserts            7747
-Time              81.066s
+Tests               571
+Passing Tests       571
+Asserts            7758
+Time              87.523s
 
 
 [32m---- All tests passed! ----
