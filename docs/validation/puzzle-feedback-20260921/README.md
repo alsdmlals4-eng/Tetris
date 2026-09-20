@@ -39,3 +39,14 @@ HUMAN 재미/최종 청취·믹스/물리기기/최종자산/출시 NOT_RUN. 에
 HYBRID: local Git/test/native + GitHub connector PR/merge. 현재 작업 소유자는 사용자 승인에 따라 실행 중인 coordinator, `codex/puzzle-celebration-20260921`; 다른 Draft118/117/100/85/46/33/23/19는 read-only, cross-workstream absorption=false. PR 생성 전 fetch의 main은 b2b3ab91422ac03436653e3e1dd813488a036260 그대로다. semantic scope는 resource_choice presentation consumer이며 rules/save/assets/production/Base adapter 변경 없음. follow-up 검증과 원격 상태는 current-task PR에서 exact HEAD로 연결한다.
 
 현재 REMAINING_WORK: claim gate/누적일지 발행/PR 정상병합/main readback/사용자 실행본 전달. 구현 교정 rescan과 두 전체검토 및 독립검토는 닫혔다. 전체 게임 완료는 아님. 롤백은 본 표시 소비자와 연결만 bounded Git revert; 기존 saves/schema/rules 그대로. 누적 일지는 기존 v1.1의17쪽을 보존한18쪽 staged render 검수 진행 중이며 별도 기획 정본이 아니다.
+
+## 최종 전달 · 위 진행 중 기록을 대체
+
+- [PR128](https://github.com/alsdmlals4-eng/Tetris/pull/128) 정상 squash 병합: `0da555a087504744fe825a58a1be1c418899faab`. 검토 HEAD `fa80e02d457b45cf528a195a09a1abe553799478`와 main 전체 tree diff0. exact HEAD validate/godot-validation/windows-powershell-contract 모두 SUCCESS, unresolved threads0; branch protection 미설정/rulesets[] 직접 확인, 우회 없음. 원격 GUT 실제 로그571/571·7758도 확인했다.
+- [Claim 결과](review-result.json)는 fa80e02 clean clone에서 실행: 구현/검증/의도 PASS. 당시 integration BLOCKED_UNVERIFIED는 **병합 전 기록**이며 이 실제 PR/main readback이 후속 통합 증거다. 원래 dirty 작업 폴더와 untracked .uid/.import를 지우지 않기 위해 검사용 복사본을 사용했다; local exclude는 복사본의 생성 .uid/.import만 대상으로 했고 전역 설정은 바꾸지 않았다.
+- 병합된0da555a에서 전체 **571/571·7758assertions·87scripts·108.668s** 재실행, exit0; [로그](postmerge-gut.log). 도구 **95/95·29.273s**, [로그](postmerge-tooling.log). native probe18장은 동일 tree의 실제 scene/dispatch/renderer 증거. 새 장치·최종 청취·성능 프로파일 PASS로 승격하지 않는다.
+- 병합 후 원격 main workflow [35545956763](https://github.com/alsdmlals4-eng/Tetris/actions/runs/35545956763)도 SUCCESS로 readback했다.
+- Godot standalone `resource_choice.tscn`을 main에서 실행: native RTX3050 Compatibility, 실제 GUI PID38020, 창 `Tetris (DEBUG)`, window handle 존재/Responding=true, stderr 비어 있음. 이 PID는 당시 관찰값이며 다음 대화에서는 다시 조회한다. 사용자에게 실행 가능한 시작 화면을 전달했고 HUMAN 플레이 완료를 주장하지 않는다.
+- 기존 월별 v1.1 PDF에 날짜별 요약1쪽 추가, 총18쪽/기존17쪽 content stream 보존. 발행 SHA256 `128ad10f65d5373707062e19090e0c422a0bfef0b4678f83e432e1f7726c70c4`; 마지막 페이지 render 직접 검토, 반복 실행 ALREADY_APPENDED18. private 원본/복구 사본은 공개 저장소 밖 유지. 입력은 요청 요약이며 원본 프롬프트 화면·계정/결제/지원 인정 여부 증빙은 아님.
+- 실행 전 `REMAINING_WORK_COMPLETION_GATE` 재계산→교정 rescan→두 전체 검토/독립 후속검증: 이번 **승인 구현 범위 필수 잔여0**, `CLEAN_REVIEW_EXIT`. 인간 재미·청취 피로·물리 입력·최종 자산·출시는 NOT_RUN이고 별도 다음 검수다. 기존68쪽 current reader는 이전 mastery 출판물로 보존; 이번 연출의 최신 근거는 이 native evidence와 월별 일지이며 그 PDF를 새 연출의 화면 증거로 오인하지 않는다.
+- Base `NO_NEW_REUSE_LEARNING`; 프로젝트 전용 소비자 보강, 신규 공용 스킬/설정 불필요. 임시 clean clone/초기 실패 로그/복제 출력은 `C:/Users/user/Documents/Tetris_삭제검토/20260921-puzzle-feedback/`로 정리(사용자가 직접 삭제), 승인 자산/원본/다른 PR 제거 없음. docs-only 후속 PR은 이 관찰값의 정본 반영이며 추가 기능이나 재승인 범위가 아니다.

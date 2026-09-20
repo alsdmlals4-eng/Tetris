@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "artifact_role": "REVIEW_EVIDENCE_RESULT",
+  "record_path": "C:/Users/user/Documents/Tetris_삭제검토/20260921-puzzle-feedback/review-checkout/docs/validation/puzzle-feedback-20260921/review-record.json",
+  "subject": {
+    "base_ref": "b2b3ab91422ac03436653e3e1dd813488a036260",
+    "base_sha": "b2b3ab91422ac03436653e3e1dd813488a036260",
+    "head_sha": "fa80e02d457b45cf528a195a09a1abe553799478",
+    "changed_files": [
+      "data/replanned_r3/presentation.json",
+      "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+      "docs/design/REPLANNING_FOUNDATION.md",
+      "docs/validation/puzzle-feedback-20260921/README.md",
+      "docs/validation/puzzle-feedback-20260921/chain1-1280.png",
+      "docs/validation/puzzle-feedback-20260921/chain1-960.png",
+      "docs/validation/puzzle-feedback-20260921/chain2-1280.png",
+      "docs/validation/puzzle-feedback-20260921/chain2-960.png",
+      "docs/validation/puzzle-feedback-20260921/combo-1280.png",
+      "docs/validation/puzzle-feedback-20260921/combo-960.png",
+      "docs/validation/puzzle-feedback-20260921/four-1280.png",
+      "docs/validation/puzzle-feedback-20260921/four-960.png",
+      "docs/validation/puzzle-feedback-20260921/full-gut-final.log",
+      "docs/validation/puzzle-feedback-20260921/reduced-1280.png",
+      "docs/validation/puzzle-feedback-20260921/reduced-960.png",
+      "docs/validation/puzzle-feedback-20260921/review-record.json",
+      "docs/validation/puzzle-feedback-20260921/runtime.json",
+      "docs/validation/puzzle-feedback-20260921/skill-impact-1280.png",
+      "docs/validation/puzzle-feedback-20260921/skill-impact-960.png",
+      "docs/validation/puzzle-feedback-20260921/skill-recent-1280.png",
+      "docs/validation/puzzle-feedback-20260921/skill-recent-960.png",
+      "docs/validation/puzzle-feedback-20260921/spin-1280.png",
+      "docs/validation/puzzle-feedback-20260921/spin-960.png",
+      "docs/validation/puzzle-feedback-20260921/swap-1280.png",
+      "docs/validation/puzzle-feedback-20260921/swap-960.png",
+      "docs/validation/puzzle-feedback-20260921/tooling.log",
+      "src/replanned_r3/puzzle_feedback.gd",
+      "src/replanned_r3/r3_screen.gd",
+      "src/replanned_r3/resource_swap.gd",
+      "src/replanned_r3/skill_feedback.gd",
+      "tests/replanned_r3/test_puzzle_feedback.gd",
+      "tests/tooling/feedback_native_probe.gd"
+    ]
+  },
+  "gates": {
+    "implementation": {
+      "status": "PASS",
+      "mapped_acceptance_ids": [
+        "SKILL",
+        "PUZZLE"
+      ],
+      "actual_changed_paths": [
+        "data/replanned_r3/presentation.json",
+        "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "docs/design/REPLANNING_FOUNDATION.md",
+        "docs/validation/puzzle-feedback-20260921/README.md",
+        "docs/validation/puzzle-feedback-20260921/chain1-1280.png",
+        "docs/validation/puzzle-feedback-20260921/chain1-960.png",
+        "docs/validation/puzzle-feedback-20260921/chain2-1280.png",
+        "docs/validation/puzzle-feedback-20260921/chain2-960.png",
+        "docs/validation/puzzle-feedback-20260921/combo-1280.png",
+        "docs/validation/puzzle-feedback-20260921/combo-960.png",
+        "docs/validation/puzzle-feedback-20260921/four-1280.png",
+        "docs/validation/puzzle-feedback-20260921/four-960.png",
+        "docs/validation/puzzle-feedback-20260921/full-gut-final.log",
+        "docs/validation/puzzle-feedback-20260921/reduced-1280.png",
+        "docs/validation/puzzle-feedback-20260921/reduced-960.png",
+        "docs/validation/puzzle-feedback-20260921/review-record.json",
+        "docs/validation/puzzle-feedback-20260921/runtime.json",
+        "docs/validation/puzzle-feedback-20260921/skill-impact-1280.png",
+        "docs/validation/puzzle-feedback-20260921/skill-impact-960.png",
+        "docs/validation/puzzle-feedback-20260921/skill-recent-1280.png",
+        "docs/validation/puzzle-feedback-20260921/skill-recent-960.png",
+        "docs/validation/puzzle-feedback-20260921/spin-1280.png",
+        "docs/validation/puzzle-feedback-20260921/spin-960.png",
+        "docs/validation/puzzle-feedback-20260921/swap-1280.png",
+        "docs/validation/puzzle-feedback-20260921/swap-960.png",
+        "docs/validation/puzzle-feedback-20260921/tooling.log",
+        "src/replanned_r3/puzzle_feedback.gd",
+        "src/replanned_r3/r3_screen.gd",
+        "src/replanned_r3/resource_swap.gd",
+        "src/replanned_r3/skill_feedback.gd",
+        "tests/replanned_r3/test_puzzle_feedback.gd",
+        "tests/tooling/feedback_native_probe.gd"
+      ]
+    },
+    "verification": {
+      "status": "PASS",
+      "checks": [
+        {
+          "check_id": "FEEDBACK-TEST",
+          "argv": [
+            "C:/Users/user/Downloads/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            ".",
+            "-s",
+            "addons/gut/gut_cmdln.gd",
+            "-gtest=res://tests/replanned_r3/test_puzzle_feedback.gd",
+            "-gexit"
+          ],
+          "working_directory": ".",
+          "declared_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS",
+          "exit_code": 0,
+          "duration_ms": 8569,
+          "stdout_tail": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org\n\n[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)\n---  GUT  ---\n\u001b[1m[INFO]:  \u001b[0musing [C:/Users/user/AppData/Roaming/Godot/app_userdata/Tetris] for temporary output.\nGodot version:  4.7.1\nGUT version:  9.7.1\n\u001b[4m\n\nres://tests/replanned_r3/test_puzzle_feedback.gd\n\u001b[0m* test_successful_four_clear_has_celebration_not_just_resource_text\n* test_skill_name_image_and_actual_effect_survive_cut_in\n* test_same_swap_receipt_does_not_replay_fanfare\n* test_swap_clear_keeps_actual_non_attack_symbol_in_feedback\n* test_reduced_motion_and_pause_preserve_state_and_mute_stops_all_cues\n* test_rejected_swap_never_rewards_or_plays_success\n* test_paid_change_failure_has_no_success_but_applied_change_has_cost\n* test_actual_effect_formatter_handles_caps_and_absorption\n* test_enemy_destruction_never_celebrates_or_gives_supply\n* test_session_transition_clears_visuals_and_never_replays_history\n* test_celebration_text_does_not_cover_playable_cells\n\u001b[1m11/11 passed.\n\u001b[0m\n\n\n\n\u001b[33m==============================================\n\u001b[0m\u001b[33m= Run Summary\n\u001b[0m\u001b[33m==============================================\n\u001b[0m\nTotals\n------\nScripts               1\nTests                11\nPassing Tests        11\nAsserts              60\nTime              6.625s\n\n\n\u001b[32m---- All tests passed! ----\n\u001b[0m\n",
+          "stderr_tail": "",
+          "acceptance_ids": [
+            "SKILL",
+            "PUZZLE"
+          ]
+        }
+      ]
+    },
+    "intent": {
+      "status": "PASS",
+      "acceptance_results": [
+        {
+          "intent_id": "SKILL",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "PUZZLE",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        }
+      ]
+    },
+    "integration": {
+      "status": "BLOCKED_UNVERIFIED",
+      "reason": "Pre-merge review cannot prove merged PR state, merge SHA, post-merge main readback, or post-merge required checks."
+    }
+  },
+  "claims": [
+    {
+      "claim_id": "FEEDBACK",
+      "status": "CLAIM_VERIFIED",
+      "evidence_ids": [
+        "SKILL",
+        "PUZZLE",
+        "FEEDBACK-TEST"
+      ]
+    }
+  ],
+  "final_status": "PASS",
+  "errors": []
+}

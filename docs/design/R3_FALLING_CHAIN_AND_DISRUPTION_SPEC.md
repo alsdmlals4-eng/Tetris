@@ -11,7 +11,7 @@
 실행 순서 (writing-plans/executing-plans, 프로젝트 기존 정본 내 기록):
 - [x] 기술 정보: 실제 screen에서 이름/아이콘/효과 부재 RED → 순수 receipt formatter와 데이터 → 실효량/무효사유/최근기술 지속 표시 GREEN.
 - [x] 퍼즐 성취: 실제 FOUR/SPIN/COMBO 연습과 SWAP/CHAIN events에서 feedback 부재 RED → 칸 반응/상승 콤보/짧은 음정 팡파레 → 중복 억제·실패 교체·적파괴 무보상·보정 비용 GREEN.
-- [ ] 검증/전달: 전체 검사, 1280/960 native capture, mute/reduced/pause/restore/세션교체, 두 전체 검토+독립검토, 기존 누적 기록, current-task 정상 PR/main readback.
+- [x] 검증/전달: 전체 검사, 1280/960 native capture, mute/reduced/pause/restore/세션교체, 두 전체 검토+독립검토, 기존 누적 기록, PR128 정상 병합/main readback. 결과와 별도 HUMAN 한계는 연결된 evidence의 최종 전달 절 참조.
 
 표현 예산: 일반 성공 짧은 팝, 고난도/연속/연쇄 성장 시 더 큰 배지와 3음 상승 신호. 보드 영역 밖 침범·전체 번쩍임·추가 hitstop 없음. 음소거는 기존 버튼 공유, reduced motion은 정보 유지/이동파편 생략. 한 번의 사건은 한 번 재생, 과거 저장 결과 재생 금지, 보드 전환/세션교체에서 transient 정리. 장식 시계는 전투 판정/보상/ETA를 바꾸지 않는다. rollback은 표시 파일과 screen 연결만 Git revert, save migration 없음.
 
