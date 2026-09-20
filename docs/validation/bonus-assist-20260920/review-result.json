@@ -1,0 +1,236 @@
+{
+  "schema_version": 1,
+  "artifact_role": "REVIEW_EVIDENCE_RESULT",
+  "record_path": "C:/Users/user/AppData/Local/Temp/tetris-bonus-assist-review-5234e83/docs/validation/bonus-assist-20260920/review-record.json",
+  "subject": {
+    "base_ref": "1c813af5502d0974ba2509a9cd7196ca86ea615d",
+    "base_sha": "1c813af5502d0974ba2509a9cd7196ca86ea615d",
+    "head_sha": "5234e8391ee597a793b55acdc57e9c41afdc8834",
+    "changed_files": [
+      "data/replanned_r3/assist.json",
+      "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.manifest.json",
+      "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf",
+      "docs/design/R2_IMPLEMENTATION_READER.md",
+      "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+      "docs/design/REPLANNING_FOUNDATION.md",
+      "docs/operations/BONUS_ASSIST_EXECUTION.json",
+      "docs/validation/bonus-assist-20260920/README.md",
+      "docs/validation/bonus-assist-20260920/bonus-selection-960.png",
+      "docs/validation/bonus-assist-20260920/bonus-selection.png",
+      "docs/validation/bonus-assist-20260920/enemy-destruction.png",
+      "docs/validation/bonus-assist-20260920/full-gut.log",
+      "docs/validation/bonus-assist-20260920/practice-t2-impact.png",
+      "docs/validation/bonus-assist-20260920/preparation.png",
+      "docs/validation/bonus-assist-20260920/review-record.json",
+      "docs/validation/bonus-assist-20260920/runtime.json",
+      "docs/validation/bonus-assist-20260920/tier-1-presentation-fixture.png",
+      "docs/validation/bonus-assist-20260920/tier-3-presentation-fixture.png",
+      "docs/validation/bonus-assist-20260920/tier-6-presentation-fixture.png",
+      "docs/validation/bonus-assist-20260920/two-chain-practice.png",
+      "scenes/replanned_r3/resource_choice.tscn",
+      "src/replanned_r3/assist_combat.gd",
+      "src/replanned_r3/bonus_supply.gd",
+      "src/replanned_r3/r3_assist_session.gd",
+      "src/replanned_r3/r3_assist_ui.gd",
+      "src/replanned_r3/r3_finisher.gd",
+      "src/replanned_r3/r3_finisher_session.gd",
+      "src/replanned_r3/r3_pair_board.gd",
+      "src/replanned_r3/r3_pair_supply.gd",
+      "src/replanned_r3/r3_save.gd",
+      "src/replanned_r3/r3_screen.gd",
+      "src/replanned_r3/r3_session.gd",
+      "src/replanned_r3/r3_tier_vfx.gd",
+      "tests/replanned_r3/test_r3_assist.gd",
+      "tests/tooling/assist_native_probe.gd",
+      "tests/tooling/test_r2_implementation_reader.py",
+      "tools/append_r3_blueprint.py"
+    ]
+  },
+  "gates": {
+    "implementation": {
+      "status": "PASS",
+      "mapped_acceptance_ids": [
+        "DESTRUCTION",
+        "OVERFLOW",
+        "CORRECTION",
+        "TIERS",
+        "PRACTICE",
+        "COMPATIBILITY",
+        "PDF"
+      ],
+      "actual_changed_paths": [
+        "data/replanned_r3/assist.json",
+        "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.manifest.json",
+        "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf",
+        "docs/design/R2_IMPLEMENTATION_READER.md",
+        "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "docs/design/REPLANNING_FOUNDATION.md",
+        "docs/operations/BONUS_ASSIST_EXECUTION.json",
+        "docs/validation/bonus-assist-20260920/README.md",
+        "docs/validation/bonus-assist-20260920/bonus-selection-960.png",
+        "docs/validation/bonus-assist-20260920/bonus-selection.png",
+        "docs/validation/bonus-assist-20260920/enemy-destruction.png",
+        "docs/validation/bonus-assist-20260920/full-gut.log",
+        "docs/validation/bonus-assist-20260920/practice-t2-impact.png",
+        "docs/validation/bonus-assist-20260920/preparation.png",
+        "docs/validation/bonus-assist-20260920/review-record.json",
+        "docs/validation/bonus-assist-20260920/runtime.json",
+        "docs/validation/bonus-assist-20260920/tier-1-presentation-fixture.png",
+        "docs/validation/bonus-assist-20260920/tier-3-presentation-fixture.png",
+        "docs/validation/bonus-assist-20260920/tier-6-presentation-fixture.png",
+        "docs/validation/bonus-assist-20260920/two-chain-practice.png",
+        "scenes/replanned_r3/resource_choice.tscn",
+        "src/replanned_r3/assist_combat.gd",
+        "src/replanned_r3/bonus_supply.gd",
+        "src/replanned_r3/r3_assist_session.gd",
+        "src/replanned_r3/r3_assist_ui.gd",
+        "src/replanned_r3/r3_finisher.gd",
+        "src/replanned_r3/r3_finisher_session.gd",
+        "src/replanned_r3/r3_pair_board.gd",
+        "src/replanned_r3/r3_pair_supply.gd",
+        "src/replanned_r3/r3_save.gd",
+        "src/replanned_r3/r3_screen.gd",
+        "src/replanned_r3/r3_session.gd",
+        "src/replanned_r3/r3_tier_vfx.gd",
+        "tests/replanned_r3/test_r3_assist.gd",
+        "tests/tooling/assist_native_probe.gd",
+        "tests/tooling/test_r2_implementation_reader.py",
+        "tools/append_r3_blueprint.py"
+      ]
+    },
+    "verification": {
+      "status": "PASS",
+      "checks": [
+        {
+          "check_id": "ASSIST-TESTS",
+          "argv": [
+            "C:/Users/user/Downloads/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            ".",
+            "-s",
+            "addons/gut/gut_cmdln.gd",
+            "-gtest=res://tests/replanned_r3/test_r3_assist.gd",
+            "-gexit"
+          ],
+          "working_directory": ".",
+          "declared_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS",
+          "exit_code": 0,
+          "duration_ms": 10542,
+          "stdout_tail": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org\n\n[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)\n---  GUT  ---\n\u001b[1m[INFO]:  \u001b[0musing [C:/Users/user/AppData/Roaming/Godot/app_userdata/Tetris] for temporary output.\nGodot version:  4.7.1\nGUT version:  9.7.1\n\u001b[4m\n\nres://tests/replanned_r3/test_r3_assist.gd\n\u001b[0m* test_actual_entry_has_a_destruction_action\n* test_ten_pairs_overflow_then_refill_preserves_excess\n* test_bonus_open_without_currency_rejects_without_pause\n* test_bonus_request_freezes_both_clocks_only_at_safe_boundary_and_cancel_is_free\n* test_bonus_change_rejects_noop_then_creates_one_attack_finisher\n* test_bonus_horizontal_shift_and_empty_move_respect_gravity\n* test_emergency_attack_does_not_damage_boss_and_heal_clamps\n* test_all_four_encounters_have_exactly_one_disruption_per_cycle\n* test_tier_power_applied_once_and_grows_more_than_single_cast_spam\n* test_assist_snapshot_is_distinct_and_invalid_spend_is_atomic\n* test_request_while_pair_falling_waits_and_enemy_deadline_wins\n* test_invalid_bonus_args_do_not_spend_or_change_board\n* test_actual_ui_exposes_bonus_and_practice_without_manual_skill_selection\n* test_all_six_tiers_have_distinct_readable_visual_strength\n* test_short_practice_teaches_two_waves_and_is_not_a_paid_run\n* test_real_swap_overflow_paid_effect_and_disk_restore_conserve_bonus\n* test_bonus_can_queue_during_enemy_cut_in_and_terminal_clears_request\n* test_every_enemy_destroys_real_swap_cells_without_overflow_reward\n* test_selected_enemy_cut_in_and_loaded_profile_match_actual_enemy\n* test_heal_clamps_armor_adds_and_no_money_rejects_atomically\n* test_horizontal_empty_move_falls_and_tracks_assist_event\n* test_soft_drop_release_during_bonus_does_not_latch_next_pair\n* test_every_defense_tier_survives_combat_restore_and_resource_transaction\n\u001b[1m23/23 passed.\n\u001b[0m\n\n\n\n\u001b[33m==============================================\n\u001b[0m\u001b[33m= Run Summary\n\u001b[0m\u001b[33m==============================================\n\u001b[0m\nTotals\n------\nScripts               1\nTests                23\nPassing Tests        23\nAsserts             183\nTime              9.093s\n\n\n\u001b[32m---- All tests passed! ----\n\u001b[0m\n",
+          "stderr_tail": "",
+          "acceptance_ids": [
+            "DESTRUCTION",
+            "OVERFLOW",
+            "CORRECTION",
+            "TIERS",
+            "PRACTICE",
+            "COMPATIBILITY"
+          ]
+        },
+        {
+          "check_id": "PDF-TESTS",
+          "argv": [
+            "C:/Users/user/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests/tooling",
+            "-p",
+            "test_r2_implementation_reader.py"
+          ],
+          "working_directory": ".",
+          "declared_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS",
+          "exit_code": 0,
+          "duration_ms": 5900,
+          "stdout_tail": "",
+          "stderr_tail": "...\n----------------------------------------------------------------------\nRan 3 tests in 5.754s\n\nOK\n",
+          "acceptance_ids": [
+            "PDF"
+          ]
+        }
+      ]
+    },
+    "intent": {
+      "status": "PASS",
+      "acceptance_results": [
+        {
+          "intent_id": "DESTRUCTION",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "OVERFLOW",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "CORRECTION",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "TIERS",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "PRACTICE",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "COMPATIBILITY",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "PDF",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        }
+      ]
+    },
+    "integration": {
+      "status": "BLOCKED_UNVERIFIED",
+      "reason": "Pre-merge review cannot prove merged PR state, merge SHA, post-merge main readback, or post-merge required checks."
+    }
+  },
+  "claims": [
+    {
+      "claim_id": "ASSIST-RULES",
+      "status": "CLAIM_VERIFIED",
+      "evidence_ids": [
+        "DESTRUCTION",
+        "OVERFLOW",
+        "CORRECTION",
+        "TIERS",
+        "PRACTICE",
+        "COMPATIBILITY",
+        "ASSIST-TESTS"
+      ]
+    },
+    {
+      "claim_id": "PDF-PRESERVATION",
+      "status": "CLAIM_VERIFIED",
+      "evidence_ids": [
+        "PDF",
+        "PDF-TESTS"
+      ]
+    }
+  ],
+  "final_status": "PASS",
+  "errors": []
+}
