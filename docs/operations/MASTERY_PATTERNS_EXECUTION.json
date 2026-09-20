@@ -8,11 +8,11 @@
     "source_main_sha":"bf6c52e31933db35bad5bceb5db529f0b6e638e4",
     "work_item_refs":["MASTERY-01"],
     "active_work_item_ref":"MASTERY-01",
-    "next_action":"Exact-head remote checks, normal current-task merge and postmerge readback",
+    "next_action":"Separate product follow-up: HUMAN skill/producer observations, then campaign/menu adoption and result explanation",
     "work_items":[{
       "work_item_id":"MASTERY-01",
       "title":"Reward skilled LINE play and readable counterplay",
-      "status":"IN_PROGRESS",
+      "status":"COMPLETE",
       "canon_owner":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
       "actual_consumers":["scenes/replanned_r3/resource_choice.tscn","src/replanned_r3/r3_screen.gd"],
       "depends_on":[],
@@ -20,10 +20,10 @@
       "required_evidence":["E2_TEST"],
       "checklist":[
         {"id":"MASTERY-AC","text":"Approved mastery, patterns, preserved destruction, practice, strict save/replay, full regression/native/PDF/journal, two shared reviews and independent review","status":"PASS"},
-        {"id":"DELIVERY","text":"Exact-head remote CI, allowed normal merge, main readback and playable launch","status":"NOT_RUN"}
+        {"id":"DELIVERY","text":"Exact-head76e152b three CI checks and independent review PASS; PR126 normal merge755b6b5 full-tree equality; postmerge560/95 tests and standalone launch","status":"PASS"}
       ],
       "verification":[{"level":"E2_TEST","status":"PASS","evidence":["docs/validation/mastery-patterns-20260921/README.md","docs/validation/mastery-patterns-20260921/full-gut.log","docs/validation/mastery-patterns-20260921/runtime.json"]}],
-      "next_action":"Complete delivery gate without claiming HUMAN/final balance or whole-game completion"
+      "next_action":"Approved slice complete; HUMAN/final balance and whole-game scope remain distinct"
     }]
   },
   "plan":[
@@ -35,5 +35,6 @@
   "review_focus":["Reward duplicate and synthetic-cell pollution","No-clear versus non-clear enemy destruction streak boundaries","Save/restore during rotation and weakness window","Enemy effect versus finisher receipt validation and clone factories","Practice pollution of battle saves and controls at960"],
   "rulings":["Existing isolated clean-tracked worktree reused; protected untracked imports/UIDs and original dirty checkout untouched. Current branch starts at fetched completed main.","Native inline execution under executing-plans; plan stored in existing execution-owner format per project no duplicate plan/report preference. Same approved scope does not request another approval.","Preserve default production/R2/legacy assist rules, assets, engine and plugins; new opt-in successor and separate save namespace. Hera currently connected to another project; do not mutate that editor.","Skill bonus has its own replayable ledger, never fake destroyed tile IDs or multiply A/D/H/T. Human balance remains NOT_RUN."],
   "progress":["Implementation complete at8de30a0: mastery ledger, four patterns, practice and HUD in actual entry.","Whole Godot560/560,7698assertions; tooling95/95; focused PDF3/3 and final native rerun PASS.","Two shared full self-review loops completed; terminal status, disk namespace and malformed-save findings corrected. Independent code review and64save combinations no unresolved findings.","Same current-reader68pages preserves61; same monthly journal17pages preserves16 with final render/readback. No duplicate edition.","Required delivery still pending: executed clean-clone claim check, exact-head remote checks, allowed current-task merge, postmerge full tests and playable launch. See evidence owner for current status; earlier kanban next_action is the original entry plan, not remaining implementation work."],
-  "evidence_ceiling":"MACHINE/RUNTIME/RENDER verified; HUMAN/physical-device/final-art/release NOT_RUN; remote integration pending"
+  "delivery":{"pr":126,"reviewed_head":"76e152bfec97894558eec20e0ac6f9ea0b6c0061","merge_sha":"755b6b5f9cf4ecc061bdf9fb757aabe6d005f173","tree_match":true,"required_checks":"godot-validation, validate, windows-powershell-contract SUCCESS","unresolved_threads":0,"postmerge_tests":"560/560,7698assertions;95/95tooling","playable_scene":"scenes/replanned_r3/resource_choice.tscn","readback":"docs/validation/mastery-patterns-20260921/README.md"},
+  "evidence_ceiling":"MACHINE/RUNTIME/RENDER and PR126 merge/main readback verified; HUMAN/physical-device/final-art/release NOT_RUN. Historical progress pending entries describe their original point, superseded by delivery."
 }
