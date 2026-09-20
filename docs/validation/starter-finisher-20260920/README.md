@@ -17,7 +17,7 @@
 | Windows 실행기 | StaticSelfTest와 PortPreflightSelfTest PASS. 타 프로젝트 편집기/포트 변경 없음 |
 | 실제 화면 | NVIDIA RTX3050/OpenGL native 실행. 1280×720 착지 예고·시동 확정·플레이어/적 접촉, 960×540 pause 렌더. [runtime.json](runtime.json)과 PNG 직접 확인 |
 | 실제 흐름 | 연쇄 2회→공격 1회, 기본4+6/자원6=피해16, HP100→84; 접촉/회복 구간 공유 ETA 고정; 새 파일 저장/복원 후 미재발동 |
-| 독립 검토 | 읽기 전용 별도 검토자가 구현 SHA4b27904의 명세/코드/실사용/UI/저장 경계를 대조하고 집중21/113 재실행. P0/P1/P2 blocking0. 최종 판정/병합은 아래 readback에 기록 |
+| 독립 검토 | 읽기 전용 별도 검토자가 구현 SHA4b27904의 명세/코드/실사용/UI/저장 경계를 대조하고 집중21/113 재실행. 최종080ef08의 증거 문서·JSON·PNG5장까지 독립 확인. P0/P1/P2 blocking0, 병합 가능 판정 |
 | 사람/출시 상한 | HUMAN 새 규칙의 재미·연출 피로·물리 입력·장시간 밸런스 NOT_RUN. 전 버전의 사용자 긍정 평가를 새 버전 승인으로 전용하지 않음. 최종 아트/전체 원정/출시 완료 아님 |
 
 실행 명령(저장소 루트): `Godot --headless --path . -s addons/gut/gut_cmdln.gd -gdir=res://tests -ginclude_subdirs -gexit`.
@@ -39,5 +39,9 @@
 
 ## Repository readback / 남은 작업
 
-현재-task PR 발행·원격 exact HEAD 검사·정상 병합·main 재확인 진행 중. 이 문서만으로 병합 완료를 주장하지 않는다.
+[PR122](https://github.com/alsdmlals4-eng/Tetris/pull/122) 정상 squash 병합 완료. 검토한 최종 HEAD `080ef08d6c335c500ba1de429f1b0a6229e6f4e7`의 원격 검사3개 SUCCESS, CLEAN/mergeable, 미해결 thread0, 적용 rules API `[]` 확인 뒤 expected-head로 병합했다. main `a68d142764907c34ec3aa3608e678a3b88525239` fetch 및 전체 Git tree diff0 확인. 이 SHA는 구현 검증 대상이고 뒤의 문서 종료 기록 자체를 자기 검증하는 SHA가 아니다.
+
+기존 `Tetris_2026-09_AI활용_작업일지_증빙집_v1.1.pdf`에 날짜별 후속 기록 `T-20260920-STARTER-FINISHER`를 추가하여15페이지. 이전14페이지 content stream 일치 검사, 마지막 페이지 직접 렌더 검수, 재실행 `ALREADY_APPENDED 15` 확인. SHA256 `d6faad834703321dccbc8cc61af0c7b80e54a286bad4f591cad2b9d3d2a1311b`. 원본·백업·수집시각은 사용자 비공개 증빙 폴더에 보관하며 PDF 발행 당시 원격검사 진행 중이라는 기록은 그 시점의 사실로 보존한다. 날짜/해시는 독립적인 작업시점 인증이 아니다.
+
+완료 gate: `REMAINING_WORK_COMPLETION_GATE=PASS_FOR_APPROVED_SLICE`, `IMPLEMENTATION_CORRECTION_RESCAN=PASS`, `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED=PASS`, `CLEAN_REVIEW_EXIT=PASS`. 필요한 제품 후속 작업이 없다는 뜻은 아니다.
 다음 제품 범위는 기존 원정/메뉴에 새 규칙 연결, LINE/SWAP 비교 수급과 연출 피로의 사람 관찰이다. 새 규칙의 기계·렌더 증거와 사람 재미 판단을 구분한다.
