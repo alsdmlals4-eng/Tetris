@@ -124,6 +124,7 @@ def build_mastery(revision,prior_raw,prior_manifest):
     story.append(b.para(images[0][1],True))
     section=SPEC.read_text(encoding='utf-8').split('## 현행 추가 결정',1)[1].split('## 최신 추가 결정',1)[0]
     for number,chunk in enumerate(re.split(r'^### ',section,flags=re.M)):
+        if number==0:continue  # Cover already supplies the reader route; avoid an almost-empty page.
         story.append(PageBreak())
         lines=chunk.strip().splitlines()
         title('범위와 읽기 경로' if number==0 else lines[0])
