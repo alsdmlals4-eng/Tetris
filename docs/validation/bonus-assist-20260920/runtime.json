@@ -1,0 +1,34 @@
+{
+  "actual_swap_earned_bonus": 9,
+  "enemy_destroyed": 1,
+  "human_fun": "NOT_RUN",
+  "paid_correction_disk_roundtrip": true,
+  "practice_two_wave_one_cast": true,
+  "renderer": "NVIDIA GeForce RTX 3050",
+  "save_namespace": "user://assist-native-probe",
+  "scene": "resource_choice.tscn",
+  "screenshots": [
+    "preparation",
+    "two-chain-practice",
+    "practice-t2-impact",
+    "bonus-selection",
+    "bonus-selection-960",
+    "enemy-destruction",
+    "tier-1-presentation-fixture",
+    "tier-3-presentation-fixture",
+    "tier-6-presentation-fixture"
+  ],
+  "selected_change_cost": 2,
+  "selection_freezes_both_clocks": true,
+  "tier_1_3_6": "PRESENTATION_FIXTURE_ONLY",
+  "viewports": [
+    [
+      1280,
+      720
+    ],
+    [
+      960,
+      540
+    ]
+  ]
+}
