@@ -46,6 +46,7 @@ func clear_plan()->Dictionary:
 
 func commit_wave()->Dictionary:
     if due_cast().is_empty():return {}
+    var feedback_id=identity_prefix+":clear:"+str(chain_id)+":"+str(wave_index+1)
     var removed={}
     for xy in matched_cells():removed[Vector2i(xy[0],xy[1])]=true
     var survivors=[]
@@ -62,6 +63,7 @@ func commit_wave()->Dictionary:
             for y in missing:ids[y][x]=_new_id()
             for y in survivors[x].size():ids[y+missing][x]=survivors[x][y]
     result.effect="RESOURCE_SWAP_RESOLVED"
+    result.event_id=feedback_id
     return result
 
 func target_candidates()->Array:

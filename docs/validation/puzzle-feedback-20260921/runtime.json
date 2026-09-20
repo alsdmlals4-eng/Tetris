@@ -1,0 +1,135 @@
+{
+  "human_fun": "NOT_RUN",
+  "input": "scripted real dispatch and process; not physical keyboard",
+  "listening_mix": "NOT_RUN",
+  "renderer": "NVIDIA GeForce RTX 3050",
+  "scene": "resource_choice.tscn",
+  "screenshots": [
+    {
+      "name": "four-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "spin-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "combo-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "chain1-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "chain2-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "skill-impact-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "skill-recent-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "swap-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "reduced-1280",
+      "size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "name": "four-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "spin-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "combo-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "chain1-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "chain2-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "skill-impact-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "skill-recent-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "swap-960",
+      "size": [
+        960,
+        540
+      ]
+    },
+    {
+      "name": "reduced-960",
+      "size": [
+        960,
+        540
+      ]
+    }
+  ]
+}

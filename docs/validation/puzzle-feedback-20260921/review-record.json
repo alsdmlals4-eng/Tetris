@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "artifact_role": "REVIEW_EVIDENCE_RECORD",
+  "scope": {
+    "allowed_changed_paths": [
+      "data/replanned_r3/presentation.json",
+      "src/replanned_r3/puzzle_feedback.gd",
+      "src/replanned_r3/skill_feedback.gd",
+      "src/replanned_r3/r3_screen.gd",
+      "src/replanned_r3/resource_swap.gd",
+      "tests/replanned_r3/test_puzzle_feedback.gd",
+      "tests/tooling/feedback_native_probe.gd",
+      "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+      "docs/design/REPLANNING_FOUNDATION.md",
+      "docs/validation/puzzle-feedback-20260921/*"
+    ],
+    "protected_paths": [
+      "project.godot",
+      "src/production/**",
+      "src/replanned_r2/**",
+      "assets/**",
+      "skills/**",
+      "docs/blueprints/**"
+    ]
+  },
+  "claims": [
+    {
+      "claim_id": "FEEDBACK",
+      "claim_type": "IMPLEMENTATION",
+      "claim_text": "Named actual skill effects and receipt-bound combo feedback without changing rules or saves; no human fun claim.",
+      "acceptance_ids": [
+        "SKILL",
+        "PUZZLE"
+      ],
+      "check_ids": [
+        "FEEDBACK-TEST"
+      ]
+    }
+  ],
+  "acceptance": [
+    {
+      "intent_id": "SKILL",
+      "approved_intent": "Technique name, existing icon, role and actual applied effect on impact and recent result.",
+      "implementation_paths": [
+        "data/replanned_r3/presentation.json",
+        "src/replanned_r3/skill_feedback.gd",
+        "src/replanned_r3/r3_screen.gd"
+      ],
+      "required_level": "TEST"
+    },
+    {
+      "intent_id": "PUZZLE",
+      "approved_intent": "Combo/chain badge, localized clear/motion and fanfare; no duplicated reward, failed/enemy success cues, save replay or board occlusion; mute/reduce/pause preserved.",
+      "implementation_paths": [
+        "src/replanned_r3/puzzle_feedback.gd",
+        "src/replanned_r3/resource_swap.gd",
+        "src/replanned_r3/r3_screen.gd"
+      ],
+      "required_level": "TEST"
+    }
+  ],
+  "checks": [
+    {
+      "check_id": "FEEDBACK-TEST",
+      "argv": [
+        "C:/Users/user/Downloads/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        ".",
+        "-s",
+        "addons/gut/gut_cmdln.gd",
+        "-gtest=res://tests/replanned_r3/test_puzzle_feedback.gd",
+        "-gexit"
+      ],
+      "working_directory": ".",
+      "timeout_seconds": 180,
+      "declared_level": "TEST",
+      "acceptance_ids": [
+        "SKILL",
+        "PUZZLE"
+      ],
+      "markers": [
+        "All tests passed!"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,22 @@
 # R3 변경 설계 명세 · 낙하 연결 퍼즐과 적 보드 파괴
 
+## 승인 실행 계획 · 2026-09-21 기술 정보와 퍼즐 성취 피드백
+
+사용자 승인: 직전 제안의 정보 표시+중요 순간 집중 연출에 `진행해`, 콤보 표시와 팡파레 추가 요청. 기존 실제 main b2b3ab9 및 Base23ecad5 재확인. 같은 계약에서 반복 승인하지 않는다. 기획/밸런스/저장/기존 자산/default/다른 PR은 보호한다.
+
+목표 가설: 성공한 조작→소거→콤보/자원→기술 결과의 원인을 읽고 성취를 느낀다. 반례는 반복 소리 피로, 숫자 과밀, 위험 예고 은폐, 연출이 보상으로 오인되는 경우다. 자동검사와 화면 검증은 HUMAN 재미 PASS가 아니다.
+
+기능 계약: resource_choice의 화면 전용 feedback consumer가 확정 command/tick 결과만 읽는다. 데이터 `data/replanned_r3/presentation.json`→순수 기술 설명 `skill_feedback.gd`→`puzzle_feedback.gd`→`r3_screen.gd`. 기존 R1-ICONS strike/ward/recover와 R2-TILES time, line/chain/confirm 음원을 재사용한다. 새 이미지나 오디오 서비스/플러그인 설치 없음. 기술명은 균열 참격/수호의 인장/생명의 맥동/시간의 매듭; 최초 시동·T단계 유지. 적용 전 예상/역할과 적용 후 실제 수치를 구분하며 과잉 회복0, 시간상한0, 방어 대상없음도 설명한다.
+
+실행 순서 (writing-plans/executing-plans, 프로젝트 기존 정본 내 기록):
+- [x] 기술 정보: 실제 screen에서 이름/아이콘/효과 부재 RED → 순수 receipt formatter와 데이터 → 실효량/무효사유/최근기술 지속 표시 GREEN.
+- [x] 퍼즐 성취: 실제 FOUR/SPIN/COMBO 연습과 SWAP/CHAIN events에서 feedback 부재 RED → 칸 반응/상승 콤보/짧은 음정 팡파레 → 중복 억제·실패 교체·적파괴 무보상·보정 비용 GREEN.
+- [ ] 검증/전달: 전체 검사, 1280/960 native capture, mute/reduced/pause/restore/세션교체, 두 전체 검토+독립검토, 기존 누적 기록, current-task 정상 PR/main readback.
+
+표현 예산: 일반 성공 짧은 팝, 고난도/연속/연쇄 성장 시 더 큰 배지와 3음 상승 신호. 보드 영역 밖 침범·전체 번쩍임·추가 hitstop 없음. 음소거는 기존 버튼 공유, reduced motion은 정보 유지/이동파편 생략. 한 번의 사건은 한 번 재생, 과거 저장 결과 재생 금지, 보드 전환/세션교체에서 transient 정리. 장식 시계는 전투 판정/보상/ETA를 바꾸지 않는다. rollback은 표시 파일과 screen 연결만 Git revert, save migration 없음.
+
+Preflight: existing skill/tier/assist/audio consumers ADAPT; 기존 Tetris Effect 공식 gameplay-synchronized feedback 조사 REUSED_EVIDENCE (https://www.tetriseffect.game/about-the-game/); HUD-only 및 매번 전면 연출 REJECT, 정보+선택적 강조 ADOPT. 이전 계약/기록은 COMPATIBILITY/HISTORY, 삭제 대상 없음. 적용범위의 남은검증은 `docs/validation/puzzle-feedback-20260921/README.md`에서 증거를 구분한다.
+
 ## 현행 추가 결정 - 2026-09-21 테트리스 기술 보급과 적 대응 패턴
 
 승인된 권장안의 구현 범위다. 실제 진입은 `scenes/replanned_r3/resource_choice.tscn`, `use_mastery=true`. `mastery_session.gd`가 기존 assist/finisher를 확장하고 `data/replanned_r3/mastery.json`이 추가 수치를 소유한다. 실행·남은 필수 작업은 `docs/operations/MASTERY_PATTERNS_EXECUTION.json`, 실제 검증은 `docs/validation/mastery-patterns-20260921/`에서 확인한다. 아래보다 오래된 날짜의 절은 해당 버전 이력이다.
