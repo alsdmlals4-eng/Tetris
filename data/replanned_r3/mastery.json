@@ -1,0 +1,6 @@
+{
+  "schema":"r3-mastery-patterns-v1",
+  "line":{"four":10,"spin_per_line":5,"combo_step":2,"combo_cap":6,"back_to_back":5,"placement_cap":20},
+  "patterns":{"shield":12,"armor_break":6,"charge_bonus":10,"charge_cancel_damage":20,"weakness_us":8000000,"weakness_percent":25},
+  "encounters":{"outer_breach":{"index":1,"kind":"weakness","label":"강타 · 약점 노출"},"foundry":{"index":0,"kind":"shield","label":"균열 장갑"},"watchtower":{"index":1,"kind":"armor_break","label":"방어 붕괴"},"rift_core":{"index":1,"kind":"charge","label":"차징 강타"}}
+}

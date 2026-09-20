@@ -1,0 +1,45 @@
+{
+  "classification": "SCRIPTED_DIAGNOSTIC_NOT_HUMAN_BALANCE",
+  "rows": [
+    {
+      "base_units": 60,
+      "decision_interval_us": 1500000,
+      "elapsed_us": 28400000,
+      "last": {
+        "b2b": false,
+        "b2b_bonus": 0,
+        "base": 0,
+        "combo": 0,
+        "combo_bonus": 0,
+        "id": "comparison:line:line:19",
+        "lines": 0,
+        "spin": "NONE",
+        "units": 0
+      },
+      "mastery_units": 0,
+      "overflow": 12,
+      "pairs": 10,
+      "policy": "lowest weighted holes/height LINE; first legal SWAP; no CHAIN spending",
+      "producer": "LINE",
+      "remainder": 0,
+      "save_roundtrip": true,
+      "scripted_wall_us": 30000000,
+      "seed": "42"
+    },
+    {
+      "base_units": 57,
+      "decision_interval_us": 1500000,
+      "elapsed_us": 28400000,
+      "last": {},
+      "mastery_units": 0,
+      "overflow": 9,
+      "pairs": 10,
+      "policy": "lowest weighted holes/height LINE; first legal SWAP; no CHAIN spending",
+      "producer": "SWAP",
+      "remainder": 7,
+      "save_roundtrip": true,
+      "scripted_wall_us": 30000000,
+      "seed": "42"
+    }
+  ]
+}

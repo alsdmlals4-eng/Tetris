@@ -2,6 +2,8 @@ extends Control
 const Session=preload("res://src/replanned_r3/r3_session.gd")
 const FinisherSession=preload("res://src/replanned_r3/r3_finisher_session.gd")
 const AssistSession=preload("res://src/replanned_r3/r3_assist_session.gd")
+const MasterySession=preload("res://src/replanned_r3/mastery_session.gd")
+const MasteryUI=preload("res://src/replanned_r3/mastery_ui.gd")
 const AssistUI=preload("res://src/replanned_r3/r3_assist_ui.gd")
 const Finisher=preload("res://src/replanned_r3/r3_finisher.gd")
 const Assets=preload("res://src/replanned_r2/r2_assets.gd")
@@ -11,11 +13,13 @@ const Disk=preload("res://src/replanned_r3/r3_save.gd")
 @export var show_preparation:bool=false
 @export var use_finishers:bool=false
 @export var use_assists:bool=false
+@export var use_mastery:bool=false
 var preparing:=false
 var preference_path="user://resource_choice/preference.cfg"
 var preferred_resource="LINE"
 var preferred_encounter="rift_core"
 var assist_ui
+var mastery_ui
 var _swap_tiles:Array=[]
 var _swap_selected=Vector2i(-1,-1)
 var _swap_cursor=Vector2i.ZERO
@@ -36,7 +40,7 @@ const GOLD=Color("#dfbf7d")
 const INK=Color("#0c1420")
 
 func _ready()->void:
-    if use_finishers:session=AssistSession.new() if use_assists else FinisherSession.new()
+    if use_finishers:session=(MasterySession.new() if use_mastery else AssistSession.new()) if use_assists else FinisherSession.new()
     if get_tree().current_scene==self:
         get_window().content_scale_size=Vector2i(1280,720)
         get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
@@ -47,7 +51,8 @@ func _ready()->void:
     assets=Assets.new()
     performer=Performer.new()
     if disk==null:
-        if use_assists:disk=Disk.new("user://bonus_assist/save.json","user://bonus_assist/options.json")
+        if use_mastery:disk=Disk.new("user://mastery_patterns/save.json","user://mastery_patterns/options.json")
+        elif use_assists:disk=Disk.new("user://bonus_assist/save.json","user://bonus_assist/options.json")
         elif use_finishers:disk=Disk.new("user://starter_finisher/save.json","user://starter_finisher/options.json")
         else:disk=Disk.new("user://resource_choice/save.json","user://resource_choice/options.json") if show_preparation else Disk.new()
     _rules=JSON.parse_string(FileAccess.get_file_as_string("res://data/replanned_r3/rules.json"))
@@ -129,6 +134,9 @@ func _ready()->void:
     if use_assists:
         assist_ui=AssistUI.new()
         assist_ui.attach(self)
+    if use_mastery:
+        mastery_ui=MasteryUI.new()
+        mastery_ui.attach(self)
     refresh()
 
 func _panel(parent:Node,node_name:String,rect:Rect2)->Panel:
@@ -336,6 +344,7 @@ func refresh()->void:
         $Preparation/Swap.modulate=Color("#ffe09a") if preferred_resource=="SWAP" else Color.WHITE
         $Preparation/Status.text=_message
     if use_assists and assist_ui!=null:assist_ui.refresh()
+    if use_mastery and mastery_ui!=null:mastery_ui.refresh()
 
 func _refresh_legacy_skills()->void:
     var combat=session.combat
@@ -402,6 +411,7 @@ func _refresh_finisher()->void:
 func start_resource_battle(producer:String)->void:
     if not preparing or producer not in ["LINE","SWAP"]:return
     var candidate=(AssistSession.new("STANDARD",9112026,"r3:standalone",preferred_encounter) if use_assists else FinisherSession.new()) if use_finishers else Session.new()
+    if use_mastery:candidate=MasterySession.new("STANDARD",9112026,"r3:standalone",preferred_encounter)
     if not candidate.command("prepare_resource",{"mode":producer}).success:return
     session=candidate
     if assist_ui!=null:assist_ui.reset_presentation()
@@ -433,6 +443,15 @@ func start_chain_practice()->void:
     assist_ui.reset_presentation()
     preparing=false
     _message="연습: Space를 눌러 공격 → 치유 2연쇄를 확인하세요."
+    refresh()
+
+func start_line_practice(kind:String)->void:
+    if not preparing or not use_mastery or kind not in ["FOUR","SPIN","COMBO"]:return
+    session=MasterySession.new("STANDARD",42,"practice","outer_breach")
+    session.setup_line_practice(kind)
+    assist_ui.reset_presentation()
+    preparing=false
+    _message="테트리스 기술 연습 · 저장과 전투에 영향 없음"
     refresh()
 
 func end_chain_practice()->void:
@@ -477,6 +496,7 @@ func restore_checkpoint()->Dictionary:
     if result.success:
         var state:Dictionary=result.snapshot
         var script=(AssistSession if use_assists else FinisherSession) if use_finishers else Session
+        if use_mastery:script=MasterySession
         var candidate=script.new(state.difficulty,int(state.seed),state.run_id,state.profile)
         if not candidate.restore(state):return {"success":false,"reason":"INVALID_CHECKPOINT"}
         candidate.command("pause")

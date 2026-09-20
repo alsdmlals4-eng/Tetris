@@ -13,3 +13,4 @@ script = ExtResource("1")
 show_preparation = true
 use_finishers = true
 use_assists = true
+use_mastery = true

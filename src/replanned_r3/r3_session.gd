@@ -38,14 +38,16 @@ func _init(difficulty:String="STANDARD",seed_value:int=9112026,run_identity:Stri
     _difficulty=difficulty
     _profile=profile
     combat=_new_combat()
-    line=Line.new(seed_value,run_identity+":line")
+    line=_new_line()
     chain=Chain.new(hash("r3-chain:%d"%seed_value),run_identity+":chain")
     supply=_new_supply()
     disruption=Disruption.new(seed_value)
     _begin_threat()
 
 func _new_supply():return Supply.new()
+func _new_line():return Line.new(_seed,_run_id+":line")
 func _new_combat():return Combat.new(_difficulty,_run_id,_profile)
+func _credit_line(target,plan:Dictionary,ids:Array)->Dictionary:return target.credit(plan.id,ids)
 
 func command(action:String,args:Dictionary={})->Dictionary:
     if action=="prepare_resource":
@@ -268,7 +270,7 @@ func _commit_line(plan:Dictionary)->Array:
         var next_supply=_new_supply()
         if not next_combat.restore(combat.snapshot()) or not next_supply.restore(supply.snapshot()):return [_failure("INVALID_TRANSACTION_SOURCE")]
         var reward:Dictionary=next_combat.apply_line(plan.id,plan.cells)
-        var credit:Dictionary=next_supply.credit(plan.id,ids)
+        var credit:Dictionary=_credit_line(next_supply,plan,ids)
         if not reward.success or not credit.success:return [_failure("LINE_TRANSACTION_REJECTED")]
         combat=next_combat
         supply=next_supply
