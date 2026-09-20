@@ -117,6 +117,7 @@ func restore(data:Dictionary)->bool:
     if data.get("schema")!="r3-pattern-combat-v1" or not data.get("pattern_state") is Dictionary or not data.get("pattern_events") is Array:return false
     var state:Dictionary=data.pattern_state
     if state.size()!=4:return false
+    if not Validate.valid_integer(data.get("boss_hp"),0,int(_encounter.boss_hp)):return false
     var probe=get_script().new(_mode,_run_id,_pattern_profile)
     # Context validation also forbids statuses belonging to another encounter.
     if not probe.restore_attack_context({"boss_hp":maxi(1,int(data.get("boss_hp",0))),"shield":state.get("shield"),"weakness_us":state.get("weakness_us"),"charge_damage":state.get("charge_damage"),"action_index":data.get("action_index")}):return false

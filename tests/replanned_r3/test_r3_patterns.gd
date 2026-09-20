@@ -128,3 +128,11 @@ func test_actual_attack_finisher_receipt_survives_status_and_disk_roundtrip():
         bad.casts[0].shield_absorbed+=1
         bad.last_cast=bad.casts[0].duplicate(true)
         assert_false(copy.restore(bad),"forged modifier rejected")
+
+func test_malformed_pattern_hp_rejects_without_mutating_or_engine_errors():
+    var s=Session.new()
+    var before=s.snapshot()
+    var bad=before.duplicate(true)
+    bad.combat.boss_hp={"invalid":1}
+    assert_false(s.restore(bad))
+    assert_eq(s.snapshot(),before)
