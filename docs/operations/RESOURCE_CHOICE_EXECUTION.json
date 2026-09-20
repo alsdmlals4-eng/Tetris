@@ -1,0 +1,94 @@
+{
+  "work_level": "L2",
+  "approval_reference": "2026-09-20 user approved resource-choice plan, then explicitly approved selective integration of PR118 into a new latest-main branch; preserve PR118 itself.",
+  "benchmark_preflight_receipt": {
+    "state": "REUSED_EVIDENCE",
+    "entries": [
+      {
+        "source_and_evidence": "main b5fe1886550ef98548f0fe0c206d9047550ded0b; PR118 8a3c254d97c290e3f606d2dc807a2bbb52a1029f R3 models; SEGA https://puyo.sega.jp/puyopuyotetris2/rule.html read 2026-09-20",
+        "observed_pattern": "R2 swap automatically casts; R3 fixed pair chains require LINE supply. Separate resource and cast transactions.",
+        "project_fit_and_difference": "Adapt swap only as resource producer; fixed pair board remains sole cast trigger. Compare coefficient normalization (selected), forced cooldown (rejected), mode-specific bosses (deferred). Existing R2 time cap reused.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "selected R3 integration and resource-choice consumers only",
+    "inventory": [
+      {
+        "path": "AGENTS.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "merged PR119",
+        "references_and_consumers": "current route preserved",
+        "removal_proposed": false
+      },
+      {
+        "path": "src/replanned_r2",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "merged runtime",
+        "references_and_consumers": "R2 remains playable; matcher/combat reused",
+        "removal_proposed": false
+      },
+      {
+        "path": "src/replanned_r3",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "explicit selected-integration approval, PR118 head8a3c254",
+        "references_and_consumers": "isolated R3 scene/models/tests",
+        "removal_proposed": false
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "2026-09-20 approved resource choice plus fixed falling-pair skills",
+    "source_main_sha": "b5fe1886550ef98548f0fe0c206d9047550ded0b",
+    "work_item_refs": [
+      "CHOICE-01"
+    ],
+    "active_work_item_ref": "CHOICE-01",
+    "next_action": "Selective R3 baseline integration then RED-GREEN resource producer/session/UI/save tests",
+    "work_items": [
+      {
+        "work_item_id": "CHOICE-01",
+        "title": "Playable choice of resource producer with fixed pair-chain automatic skills",
+        "status": "IN_PROGRESS",
+        "canon_owner": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_session.gd",
+          "src/replanned_r3/r3_screen.gd"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "CHOICE-AC"
+        ],
+        "required_evidence": [
+          "E2_TEST"
+        ],
+        "checklist": [
+          {
+            "id": "CHOICE-AC",
+            "text": "Resource choice locked per combat; four resource fractional normalization and finite pair refill; swap never casts; pause/save/restore/disruption safe; UI and full regressions verified; current-task PR publication/readback",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "NOT_RUN",
+            "evidence": []
+          }
+        ],
+        "next_action": "Integrate approved source subset and run baseline"
+      }
+    ]
+  },
+  "evidence_ceiling": "HUMAN balance NOT_RUN; coefficients are trial configuration, not measured equality",
+  "protected": [
+    "PR117",
+    "PR118",
+    "original project.godot and local user files",
+    "R2 save bytes",
+    "Base release9.4.4",
+    "plugins and global settings"
+  ],
+  "reuse_learning_handoff": "PROJECT_ONLY; no Base promotion planned"
+}

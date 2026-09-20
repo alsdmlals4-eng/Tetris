@@ -1,0 +1,208 @@
+{
+  "state": "GENERATED_CANDIDATE_NOT_RUNTIME_APPROVED",
+  "source_generation": "exec-315aa8b7-eac4-4ba2-a048-b4775470ef97",
+  "source_sha256": "664403c1d778feae6818c77d2ac4bd76dcae0783a4c8223661d3940006a1357f",
+  "atlas_sha256": "f96a5a243b5101a760e335af5c9558fb3a705c5b97c6386cd98e50e64f57cd29",
+  "atlas_size": [
+    1344,
+    1344
+  ],
+  "alpha": {
+    "transparent": 1222595,
+    "partial": 19502
+  },
+  "frames": [
+    {
+      "category": "ATK",
+      "phase": "entrance",
+      "region": [
+        0,
+        0,
+        448,
+        448
+      ],
+      "source": [
+        0,
+        0,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "ATK",
+      "phase": "impact",
+      "region": [
+        448,
+        0,
+        448,
+        448
+      ],
+      "source": [
+        418,
+        0,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "ATK",
+      "phase": "exit",
+      "region": [
+        896,
+        0,
+        448,
+        448
+      ],
+      "source": [
+        836,
+        0,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "DEF",
+      "phase": "entrance",
+      "region": [
+        0,
+        448,
+        448,
+        448
+      ],
+      "source": [
+        0,
+        418,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "DEF",
+      "phase": "impact",
+      "region": [
+        448,
+        448,
+        448,
+        448
+      ],
+      "source": [
+        418,
+        418,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "DEF",
+      "phase": "exit",
+      "region": [
+        896,
+        448,
+        448,
+        448
+      ],
+      "source": [
+        836,
+        418,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "SUP",
+      "phase": "entrance",
+      "region": [
+        0,
+        896,
+        448,
+        448
+      ],
+      "source": [
+        0,
+        836,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "SUP",
+      "phase": "impact",
+      "region": [
+        448,
+        896,
+        448,
+        448
+      ],
+      "source": [
+        418,
+        836,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    },
+    {
+      "category": "SUP",
+      "phase": "exit",
+      "region": [
+        896,
+        896,
+        448,
+        448
+      ],
+      "source": [
+        836,
+        836,
+        418,
+        418
+      ],
+      "translation": [
+        15,
+        16
+      ],
+      "source_side_contact_pixels": 0
+    }
+  ],
+  "consumer": "res://scenes/replanned_r3/main.tscn::Combat/CutIn/Actor",
+  "runtime_bound": true,
+  "review_limit": "Three key poses per category are not smooth full motion. Source cell side contacts need visual review; padding does not restore clipped art. Existing portrait remains runtime fallback."
+}

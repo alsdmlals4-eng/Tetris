@@ -1,0 +1,13 @@
+{
+  "disk_roundtrip": true,
+  "human_balance": "NOT_RUN",
+  "native_renderer": "NVIDIA GeForce RTX 3050",
+  "resource_mode": "SWAP",
+  "storage": "user://resource-choice-native-probe",
+  "swap_casts": 0,
+  "swap_units": 1,
+  "viewport": [
+    1280,
+    720
+  ]
+}
