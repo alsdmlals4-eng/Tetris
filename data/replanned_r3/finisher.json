@@ -1,0 +1,12 @@
+{
+  "schema": "starter-finisher-v1",
+  "category_by_kind": {"A":"ATK", "D":"DEF", "H":"SUP", "T":"TIME"},
+  "time_power_us": [250000,500000,750000,1000000,1250000,1500000],
+  "player_duration_us": 1400000,
+  "high_chain_min": 4,
+  "high_chain_duration_us": 2000000,
+  "player_impact_us": 500000,
+  "enemy_duration_us": 1600000,
+  "enemy_impact_us": 600000,
+  "balance_state": "APPROVED_TRIAL_REQUIRES_HUMAN_PLAYTEST"
+}
