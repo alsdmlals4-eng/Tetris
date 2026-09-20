@@ -1,0 +1,13 @@
+{
+  "skills": {
+    "A": {"name": "균열 참격", "role": "적에게 공격 피해", "atlas": "R1-ICONS", "region": "strike", "color": "ff9864"},
+    "D": {"name": "수호의 인장", "role": "다음 공격에 보호막", "atlas": "R1-ICONS", "region": "ward", "color": "79caff"},
+    "H": {"name": "생명의 맥동", "role": "잃은 체력 회복", "atlas": "R1-ICONS", "region": "recover", "color": "99eba8"},
+    "T": {"name": "시간의 매듭", "role": "공유 시간 연장", "atlas": "R2-TILES", "region": "time", "color": "f8d27b"}
+  },
+  "banner_seconds": 1.35,
+  "burst_seconds": 0.55,
+  "max_bursts": 64,
+  "fanfare_note_seconds": 0.11,
+  "max_notes": 3
+}

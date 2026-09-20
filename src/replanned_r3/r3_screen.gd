@@ -20,6 +20,8 @@ var preferred_resource="LINE"
 var preferred_encounter="rift_core"
 var assist_ui
 var mastery_ui
+var feedback
+var skill_feedback=preload("res://src/replanned_r3/skill_feedback.gd").new()
 var _swap_tiles:Array=[]
 var _swap_selected=Vector2i(-1,-1)
 var _swap_cursor=Vector2i.ZERO
@@ -137,6 +139,8 @@ func _ready()->void:
     if use_mastery:
         mastery_ui=MasteryUI.new()
         mastery_ui.attach(self)
+        feedback=preload("res://src/replanned_r3/puzzle_feedback.gd").new()
+        feedback.attach(self)
     refresh()
 
 func _panel(parent:Node,node_name:String,rect:Rect2)->Panel:
@@ -198,7 +202,9 @@ func _make_board(parent:Node,node_name:String,origin:Vector2,width:int,height:in
 
 func dispatch(action:String,args:Dictionary={})->Dictionary:
     if preparing:return {"success":false,"reason":"PREPARATION"}
+    if feedback!=null:feedback.capture_before()
     var result:Dictionary=session.command(action,args)
+    if feedback!=null:feedback.observe(result.get("events",[]),action,args,result)
     _message=String(result.get("reason",""))
     refresh()
     return result
@@ -213,11 +219,15 @@ func _process(delta:float)->void:
     if preparing:return
     var us=0
     if not session.combat.paused:
+        if feedback!=null:
+            feedback.advance(delta)
+            feedback.capture_before()
         _fraction_us+=delta*1000000.0
         us=int(_fraction_us)
         _fraction_us-=us
         if use_assists and assist_ui!=null:assist_ui.before_tick()
         var events=session.tick(us)
+        if feedback!=null:feedback.observe(events)
         if use_assists and assist_ui!=null:assist_ui.observe(events,us)
         _pose_us+=us
     presentation.tick(us,session.combat.paused)
@@ -345,6 +355,9 @@ func refresh()->void:
         $Preparation/Status.text=_message
     if use_assists and assist_ui!=null:assist_ui.refresh()
     if use_mastery and mastery_ui!=null:mastery_ui.refresh()
+    if feedback!=null:
+        feedback.sync()
+        skill_feedback.refresh(self)
 
 func _refresh_legacy_skills()->void:
     var combat=session.combat
