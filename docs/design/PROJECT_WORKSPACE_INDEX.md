@@ -3,12 +3,16 @@
 - Status: `CURRENT REPOSITORY PROJECT HOME`
 - Owner: GitHub repository documents, issue/PR history, and runtime evidence only.
 - Purpose: preserve the useful project-home structure in a durable repository form without making an external workspace a future dependency.
-- Current status and evidence ceiling: [`PROJECT_MASTER_GDD.md`](PROJECT_MASTER_GDD.md)
+- Current status and evidence ceiling: [`REPLANNING_FOUNDATION.md`](REPLANNING_FOUNDATION.md); the Master GDD below owns the preserved production baseline.
 - One-time migration receipt: `docs/operations/TETRIS_CURRENT_WORKSPACE_MIGRATION_2026-08-28.json`
 
 ## 1. Start here
 
 Current restart direction and next work: [`REPLANNING_FOUNDATION.md`](REPLANNING_FOUNDATION.md), `TETRIS-REPLAN-043`. The tables and detailed contracts below describe the preserved playable baseline unless explicitly marked as a new proposal. Existing images are references for replanning, not new visual locks. The linked PDF remains the baseline-derived edition, not the new proposal's blueprint.
+
+Current-authority readback (2026-09-20, source main `69f4f591e038b4912d9761bf943aefd986170ace`): default `project.godot` still opens production briefing; standalone R2 scenes/code and automatic-cast implementation are also merged. R3 falling-pair/board-disruption work is in open Draft PRs [117](https://github.com/alsdmlals4-eng/Tetris/pull/117) / [118](https://github.com/alsdmlals4-eng/Tetris/pull/118), not merged-main evidence. Requery these states on the next task. Original R3 worktree and its local `project.godot` changes are outside this operating-rule task.
+
+For R2 read [automatic-cast rules](REPLANNING_AUTOCAST_R2.md), [whole-game execution owner](../operations/TETRIS_R2_WHOLE_GAME.md), `src/replanned_r2/`, `scenes/replanned_r2/`, and their tests. Older implementation-deferred/CORE-029-only statements are dated history, not instructions to undo R2 or merge R3. Sections 2–5 below retain production/migration provenance; §6 owns operational adoption and §7 connects fun verification.
 
 | I need to know… | Repository owner |
 | --- | --- |
@@ -35,7 +39,7 @@ Current restart direction and next work: [`REPLANNING_FOUNDATION.md`](REPLANNING
 
 The folders are responsibility boundaries, not a claim that all planned screens, assets or systems are implemented. A planned reference, a runtime-bound source candidate, a runtime render and Human/player evidence remain distinct classes.
 
-## 3. Current handoff
+## 3. Preserved production handoff (not the R2/R3 rule owner)
 
 `TETRIS-CORE-029` is the active playable slice: continuous realtime battle with a persistent `LINE ↔ CHAIN` workspace choice, live Telegraph/ETA, full tactical Skill pause, and explicit `CONFIRM`. `TETRIS-SKILL-039` is implemented as category-only/current-Combo preview, bounded 5-MP fallback and atomic confirm. The main entry is `scenes/production/battle_briefing.tscn`; it Deploys into `scenes/production/battle.tscn` and the battle keeps the same briefing as a reference popup.
 
@@ -61,3 +65,45 @@ For live operational truth, read the latest completed `main`, all open/draft PRs
 The prior external project workspace was read once, read-only, on 2026-08-28 to ensure its current structure and current artifacts had repository destinations. All project-local current pages found in that scan are accounted for in the migration receipt. Items already superseded or solely historical were not copied into current canon; their disposition is explicitly recorded rather than silently discarded.
 
 Future project work must start from this index and the linked repository owners. Do not read, write, sync, or require the retired external workspace.
+
+## 6. Base operational adoption
+
+Decision `TETRIS-OPS-LEAN-20260920`: user approved selective instruction slimming, route/CI correction and normal current-task PR delivery; subsequently requested Base #885 fun criteria too. Scope is workflow and evidence linkage, not game implementation. First-migration policy, release 9.4.4 identity/registry hashes, protected game contracts, engine/save/assets, plugins and global settings remain unchanged. The protected comparison baseline advances to this task's trusted main; old approvals remain in Git history, not a renewed game-change grant.
+
+Machine owner: `skills/PROJECT_BASE_ADAPTER.json#shared_overrides.workflow_adoption`. Reviewed Base main: `23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef`; [#883](https://github.com/alsdmlals4-eng/Base/pull/883) is merged and its slimming is included; [#885](https://github.com/alsdmlals4-eng/Base/pull/885) is also merged and now selectively adopted. This is a reproducibility record, not a permanent latest-main assumption. At each new task fetch/re-read main and relevant drift, then keep or explicitly revise the scoped adoption. No blanket Base release upgrade.
+
+| Previous state / comparison | Decision and effect |
+| --- | --- |
+| Two-vs-five full reviews; fresh external research on every material edit | ADAPT #883: share two full review loops across the approved lineage; reuse valid evidence; investigate only new decision-relevant gaps. Independent merge review remains separate. |
+| Old game rules duplicated in always-on AGENTS | Keep the original domain owners; route by actual production/R2/R3 consumer. Removes an instruction-driven rollback risk without deleting game history. |
+| Whole latest-Base reinstall | REJECT: unnecessary lock/registry/product migration and future maintenance cost. |
+| Text-only router edit | REJECT: Base generator overwrites it; cannot survive generation/check. |
+| Existing Base validator + narrow local router projection | ADAPT: reuse full schema/release/registry/route/protected-path validation and upstream snapshot/dashboard bytes; substitute only the generated project router from its adapter-selected template. |
+| New fun supervisor/report/server | REJECT: use existing R2 planning/playtest owners and §7; no new dependency, score or approval stage. |
+
+Execution entry: `tools/check_workflow_adoption.py --help`. Use `python` and a **clean separate Base checkout** at the adopted source commit. Pass an externally verified project baseline and verified approval, as specified in `.agents/skills/tetris-workflow-router/SKILL.md`. `--check` is read-only; `--write` regenerates the same three existing outputs. Do not invoke the generic Base generator directly: its default v9.1 router template is deliberately replaced by the project projection. Base contract errors are never suppressed; generated snapshot/dashboard and router are all compared byte-for-byte. Base source checkout itself is not modified.
+
+Legacy classification: AGENTS/index/foundation/adapter/router are `ACTIVE_OWNER`; first-policy and release identity are `COMPATIBILITY`; dated gameplay prose and old plans remain `ARCHIVE` provenance for their versions. No file is an approved deletion candidate here. Unread unrelated assets/worktrees remain `UNKNOWN_UNVERIFIED` and preserved.
+
+Validation and closure: tooling suite, full approved Base contract, generated drift/repair tests, source/references and CI coverage, two contract-wide reviews and independent read-only retrieval/review; then exact-head CI/ruleset/readback. Product runtime/Human/art/release checks are `NOT_RUN` for this documentation/tooling-only change. No new reusable Base module is promoted; the project-specific generated-router mismatch is a future Base improvement candidate only. Rollback is a scoped Git revert of this operational change; no save migration or asset restoration is needed.
+
+Execution evidence (2026-09-20, [current-task PR119](https://github.com/alsdmlals4-eng/Tetris/pull/119)): baseline adapter4 PASS; projection RED5 expected failures then GREEN5; full tooling94 PASS. Four old prose assertions initially failed: remove the obsolete five-loop-only test and correct three duplicated-owner expectations, while preserving game-domain/asset/save tests. Full Base contract and three generated outputs PASS, zero drift; wrong Base checkout and absent external approval fail closed. Skill frontmatter validator PASS with task-local PyYAML (no global install). Full review1 found stale constraints/generated-router overwrite; review2 checked corrected scope, references, generated parity and preserved product paths. Independent review separately repeats routing/tooling/protection checks. PR exact-head checks/merge and subsequent main run remain their live GitHub evidence; this premerge record does not claim them in advance. `REMAINING_WORK_COMPLETION_GATE`: product paths unchanged, operational delivery pending live PR closure; local interactive Godot/HUMAN/art/release NOT_RUN. Full review budget is not reset for the publication readback.
+
+## 7. Fun verification — project binding, not a FUN_PASS
+
+Adopted methods at the §6 source commit: [experience lifecycle](https://github.com/alsdmlals4-eng/Base/blob/23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef/skills/analyzing-and-refining-game-concepts/references/concept-evidence-and-gates.md#fun-verification-lifecycle), [experience → effects/visual/UI](https://github.com/alsdmlals4-eng/Base/blob/23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef/docs/knowledge/game-development/EXPERIENCE_TO_PRESENTATION_GUIDE.md), and [project-specific binding §10–11](https://github.com/alsdmlals4-eng/Base/blob/23ecad5a3084f97c4e5d1e39a9a6d70d1eeb37ef/skills/auditing-and-refining-ui-art/references/project-adapter-contract.md). Read only the affected part. Base references are not a new game-spec owner.
+
+Project experience owner: [R2 rules §02–06](REPLANNING_AUTOCAST_R2.md) and current foundation. Hypothesis: preparing resources in LINE and selecting a category before CHAIN waves makes preparation, execution and reaction to a visible enemy deadline meaningfully connected. This is **HYPOTHESIS**, not evidence that players enjoy it. R3 pairs/disruption require their actual branch rules/consumers and later evidence; R2 swap-board results cannot establish R3 fun.
+
+| Requirement / intended experience | Existing rule and actual main consumer | Failure/counterevidence and verification question |
+| --- | --- | --- |
+| FUN-R2-01 preparation matters (`AMPLIFY`, hypothesis) | R2 rules §04–06 → `src/replanned_r2/r2_session.gd`, `r2_line.gd`, `r2_chain.gd`; `tests/replanned_r2/test_r2_puzzles.gd`, `test_r2_combat.gd` | Machine: resource awards/cast costs match authoritative events, no duplicate reward. Runtime: displayed gain and cast correspond. Human: can the player explain why they return to LINE? CHAIN-only dominance or LINE perceived as chores is counterevidence, not an automatic rebalance instruction. |
+| FUN-R2-02 pressure is legible (`SUPPORT`, hypothesis) | R2 rules §03–04 → session scheduling and `src/replanned_r2/r2_screen.gd`; `test_r2_combat.gd`, `test_r2_screen.gd` | Machine: pause/deadline/time-tile boundary. Runtime: Current/Next and shared action ETA agree; skill VFX must not hide danger. Human: can the player predict the next threat and explain the timer? Misreading it as a separate turn budget or missing warnings is counterevidence. |
+| FUN-R2-03 my choice explains the skill (`AMPLIFY`, hypothesis) | R2 rules §06 and session category/automatic-cast result → `r2_screen.gd`, `r2_assets.gd`; existing combat/screen/asset tests | Specify selected/available/committed/result/interrupted states, category input and return focus, actual result event and icon slot. UI must not recalculate damage or spend resources on preview. Human: can the player connect a wave, chosen category and effect? Unclear causality or repeated cut-ins causing fatigue is counterevidence. |
+| FUN-R2-04 retry suggests a new approach (`SUPPORT`, hypothesis) | `src/replanned_r2/r2_playtest_report.gd`, result screen; `tests/replanned_r2/test_r2_playtest_report.gd`; [existing observation procedure](../operations/TETRIS_R2_PLAYTEST_RECORDS.md#human-observation-procedure-prepared-not-performed) | Compare same build/rule hash/seed/settings; separate first exposure, coaching and repeat attempts. Ask what they would change and why. Longer play/retry count alone is not enjoyment; exports are diagnostics, not HUMAN PASS. |
+
+Before a player-facing change, add **purpose → relevant states/expressions → actual consumer → machine/runtime/human question → counterevidence → next decision** to its existing owner. Effects distinguish authoritative gameplay result from presentation; document trigger, signal, actual timing/intensity, readable priority, interruption/reentry/cleanup and muted/reduced-motion alternatives where supported. Missing values must point to the current rule/data owner or be `HYPOTHESIS/PLANNED`, never invented from Base examples. Trace requirement → implementation/asset → evidence and back from evidence to its actual requirement.
+
+Use the existing playtest procedure and reports; no new report per feature. Record exact build, scenario/seed, input, display/language/settings, observation and actual words, intervention and limitations. Classification: not noticed → visibility; seen but misunderstood → meaning; understood but uninteresting/tiring → choice/rhythm; broken on return/settings → state/lifetime. Apply the smallest evidence-backed KEEP/CHANGE/DEFER/RETEST decision within approval; core rule/UX/art changes still require a decision.
+
+This adoption verifies **DOC/routing only**. Per-row new MACHINE/RUNTIME/HUMAN experiments: `NOT_RUN`; prior tests may be reused only after checking build/consumer equivalence. There is no universal fun score, forced sample size, automatic FUN_PASS or new runtime Director. Missing HUMAN results do not halt already-approved implementation, but cannot be reported as completed fun validation.

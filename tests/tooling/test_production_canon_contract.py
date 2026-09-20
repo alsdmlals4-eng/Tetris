@@ -380,7 +380,9 @@ class ProductionCanonContractTests(unittest.TestCase):
         agents = AGENTS_PATH.read_text(encoding="utf-8")
         readme = README_PATH.read_text(encoding="utf-8")
 
-        for text in (agents, readme):
+        # AGENTS routes to the versioned index; it must not duplicate old gameplay.
+        self.assertIn("docs/design/PRODUCTION_CANON_INDEX.json", agents)
+        for text in (readme,):
             self.assertIn("docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md", text)
             self.assertIn("docs/design/CHAIN_COMBO_MP_CONTRACT.md", text)
             self.assertIn("TETRIS-CORE-029", text)

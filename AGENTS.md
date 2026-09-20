@@ -1,152 +1,49 @@
 # Tetris project work rules
 
-## Current replanning direction — 2026-09-10
+한국어로 결과부터 설명한다. 사용자는 1인 개발자이며 코딩에 익숙하지 않다. 중요한 변경은 역할·작동 방식·직접 시험하는 방법을 알려준다. 이 파일은 진입·보호 규칙이며 게임 규칙을 다시 소유하지 않는다.
 
-Read `docs/design/REPLANNING_FOUNDATION.md` and `docs/design/PROJECT_WORKSPACE_INDEX.md` before the baseline read order below. `TETRIS-REPLAN-043` owns the user-approved restart direction; its detailed rules are comparative-prototype candidates, not implemented or finally approved gameplay. Existing images/visual locks are reference-only for the new design; preserve still-bound runtime assets. Existing production contracts remain the running-baseline authority, not automatic new-design locks. The installed Base 9.4.4 adapter remains pinned.
+## Current-authority read order
 
-For this replanning contract, apply the latest user-requested two complete adversarial review loops, with zero unresolved blocking findings required for a clean exit; historical five-loop receipts are provenance, not this task's execution gate.
+1. 이 파일 → `docs/design/PROJECT_WORKSPACE_INDEX.md` → 현재 결정·Active Context인 `docs/design/REPLANNING_FOUNDATION.md`의 최신 요약.
+2. 최신 원격 `main`, 로컬 변경/작업 폴더, 같은 목표의 열린·최근 병합 PR과 겹치는 파일을 확인한다. 과거 SHA·PR 번호·대화·PDF는 현재 실행 권한이 아니다.
+3. 이번 범위의 실제 Scene·Script·데이터·자산 consumer·테스트와 분야 정본을 대조한다. 먼저 실행 경로를 구별한다:
+   - 기본 실행: `project.godot` → `scenes/production/battle_briefing.tscn`; 기존 production 규칙은 `docs/design/PRODUCTION_CANON_INDEX.json`과 연결 문서가 소유한다.
+   - main에 병합된 별도 R2: `scenes/replanned_r2/`, `src/replanned_r2/`; `docs/design/REPLANNING_AUTOCAST_R2.md`와 `docs/operations/TETRIS_R2_WHOLE_GAME.md`가 규칙/실행 범위를 소유한다.
+   - 후속 R3/뿌요 전환은 해당 PR·브랜치의 실제 상태를 확인한다. 열린 작업을 main에 구현된 것으로 표시하거나 과거 production 규칙으로 되돌리지 않는다.
+4. `skills/PROJECT_BASE_ADAPTER.json`과 `.agents/skills/tetris-workflow-router/SKILL.md`를 통해 필요한 Base Skill·참조만 읽는다. 전체 문서/skills를 기본 로드하지 않는다.
 
-## Canon
+프로젝트 결정·승인 계약·실제 consumer가 외부 사례보다 우선한다. 충돌은 책임 owner와 증거를 찾아 영향 범위만 교정한다. 파일 존재, 자동 검사, 실제 실행, 사람 검수는 서로 대체하지 않는다.
 
-Read current production gameplay in this order:
+## 승인과 연속 작업
 
-1. `docs/design/PRODUCTION_REALTIME_COMBAT_CANON.md` — current combat lifecycle / continuous realtime / LINE↔CHAIN workspace switching / tactical pause / enemy scheduling / 50:50 battle composition authority (`TETRIS-CORE-029`).
-2. `docs/design/COMBO_RESOLVED_SKILL_CONTRACT.md` — current `ATK / DEF / SUP` category-only, Combo-Resolved preview/explicit CONFIRM and bounded 5-MP fallback authority (`TETRIS-SKILL-039` / `TETRIS-BALANCE-040`).
-3. `docs/design/CHAIN_COMBO_MP_CONTRACT.md` — current straight-3+ diagonal CHAIN grammar, optional MP lock, Combo recovery and preserved opportunity cost (`TETRIS-CHAIN-038`); CHAIN/resource alignment is implemented and machine-verified, while the separate Skill/onboarding PRs remain required.
-5. `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md` — production images must have an actual Godot runtime consumer (`TETRIS-IMAGE-030`).
-6. `docs/design/PROJECT_WORKSPACE_INDEX.md`, `PROJECT_MASTER_GDD.md`, and `VISUAL_BIBLE.md` — repository-owned project-home structure, current picture, and visual direction.
-7. Latest USER_APPROVED project Decisions recorded in GitHub issues, pull requests, and repository canon documents.
-8. `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md` — current implementation plan, subject to the `TETRIS-CHAIN-038` Phase 2 review gate.
-9. Actual code/data/scenes/tests/exact-head CI/runtime/Human evidence.
+- 새 의미 있는 변경은 의도·현재 상태·변경/보호 범위·계획·완료 기준을 먼저 설명하고 승인받는다. 같은 승인 계약의 `진행해/계속해`는 반복 승인·재계획 없이 구현→검증→교정→정본 갱신→허용된 병합/재확인으로 이어간다.
+- 필요한 답이 저장소에 있으면 직접 확인한다. 새 핵심 경험·게임 규칙·주요 UX·비용·보안·파괴적 변경만 별도 결정으로 올린다.
+- 현재 구현·승인 자산·Base 재사용 자료를 먼저 비교한다. 유효한 같은 조건의 조사는 `REUSED_EVIDENCE`, 새 판단에 필요한 공식 원출처만 추가 조사한다. 기계 수정은 이유 있는 비적용을 허용한다.
+- 전체 적대 검토는 같은 승인 계보 전체에서 **2회**를 공유한다. 단계/스킬마다 다시 시작하지 않는다. 이후 발견은 영향 범위 교정·회귀검사로 처리하며 독립 병합 검토는 별도다.
+- 이미 있는 owner/기록에 짧게 연결한다. 매 변경마다 새 계획서·Skill·재미 보고서·PDF를 만들지 않는다. 월별 작업일지는 기존 누적본에 날짜별로 추가한다.
 
-Machine-readable routing authority: `docs/design/PRODUCTION_CANON_INDEX.json`.
+## 보호 경계와 Git
 
-`docs/design/VANGUARD_TACTICAL_SKILL_MATRIX.md` (`TETRIS-SKILL-026`) and `docs/design/DUAL_RESOURCE_TIER_EXPOSURE_CONTRACT.md` (`TETRIS-BALANCE-027`) remain historical provenance for manual Tier 1–6 choice/cost grammar and selected effect-purpose ideas. Preserve their bodies; do not use them as current Skill selection authority. `docs/design/PRODUCTION_TURN_COMBAT_CANON.md` (`TETRIS-CORE-024`) and `docs/design/PRODUCTION_TURN_TIME_CANON.md` (`TETRIS-TIME-025`) remain historical provenance where they define ordered turns, Shared Player Turn Budget, READY, timeout/PASS, or Tempo.
+- Base release 9.4.4, Godot/GUT 버전, 엔진 설정·저장 호환성·게임 규칙·승인 자산은 운영 지침 변경으로 교체하지 않는다. 설치 플러그인·전역 설정·외부 서비스도 변경하지 않는다.
+- 사용자 로컬 수정과 다른 worktree/PR은 보호한다. 열린 PR은 기본 읽기 전용이며 승인 없는 checkout/write/rebase/merge/흡수는 금지한다.
+- 최신 완료 main에서 만든 단 하나의 current-task PR은 같은 승인 범위에서 exact HEAD 검사, 필수 checks/review/ruleset, unresolved thread 0 확인 후 정상 병합하고 main을 재확인한다. Draft·기존/다른 작업 PR takeover, force push, direct main push, 관리자 우회는 제외한다.
+- 추가 과금은 별도 승인 대상이다. 오래된 이름만으로 삭제하지 않는다. 폐기 가능성을 사용처/참조로 검증한 파일은 사용자가 직접 지울 수 있도록 복구 가능한 정리 위치와 목록을 제공한다.
+- 저장소가 현재 정본이다. Notion/Sheet를 새 필수 작업면으로 복원하지 않는다. PDF·이미지 예시는 참고이며 승인/런타임 정본을 대신하지 않는다.
 
 ## TETRIS_FORMAL_BASE_ADAPTER_BOOTSTRAP
 
-- `docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json` is the project-owned first-migration policy source for the formal Base adapter route. It must be read at its exact merged `origin/main` commit before the adapter is installed.
-- `skills/PROJECT_BASE_ADAPTER.json` is the installed canonical adapter (Base 9.4.4). `NOT_INSTALLED` describes the historical first-policy commit only, not current state. Preserve the recorded protected baseline and version lock.
-- The subsequent adapter-install PR must use the merged policy commit as `protected_baseline.commit`, read `/protected_paths`, and preserve every listed path. It must not copy Base Skill bodies into this project.
+`skills/PROJECT_BASE_ADAPTER.json`이 유일한 Base 채택 owner다. `base_release`는 배포 계약, `shared_overrides.workflow_adoption`은 별도로 검토한 운영 방법이다. 최신 원격을 확인하되 어느 쪽도 조용히 교체하지 않는다.
 
-## DOMAIN_SPLIT_CANON
+`docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json`의 `NOT_INSTALLED`는 최초 이관 당시 기록이다. 설치를 다시 수행하지 않는다. 보호 경로를 유지하고 현재 승인 변경은 승인 manifest와 외부 승인 근거를 함께 검사한다. 생성물은 프로젝트 validator의 `--write/--check`만 사용한다; 스냅샷·대시보드·router를 직접 편집하지 않는다.
 
-- `REPOSITORY_HUMAN_FACING_CANON`: `PROJECT_MASTER_GDD.md`, `VISUAL_BIBLE.md`, Flow/Storyboard, visual/reference manifests, and player-facing tables.
-- `REPOSITORY_STRUCTURED_CANON`: machine index, production canon, data/code/scenes/resources/config/tests.
-- `REPOSITORY_RUNTIME_TRUTH`: actual Godot build/runtime/test/log/screenshot-video evidence.
-- `REPOSITORY_ONLY_CURRENT_OWNER`: GitHub repository documents, GitHub issue/PR history, and runtime evidence are the only current owners. Do not read, write, sync, or require Notion for current project work.
-- Historical Sheets and Notion content are external provenance only, not a default workspace or runtime authority.
+## 구현·표현·재미 검증
 
-Never promote a historical external mockup, generated image, branch implementation, automated test, or historical receipt beyond its actual evidence class.
+- 플레이어-facing 작업은 workspace index §7의 경험 가설→규칙/선택/표현→실제 consumer→검증 연결을 적용한다. 순수 운영 수정에는 게임 재미 실험을 강제하지 않는다.
+- 자동 테스트가 기능을 증명해도 재미를 증명하지 않는다. `DOC / MACHINE / RUNTIME / HUMAN / USER_APPROVAL / RELEASE`를 분리한다. 사람 검수 전에는 `HUMAN: NOT_RUN`; 승인된 구현은 계속할 수 있다.
+- Godot 변경 때만 실제 `project.godot`·편집기 연결·실행 경로를 확인한다. 테스트는 변경 영향과 필수 CI에 맞춘다. 실행하지 않은 렌더·기기·성능 검증은 `NOT_RUN`이다.
+- 이미지 작업은 `docs/design/RUNTIME_IMAGE_ASSET_CONSUMER_CONTRACT.md`와 현재 버전의 자산 manifest를 읽는다. 실제 슬롯·경로·규격·투명도·상태군을 확인하고 필요한 제작은 기존 포괄 승인 범위에서 진행한다. 후보 제작, 최종 자산 승인, 정본 등록, 런타임 연결/검증을 구분한다. 기존 승인 자산의 임의 교체는 금지한다.
+- production의 Human 판정은 `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md`, R2 관찰은 `docs/operations/TETRIS_R2_PLAYTEST_RECORDS.md`를 따른다. 한 버전의 결과를 다른 버전의 증거로 승격하지 않는다.
 
-## Historical Core Foundation
+## 마무리
 
-Preserve these as Engineering Harness evidence:
-
-- `docs/design/CORE_GAMEPLAY_GDD.md`
-- `docs/design/POC_RULESET_V0_1.md`
-- `docs/superpowers/plans/2026-08-19-core-dual-board-poc.md`
-- `docs/validation/POC_45S_VALIDATION.md`
-- merged PR #3 implementation/tests.
-
-They do not override CORE-029.
-
-## Runtime and testing
-
-- Runtime: Godot 4.x + GDScript.
-- Remote CI pin: Godot `4.7.1-stable`, GUT `9.7.1`.
-- User-local Windows runtime is a separate evidence class. Never claim it passed without a live receipt.
-- Persistent Godot authoring follows Base HiGodot single-authority policy.
-- Deterministic behavior changes use test-first RED → GREEN → regression verification.
-- Unexpected failures use systematic debugging before proposing fixes.
-- Foundation tests and CORE-029 Production tests remain distinguishable.
-
-## MANDATORY_CURRENT_TASK_EVIDENCE_GATE
-
-For every material Tetris task (L1+ planning, system, UI/UX, asset, workflow, data or Godot implementation change), complete and record this gate before claiming that the next action is safe:
-
-1. `FRESH_SOURCE_AND_IMPLEMENTATION_READ`: read the latest completed `main`, every open/draft PR as read-only parallel work, current detailed canon, approved Decisions, and the affected actual code, data, Scene, Resource, asset, test, CI/runtime and Human evidence.
-2. `TARGETED_CURRENT_INTERNET_RESEARCH`: perform fresh, decision-relevant Internet research from the appropriate current primary/official source (Godot, platform, policy, dependency or rights owner) before a material decision or implementation. External research informs feasibility; it never replaces project canon or runtime truth.
-3. `PREIMPLEMENTATION_FEASIBILITY_CLASSIFICATION`: record `FEASIBLE`, `PARTIAL`, or `BLOCKED_UNVERIFIED` with affected consumers, data/Scene/code boundaries, dependencies, compatibility/performance risk, rollback boundary and evidence ceiling. A planning document or automated test alone never proves runtime or player value.
-4. `FIVE_FULL_ADVERSARIAL_LOOPS_MINIMUM`: run five complete current-state attack/recheck loops covering canon drift, actual implementation/data contradiction, user-flow failure, visual/consumer evidence confusion, and validation/merge evidence. Correct each material finding before progressing, or keep it explicitly blocked.
-5. `EXACT_DESTINATION_AND_HEAD_READBACK`: after a permitted write, reread its exact destination; before a completion/merge claim, test the exact head and read back the remote result.
-
-`MECHANICAL_NO_EXTERNAL_DEPENDENCY` is permitted only for a purely mechanical non-product change where external information cannot alter the result; record the scope and reason instead of pretending Internet research occurred. This exception never applies to new gameplay, player-facing UX, runtime asset, dependency, platform, security, rights or implementation-direction work.
-
-## Current CORE-029 gameplay invariants
-
-- Combat runs from `BATTLE_START` until `VICTORY` or `DEFEAT` on one continuous combat timeline.
-- There is no alternating player turn/enemy turn loop and no Shared Player Turn Budget.
-- The left battle region is one large Puzzle Surface. It displays either LINE or CHAIN, never two mandatory full boards simultaneously.
-- Player may request `LINE ↔ CHAIN` freely during `COMBAT_RUNNING`.
-- LINE and CHAIN are independent persistent workspaces. Switching does not rebuild/reroll/reset the inactive workspace.
-- Inactive workspace does not simulate except completion of an already-committed deterministic safe-switch boundary.
-- LINE remains the primary MP source (current internal field: `energy`).
-- CHAIN uses orthogonal swaps and straight horizontal/vertical/both-diagonal 3+ matches; every resolved wave adds Combo +1 and then recovers MP from `(sum maximal qualified line lengths − 3) + post-wave Combo`. Combo is the shared Tier/CHAIN-MP resource (current internal field: `stock`).
-- A no-match restores by default and resets Combo; fixed **1 MP** may keep that swapped board for later setup, but also resets Combo and grants no immediate clear, Combo, or CHAIN MP recovery.
-- Combo cap is **10**. Selecting a Skill category resolves the current Combo Stage; when current-stage MP is insufficient, surplus Combo converts at **5 MP each** only to reach the highest feasible lower Stage. This intentionally lowers later CHAIN MP recovery. The CHAIN/resource cap, all-axis matcher, per-wave recovery, MP-lock boundary, category-only preview and atomic CONFIRM are implemented and machine-verified; manual Tier 1–6 selection is historical provenance only.
-- Enemy Current Telegraph + ETA continues while the player solves LINE/CHAIN.
-- Visible Next Forecast remains lower priority than Current.
-- Opening SKILL enters `TACTICAL_PAUSE_SKILL` and fully stops combat simulation.
-- During tactical pause: enemy ETA/resolution, puzzle simulation, status ticks, real-time cooldowns, simulation VFX/animation/audio progression stop. Only Skill/UI navigation/confirm/cancel remains active.
-- Skill flow is `ATK / DEF / SUP → one current-Combo-resolved preview → explicit CONFIRM`.
-- Selecting a category never spends resources. Only CONFIRM commits; the pre-confirm preview must state any 5-MP-per-Combo fallback.
-- Cancel or successful USE resumes the exact paused combat time and restores the previously active puzzle workspace unchanged by reading the Skill UI.
-- Manual Pause is also full simulation pause but remains a distinct state/reason.
-- Same-frame Skill-open vs enemy deadline uses an explicit scheduler commit point. Skill-open may freeze an uncommitted action; it cannot retroactively cancel a committed one.
-- Haste, Battle Trance, turn-only status durations, and Tempo scaling are `REALTIME_MIGRATION_REQUIRED`; do not silently translate them into seconds.
-- Score remains performance evidence, not a Skill currency.
-
-## UI / UX invariants
-
-- Target desktop composition: a balanced `50% large Puzzle Surface / 50% persistent Combat-Threat-Resource-Skill surface`.
-- The ratio is a readability target, not a fixed pixel law; preserve equal manipulation and combat-reading priority at the reference desktop surface.
-- Right-side surface keeps enemy HP/phase, a boss-dominant CombatStage, Current Telegraph + ETA, a visible **shared action timer** that presents that same ETA as the player reaction window, lower-priority Next Forecast when known, a readable Vanguard HUD portrait with player HP/MP/Combo, and LINE/CHAIN/SKILL controls readable.
-- Skill-open state visibly communicates tactical pause while retaining frozen puzzle/threat context and a category-resolved preview.
-- Do not show ordered `LINE → CHAIN → ACTION → ENEMY` stage rails, a Shared **Turn** Timer, READY, turn timeout/PASS, Tempo UI, manual Tier buttons or an unconfirmed skill auto-cast as current production behavior. The shared action timer is only the current enemy ETA and player reaction window; it is not a restored player-turn budget.
-- Puzzle/HUD readability outranks decorative character, environment, and VFX detail.
-
-## Image production contract
-
-Production image work follows `TETRIS-IMAGE-030`.
-
-Before generating any production image, require:
-
-- exact `res://` target path;
-- exact consumer scene;
-- exact consumer node/material/UI slot;
-- required size/aspect;
-- alpha/crop/anchor rules;
-- import/use mode.
-
-No consumer = no production generation.
-
-Concept sheets, master sheets, pose explanation sheets, combined UI sheets, and mock screenshots are reference-only unless the runtime directly consumes that exact file. Atlas/sprite sheets are allowed only when the runtime consumes the exact atlas with a defined region/frame contract.
-
-`USER_STANDING_IMAGE_APPROVAL_2026-09-02` permits necessary bounded planning and runtime image generation without a per-candidate user lock request. A planning visualization remains `GENERATED_EXPLORATION`, not a runtime asset. Runtime image generation still requires the relevant CORE-029 exact Godot consumer, target path, geometry/import contract, provenance record and scene binding before integration; runtime/render and Human evidence remain separate gates.
-
-## Human evidence
-
-Human validation authority: `docs/validation/PRODUCTION_VERTICAL_SLICE_HUMAN_EVIDENCE_CONTRACT.md`.
-
-- status remains `NOT_RUN` until real first-exposure receipts exist;
-- positive directional PASS requires three valid independent A/B/C first-exposure receipts;
-- automated tests cannot prove fun, readability, onboarding, choice quality, or final balance;
-- concept/reference art cannot substitute for runtime-rendered UI evidence;
-- telemetry distinguishes wall-clock, active combat simulation time, tactical-pause duration, and manual-pause duration where available.
-
-## Production implementation isolation
-
-- Current implementation plan: `docs/superpowers/plans/2026-08-26-continuous-realtime-mode-switch-combat.md`.
-- Keep implementation isolated from `main` until exact-head verification and approval.
-- Draft PR #19 ordered-turn workstream remains read-only. Its pinned head may be used only as a source snapshot for explicitly selected reusable files.
-- Do not merge/cherry-pick PR #19 wholesale.
-- New CORE-029 runtime must own continuous combat and pause directly rather than wrapping the old TurnController as permanent architecture.
-
-## Cost and change safety
-
-- No new paid dependency, API, runner class, SaaS, marketplace credit, GPU/larger runner, or separately metered service without explicit approval.
-- Do not overwrite unrelated user changes.
-- Live open/draft/ready PRs are read-only unless the current user instruction explicitly authorizes the exact target/action.
-- Query live PR state at work start; historical PR numbers are provenance, not permanent assumptions.
-- Before completion compare the work branch against `main` and report verified, unverified, and remaining-risk states separately.
+현재 상태·다음 작업·변경 이유·증거 경로는 기존 Active Context에 남긴다. 완료 시 변경/유지/보류·실제 검사·남은 위험·롤백을 설명하고, 권장 사항은 **현재 상태 → 권장 조치 → 이유 → 기대효과**로 정리한다. 미실행 필수 검증을 완료로 바꾸지 않고 남은 범위를 명시한다.

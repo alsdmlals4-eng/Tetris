@@ -29,7 +29,7 @@ class FormalBaseAdapterInstallTests(unittest.TestCase):
         self.assertEqual(adapter["protected_baseline"], {
             "authority_kind": "REMOTE_TRACKING_REF",
             "authority_ref": "refs/remotes/origin/main",
-            "commit": "c2093d7796cf8948dff613c41407c7e857d7a3e2",
+            "commit": "69f4f591e038b4912d9761bf943aefd986170ace",
             "policy_source_type": "FIRST_MIGRATION_LEGACY_SOURCE",
             "policy_source_path": "docs/operations/TETRIS_FIRST_PROJECT_ADAPTER_POLICY.json",
             "protected_paths_pointer": "/protected_paths",
@@ -49,9 +49,9 @@ class FormalBaseAdapterInstallTests(unittest.TestCase):
             self.assertTrue((ROOT / relative).is_file(), relative)
 
         workflow = (ROOT / ".github/workflows/validate-project-base-adapter.yml").read_text(encoding="utf-8")
-        self.assertIn("ref: 5adc196c0185951f50e49ab5e51586eff8d60886", workflow)
-        self.assertIn("check_approved_project_operating_contract.py", workflow)
-        self.assertIn("TETRIS_CURRENT_APPROVED_PROTECTED_CHANGE_SET.json", workflow)
+        adapter = json.loads(ADAPTER_PATH.read_text(encoding="utf-8"))
+        self.assertIn("ref: " + adapter["shared_overrides"]["workflow_adoption"]["source_commit"], workflow)
+        self.assertIn("tools/check_workflow_adoption.py", workflow)
         self.assertIn("--protected-base \"$PROTECTED_BASE_SHA\"", workflow)
 
 
