@@ -12,6 +12,13 @@
   ],
   "rulings":["Reuse existing isolated checkout; original dirty user checkout and all pre-existing Drafts remain untouched.","New assist profile isolates v1 finisher/supply save semantics. Existing assets reused; no speculative new bitmap or global plugin changes.","Memory session tools absent; current repository and prior verified local memory locator supply continuity, not invented AgentMemory results.","Hera instances point to other projects; do not mutate them or install an addon. Use exact-path Godot CLI/native renderer for this project."],
   "review_focus":["Forged or fractional spends and save replay","Correction racing enemy deadline or new spawn","Correction-created first symbol and single finisher","Overflow after consumption and faster SWAP normalization","Small viewport controls and VFX never hiding timer"],
-  "progress":[],
-  "evidence_ceiling":"Implementation active; HUMAN new balance/fun NOT_RUN; no release claim"
+  "progress":[
+    "TDD rules/correction/UI/save implemented in opt-in assist profile; full543/543 and7548assertions; tooling95/95; native1280/960 with actual earned bonus, paid correction and disk roundtrip.",
+    "Two parent self-review loops complete. Independent whole-code review2f07c83 found4 defects; corrected3160641 and independently reproduced asfixed. Final surplus-args RED/GREEN correction f33f4bb.",
+    "Existing current-reader61pages preserves52 historical pages; original37page COMPLETE/frozen source unchanged. Existing monthly journal append16pages prepared and render-inspected. No new edition. Final publication/main readback pending."
+  ],
+  "review_evidence":"docs/validation/bonus-assist-20260920/README.md",
+  "reuse_learning_handoff":{"selected_modules":["R3 supply/chain/finisher transaction hooks","R2 combat and disk validation","Existing performer/tiles/audio","Existing Korean PDF reader helpers"],"reuse_mode":"ADAPT","project_paths_changed":["src/replanned_r3","data/replanned_r3/assist.json","scenes/replanned_r3/resource_choice.tscn","tools/append_r3_blueprint.py"],"verification_evidence":"docs/validation/bonus-assist-20260920/README.md","evidence_ceiling":"MACHINE and bounded native RUNTIME; HUMAN NOT_RUN","rollback":"Reviewed bounded revert; preserve legacy saves/assets","project_only_lessons":["New ward values must reach every transaction clone validator","Release input before correction lock guard","Cross-check spend history with effect owner receipts","Do not annotate byte-frozen historical PDF source"],"base_promotion_candidates":[],"shared_learning_status":"NO_NEW_REUSE_LEARNING"},
+  "completion_gates":{"REMAINING_WORK_COMPLETION_GATE":"REMOTE_AND_POSTMERGE_PENDING","IMPLEMENTATION_CORRECTION_RESCAN":"PASS","POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED":"TWO_PARENT_LOOPS_AND_INDEPENDENT_REVIEW_DONE","CLEAN_REVIEW_EXIT":"NO_NEW_CODE_BLOCKER"},
+  "evidence_ceiling":"Implementation/machine/native verified; publication and main readback pending; HUMAN new balance/fun NOT_RUN; no release claim"
 }
