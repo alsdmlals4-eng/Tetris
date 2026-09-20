@@ -46,6 +46,15 @@ func _init(seed_value: int=9112026, namespace_value: String="chain"):
     lock_remaining_us=int(_rules.lock_us)
     _fill_queue()
 
+## Isolated teaching board; callers must never persist it into a normal run.
+func setup_two_chain_practice()->void:
+    cells=[]
+    var rows_fixture=["HH....","AA....","AAHH.."]
+    for y in rows_fixture.size():
+        for x in 6:
+            if rows_fixture[y][x]!=".":cells.append(_new_cell(x,9+y,rows_fixture[y][x]))
+    revision+=1
+
 func next_pair_kinds() -> Array:
     return _next_pairs[0].duplicate()
 
@@ -262,6 +271,40 @@ func _commit_disruption(plan: Dictionary) -> Dictionary:
     result.reason=""
     result.reward_eligible=false
     return result
+
+## A paid session correction may only edit a stable, pair-free board.
+## This method owns placement/gravity; it never grants currency or casts spells.
+func correct(operation:String,cell_id:String,kind:String="",dx:int=0)->Dictionary:
+    if phase!="NEED_PAIR" or not active_pair.is_empty():return _failure("BOARD_BUSY")
+    var selected:Dictionary={}
+    for cell in cells:
+        if cell.cell_id==cell_id:selected=cell
+    if selected.is_empty():return _failure("INVALID_CELL")
+    var before=cells.duplicate(true)
+    if operation=="change":
+        if kind not in _all_rules.kinds:return _failure("INVALID_KIND")
+        if selected.kind==kind:return _failure("NO_CHANGE")
+        selected.kind=kind
+    elif operation=="shift":
+        if dx not in [-1,1]:return _failure("INVALID_DIRECTION")
+        var target_x=int(selected.x)+dx
+        if target_x<0 or target_x>=int(_rules.width):return _failure("OUTSIDE_BOARD")
+        for cell in cells:
+            if cell.x==target_x and cell.y==selected.y:
+                cell.x=selected.x
+                break
+        selected.x=target_x
+    else:return _failure("INVALID_CORRECTION")
+    chain_id+=1
+    wave_index=0
+    cause="PLAYER_LOCK"
+    category_snapshot=selected_category
+    var id="%s:event:%d:ASSIST"%[_namespace,revision]
+    processed_event_ids.append(id)
+    _compact()
+    _scan()
+    revision+=1
+    return {"success":true,"reason":"","event_id":id,"before":before,"after":cells.duplicate(true),"axis_id":cell_id}
 
 func matched_cells() -> Array:
     return _matched_cells_in(cells)

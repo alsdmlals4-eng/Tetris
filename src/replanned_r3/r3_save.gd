@@ -2,6 +2,7 @@
 extends "res://src/replanned_r2/r2_save.gd"
 const R3Session=preload("res://src/replanned_r3/r3_session.gd")
 const FinisherSession=preload("res://src/replanned_r3/r3_finisher_session.gd")
+const AssistSession=preload("res://src/replanned_r3/r3_assist_session.gd")
 
 func _init(path:String="user://replanned_r3/save.json",options:String="user://replanned_r3/options.json"):
     super(path,options)
@@ -24,5 +25,6 @@ func _valid_payload(value:Dictionary,options:bool)->bool:
     if not state.get("seed") is String or not state.seed.is_valid_int():return false
     if not state.get("run_id") is String or not state.get("difficulty") is String or not state.get("profile") is String:return false
     var script=FinisherSession if state.get("schema") in ["r3-finisher-v1","r3-finisher-choice-v1"] else R3Session
+    if state.get("schema") in ["r3-assist-v1","r3-assist-choice-v1"]:script=AssistSession
     var validator=script.new(state.difficulty,int(state.seed),state.run_id,state.profile)
     return validator.restore(state)

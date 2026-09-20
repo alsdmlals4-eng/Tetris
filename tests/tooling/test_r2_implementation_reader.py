@@ -48,3 +48,26 @@ class ImplementationReaderTests(unittest.TestCase):
         text=''.join(p.extract_text() for p in current.pages[:offset])
         for phrase in ['SWOT','393/393','모래시계','ATK','CC0','NOT_RUN','감시탑']:
             self.assertIn(phrase,text)
+
+    def test_current_r3_amendment_is_source_bound_and_preserves_52_page_reader(self):
+        import io
+        from pypdf import PdfReader
+        path=ROOT/'docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf'
+        manifest=json.loads(path.with_suffix('.manifest.json').read_text(encoding='utf-8'))
+        self.assertIn('current_amendment',manifest)
+        if 'current_amendment' not in manifest:return
+        entry=manifest['current_amendment']
+        for relative,digest in entry['input_hashes'].items():
+            raw=subprocess.run(['git','show',entry['source_commit']+':'+relative],cwd=ROOT,capture_output=True,check=True).stdout
+            self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,relative)
+        previous_bytes=subprocess.run(['git','show',entry['source_commit']+':'+path.relative_to(ROOT).as_posix()],cwd=ROOT,capture_output=True,check=True).stdout
+        self.assertEqual(hashlib.sha256(previous_bytes).hexdigest(),entry['previous_pdf_sha256'])
+        previous=PdfReader(io.BytesIO(previous_bytes))
+        current=PdfReader(path)
+        self.assertEqual(len(previous.pages),52)
+        self.assertEqual(len(current.pages),entry['pages']+52)
+        for i,page in enumerate(previous.pages):
+            self.assertEqual(page.get_contents().get_data(),current.pages[entry['pages']+i].get_contents().get_data())
+        text=''.join(page.extract_text() for page in current.pages[:entry['pages']])
+        for phrase in ['보너스','10쌍','T6','시동','NOT_RUN','실제','파괴','HUMAN']:
+            self.assertIn(phrase,text)

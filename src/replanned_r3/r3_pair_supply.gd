@@ -42,13 +42,15 @@ func consume(spawn_id: String) -> Dictionary:
     _history.append({"operation":"spawn","id":spawn_id})
     return {"success":true,"applied":-1,"overflow":0,"reason":""}
 
+func _rules_hash()->String:return FileAccess.get_sha256(RULES_PATH)
+
 func snapshot() -> Dictionary:
-    return {"schema":"r3-supply-v1","rules_hash":FileAccess.get_sha256(RULES_PATH),
+    return {"schema":"r3-supply-v1","rules_hash":_rules_hash(),
         "pairs":pairs,"remainder":remainder,"discarded":discarded,"clears":_clears.duplicate(),
         "cells":_cells.duplicate(),"spawns":_spawns.duplicate(),"history":_history.duplicate(true)}
 
 func restore(value: Dictionary) -> bool:
-    if value.size()!=9 or value.get("schema")!="r3-supply-v1" or value.get("rules_hash")!=FileAccess.get_sha256(RULES_PATH): return false
+    if value.size()!=9 or value.get("schema")!="r3-supply-v1" or value.get("rules_hash")!=_rules_hash(): return false
     if not _integer(value.get("pairs"),0,int(_rules.cap)) or not _integer(value.get("remainder"),0,int(_rules.line_cells)-1): return false
     for key in ["clears","cells","spawns"]:
         if not value.get(key) is Array: return false
