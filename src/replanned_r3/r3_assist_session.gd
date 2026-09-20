@@ -111,6 +111,7 @@ func _spend_bonus(args:Dictionary)->Dictionary:
     var operation=args.get("operation","")
     var rules=assist_rules()
     if not operation is String or not rules.costs.has(operation):return _failure("INVALID_BONUS_OPERATION")
+    if args.size()!=(3 if operation in ["change","shift"] else 1):return _failure("INVALID_BONUS_ARGS")
     var cost=int(rules.costs[operation])
     if bonus_balance()<cost:return _failure("INSUFFICIENT_BONUS")
     var result:Dictionary={"success":true,"reason":""}

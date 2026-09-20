@@ -151,6 +151,7 @@ func test_invalid_bonus_args_do_not_spend_or_change_board():
     var balance=s.bonus_balance()
     assert_false(s.command("bonus_apply",{"operation":"shift","cell_id":s.chain.cells[0].cell_id,"dx":0.5}).success)
     assert_false(s.command("bonus_apply",{"operation":"change","cell_id":"not-a-cell","kind":"T"}).success)
+    assert_false(s.command("bonus_apply",{"operation":"attack","unexpected":1}).success)
     assert_eq(s.chain.snapshot(),before)
     assert_eq(s.bonus_balance(),balance)
 

@@ -1,7 +1,5 @@
 # R2 통합 사람용 블루프린트
 
-> 2026-09-20 현재 실행 안내: 이 문서와 37쪽 COMPLETE PDF는 보존된 R2 설계 기록이다. 최신 규칙은 [R3 명세 최신 절](R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md)이다. 실제 화면과 변경 표는 별도의 기존 [CURRENT 구현 리더](../blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf) 앞에 추가한다. 그 리더의 이전 52쪽(구현 15쪽 + 설계 37쪽)은 그대로 보존한다. R2/campaign을 최신 R3 또는 새 Human/final-art/출시 승인과 혼동하지 않는다.
-
 ## 01 · 승인 검토를 위한 한 권
 
 테트리스로 준비하고 체인의 연쇄로 싸우는 단일 보스 퍼즐 전투. 네 문양은 공격·방어·치유·시간이며, 화면 왼쪽은 하나의 퍼즐, 오른쪽은 보스·공유 타이머·플레이어·스킬이다.
