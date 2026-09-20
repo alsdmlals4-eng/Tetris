@@ -1,0 +1,7 @@
+{
+  "schema": "resource-choice-v1",
+  "balance_state": "TRIAL_NOT_HUMAN_VERIFIED",
+  "resource_denominator": {"LINE": 1, "SWAP": 2},
+  "swap_wave_us": 300000,
+  "description": "SWAP counts every player cascade cell at half a resource unit; fractions persist per kind. Each ten whole units replenish three pairs using unchanged R3 supply. No hidden adaptation or extra cooldown."
+}
