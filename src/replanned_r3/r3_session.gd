@@ -40,9 +40,11 @@ func _init(difficulty:String="STANDARD",seed_value:int=9112026,run_identity:Stri
     combat=Combat.new(difficulty,run_identity,profile)
     line=Line.new(seed_value,run_identity+":line")
     chain=Chain.new(hash("r3-chain:%d"%seed_value),run_identity+":chain")
-    supply=Supply.new()
+    supply=_new_supply()
     disruption=Disruption.new(seed_value)
     _begin_threat()
+
+func _new_supply():return Supply.new()
 
 func command(action:String,args:Dictionary={})->Dictionary:
     if action=="prepare_resource":
@@ -262,7 +264,7 @@ func _commit_line(plan:Dictionary)->Array:
         var ids:Array=[]
         for cell in plan.cells:ids.append(cell.id)
         var next_combat=Combat.new(_difficulty,_run_id,_profile)
-        var next_supply=Supply.new()
+        var next_supply=_new_supply()
         if not next_combat.restore(combat.snapshot()) or not next_supply.restore(supply.snapshot()):return [_failure("INVALID_TRANSACTION_SOURCE")]
         var reward:Dictionary=next_combat.apply_line(plan.id,plan.cells)
         var credit:Dictionary=next_supply.credit(plan.id,ids)
@@ -281,7 +283,7 @@ func _commit_swap()->Array:
     if plan.is_empty():return []
     var rewards=Rewards.new(_run_id+":resource","SWAP")
     var next_combat=Combat.new(_difficulty,_run_id,_profile)
-    var next_supply=Supply.new()
+    var next_supply=_new_supply()
     if not rewards.restore(resource_rewards.snapshot()) or not next_combat.restore(combat.snapshot()) or not next_supply.restore(supply.snapshot()):return [_failure("INVALID_TRANSACTION_SOURCE")]
     var normalized:Dictionary=rewards.credit(plan.id,plan.cells)
     if not normalized.success:return [_failure("INVALID_RESOURCE_CLEAR")]

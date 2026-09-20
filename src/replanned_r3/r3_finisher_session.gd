@@ -8,6 +8,14 @@ var _preview_revision=-1
 var _preview_board
 var _preview:Dictionary={}
 
+func finisher_power(kind:String,waves:int)->int:return Finisher.power(kind,waves)
+func _apply_finisher(target,event_id:String,kind:String,waves:int)->Dictionary:
+    return Finisher.apply(target,event_id,kind,waves,finisher_power(kind,waves))
+func _player_duration(waves:int)->int:
+    var rules=Finisher.config()
+    return int(rules.high_chain_duration_us if waves>=int(rules.high_chain_min) else rules.player_duration_us)
+func _simulation_blocked()->bool:return false
+
 func command(name:String,args:Dictionary={})->Dictionary:
     if name=="category":return _failure("STARTER_DETERMINES_SKILL")
     # Releasing a held key is state cleanup, not a puzzle action during cut-in.
@@ -38,7 +46,7 @@ func _after_chain_commit(plan:Dictionary)->void:
     if not chain.is_resolving() and not _bundle.is_empty() and combat.outcome=="RUNNING":
         var rules=Finisher.config()
         var waves:int=_bundle.wave_ids.size()
-        action={"owner":"PLAYER","elapsed_us":0,"impact_us":int(rules.player_impact_us),"duration_us":int(rules.high_chain_duration_us if waves>=int(rules.high_chain_min) else rules.player_duration_us),"applied":false,"bundle":_bundle.duplicate(true)}
+        action={"owner":"PLAYER","elapsed_us":0,"impact_us":int(rules.player_impact_us),"duration_us":_player_duration(waves),"applied":false,"bundle":_bundle.duplicate(true)}
         _bundle={}
 
 func starter_preview()->Dictionary:
@@ -52,14 +60,15 @@ func starter_preview()->Dictionary:
     var axis=String(preview.active_pair.axis.cell_id)
     preview.command("hard_drop")
     preview.commit(preview.plan_due_event())
-    _preview={"starter":Finisher.starter(preview.matched_cells(),axis),"waves":1,"locked":false}
+    var matched=preview.matched_cells()
+    _preview={"starter":Finisher.starter(matched,axis),"waves":1,"locked":false,"matched_count":matched.size()}
     _preview_board=chain
     _preview_revision=chain.revision
     return _preview.duplicate()
 
 func tick(delta_us:int)->Array:
     if delta_us<0:return [_failure("INVALID_DELTA")]
-    if combat.paused:return []
+    if combat.paused or _simulation_blocked():return []
     var events:Array=[]
     var remaining=delta_us
     if delta_us>0:resource_locked=true
@@ -85,6 +94,7 @@ func tick(delta_us:int)->Array:
             _start_enemy()
             continue
         events.append_array(_drain_board())
+        if _simulation_blocked():break
         if not action.is_empty():continue
         if combat.outcome!="RUNNING":break
         var step=mini(remaining,combat.eta_us)
@@ -115,7 +125,7 @@ func _impact()->Array:
     if action.owner=="PLAYER":
         var bundle:Dictionary=action.bundle
         var id=String(bundle.wave_ids[-1])+":FINISHER"
-        var cast=Finisher.apply(combat,id,bundle.starter,bundle.wave_ids.size())
+        var cast=_apply_finisher(combat,id,bundle.starter,bundle.wave_ids.size())
         if cast.success:
             cast.merge({"wave_ids":bundle.wave_ids.duplicate(),"first_cells":bundle.first_cells.duplicate(true),"axis_id":bundle.axis_id,"chain_id":bundle.chain_id})
             _record_cast(cast)
@@ -216,10 +226,10 @@ func _valid_cast_ledger(data:Dictionary)->bool:
                 if not cast.ward_target.begins_with(_run_id+":") or not suffix.is_valid_int():return false
                 probe.action_index=int(suffix)
         else:
-            if not Validation.valid_integer(cast.get("time_applied_us"),0,1500000):return false
+            if not Validation.valid_integer(cast.get("time_applied_us"),0,finisher_power("T",6)):return false
             if cast.get("reason")=="ACTION_COMMITTED":probe.eta_us=0
             else:probe.extension_us=probe._extension_cap_us-int(cast.time_applied_us)
-        var expected=Finisher.apply(probe,cast.event_id,cast.starter,int(cast.wave))
+        var expected=_apply_finisher(probe,cast.event_id,cast.starter,int(cast.wave))
         var core=cast.duplicate(true)
         for key in ["wave_ids","first_cells","axis_id","chain_id"]:core.erase(key)
         for value in core.values():

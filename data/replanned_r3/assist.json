@@ -1,0 +1,11 @@
+{
+  "schema":"bonus-assist-v1",
+  "balance_state":"APPROVED_TRIAL_HUMAN_NOT_RUN",
+  "supply_cap":10,
+  "costs":{"change":2,"shift":1,"heal":2,"attack":2,"armor":2},
+  "emergency_amount":5,
+  "power":{"A":[8,18,32,50,74,104],"D":[6,10,16,24,34,46],"H":[5,9,15,23,33,45],"T":[500000,1000000,1500000,2000000,2500000,3000000]},
+  "duration_us":[1400000,1500000,1700000,2000000,2200000,2500000],
+  "disruption":{"outer_breach":{"index":1,"count":1},"watchtower":{"index":1,"count":2},"foundry":{"index":2,"count":3},"rift_core":{"index":1,"count":4}},
+  "default_profile":"rift_core"
+}

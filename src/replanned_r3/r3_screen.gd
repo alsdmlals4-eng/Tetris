@@ -1,6 +1,8 @@
 extends Control
 const Session=preload("res://src/replanned_r3/r3_session.gd")
 const FinisherSession=preload("res://src/replanned_r3/r3_finisher_session.gd")
+const AssistSession=preload("res://src/replanned_r3/r3_assist_session.gd")
+const AssistUI=preload("res://src/replanned_r3/r3_assist_ui.gd")
 const Finisher=preload("res://src/replanned_r3/r3_finisher.gd")
 const Assets=preload("res://src/replanned_r2/r2_assets.gd")
 const Presentation=preload("res://src/replanned_r3/r3_cast_presentation.gd")
@@ -8,9 +10,12 @@ const Performer=preload("res://src/replanned_r3/r3_performer.gd")
 const Disk=preload("res://src/replanned_r3/r3_save.gd")
 @export var show_preparation:bool=false
 @export var use_finishers:bool=false
+@export var use_assists:bool=false
 var preparing:=false
 var preference_path="user://resource_choice/preference.cfg"
 var preferred_resource="LINE"
+var preferred_encounter="rift_core"
+var assist_ui
 var _swap_tiles:Array=[]
 var _swap_selected=Vector2i(-1,-1)
 var _swap_cursor=Vector2i.ZERO
@@ -31,7 +36,7 @@ const GOLD=Color("#dfbf7d")
 const INK=Color("#0c1420")
 
 func _ready()->void:
-    if use_finishers:session=FinisherSession.new()
+    if use_finishers:session=AssistSession.new() if use_assists else FinisherSession.new()
     if get_tree().current_scene==self:
         get_window().content_scale_size=Vector2i(1280,720)
         get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
@@ -42,7 +47,8 @@ func _ready()->void:
     assets=Assets.new()
     performer=Performer.new()
     if disk==null:
-        if use_finishers:disk=Disk.new("user://starter_finisher/save.json","user://starter_finisher/options.json")
+        if use_assists:disk=Disk.new("user://bonus_assist/save.json","user://bonus_assist/options.json")
+        elif use_finishers:disk=Disk.new("user://starter_finisher/save.json","user://starter_finisher/options.json")
         else:disk=Disk.new("user://resource_choice/save.json","user://resource_choice/options.json") if show_preparation else Disk.new()
     _rules=JSON.parse_string(FileAccess.get_file_as_string("res://data/replanned_r3/rules.json"))
     var left=_panel(self,"Puzzle",Rect2(12,12,622,696))
@@ -120,6 +126,9 @@ func _ready()->void:
         _label(prepare,"Status",Rect2(28,440,800,26),"",14)
         preparing=true
         session.command("pause")
+    if use_assists:
+        assist_ui=AssistUI.new()
+        assist_ui.attach(self)
     refresh()
 
 func _panel(parent:Node,node_name:String,rect:Rect2)->Panel:
@@ -199,7 +208,9 @@ func _process(delta:float)->void:
         _fraction_us+=delta*1000000.0
         us=int(_fraction_us)
         _fraction_us-=us
-        session.tick(us)
+        if use_assists and assist_ui!=null:assist_ui.before_tick()
+        var events=session.tick(us)
+        if use_assists and assist_ui!=null:assist_ui.observe(events,us)
         _pose_us+=us
     presentation.tick(us,session.combat.paused)
     refresh()
@@ -324,6 +335,7 @@ func refresh()->void:
         $Preparation/Line.modulate=Color("#ffe09a") if preferred_resource=="LINE" else Color.WHITE
         $Preparation/Swap.modulate=Color("#ffe09a") if preferred_resource=="SWAP" else Color.WHITE
         $Preparation/Status.text=_message
+    if use_assists and assist_ui!=null:assist_ui.refresh()
 
 func _refresh_legacy_skills()->void:
     var combat=session.combat
@@ -357,7 +369,7 @@ func _refresh_finisher()->void:
     var label=names.get(kind,"아직 연결 없음")
     $Combat/Skills/Starter.text="시동 %s · %s"%[label,"확정 / 연쇄 종료 후 1회" if preview.locked else "현재 착지 예고"]
     $Combat/Skills/Stage.text="T1   T2   T3   T4   T5   T6    %s"%("%d연쇄 · T%d"%[waves,mini(waves,6)] if not kind.is_empty() else "4개 연결로 시동")
-    var amount=Finisher.power(kind,waves)
+    var amount=session.finisher_power(kind,waves)
     var power_label=("시간 +%.2f초 (행동당 상한 3초)"%(amount/1000000.0)) if kind=="T" else "기본 위력 %d"%amount
     if kind=="A" and session.action.get("applied",false)==false:power_label+=" + 자원 %d"%session.combat.attack_bank
     var recent="" if session.last_cast.is_empty() else "최근 %s · %d연쇄 1회 발동"%[names.get(session.last_cast.starter,""),session.last_cast.wave]
@@ -381,7 +393,7 @@ func _refresh_finisher()->void:
         $Combat/Current.text="발동 · "+visual.label
         $Combat/Next.text="대기 · "+str((session.combat.current_action() if visual.applied else session.combat.next_action()).get("label",""))
     var category="SUP" if visual.category=="TIME" else String(visual.category)
-    $Combat/CutIn/Actor.texture=assets.enemy_texture("", "idle") if enemy else performer.texture(category,"impact" if reduced_motion else visual.phase)
+    $Combat/CutIn/Actor.texture=assets.enemy_texture(session._profile if use_assists else "", "idle") if enemy else performer.texture(category,"impact" if reduced_motion else visual.phase)
     $Combat/CutIn.position.x=8+visual.offset_x
     $Combat/CutIn.modulate.a=visual.alpha
     $Combat/CutIn/Effect.texture=assets.texture("R1-ICONS","strike") if enemy else assets.tile(visual.starter)
@@ -389,9 +401,10 @@ func _refresh_finisher()->void:
 
 func start_resource_battle(producer:String)->void:
     if not preparing or producer not in ["LINE","SWAP"]:return
-    var candidate=FinisherSession.new() if use_finishers else Session.new()
+    var candidate=(AssistSession.new("STANDARD",9112026,"r3:standalone",preferred_encounter) if use_assists else FinisherSession.new()) if use_finishers else Session.new()
     if not candidate.command("prepare_resource",{"mode":producer}).success:return
     session=candidate
+    if assist_ui!=null:assist_ui.reset_presentation()
     preferred_resource=producer
     var preference=ConfigFile.new()
     preference.set_value("puzzle","resource",producer)
@@ -411,6 +424,22 @@ func return_to_preparation()->void:
     preparing=true
     session.combat.paused=true
     _message=""
+    refresh()
+
+func start_chain_practice()->void:
+    if not preparing or not use_assists:return
+    session=AssistSession.new("STANDARD",42,"practice","outer_breach")
+    session.setup_practice()
+    assist_ui.reset_presentation()
+    preparing=false
+    _message="연습: Space를 눌러 공격 → 치유 2연쇄를 확인하세요."
+    refresh()
+
+func end_chain_practice()->void:
+    if not use_assists or not session.practice_mode:return
+    session.command("pause")
+    preparing=true
+    _message="연습 완료 · 실제 전투는 기존 자원 규칙으로 시작합니다."
     refresh()
 
 func select_swap_cell(xy:Vector2i)->void:
@@ -447,11 +476,14 @@ func restore_checkpoint()->Dictionary:
     var result:Dictionary=disk.load_checkpoint()
     if result.success:
         var state:Dictionary=result.snapshot
-        var script=FinisherSession if use_finishers else Session
+        var script=(AssistSession if use_assists else FinisherSession) if use_finishers else Session
         var candidate=script.new(state.difficulty,int(state.seed),state.run_id,state.profile)
         if not candidate.restore(state):return {"success":false,"reason":"INVALID_CHECKPOINT"}
         candidate.command("pause")
         session=candidate
+        if use_assists:
+            preferred_encounter=state.profile
+            assist_ui.reset_presentation()
         preparing=false
         _swap_selected=Vector2i(-1,-1)
         _fraction_us=float(result.clock_remainder_ns)/1000.0

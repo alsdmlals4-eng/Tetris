@@ -35,10 +35,10 @@ static func power(kind:String,waves:int)->int:
     for wave in waves:total+=int(values[mini(wave,5)])
     return total
 
-static func apply(combat,event_id:String,kind:String,waves:int)->Dictionary:
+static func apply(combat,event_id:String,kind:String,waves:int,power_override:int=-1)->Dictionary:
     if combat.paused or combat.outcome!="RUNNING" or waves<1 or waves>21 or category(kind).is_empty():return {"success":false,"reason":"INVALID_FINISHER"}
     if event_id.is_empty() or combat._processed_cast_events.has(event_id):return {"success":false,"reason":"DUPLICATE_EVENT"}
-    var amount=power(kind,waves)
+    var amount=power(kind,waves) if power_override<0 else power_override
     var result={"success":true,"effect":"","reason":"","event_id":event_id,"category":category(kind),"starter":kind,"wave":waves,"stage":mini(waves,6),"power":amount}
     combat._processed_cast_events[event_id]=true
     match kind:
