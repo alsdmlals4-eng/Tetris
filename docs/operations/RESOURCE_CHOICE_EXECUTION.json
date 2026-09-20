@@ -45,12 +45,12 @@
       "CHOICE-01"
     ],
     "active_work_item_ref": "CHOICE-01",
-    "next_action": "Selective R3 baseline integration then RED-GREEN resource producer/session/UI/save tests",
+    "next_action": "Publish current-task PR, verify exact HEAD checks, merge normally and read back main; human balance remains separate",
     "work_items": [
       {
         "work_item_id": "CHOICE-01",
         "title": "Playable choice of resource producer with fixed pair-chain automatic skills",
-        "status": "IN_PROGRESS",
+        "status": "VERIFY_REVIEW",
         "canon_owner": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
         "actual_consumers": [
           "src/replanned_r3/r3_session.gd",
@@ -67,17 +67,21 @@
           {
             "id": "CHOICE-AC",
             "text": "Resource choice locked per combat; four resource fractional normalization and finite pair refill; swap never casts; pause/save/restore/disruption safe; UI and full regressions verified; current-task PR publication/readback",
-            "status": "NOT_RUN"
+            "status": "IN_PROGRESS"
           }
         ],
         "verification": [
           {
             "level": "E2_TEST",
-            "status": "NOT_RUN",
-            "evidence": []
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/resource-choice-20260920/README.md: Godot 499/499 tests, 7252 assertions; tooling 94/94; Windows and Base adoption PASS",
+              "docs/validation/resource-choice-20260920/runtime.json: native 1280x720 resource selection, swap reward without cast, pair switch, isolated disk roundtrip",
+              "Implementation c88851cf97229decbc721502a4135bf0de90159a; two scoped self-review loops and independent read-only review corrections reproduced RED then GREEN"
+            ]
           }
         ],
-        "next_action": "Integrate approved source subset and run baseline"
+        "next_action": "Exact-head remote checks and normal current-task merge/main readback; do not claim HUMAN balance or whole-game completion"
       }
     ]
   },
