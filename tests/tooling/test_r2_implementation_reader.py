@@ -56,18 +56,21 @@ class ImplementationReaderTests(unittest.TestCase):
         manifest=json.loads(path.with_suffix('.manifest.json').read_text(encoding='utf-8'))
         self.assertIn('current_amendment',manifest)
         if 'current_amendment' not in manifest:return
-        entry=manifest['current_amendment']
-        for relative,digest in entry['input_hashes'].items():
-            raw=subprocess.run(['git','show',entry['source_commit']+':'+relative],cwd=ROOT,capture_output=True,check=True).stdout
-            self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,relative)
-        previous_bytes=subprocess.run(['git','show',entry['source_commit']+':'+path.relative_to(ROOT).as_posix()],cwd=ROOT,capture_output=True,check=True).stdout
-        self.assertEqual(hashlib.sha256(previous_bytes).hexdigest(),entry['previous_pdf_sha256'])
-        previous=PdfReader(io.BytesIO(previous_bytes))
         current=PdfReader(path)
-        self.assertEqual(len(previous.pages),52)
-        self.assertEqual(len(current.pages),entry['pages']+52)
-        for i,page in enumerate(previous.pages):
-            self.assertEqual(page.get_contents().get_data(),current.pages[entry['pages']+i].get_contents().get_data())
-        text=''.join(page.extract_text() for page in current.pages[:entry['pages']])
-        for phrase in ['보너스','10쌍','T6','시동','NOT_RUN','실제','파괴','HUMAN']:
-            self.assertIn(phrase,text)
+        entries=[manifest['current_amendment']]+list(reversed(manifest.get('amendment_history',[])))
+        offset=0
+        for entry in entries:
+            for relative,digest in entry['input_hashes'].items():
+                raw=subprocess.run(['git','show',entry['source_commit']+':'+relative],cwd=ROOT,capture_output=True,check=True).stdout
+                self.assertEqual(hashlib.sha256(raw).hexdigest(),digest,relative)
+            previous_bytes=subprocess.run(['git','show',entry['source_commit']+':'+path.relative_to(ROOT).as_posix()],cwd=ROOT,capture_output=True,check=True).stdout
+            self.assertEqual(hashlib.sha256(previous_bytes).hexdigest(),entry['previous_pdf_sha256'])
+            previous=PdfReader(io.BytesIO(previous_bytes))
+            self.assertEqual(len(previous.pages),61 if entry.get('kind')=='mastery-patterns' else 52)
+            self.assertEqual(len(current.pages)-offset,entry['pages']+len(previous.pages))
+            text=''.join(page.extract_text() for page in current.pages[offset:offset+entry['pages']])
+            phrases=['T스핀','차징','장갑','보급','HUMAN','NOT_RUN'] if entry.get('kind')=='mastery-patterns' else ['보너스','10쌍','T6','시동','NOT_RUN','실제','파괴','HUMAN']
+            for phrase in phrases:self.assertIn(phrase,text)
+            offset+=entry['pages']
+            for i,page in enumerate(previous.pages):
+                self.assertEqual(page.get_contents().get_data(),current.pages[offset+i].get_contents().get_data())

@@ -1,0 +1,100 @@
+{
+  "enemy_pattern_disk_roundtrips": 4,
+  "human_fun": "NOT_RUN",
+  "practice": [
+    {
+      "base_units": 40,
+      "elapsed_us": 0,
+      "last": {
+        "b2b": false,
+        "b2b_bonus": 0,
+        "base": 10,
+        "combo": 1,
+        "combo_bonus": 0,
+        "id": "practice:line:line:1",
+        "lines": 4,
+        "spin": "NONE",
+        "units": 10
+      },
+      "mastery_units": 10,
+      "overflow": 9,
+      "pairs": 10,
+      "producer": "LINE",
+      "remainder": 0,
+      "seed": "42"
+    },
+    {
+      "base_units": 20,
+      "elapsed_us": 0,
+      "last": {
+        "b2b": false,
+        "b2b_bonus": 0,
+        "base": 10,
+        "combo": 1,
+        "combo_bonus": 0,
+        "id": "practice:line:line:1",
+        "lines": 2,
+        "spin": "T_SPIN",
+        "units": 10
+      },
+      "mastery_units": 10,
+      "overflow": 3,
+      "pairs": 10,
+      "producer": "LINE",
+      "remainder": 0,
+      "seed": "42"
+    },
+    {
+      "base_units": 20,
+      "elapsed_us": 0,
+      "last": {
+        "b2b": false,
+        "b2b_bonus": 0,
+        "base": 0,
+        "combo": 2,
+        "combo_bonus": 2,
+        "id": "practice:line:line:2",
+        "lines": 1,
+        "spin": "NONE",
+        "units": 2
+      },
+      "mastery_units": 2,
+      "overflow": 0,
+      "pairs": 10,
+      "producer": "LINE",
+      "remainder": 2,
+      "seed": "42"
+    }
+  ],
+  "renderer": "NVIDIA GeForce RTX 3050",
+  "save_namespace": "user://mastery-native-probe",
+  "scene": "resource_choice.tscn",
+  "screenshots": [
+    "preparation",
+    "practice-four",
+    "result-four",
+    "practice-spin",
+    "result-spin",
+    "practice-combo",
+    "result-combo",
+    "pattern-outer_breach",
+    "status-outer_breach",
+    "pattern-foundry",
+    "status-foundry",
+    "pattern-watchtower",
+    "pattern-rift_core",
+    "preparation-960",
+    "practice-spin-960",
+    "charge-960"
+  ],
+  "viewports": [
+    [
+      1280,
+      720
+    ],
+    [
+      960,
+      540
+    ]
+  ]
+}

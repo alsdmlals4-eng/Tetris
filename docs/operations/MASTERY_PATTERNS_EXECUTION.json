@@ -1,0 +1,39 @@
+{
+  "work_level":"L2",
+  "approval_reference":"2026-09-21 user 좋아 권장안대로 작업 게속 진행해 approves LINE mastery supply bonuses, four enemy patterns, short LINE practice and supply comparison in preceding brief.",
+  "benchmark_preflight_receipt":{"state":"REUSED_EVIDENCE","entries":[{"source_and_evidence":"Fetched main bf6c52e31933db35bad5bceb5db529f0b6e638e4; production LineSpinRecognizer/LineStreakState and R3 assist/supply/finisher actual consumers; approved prior-turn Tetris/SEGA research and skill-bonus comparison.","observed_pattern":"Production already distinguishes spin, four-line, combo and B2B. R3 has stable cell IDs, replayable supply and atomic finisher effects, but no mastery reward or enemy status.","project_fit_and_difference":"ADAPT recognition and existing transaction owners; preserve tile effects, four-action destruction cadence and legacy saves. REJECT multiplying all resources (double economy inflation); REJECT rebuilding movement or automatic beginner wins. Approved bonus only supplies pairs, capped20.","disposition":"ADAPT"}]},
+  "context_configuration_hygiene":{"scope":"resource_choice successor only","inventory":[{"path":"src/replanned_r3/r3_assist_session.gd","classification":"COMPATIBILITY","owner_or_provenance":"merged124 assist rules","references_and_consumers":"legacy saves/tests and successor superclass","removal_proposed":false},{"path":"scenes/replanned_r3/resource_choice.tscn","classification":"ACTIVE_OWNER","owner_or_provenance":"approved playable entry","references_and_consumers":"r3_screen","removal_proposed":false}]},
+  "project_work_kanban":{
+    "goal_or_slice_issue_ref":"Approved mastery and enemy-pattern follow-up",
+    "source_main_sha":"bf6c52e31933db35bad5bceb5db529f0b6e638e4",
+    "work_item_refs":["MASTERY-01"],
+    "active_work_item_ref":"MASTERY-01",
+    "next_action":"Exact-head remote checks, normal current-task merge and postmerge readback",
+    "work_items":[{
+      "work_item_id":"MASTERY-01",
+      "title":"Reward skilled LINE play and readable counterplay",
+      "status":"IN_PROGRESS",
+      "canon_owner":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+      "actual_consumers":["scenes/replanned_r3/resource_choice.tscn","src/replanned_r3/r3_screen.gd"],
+      "depends_on":[],
+      "acceptance_criteria":["MASTERY-AC","DELIVERY"],
+      "required_evidence":["E2_TEST"],
+      "checklist":[
+        {"id":"MASTERY-AC","text":"Approved mastery, patterns, preserved destruction, practice, strict save/replay, full regression/native/PDF/journal, two shared reviews and independent review","status":"PASS"},
+        {"id":"DELIVERY","text":"Exact-head remote CI, allowed normal merge, main readback and playable launch","status":"NOT_RUN"}
+      ],
+      "verification":[{"level":"E2_TEST","status":"PASS","evidence":["docs/validation/mastery-patterns-20260921/README.md","docs/validation/mastery-patterns-20260921/full-gut.log","docs/validation/mastery-patterns-20260921/runtime.json"]}],
+      "next_action":"Complete delivery gate without claiming HUMAN/final balance or whole-game completion"
+    }]
+  },
+  "plan":[
+    "1. RED tests/replanned_r3/test_r3_mastery.gd for actual resource_choice consumer, four/T-spin/no-clear/combo/B2B/cap and pause/save/destruction. Create mastery_line.gd using production recognition, mastery_supply.gd retaining real cell IDs and separate skill ledger, mastery_session.gd with narrow base factory/transaction hooks. GREEN then full suite.",
+    "2. RED test_r3_patterns.gd for shield12 expiry, armor strip6 without ward/HP loss, telegraphed charge+10 cancelled by20 actual damage, single-use8s weakness25%, duplicate impact and partition/save boundaries. Implement pattern_combat.gd and attack-receipt context validation; data/replanned_r3/mastery.json owns numbers. GREEN then full suite.",
+    "3. RED actual-screen/practice/disk tests; opt-in resource_choice mastery profile with isolated disk schema, readable reward/status and three practice puzzles. Preserve 2-chain practice and approved art. Native1280/960 verify, capture same-seed supply comparison without claiming human balance.",
+    "4. Two full self-review loops, fresh independent review; update existing Foundation/spec/current-reader/cumulative monthly journal. Exact-head required CI and normal current-task PR merge; main readback, full checks and launch playable scene."
+  ],
+  "review_focus":["Reward duplicate and synthetic-cell pollution","No-clear versus non-clear enemy destruction streak boundaries","Save/restore during rotation and weakness window","Enemy effect versus finisher receipt validation and clone factories","Practice pollution of battle saves and controls at960"],
+  "rulings":["Existing isolated clean-tracked worktree reused; protected untracked imports/UIDs and original dirty checkout untouched. Current branch starts at fetched completed main.","Native inline execution under executing-plans; plan stored in existing execution-owner format per project no duplicate plan/report preference. Same approved scope does not request another approval.","Preserve default production/R2/legacy assist rules, assets, engine and plugins; new opt-in successor and separate save namespace. Hera currently connected to another project; do not mutate that editor.","Skill bonus has its own replayable ledger, never fake destroyed tile IDs or multiply A/D/H/T. Human balance remains NOT_RUN."],
+  "progress":["Implementation complete at8de30a0: mastery ledger, four patterns, practice and HUD in actual entry.","Whole Godot560/560,7698assertions; tooling95/95; focused PDF3/3 and final native rerun PASS.","Two shared full self-review loops completed; terminal status, disk namespace and malformed-save findings corrected. Independent code review and64save combinations no unresolved findings.","Same current-reader68pages preserves61; same monthly journal17pages preserves16 with final render/readback. No duplicate edition.","Required delivery still pending: executed clean-clone claim check, exact-head remote checks, allowed current-task merge, postmerge full tests and playable launch. See evidence owner for current status; earlier kanban next_action is the original entry plan, not remaining implementation work."],
+  "evidence_ceiling":"MACHINE/RUNTIME/RENDER verified; HUMAN/physical-device/final-art/release NOT_RUN; remote integration pending"
+}

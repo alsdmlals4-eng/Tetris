@@ -15,6 +15,8 @@ func _player_duration(waves:int)->int:
     var rules=Finisher.config()
     return int(rules.high_chain_duration_us if waves>=int(rules.high_chain_min) else rules.player_duration_us)
 func _simulation_blocked()->bool:return false
+func _elapse_combat(step:int)->void:combat.eta_us-=step
+func _prepare_cast_probe(_probe,_cast:Dictionary)->bool:return true
 
 func command(name:String,args:Dictionary={})->Dictionary:
     if name=="category":return _failure("STARTER_DETERMINES_SKILL")
@@ -109,7 +111,7 @@ func tick(delta_us:int)->Array:
         if mode=="LINE" and resource_mode=="LINE":line.advance_time(step)
         if resource_mode=="SWAP" and swap.resolving:swap.advance_time(step)
         if mode=="CHAIN" or chain.is_resolving():chain.advance_time(step)
-        combat.eta_us-=step
+        _elapse_combat(step)
         elapsed_simulation_us+=step
         remaining-=step
         _reserve_threat()
@@ -229,6 +231,7 @@ func _valid_cast_ledger(data:Dictionary)->bool:
             if not Validation.valid_integer(cast.get("time_applied_us"),0,finisher_power("T",6)):return false
             if cast.get("reason")=="ACTION_COMMITTED":probe.eta_us=0
             else:probe.extension_us=probe._extension_cap_us-int(cast.time_applied_us)
+        if not _prepare_cast_probe(probe,cast):return false
         var expected=_apply_finisher(probe,cast.event_id,cast.starter,int(cast.wave))
         var core=cast.duplicate(true)
         for key in ["wave_ids","first_cells","axis_id","chain_id"]:core.erase(key)

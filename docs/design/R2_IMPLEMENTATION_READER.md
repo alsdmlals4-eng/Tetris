@@ -1,5 +1,7 @@
 # R2 게임 전체 구현 보완본
 
+> 현행 읽기 안내(2026-09-21): 같은 CURRENT PDF의 맨 앞 기술 보급·적 대응 절부터 읽는다. 현재 resource_choice는 테트리스 기술 보급, 적별 패턴4종, LINE 연습3종과 기존 뿌요 연습을 제공한다. 뒤의61쪽과 원본 COMPLETE는 이력으로 보존한다. 상세 규칙·실행 경로는 R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md와 REPLANNING_FOUNDATION.md의 최신 날짜를 따른다. HUMAN 최종 밸런스 및 캠페인 통합은 별도다.
+
 > 최신 읽기 안내(2026-09-20): 아래 R2 15쪽은 당시 구현 기록이다. 같은 CURRENT PDF의 맨 앞 R3 개정 절이 현재 선택형 자원 전투의 보너스 보정·티어·파괴·연습을 설명한다. 규칙 원본은 R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md, 발행은 tools/append_r3_blueprint.py다. 기존 52쪽 내용과 원본 COMPLETE PDF는 보존한다. R3는 캠페인에 자동 이식되지 않았다.
 
 ## 01 현재 게임과 이 책의 읽는 순서

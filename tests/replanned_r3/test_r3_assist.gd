@@ -119,7 +119,7 @@ func test_tier_power_applied_once_and_grows_more_than_single_cast_spam():
 func test_assist_snapshot_is_distinct_and_invalid_spend_is_atomic():
     var s=session()
     var state=s.snapshot()
-    assert_eq(state.schema,"r3-assist-v1")
+    assert_eq(state.schema,"r3-mastery-v1","actual consumer now uses isolated mastery successor")
     assert_true(state.has("bonus_history"))
     if not state.has("bonus_history"):return
     var restored=s.get_script().new(state.difficulty,int(state.seed),state.run_id,state.profile)
