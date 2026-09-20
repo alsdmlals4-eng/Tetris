@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "artifact_role": "REVIEW_EVIDENCE_RESULT",
+  "record_path": "C:/Users/user/AppData/Local/Temp/tetris-mastery-review-20260921/docs/validation/mastery-patterns-20260921/review-record.json",
+  "subject": {
+    "base_ref": "bf6c52e31933db35bad5bceb5db529f0b6e638e4",
+    "base_sha": "bf6c52e31933db35bad5bceb5db529f0b6e638e4",
+    "head_sha": "1997c56fe09f92bc7456e077858f2af8537e85b8",
+    "changed_files": [
+      "data/replanned_r3/mastery.json",
+      "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.manifest.json",
+      "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf",
+      "docs/design/R2_IMPLEMENTATION_READER.md",
+      "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+      "docs/design/REPLANNING_FOUNDATION.md",
+      "docs/operations/MASTERY_PATTERNS_EXECUTION.json",
+      "docs/validation/mastery-patterns-20260921/README.md",
+      "docs/validation/mastery-patterns-20260921/charge-960.png",
+      "docs/validation/mastery-patterns-20260921/full-gut.log",
+      "docs/validation/mastery-patterns-20260921/pattern-foundry.png",
+      "docs/validation/mastery-patterns-20260921/pattern-outer_breach.png",
+      "docs/validation/mastery-patterns-20260921/pattern-rift_core.png",
+      "docs/validation/mastery-patterns-20260921/pattern-watchtower.png",
+      "docs/validation/mastery-patterns-20260921/practice-combo.png",
+      "docs/validation/mastery-patterns-20260921/practice-four.png",
+      "docs/validation/mastery-patterns-20260921/practice-spin-960.png",
+      "docs/validation/mastery-patterns-20260921/practice-spin.png",
+      "docs/validation/mastery-patterns-20260921/preparation-960.png",
+      "docs/validation/mastery-patterns-20260921/preparation.png",
+      "docs/validation/mastery-patterns-20260921/result-combo.png",
+      "docs/validation/mastery-patterns-20260921/result-four.png",
+      "docs/validation/mastery-patterns-20260921/result-spin.png",
+      "docs/validation/mastery-patterns-20260921/review-record.json",
+      "docs/validation/mastery-patterns-20260921/runtime.json",
+      "docs/validation/mastery-patterns-20260921/status-foundry.png",
+      "docs/validation/mastery-patterns-20260921/status-outer_breach.png",
+      "docs/validation/mastery-patterns-20260921/supply-comparison.json",
+      "docs/validation/mastery-patterns-20260921/tooling.log",
+      "scenes/replanned_r3/resource_choice.tscn",
+      "src/replanned_r3/mastery_line.gd",
+      "src/replanned_r3/mastery_practice.gd",
+      "src/replanned_r3/mastery_session.gd",
+      "src/replanned_r3/mastery_supply.gd",
+      "src/replanned_r3/mastery_ui.gd",
+      "src/replanned_r3/pattern_combat.gd",
+      "src/replanned_r3/r3_finisher_session.gd",
+      "src/replanned_r3/r3_save.gd",
+      "src/replanned_r3/r3_screen.gd",
+      "src/replanned_r3/r3_session.gd",
+      "tests/replanned_r3/test_r3_assist.gd",
+      "tests/replanned_r3/test_r3_mastery.gd",
+      "tests/replanned_r3/test_r3_mastery_practice.gd",
+      "tests/replanned_r3/test_r3_patterns.gd",
+      "tests/tooling/mastery_native_probe.gd",
+      "tests/tooling/mastery_supply_comparison.gd",
+      "tests/tooling/test_r2_implementation_reader.py",
+      "tools/append_r3_blueprint.py"
+    ]
+  },
+  "gates": {
+    "implementation": {
+      "status": "PASS",
+      "mapped_acceptance_ids": [
+        "SUPPLY",
+        "PATTERNS",
+        "PRACTICE",
+        "SAVE",
+        "PDF"
+      ],
+      "actual_changed_paths": [
+        "data/replanned_r3/mastery.json",
+        "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.manifest.json",
+        "docs/blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf",
+        "docs/design/R2_IMPLEMENTATION_READER.md",
+        "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "docs/design/REPLANNING_FOUNDATION.md",
+        "docs/operations/MASTERY_PATTERNS_EXECUTION.json",
+        "docs/validation/mastery-patterns-20260921/README.md",
+        "docs/validation/mastery-patterns-20260921/charge-960.png",
+        "docs/validation/mastery-patterns-20260921/full-gut.log",
+        "docs/validation/mastery-patterns-20260921/pattern-foundry.png",
+        "docs/validation/mastery-patterns-20260921/pattern-outer_breach.png",
+        "docs/validation/mastery-patterns-20260921/pattern-rift_core.png",
+        "docs/validation/mastery-patterns-20260921/pattern-watchtower.png",
+        "docs/validation/mastery-patterns-20260921/practice-combo.png",
+        "docs/validation/mastery-patterns-20260921/practice-four.png",
+        "docs/validation/mastery-patterns-20260921/practice-spin-960.png",
+        "docs/validation/mastery-patterns-20260921/practice-spin.png",
+        "docs/validation/mastery-patterns-20260921/preparation-960.png",
+        "docs/validation/mastery-patterns-20260921/preparation.png",
+        "docs/validation/mastery-patterns-20260921/result-combo.png",
+        "docs/validation/mastery-patterns-20260921/result-four.png",
+        "docs/validation/mastery-patterns-20260921/result-spin.png",
+        "docs/validation/mastery-patterns-20260921/review-record.json",
+        "docs/validation/mastery-patterns-20260921/runtime.json",
+        "docs/validation/mastery-patterns-20260921/status-foundry.png",
+        "docs/validation/mastery-patterns-20260921/status-outer_breach.png",
+        "docs/validation/mastery-patterns-20260921/supply-comparison.json",
+        "docs/validation/mastery-patterns-20260921/tooling.log",
+        "scenes/replanned_r3/resource_choice.tscn",
+        "src/replanned_r3/mastery_line.gd",
+        "src/replanned_r3/mastery_practice.gd",
+        "src/replanned_r3/mastery_session.gd",
+        "src/replanned_r3/mastery_supply.gd",
+        "src/replanned_r3/mastery_ui.gd",
+        "src/replanned_r3/pattern_combat.gd",
+        "src/replanned_r3/r3_finisher_session.gd",
+        "src/replanned_r3/r3_save.gd",
+        "src/replanned_r3/r3_screen.gd",
+        "src/replanned_r3/r3_session.gd",
+        "tests/replanned_r3/test_r3_assist.gd",
+        "tests/replanned_r3/test_r3_mastery.gd",
+        "tests/replanned_r3/test_r3_mastery_practice.gd",
+        "tests/replanned_r3/test_r3_patterns.gd",
+        "tests/tooling/mastery_native_probe.gd",
+        "tests/tooling/mastery_supply_comparison.gd",
+        "tests/tooling/test_r2_implementation_reader.py",
+        "tools/append_r3_blueprint.py"
+      ]
+    },
+    "verification": {
+      "status": "PASS",
+      "checks": [
+        {
+          "check_id": "MASTERY-TESTS",
+          "argv": [
+            "C:/Users/user/Downloads/Godot_v4.7.1-stable_win64.exe/Godot_v4.7.1-stable_win64_console.exe",
+            "--headless",
+            "--path",
+            ".",
+            "-s",
+            "addons/gut/gut_cmdln.gd",
+            "-gtest=res://tests/replanned_r3/test_r3_mastery.gd,res://tests/replanned_r3/test_r3_patterns.gd,res://tests/replanned_r3/test_r3_mastery_practice.gd,res://tests/replanned_r3/test_r3_assist.gd",
+            "-gexit"
+          ],
+          "working_directory": ".",
+          "declared_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS",
+          "exit_code": 0,
+          "duration_ms": 17477,
+          "stdout_tail": "Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org\n\n[godot_ai game_helper] registered mcp capture (debugger active=false, logger=true)\n---  GUT  ---\n\u001b[1m[INFO]:  \u001b[0musing [C:/Users/user/AppData/Roaming/Godot/app_userdata/Tetris] for temporary output.\nGodot version:  4.7.1\nGUT version:  9.7.1\n\u001b[4m\n\nres://tests/replanned_r3/test_r3_mastery.gd\n\u001b[0m* test_exact_skill_table_combo_break_b2b_gap_and_cap\n* test_rotation_marker_and_streak_survive_json_restore_and_destroy\n* test_restore_rejects_forged_mastery_and_fractional_credit_atomically\n* test_real_four_line_clear_credits_cells_once_plus_ten_skill_units\n* test_playable_entry_exposes_mastery_without_changing_tile_rewards\n* test_mastery_bonus_has_a_separate_replayable_credit_ledger\n\u001b[1m6/6 passed.\n\u001b[0m\u001b[4m\n\nres://tests/replanned_r3/test_r3_patterns.gd\n\u001b[0m* test_each_encounter_exposes_a_new_pattern_and_keeps_destruction\n* test_shield_nonstacking_absorbs_then_expires_after_next_action\n* test_armor_break_removes_six_without_touching_hp_or_ward\n* test_charge_cancel_only_removes_bonus_and_weakness_single_use\n* test_real_enemy_cycles_roundtrip_and_terminal_checkpoint\n* test_weakness_uses_simulation_clock_and_freezes_in_pause_and_cut_in\n* test_defeat_during_exposure_pattern_can_restore\n* test_actual_attack_finisher_receipt_survives_status_and_disk_roundtrip\n* test_malformed_pattern_hp_rejects_without_mutating_or_engine_errors\n\u001b[1m9/9 passed.\n\u001b[0m\u001b[4m\n\nres://tests/replanned_r3/test_r3_mastery_practice.gd\n\u001b[0m* test_three_playable_practices_use_actual_controls_and_cannot_save\n* test_mastery_hud_shows_actual_bonus_and_enemy_counterplay\n\u001b[1m2/2 passed.\n\u001b[0m\u001b[4m\n\nres://tests/replanned_r3/test_r3_assist.gd\n\u001b[0m* test_actual_entry_has_a_destruction_action\n* test_ten_pairs_overflow_then_refill_preserves_excess\n* test_bonus_open_without_currency_rejects_without_pause\n* test_bonus_request_freezes_both_clocks_only_at_safe_boundary_and_cancel_is_free\n* test_bonus_change_rejects_noop_then_creates_one_attack_finisher\n* test_bonus_horizontal_shift_and_empty_move_respect_gravity\n* test_emergency_attack_does_not_damage_boss_and_heal_clamps\n* test_all_four_encounters_have_exactly_one_disruption_per_cycle\n* test_tier_power_applied_once_and_grows_more_than_single_cast_spam\n* test_assist_snapshot_is_distinct_and_invalid_spend_is_atomic\n* test_request_while_pair_falling_waits_and_enemy_deadline_wins\n* test_invalid_bonus_args_do_not_spend_or_change_board\n* test_actual_ui_exposes_bonus_and_practice_without_manual_skill_selection\n* test_all_six_tiers_have_distinct_readable_visual_strength\n* test_short_practice_teaches_two_waves_and_is_not_a_paid_run\n* test_real_swap_overflow_paid_effect_and_disk_restore_conserve_bonus\n* test_bonus_can_queue_during_enemy_cut_in_and_terminal_clears_request\n* test_every_enemy_destroys_real_swap_cells_without_overflow_reward\n* test_selected_enemy_cut_in_and_loaded_profile_match_actual_enemy\n* test_heal_clamps_armor_adds_and_no_money_rejects_atomically\n* test_horizontal_empty_move_falls_and_tracks_assist_event\n* test_soft_drop_release_during_bonus_does_not_latch_next_pair\n* test_every_defense_tier_survives_combat_restore_and_resource_transaction\n\u001b[1m23/23 passed.\n\u001b[0m\n\n\n\n\u001b[33m==============================================\n\u001b[0m\u001b[33m= Run Summary\n\u001b[0m\u001b[33m==============================================\n\u001b[0m\nTotals\n------\nScripts               4\nTests                40\nPassing Tests        40\nAsserts             333\nTime              15.106s\n\n\n\u001b[32m---- All tests passed! ----\n\u001b[0m\n",
+          "stderr_tail": "",
+          "acceptance_ids": [
+            "SUPPLY",
+            "PATTERNS",
+            "PRACTICE",
+            "SAVE"
+          ]
+        },
+        {
+          "check_id": "PDF-TESTS",
+          "argv": [
+            "C:/Users/user/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests/tooling",
+            "-p",
+            "test_r2_implementation_reader.py"
+          ],
+          "working_directory": ".",
+          "declared_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS",
+          "exit_code": 0,
+          "duration_ms": 10202,
+          "stdout_tail": "",
+          "stderr_tail": "...\n----------------------------------------------------------------------\nRan 3 tests in 10.018s\n\nOK\n",
+          "acceptance_ids": [
+            "PDF"
+          ]
+        }
+      ]
+    },
+    "intent": {
+      "status": "PASS",
+      "acceptance_results": [
+        {
+          "intent_id": "SUPPLY",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "PATTERNS",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "PRACTICE",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "SAVE",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        },
+        {
+          "intent_id": "PDF",
+          "required_level": "TEST",
+          "observed_level": "TEST",
+          "status": "PASS"
+        }
+      ]
+    },
+    "integration": {
+      "status": "BLOCKED_UNVERIFIED",
+      "reason": "Pre-merge review cannot prove merged PR state, merge SHA, post-merge main readback, or post-merge required checks."
+    }
+  },
+  "claims": [
+    {
+      "claim_id": "MASTERY-RULES",
+      "status": "CLAIM_VERIFIED",
+      "evidence_ids": [
+        "SUPPLY",
+        "PATTERNS",
+        "PRACTICE",
+        "SAVE",
+        "MASTERY-TESTS"
+      ]
+    },
+    {
+      "claim_id": "PDF",
+      "status": "CLAIM_VERIFIED",
+      "evidence_ids": [
+        "PDF",
+        "PDF-TESTS"
+      ]
+    }
+  ],
+  "final_status": "PASS",
+  "errors": []
+}
