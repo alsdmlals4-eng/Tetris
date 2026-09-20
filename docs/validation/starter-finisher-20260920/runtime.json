@@ -1,0 +1,24 @@
+{
+  "attack_bank_consumed": 6,
+  "boss_hp_after_finisher": 84,
+  "disk_roundtrip": true,
+  "enemy_contact_and_recovery": true,
+  "human_fun": "NOT_RUN",
+  "manual_category_nodes": false,
+  "renderer": "NVIDIA GeForce RTX 3050",
+  "resource_entry": "resource_choice.tscn",
+  "same_eta_during_recovery": true,
+  "starter": "A",
+  "storage": "user://finisher-native-probe",
+  "two_chain_casts": 1,
+  "viewports": [
+    [
+      1280,
+      720
+    ],
+    [
+      960,
+      540
+    ]
+  ]
+}
