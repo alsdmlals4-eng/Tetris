@@ -1,6 +1,6 @@
 # R2 통합 사람용 블루프린트
 
-> 2026-09-20 현재 실행 안내: 아래 R2 설계/구현 이력은 보존된 기록이다. 선택형 자원 전투의 최신 규칙은 [R3 명세 최신 절](R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md)이며, 사람용 PDF 뒤의 R3 보너스 보정 개정 부록이 실제 화면과 변경 표를 설명한다. 기존 R2/campaign을 최신 R3와 혼동하지 않는다. PDF의 앞 52쪽은 과거 발행 시점의 증거이며 새 Human/final-art/출시 승인으로 승격하지 않는다.
+> 2026-09-20 현재 실행 안내: 이 문서와 37쪽 COMPLETE PDF는 보존된 R2 설계 기록이다. 최신 규칙은 [R3 명세 최신 절](R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md)이다. 실제 화면과 변경 표는 별도의 기존 [CURRENT 구현 리더](../blueprints/TETRIS_R2_CURRENT_IMPLEMENTATION_READER.pdf) 앞에 추가한다. 그 리더의 이전 52쪽(구현 15쪽 + 설계 37쪽)은 그대로 보존한다. R2/campaign을 최신 R3 또는 새 Human/final-art/출시 승인과 혼동하지 않는다.
 
 ## 01 · 승인 검토를 위한 한 권
 

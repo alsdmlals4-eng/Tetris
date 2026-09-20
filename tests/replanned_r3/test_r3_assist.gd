@@ -207,7 +207,7 @@ func test_real_swap_overflow_paid_effect_and_disk_restore_conserve_bonus():
     var s=Script.new("STANDARD",42,"real-bonus","outer_breach")
     s.command("prepare_resource",{"mode":"SWAP"})
     for attempt in 40:
-        if s.bonus_balance()>=2:break
+        if s.bonus_balance()>=4:break
         assert_true(s.command("resource_swap",legal_move(s.swap)).success)
         for wave in 64:
             if not s.swap.resolving:break
@@ -221,6 +221,9 @@ func test_real_swap_overflow_paid_effect_and_disk_restore_conserve_bonus():
     var restored=Script.new("STANDARD",42,"real-bonus","outer_breach")
     assert_true(restored.restore(state))
     assert_eq(restored.snapshot(),s.snapshot())
+    var refunded=state.duplicate(true)
+    refunded.bonus_history=[]
+    assert_false(restored.restore(refunded),"removing paid history must not refund already applied bonus")
     var disk=preload("res://src/replanned_r3/r3_save.gd").new("user://bonus-assist-tests/save.json","user://bonus-assist-tests/options.json")
     assert_true(disk.save_session(s).success)
     assert_true(disk.load_checkpoint().success)
@@ -228,6 +231,19 @@ func test_real_swap_overflow_paid_effect_and_disk_restore_conserve_bonus():
     var prior=restored.snapshot()
     assert_false(restored.restore(state))
     assert_eq(restored.snapshot(),prior)
+    # Authored fixed-board fixture, real earned currency and full finisher/save consumer.
+    s.chain.active_pair={}
+    s.chain.phase="NEED_PAIR"
+    s.chain.cells=[]
+    for x in 4:s.chain.cells.append(s.chain._new_cell(x,11,"H" if x==3 else "D"))
+    assert_true(s.command("bonus_open").success)
+    assert_true(s.command("bonus_apply",{"operation":"change","cell_id":s.chain.cells[3].cell_id,"kind":"D"}).success)
+    s.tick(2000000)
+    assert_eq(s.last_cast.starter,"D")
+    var corrected=s.snapshot()
+    assert_false(corrected.is_empty())
+    assert_true(restored.restore(JSON.parse_string(JSON.stringify(corrected))))
+    assert_eq(restored.combat.ward,s.combat.ward)
 
 func test_bonus_can_queue_during_enemy_cut_in_and_terminal_clears_request():
     var s=funded()
@@ -274,6 +290,7 @@ func test_selected_enemy_cut_in_and_loaded_profile_match_actual_enemy():
     screen.preferred_encounter="rift_core"
     assert_true(screen.restore_checkpoint().success)
     assert_eq(screen.preferred_encounter,"watchtower")
+    assert_eq(screen.get_node("Preparation/Encounter").selected,1)
 
 func test_heal_clamps_armor_adds_and_no_money_rejects_atomically():
     var s=funded()
@@ -303,3 +320,32 @@ func test_horizontal_empty_move_falls_and_tracks_assist_event():
     assert_eq(s.chain.cells[0].x,1)
     assert_eq(s.chain.cells[0].y,11)
     assert_true(s.bonus_history[0].event_id.ends_with(":ASSIST"))
+
+func test_soft_drop_release_during_bonus_does_not_latch_next_pair():
+    var s=funded()
+    s.command("switch")
+    s.command("soft_drop",{"enabled":true})
+    s.command("bonus_open")
+    s.command("hard_drop")
+    s.tick(500000)
+    assert_true(s.assist_open)
+    assert_true(s.command("soft_drop",{"enabled":false}).success)
+    s.command("bonus_cancel")
+    assert_false(s.chain._soft_drop)
+
+func test_every_defense_tier_survives_combat_restore_and_resource_transaction():
+    var s=preload("res://src/replanned_r3/r3_assist_session.gd").new()
+    assert_true(s.command("prepare_resource",{"mode":"SWAP"}).success)
+    for tier in range(1,7):
+        s.combat.ward=0
+        s.combat.ward_target=""
+        assert_true(s._apply_finisher(s.combat,"def-test-"+str(tier),"D",tier).success)
+        var clone=s.combat.get_script().new(s._difficulty,s._run_id,s._profile)
+        assert_true(clone.restore(s.combat.snapshot()),"DEF T"+str(tier))
+        assert_true(s.command("resource_swap",legal_move(s.swap)).success)
+        var events=s.tick(300000)
+        for event in events:assert_ne(event.get("reason",""),"INVALID_TRANSACTION_SOURCE")
+        for wave in 64:
+            if not s.swap.resolving:break
+            s.tick(300000)
+        assert_false(s.swap.resolving)

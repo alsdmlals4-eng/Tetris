@@ -203,7 +203,7 @@ func _valid_cast_ledger(data:Dictionary)->bool:
         if chain._matched_cells_in(cast.first_cells).size()!=cast.first_cells.size():return false
         if Finisher.starter(cast.first_cells,cast.axis_id)!=cast.starter:return false
         # Recompute the exact receipt against a bounded isolated pre-effect state.
-        var probe=Combat.new(_difficulty,_run_id,_profile)
+        var probe=_new_combat()
         if cast.starter=="A":
             for key in ["bank_consumed","damage_applied"]:
                 if not Validation.valid_integer(cast.get(key),0,2147483647):return false

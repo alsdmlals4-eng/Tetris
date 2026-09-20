@@ -109,6 +109,8 @@ func apply(args:Dictionary)->void:
 
 func refresh()->void:
     var session=s.session
+    var profile_index=["outer_breach","watchtower","foundry","rift_core"].find(s.preferred_encounter)
+    if profile_index>=0:s.get_node("Preparation/Encounter").select(profile_index)
     var chain_mode=session.mode=="CHAIN"
     var balance=session.bonus_balance()
     s.get_node("Puzzle/Supply").text="보관 %d / 10쌍 · 보너스 마나 %d\n자원 10단위 → 3쌍 · 초과 1쌍 → 보너스 1"%[session.supply.pairs,balance]

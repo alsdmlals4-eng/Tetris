@@ -2,6 +2,7 @@
 ## Legacy R3 and finisher v1 keep their own unchanged rules and save paths.
 extends "res://src/replanned_r3/r3_finisher_session.gd"
 const BonusSupply=preload("res://src/replanned_r3/bonus_supply.gd")
+const AssistCombat=preload("res://src/replanned_r3/assist_combat.gd")
 const ASSIST_CONFIG="res://data/replanned_r3/assist.json"
 var _assist_rules:Dictionary={}
 var bonus_history:Array=[]
@@ -14,6 +15,7 @@ func assist_rules()->Dictionary:
     return _assist_rules.duplicate(true)
 
 func _new_supply():return BonusSupply.new()
+func _new_combat():return AssistCombat.new(_difficulty,_run_id,_profile)
 
 func bonus_balance()->int:
     var spent=0
@@ -29,6 +31,7 @@ func _destruction_count()->int:
     return maxi(1,int(pattern.count)-(1 if _difficulty=="RELAXED" else 0))
 
 func command(name:String,args:Dictionary={})->Dictionary:
+    if name=="soft_drop" and args.get("enabled") is bool and not args.enabled:return super.command(name,args)
     if name.begins_with("bonus_"):
         if combat.outcome!="RUNNING":return _failure("COMBAT_TERMINAL")
         if combat.paused:return _failure("PAUSED")
@@ -126,6 +129,7 @@ func _spend_bonus(args:Dictionary)->Dictionary:
         elif operation=="attack":combat.attack_bank+=amount
         else:combat.armor+=amount
     bonus_history.append({"id":bonus_history.size()+1,"operation":operation,"cost":cost,"earned":supply.discarded,"args":args.duplicate(true),"event_id":result.get("event_id","")})
+    combat.bonus_spend_ids.append(JSON.stringify(_normalize(bonus_history[-1])).sha256_text())
     assist_requested=false
     assist_open=false
     result["bonus_remaining"]=bonus_balance()
@@ -154,17 +158,19 @@ func restore(data:Dictionary)->bool:
     return true
 
 func _valid_bonus_history(data:Dictionary)->bool:
-    if not data.get("bonus_history") is Array or not data.get("supply") is Dictionary or not data.get("chain") is Dictionary:return false
+    if not data.get("bonus_history") is Array or not data.get("supply") is Dictionary or not data.get("chain") is Dictionary or not data.get("combat") is Dictionary:return false
+    if not data.combat.get("bonus_spend_ids") is Array:return false
     if not Validation.valid_integer(data.supply.get("discarded"),0,2147483647) or not data.chain.get("processed_event_ids") is Array:return false
     var spent=0
     var earned=0
     var ids=[]
+    var spend_ids=[]
     var rules=assist_rules()
     for i in data.bonus_history.size():
         var entry=data.bonus_history[i]
-        if not entry is Dictionary or entry.size()!=6 or entry.get("id")!=i+1:return false
+        if not entry is Dictionary or entry.size()!=6 or not Validation.valid_integer(entry.get("id"),i+1,i+1):return false
         if not entry.get("operation") is String or not rules.costs.has(entry.operation):return false
-        if entry.get("cost")!=rules.costs[entry.operation] or not Validation.valid_integer(entry.get("earned"),earned,int(data.supply.discarded)):return false
+        if not Validation.valid_integer(entry.get("cost"),int(rules.costs[entry.operation]),int(rules.costs[entry.operation])) or not Validation.valid_integer(entry.get("earned"),earned,int(data.supply.discarded)):return false
         if not entry.get("args") is Dictionary or entry.args.get("operation")!=entry.operation or not entry.get("event_id") is String:return false
         earned=int(entry.earned)
         spent+=int(entry.cost)
@@ -177,7 +183,8 @@ func _valid_bonus_history(data:Dictionary)->bool:
             if entry.event_id in ids or entry.event_id not in data.chain.processed_event_ids or not entry.event_id.ends_with(":ASSIST"):return false
             ids.append(entry.event_id)
         elif entry.args.size()!=1 or not entry.event_id.is_empty():return false
+        spend_ids.append(JSON.stringify(_normalize(entry)).sha256_text())
     var actual=[]
     for id in data.chain.processed_event_ids:
         if id.ends_with(":ASSIST"):actual.append(id)
-    return ids==actual
+    return ids==actual and spend_ids==data.combat.bonus_spend_ids
