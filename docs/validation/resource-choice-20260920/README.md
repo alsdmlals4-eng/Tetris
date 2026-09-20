@@ -28,3 +28,11 @@ SWAP 마우스 두 인접 칸 또는 방향키+Enter/Space; 유효 3매치가 �
 최종 로컬 교정본: Godot4.7.1/GUT9.7.1 전체 **499/499 tests,7252 assertions,81 scripts,80.787s**, script/parse errors 없음. Python tooling **94/94**. Base adoption 원본+생성물3개 PASS/변경0, Windows PowerShell static/port self-test PASS. 마지막 준비 상태 load 실패 안내도 실제 화면 consumer 검사로 교정했다. 저장 반례 테스트 중 생성한 새 제품 namespace의 시작 전 샘플 한 개는 검증 후 `C:/Users/user/Documents/삭제검토/Tetris/resource-choice-20260920/test-preparation-save.json`으로 이동했다(SHA256 `34b288fd99c993aef92ab47110493e21dc4e5b0777b2258cd89bac3f918bbe8d`). 정상 R2/R3 진행을 삭제한 것이 아니며 사용자가 직접 삭제/복원할 수 있다.
 
 상태/최종 SHA/필수 검사/PR·main readback은 live GitHub 기록과 아래 종료 기록으로 대조한다. 생성 이미지가 아니라 기존 승인/후보 이미지 consumer를 보존했으므로 신규 이미지 생성·최종 자산 승인 주장은 없다.
+
+## 병합 및 종료 readback
+
+[PR120](https://github.com/alsdmlals4-eng/Tetris/pull/120): exact reviewed HEAD `ebaadf3726b9b2d4f2ff4ac76b086dbf0c508491`, main squash `2e66efc44b223aa7335cb6f40e6def4b21b18e61`. `git diff --exit-code <reviewed-head> <main>`으로 전체 파일 동일 확인. 원격 `godot-validation`, `windows-powershell-contract`, `validate` 모두 PASS; 미해결 review thread 0, changes-requested 0, bypass 없는 정상 병합. 원격 Godot499/499 및 tooling94 검사 로그도 직접 확인했다. 병합 후 [main 회귀 실행](https://github.com/alsdmlals4-eng/Tetris/actions/runs/35506487598)도 SUCCESS다. 이는 별도 main 실행 결과이며 PR 검사를 대신하지 않는다. 이 종료 문서의 `verified_head_sha`는 위 구현 subject이고 이후 문서 전용 commit의 자기 참조 hash를 뜻하지 않는다.
+
+`REMAINING_WORK_COMPLETION_GATE`: 이번 선택형 단일 전투 계약 1/1, 필수 기능 결함0. `IMPLEMENTATION_CORRECTION_RESCAN` 및 두 번째 전체 상태 검토 완료, 재현된 세 독립 finding 교정 후 `CLEAN_REVIEW_EXIT`. 미검증 HUMAN/밸런스/캠페인 전체/최종 자산/출시를 완료로 올리지 않았다. Base 환류는 `NO_NEW_REUSE_LEARNING`: 현재 프로젝트 특화 구현이며 공용 규칙 변경 없음. 롤백은 기존 production/R2 씬을 이용하거나 PR120의 검토된 revert로 수행하며 기존 저장/사용자 폴더를 초기화하지 않는다.
+
+월별 작업일지는 기존 `Tetris_2026-09_AI활용_작업일지_증빙집_v1.1.pdf`에 9월20일 요약·실행 화면을 누적한다. 과거13쪽 content stream은 동일 보존, 새1쪽 추가(14쪽), 원본/log/hash 사본은 비공개 증빙 폴더에 둔다. 프롬프트는 요청 요약으로 표시하며 원본 대화 화면 캡처·계정·결제·시점 인증으로 주장하지 않는다.
