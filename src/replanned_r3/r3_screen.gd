@@ -3,6 +3,7 @@ const Session=preload("res://src/replanned_r3/r3_session.gd")
 const FinisherSession=preload("res://src/replanned_r3/r3_finisher_session.gd")
 const AssistSession=preload("res://src/replanned_r3/r3_assist_session.gd")
 const MasterySession=preload("res://src/replanned_r3/mastery_session.gd")
+const CounterSession=preload("res://src/replanned_r3/counter_session.gd")
 const MasteryUI=preload("res://src/replanned_r3/mastery_ui.gd")
 const AssistUI=preload("res://src/replanned_r3/r3_assist_ui.gd")
 const Finisher=preload("res://src/replanned_r3/r3_finisher.gd")
@@ -14,6 +15,9 @@ const Disk=preload("res://src/replanned_r3/r3_save.gd")
 @export var use_finishers:bool=false
 @export var use_assists:bool=false
 @export var use_mastery:bool=false
+@export var use_counter:bool=false
+var initial_session=null
+var checkpoint_owner=null
 var preparing:=false
 var preference_path="user://resource_choice/preference.cfg"
 var preferred_resource="LINE"
@@ -43,6 +47,8 @@ const INK=Color("#0c1420")
 
 func _ready()->void:
     if use_finishers:session=(MasterySession.new() if use_mastery else AssistSession.new()) if use_assists else FinisherSession.new()
+    if use_counter:session=CounterSession.new()
+    if initial_session!=null:session=initial_session
     if get_tree().current_scene==self:
         get_window().content_scale_size=Vector2i(1280,720)
         get_window().content_scale_mode=Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
@@ -53,7 +59,8 @@ func _ready()->void:
     assets=Assets.new()
     performer=Performer.new()
     if disk==null:
-        if use_mastery:disk=Disk.new("user://mastery_patterns/save.json","user://mastery_patterns/options.json")
+        if use_counter:disk=Disk.new("user://counter_guard/save.json","user://counter_guard/options.json")
+        elif use_mastery:disk=Disk.new("user://mastery_patterns/save.json","user://mastery_patterns/options.json")
         elif use_assists:disk=Disk.new("user://bonus_assist/save.json","user://bonus_assist/options.json")
         elif use_finishers:disk=Disk.new("user://starter_finisher/save.json","user://starter_finisher/options.json")
         else:disk=Disk.new("user://resource_choice/save.json","user://resource_choice/options.json") if show_preparation else Disk.new()
@@ -141,6 +148,9 @@ func _ready()->void:
         mastery_ui.attach(self)
         feedback=preload("res://src/replanned_r3/puzzle_feedback.gd").new()
         feedback.attach(self)
+    if use_counter and checkpoint_owner==null:
+        _button(self,"Expedition",Rect2(212,645,418,48),"짧은 원정 · 3전투와 보급 선택",func():get_tree().change_scene_to_file("res://scenes/replanned_r3/short_expedition.tscn"))
+        _button(self,"LegacyMastery",Rect2(650,645,418,48),"이전 숙련 전투 저장 · 별도 규칙",func():get_tree().change_scene_to_file("res://scenes/replanned_r3/mastery_legacy.tscn"))
     refresh()
 
 func _panel(parent:Node,node_name:String,rect:Rect2)->Panel:
@@ -358,6 +368,12 @@ func refresh()->void:
     if feedback!=null:
         feedback.sync()
         skill_feedback.refresh(self)
+    if has_node("Expedition"):$Expedition.visible=preparing
+    if has_node("LegacyMastery"):$LegacyMastery.visible=preparing
+    if combat.has_method("counter_state"):
+        var guard:Dictionary=combat.counter_state()
+        $Combat/Player/Resources.add_theme_font_size_override("font_size",17)
+        $Combat/Player/Resources.text="HP %d / 100  방어 %d  보호 %d  공격 +%d\n반격 수호 %d회 · 잔여 피해 50%% 경감/반사"%[combat.hp,combat.armor,combat.ward,combat.attack_bank,guard.charges]
 
 func _refresh_legacy_skills()->void:
     var combat=session.combat
@@ -425,6 +441,7 @@ func start_resource_battle(producer:String)->void:
     if not preparing or producer not in ["LINE","SWAP"]:return
     var candidate=(AssistSession.new("STANDARD",9112026,"r3:standalone",preferred_encounter) if use_assists else FinisherSession.new()) if use_finishers else Session.new()
     if use_mastery:candidate=MasterySession.new("STANDARD",9112026,"r3:standalone",preferred_encounter)
+    if use_counter:candidate=CounterSession.new("STANDARD",9112026,"r3:standalone",preferred_encounter)
     if not candidate.command("prepare_resource",{"mode":producer}).success:return
     session=candidate
     if assist_ui!=null:assist_ui.reset_presentation()
@@ -496,6 +513,7 @@ func _pair_label(pair:Dictionary)->String:
     return "비어 있음" if String(pair.get("shape","")).is_empty() else "%s:%s"%[pair.shape,pair.resource]
 
 func save_checkpoint()->Dictionary:
+    if checkpoint_owner!=null:return checkpoint_owner.save_checkpoint()
     if preparing:return {"success":false,"reason":"PREPARATION"}
     if not session.combat.paused:return {"success":false,"reason":"PAUSE_REQUIRED"}
     var result:Dictionary=disk.save_session(session,clampi(roundi(_fraction_us*1000.0),0,999))
@@ -504,12 +522,14 @@ func save_checkpoint()->Dictionary:
     return result
 
 func restore_checkpoint()->Dictionary:
+    if checkpoint_owner!=null:return checkpoint_owner.restore_checkpoint()
     if not session.combat.paused:return {"success":false,"reason":"PAUSE_REQUIRED"}
     var result:Dictionary=disk.load_checkpoint()
     if result.success:
         var state:Dictionary=result.snapshot
         var script=(AssistSession if use_assists else FinisherSession) if use_finishers else Session
         if use_mastery:script=MasterySession
+        if use_counter:script=CounterSession
         var candidate=script.new(state.difficulty,int(state.seed),state.run_id,state.profile)
         if not candidate.restore(state):return {"success":false,"reason":"INVALID_CHECKPOINT"}
         candidate.command("pause")

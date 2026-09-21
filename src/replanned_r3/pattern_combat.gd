@@ -126,7 +126,7 @@ func restore(data:Dictionary)->bool:
     if state.shield>0 and state.shield_expiry==-1:return false
     if state.weakness_us>0 and (_pattern_profile!="outer_breach" or posmod(int(data.action_index),4)!=2):return false
     var completed=int(data.get("action_index",-1))
-    if data.get("outcome")=="DEFEAT" and data.get("eta_us")==0:completed+=1
+    if data.get("outcome") in ["DEFEAT","VICTORY"] and data.get("eta_us")==0:completed+=1
     if data.pattern_events.size()!=completed:return false
     for i in data.pattern_events.size():
         if data.pattern_events[i]!=_run_id+":"+str(i):return false

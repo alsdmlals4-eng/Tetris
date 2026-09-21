@@ -385,7 +385,7 @@ func restore(data:Dictionary)->bool:
     if candidate.combat.outcome=="RUNNING" and (preview.is_empty() or preview.action_id!=candidate.combat.action_id()):return false
     if candidate.combat.outcome!="RUNNING" and not preview.is_empty():return false
     var completed_count:int=candidate.combat.action_index
-    if candidate.combat.outcome=="DEFEAT" and candidate.combat.eta_us==0:completed_count+=1
+    if candidate.combat.outcome in ["DEFEAT","VICTORY"] and candidate.combat.eta_us==0:completed_count+=1
     if data.disruption.completed.size()!=completed_count:return false
     for i in completed_count:
         if data.disruption.completed[i]!=_run_id+":"+str(i):return false
