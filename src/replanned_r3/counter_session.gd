@@ -30,7 +30,7 @@ func _valid_cast_ledger(data:Dictionary)->bool:
     for cast in data.casts:
         if cast.starter=="D":
             if int(cast.counter_action_index)>int(data.combat.action_index):return false
-            expected[cast.event_id]=int(cast.stage)
+            expected[cast.event_id]={"tier":int(cast.stage),"action_index":int(cast.counter_action_index)}
     return _normalize(data.combat.counter.grants)==expected
 
 func snapshot()->Dictionary:

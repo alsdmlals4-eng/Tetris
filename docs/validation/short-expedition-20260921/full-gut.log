@@ -596,7 +596,7 @@ res://tests/replanned_r2/test_r2_screen.gd
 * test_line_time_receipt_survives_hard_drop_natural_lock_and_later_commands
 * test_receipt_and_def_preview_fit_existing_regions_at_125_percent
 * test_safety_recovery_emits_one_identified_diagnostic_from_real_wave_event
-[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-3dca449719d6fc4793a411f1f6127aeb","wave":64}
+[R2 safety] {"chain_id":7,"reason":"MAX_WAVES_REACHED","run_id":"practice-2c6516d761096c64415b73b2de01fafb","wave":64}
 [1m38/38 passed.
 [0m[4m
 
@@ -614,7 +614,8 @@ res://tests/replanned_r3/test_counter_guard.gd
 * test_actual_defense_cast_checkpoint_and_tamper_rejection
 * test_reflection_victory_after_real_cast_saves_and_simultaneous_death_loses
 * test_counter_grants_on_zero_damage_pattern_restore_and_do_not_expire
-[1m7/7 passed.
+* test_impossible_hit_arithmetic_and_hit_before_grant_are_rejected
+[1m8/8 passed.
 [0m[4m
 
 res://tests/replanned_r3/test_puzzle_feedback.gd
@@ -961,10 +962,10 @@ res://tests/unit/test_skill_executor.gd
 Totals
 ------
 Scripts              90
-Tests               584
-Passing Tests       584
-Asserts            7901
-Time              92.411s
+Tests               585
+Passing Tests       585
+Asserts            7906
+Time              103.481s
 
 
 [32m---- All tests passed! ----

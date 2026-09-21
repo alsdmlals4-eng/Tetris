@@ -40,4 +40,10 @@
 
 Hera 조회에서 현재 연결된 편집기는 Blacksmith/GRIMOIRE이며 수정하지 않았다. Tetris native standalone Godot4.7.1 Compatibility / RTX3050를 직접 실행, 1280×720·960×540에서 18장 캡처. [runtime.json](runtime.json)은 실제 scene/dispatch/process/render지만 전투 종료 HP는 단계 커버리지 fixture로 설정했다. 자동 플레이 완주/사람 입력·재미·최종 청취·최종아트·출시 승인으로 승격하지 않는다. 사용자 직전 긍정 피드백은 이전 버전에 대한 개별 관찰이지 이번 신규 밸런스 승인 아님.
 
-남은 필수: 최종 회귀/두 번째 전체 검토/독립 검토/누적 작업일지/원격 PR/main readback. 새 이미지 제작 없음, 기존 승인 자산 재사용. 파일 삭제 없음. 롤백: 새 entry/successor 연결을 bounded revert, 모든 저장 namespace 보존. 프로젝트별 반격·route 연결 교훈이며 Base 승격 후보 없음 (`NO_NEW_REUSE_LEARNING`).
+## 독립 검토 교정
+
+독립 reviewer가 구현 f7b83de 전체를 읽고 Critical0/Important1/Minor0을 보고했다. 반격 receipt의 합계만 확인하여 불가능한 100/100 피해, 부여 전 피격으로 이동, 피격 삭제+횟수 환원이 복원될 수 있었다. 세 변조를 실제 검사에서 RED로 확인한 뒤, 모든 적 impact와 피해/흡수/적 HP/차지 문맥, 수호 부여 action index를 저장하고 순서·산술·잔여 횟수를 재검증했다. 실패 복원의 원자성은 기존 probe 경계를 유지한다. 이는 전체 저장 파일의 암호학적 위변조 방지가 아니라 이 기능의 자기일관성 검사다.
+
+영향 범위 교정 후 focused8/8·59assertions, 전체 **585/585·7906assertions·90scripts·103.481s** PASS. Native18장 재실행 exit0, 경감3/반사3 실제 표시 재확인. 두 전체 검토 budget은 재시작하지 않았으며 독립 finding1건을 교정했다. 원격 PR/병합과 누적 일지 발행은 다음 delivery gate다.
+
+새 이미지 제작 없음, 기존 승인 자산 재사용. 파일 삭제 없음. 롤백: 새 entry/successor 연결을 bounded revert, 모든 저장 namespace 보존. 프로젝트별 반격·route 연결 교훈이며 Base 승격 후보 없음 (`NO_NEW_REUSE_LEARNING`).

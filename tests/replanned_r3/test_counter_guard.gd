@@ -108,3 +108,29 @@ func test_counter_grants_on_zero_damage_pattern_restore_and_do_not_expire():
     assert_eq(s.combat.counter_state().charges,1)
     assert_true(s.can_checkpoint())
     assert_true(make_session("foundry").restore(s.snapshot()))
+
+func test_impossible_hit_arithmetic_and_hit_before_grant_are_rejected():
+    var s=make_session()
+    s.command("prepare_resource",{"mode":"SWAP"})
+    s.tick(s.combat.eta_us+1600001)
+    for x in 4:s.chain.cells.append(s.chain._new_cell(x,11,"D"))
+    s.command("switch")
+    s.chain.active_pair.axis.kind="H";s.chain.active_pair.satellite.kind="T"
+    for i in 3:s.command("move",{"dx":1})
+    s.command("hard_drop");s.tick(2500000)
+    s.combat.ward=0;s.combat.ward_target="";s.combat.armor=0
+    s.tick(s.combat.eta_us+1600001)
+    var good=s.snapshot()
+    assert_false(good.is_empty())
+    assert_true(make_session().restore(good))
+    var bad=good.duplicate(true)
+    bad.combat.counter.hits[-1].prevented=100
+    bad.combat.counter.hits[-1].reflected=100
+    assert_false(make_session().restore(bad),"impossible 100/100 must not restore")
+    bad=good.duplicate(true)
+    bad.combat.counter.hits[-1].action_id=bad.combat.pattern_events[0]
+    assert_false(make_session().restore(bad),"cannot move guarded hit before actual grant")
+    bad=good.duplicate(true)
+    bad.combat.counter.hits.remove_at(bad.combat.counter.hits.size()-1)
+    bad.combat.counter.charges+=1
+    assert_false(make_session().restore(bad),"cannot remove consumed charge history")

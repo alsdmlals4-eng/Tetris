@@ -1,9 +1,125 @@
 {
-  "work_level":"L1",
-  "approval":"2026-09-21 user: 권장안대로 추가 + 방어 티어 횟수 50% 경감/동량 반사",
-  "benchmark_preflight_receipt":{"state":"PASS","entries":[{"source_and_evidence":"2a71290154a565e0a461504bf27cb6bb62f35e04: r2_expedition, r3_expedition_save, mastery_session, pattern_combat, current resource_choice; adopted Base23ecad5 and approved previous recommendation","observed_pattern":"Finite three-battle route, replay-validated carry rewards, atomic finisher receipts and isolated save envelopes already exist","project_fit_and_difference":"ADAPT existing route/current combat. Reject wholesale campaign rewrite (duplication) and in-place legacy rules replacement (save risk). Reuse approved assets and existing heal/attack/armor enhancements; no permanent perk economy.","disposition":"ADAPT"}]},
-  "context_configuration_hygiene":{"scope":"R3 successor and direct R2 reuse consumers only","inventory":[{"path":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md","classification":"ACTIVE_OWNER","owner_or_provenance":"Current R3 rules","references_and_consumers":"resource_choice / mastery_session / tests","removal_proposed":false},{"path":"src/replanned_r2/r2_expedition.gd","classification":"ACTIVE_OWNER","owner_or_provenance":"Bounded route and supply replay","references_and_consumers":"R2/R3 campaign adapters","removal_proposed":false},{"path":"scenes/production/battle_briefing.tscn","classification":"COMPATIBILITY","owner_or_provenance":"Protected default production entry","references_and_consumers":"project.godot unchanged","removal_proposed":false}]},
-  "project_work_kanban":{"goal_or_slice_issue_ref":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md#short-expedition-counter-guard","source_main_sha":"2a71290154a565e0a461504bf27cb6bb62f35e04","work_item_refs":["SHORT-01"],"active_work_item_ref":"SHORT-01","next_action":"TDD counter guard then expedition integration and delivery","work_items":[{"work_item_id":"SHORT-01","title":"Playable short expedition with tier-count counter guard","status":"IN_PROGRESS","canon_owner":"docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md","actual_consumers":["src/replanned_r3/r3_screen.gd","src/replanned_r3/mastery_session.gd"],"depends_on":[],"acceptance_criteria":["COUNTER","RUN","DELIVERY"],"required_evidence":["E2_TEST","E3_RUNTIME"],"checklist":[{"id":"COUNTER","text":"T charges, residual damage ceil-half reduction and equal true reflection once; validated save and visible receipt","status":"NOT_RUN"},{"id":"RUN","text":"Current combat through three battles, carry reward choice, result summary/retry and isolated save","status":"NOT_RUN"},{"id":"DELIVERY","text":"Regression/native, two reviews plus independent review, cumulative journal, normal PR/main readback","status":"NOT_RUN"}],"verification":[{"level":"E2_TEST","status":"NOT_RUN","evidence":[]},{"level":"E3_RUNTIME","status":"NOT_RUN","evidence":[]}],"next_action":"Write failing tests"}]},
-  "protected":["production","legacy saves","approved assets","other PRs/worktrees","Base adapter/plugins/global settings"],
-  "ledger":["Ruling: reuse existing finite heal/attack/armor supply enhancements; no new permanent perk economy. Reduction follows wards/armor; odd residual rounds reduction up; true reflection bypasses shield/attack-bank/weakness; defeat wins simultaneous terminal. Recast adds charges; each battle resets them."]
+  "work_level": "L1",
+  "approval": "2026-09-21 user: 권장안대로 추가 + 방어 티어 횟수 50% 경감/동량 반사",
+  "benchmark_preflight_receipt": {
+    "state": "PASS",
+    "entries": [
+      {
+        "source_and_evidence": "2a71290154a565e0a461504bf27cb6bb62f35e04: r2_expedition, r3_expedition_save, mastery_session, pattern_combat, current resource_choice; adopted Base23ecad5 and approved previous recommendation",
+        "observed_pattern": "Finite three-battle route, replay-validated carry rewards, atomic finisher receipts and isolated save envelopes already exist",
+        "project_fit_and_difference": "ADAPT existing route/current combat. Reject wholesale campaign rewrite (duplication) and in-place legacy rules replacement (save risk). Reuse approved assets and existing heal/attack/armor enhancements; no permanent perk economy.",
+        "disposition": "ADAPT"
+      }
+    ]
+  },
+  "context_configuration_hygiene": {
+    "scope": "R3 successor and direct R2 reuse consumers only",
+    "inventory": [
+      {
+        "path": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Current R3 rules",
+        "references_and_consumers": "resource_choice / mastery_session / tests",
+        "removal_proposed": false
+      },
+      {
+        "path": "src/replanned_r2/r2_expedition.gd",
+        "classification": "ACTIVE_OWNER",
+        "owner_or_provenance": "Bounded route and supply replay",
+        "references_and_consumers": "R2/R3 campaign adapters",
+        "removal_proposed": false
+      },
+      {
+        "path": "scenes/production/battle_briefing.tscn",
+        "classification": "COMPATIBILITY",
+        "owner_or_provenance": "Protected default production entry",
+        "references_and_consumers": "project.godot unchanged",
+        "removal_proposed": false
+      }
+    ]
+  },
+  "project_work_kanban": {
+    "goal_or_slice_issue_ref": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md#short-expedition-counter-guard",
+    "source_main_sha": "2a71290154a565e0a461504bf27cb6bb62f35e04",
+    "work_item_refs": [
+      "SHORT-01"
+    ],
+    "active_work_item_ref": "SHORT-01",
+    "next_action": "Independent review, cumulative journal, normal PR/main verification",
+    "work_items": [
+      {
+        "work_item_id": "SHORT-01",
+        "title": "Playable short expedition with tier-count counter guard",
+        "status": "VERIFY_REVIEW",
+        "canon_owner": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
+        "actual_consumers": [
+          "src/replanned_r3/r3_screen.gd",
+          "src/replanned_r3/mastery_session.gd"
+        ],
+        "depends_on": [],
+        "acceptance_criteria": [
+          "COUNTER",
+          "RUN",
+          "DELIVERY"
+        ],
+        "required_evidence": [
+          "E2_TEST",
+          "E3_RUNTIME"
+        ],
+        "checklist": [
+          {
+            "id": "COUNTER",
+            "text": "T charges, residual damage ceil-half reduction and equal true reflection once; validated save and visible receipt",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/short-expedition-20260921/full-gut.log",
+              "docs/validation/short-expedition-20260921/runtime.json"
+            ]
+          },
+          {
+            "id": "RUN",
+            "text": "Current combat through three battles, carry reward choice, result summary/retry and isolated save",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/short-expedition-20260921/full-gut.log",
+              "docs/validation/short-expedition-20260921/runtime.json"
+            ]
+          },
+          {
+            "id": "DELIVERY",
+            "text": "Regression/native, two reviews plus independent review, cumulative journal, normal PR/main readback",
+            "status": "NOT_RUN"
+          }
+        ],
+        "verification": [
+          {
+            "level": "E2_TEST",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/short-expedition-20260921/full-gut.log"
+            ]
+          },
+          {
+            "level": "E3_RUNTIME",
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/short-expedition-20260921/runtime.json"
+            ]
+          }
+        ],
+        "next_action": "Independent review, cumulative journal, normal PR/main verification"
+      }
+    ]
+  },
+  "protected": [
+    "production",
+    "legacy saves",
+    "approved assets",
+    "other PRs/worktrees",
+    "Base adapter/plugins/global settings"
+  ],
+  "ledger": [
+    "Ruling: reuse existing finite heal/attack/armor supply enhancements; no new permanent perk economy. Reduction follows wards/armor; odd residual rounds reduction up; true reflection bypasses shield/attack-bank/weakness; defeat wins simultaneous terminal. Recast adds charges; each battle resets them.",
+    "Implementation at f7b83de; full584/7901, tooling95, native18; two full reviews completed, independent final review pending. Project-local existing canon/receipt replaces duplicate skill task workspace; protected worktree retained."
+  ]
 }
