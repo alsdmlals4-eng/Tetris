@@ -1,0 +1,99 @@
+{
+  "device_keyboard": "NOT_RUN",
+  "human_fun": "NOT_RUN",
+  "input": "real dispatch/process with authored fixtures; terminal HP forced for phase coverage",
+  "renderer": "NVIDIA GeForce RTX 3050",
+  "scene": "short_expedition.tscn",
+  "screenshots": [
+    {
+      "height": 720,
+      "label": "menu-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "route-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "defense-impact-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "counter-impact-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "restored-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "reward-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "branch-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "complete-1280",
+      "width": 1280
+    },
+    {
+      "height": 720,
+      "label": "defeat-1280",
+      "width": 1280
+    },
+    {
+      "height": 540,
+      "label": "menu-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "route-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "defense-impact-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "counter-impact-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "restored-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "reward-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "branch-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "complete-960",
+      "width": 960
+    },
+    {
+      "height": 540,
+      "label": "defeat-960",
+      "width": 960
+    }
+  ]
+}

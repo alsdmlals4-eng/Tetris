@@ -1,8 +1,6 @@
 [gd_scene load_steps=2 format=3]
-
 [ext_resource type="Script" path="res://src/replanned_r3/r3_screen.gd" id="1"]
-
-[node name="ResourceChoice" type="Control"]
+[node name="PreviousMastery" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,4 +12,3 @@ show_preparation = true
 use_finishers = true
 use_assists = true
 use_mastery = true
-use_counter = true

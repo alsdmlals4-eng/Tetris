@@ -4,6 +4,7 @@ const R3Session=preload("res://src/replanned_r3/r3_session.gd")
 const FinisherSession=preload("res://src/replanned_r3/r3_finisher_session.gd")
 const AssistSession=preload("res://src/replanned_r3/r3_assist_session.gd")
 const MasterySession=preload("res://src/replanned_r3/mastery_session.gd")
+const CounterSession=preload("res://src/replanned_r3/counter_session.gd")
 
 func _init(path:String="user://replanned_r3/save.json",options:String="user://replanned_r3/options.json"):
     super(path,options)
@@ -28,5 +29,6 @@ func _valid_payload(value:Dictionary,options:bool)->bool:
     var script=FinisherSession if state.get("schema") in ["r3-finisher-v1","r3-finisher-choice-v1"] else R3Session
     if state.get("schema") in ["r3-assist-v1","r3-assist-choice-v1"]:script=AssistSession
     if state.get("schema") in ["r3-mastery-v1","r3-mastery-choice-v1"]:script=MasterySession
+    if state.get("schema") in ["r3-counter-v1","r3-counter-choice-v1"]:script=CounterSession
     var validator=script.new(state.difficulty,int(state.seed),state.run_id,state.profile)
     return validator.restore(state)
