@@ -44,17 +44,19 @@
     "work_item_refs": [
       "SHORT-01"
     ],
-    "active_work_item_ref": "SHORT-01",
-    "next_action": "Independent review, cumulative journal, normal PR/main verification",
+    "active_work_item_ref": null,
+    "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
     "work_items": [
       {
         "work_item_id": "SHORT-01",
         "title": "Playable short expedition with tier-count counter guard",
-        "status": "VERIFY_REVIEW",
+        "status": "DONE",
         "canon_owner": "docs/design/R3_FALLING_CHAIN_AND_DISRUPTION_SPEC.md",
         "actual_consumers": [
-          "src/replanned_r3/r3_screen.gd",
-          "src/replanned_r3/mastery_session.gd"
+          "src/replanned_r3/counter_combat.gd",
+          "src/replanned_r3/counter_session.gd",
+          "src/replanned_r3/short_expedition_screen.gd",
+          "scenes/replanned_r3/short_expedition.tscn"
         ],
         "depends_on": [],
         "acceptance_criteria": [
@@ -72,8 +74,8 @@
             "text": "T charges, residual damage ceil-half reduction and equal true reflection once; validated save and visible receipt",
             "status": "PASS",
             "evidence": [
-              "docs/validation/short-expedition-20260921/full-gut.log",
-              "docs/validation/short-expedition-20260921/runtime.json"
+              "docs/validation/short-expedition-20260921/README.md",
+              "docs/validation/short-expedition-20260921/postmerge-gut.log"
             ]
           },
           {
@@ -81,14 +83,18 @@
             "text": "Current combat through three battles, carry reward choice, result summary/retry and isolated save",
             "status": "PASS",
             "evidence": [
-              "docs/validation/short-expedition-20260921/full-gut.log",
-              "docs/validation/short-expedition-20260921/runtime.json"
+              "docs/validation/short-expedition-20260921/README.md",
+              "docs/validation/short-expedition-20260921/postmerge-gut.log"
             ]
           },
           {
             "id": "DELIVERY",
             "text": "Regression/native, two reviews plus independent review, cumulative journal, normal PR/main readback",
-            "status": "NOT_RUN"
+            "status": "PASS",
+            "evidence": [
+              "docs/validation/short-expedition-20260921/README.md",
+              "docs/validation/short-expedition-20260921/postmerge-gut.log"
+            ]
           }
         ],
         "verification": [
@@ -107,9 +113,24 @@
             ]
           }
         ],
-        "next_action": "Independent review, cumulative journal, normal PR/main verification"
+        "next_action": "STOP_APPROVED_SCOPE_COMPLETE",
+        "verified_head_sha": "da80594c508a5eaa494e6ff05843cc2812855bb4",
+        "must_fix_remaining": 0,
+        "blocked_unverified_remaining": 0,
+        "user_decision_required_remaining": 0,
+        "repository_readback": "PASS",
+        "readback_evidence": [
+          "https://github.com/alsdmlals4-eng/Tetris/pull/130",
+          "docs/validation/short-expedition-20260921/README.md"
+        ],
+        "rollback": "Bounded revert of successor and entry connections; preserve every isolated legacy/current save namespace."
       }
-    ]
+    ],
+    "progress_summary": {
+      "completed_items": 1,
+      "applicable_items": 1,
+      "display": "1 / 1"
+    }
   },
   "protected": [
     "production",
@@ -120,6 +141,18 @@
   ],
   "ledger": [
     "Ruling: reuse existing finite heal/attack/armor supply enhancements; no new permanent perk economy. Reduction follows wards/armor; odd residual rounds reduction up; true reflection bypasses shield/attack-bank/weakness; defeat wins simultaneous terminal. Recast adds charges; each battle resets them.",
-    "Implementation at f7b83de; full584/7901, tooling95, native18; two full reviews completed, independent final review pending. Project-local existing canon/receipt replaces duplicate skill task workspace; protected worktree retained."
-  ]
+    "Implementation at f7b83de; full584/7901, tooling95, native18; two full reviews completed, independent final review pending. Project-local existing canon/receipt replaces duplicate skill task workspace; protected worktree retained.",
+    "PR130 normal merge da80594 equals reviewed0687e404 full tree. Postmerge585/7906 Godot and95tooling PASS, native18, independent Important1 reproduced/corrected. Monthly19pages preserves18. Original pending ledger entries are historical. No further approved implementation remains; HUMAN balance/art/release are separate."
+  ],
+  "delivery": {
+    "pr": 130,
+    "reviewed_head": "0687e404f652820da6df74e220ac41c58cf536d4",
+    "merge_sha": "da80594c508a5eaa494e6ff05843cc2812855bb4",
+    "tree_match": true,
+    "checks": "3/3 SUCCESS",
+    "unresolved_threads": 0,
+    "journal_pages": 19,
+    "standalone_scene": "scenes/replanned_r3/short_expedition.tscn",
+    "evidence_ceiling": "MACHINE/RUNTIME/RENDER/MERGE only; HUMAN/final art/release NOT_RUN. verified_head_sha identifies product evidence, not self-referential documentation commit."
+  }
 }
