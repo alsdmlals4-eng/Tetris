@@ -47,3 +47,12 @@ Hera 조회에서 현재 연결된 편집기는 Blacksmith/GRIMOIRE이며 수정
 영향 범위 교정 후 focused8/8·59assertions, 전체 **585/585·7906assertions·90scripts·103.481s** PASS. Native18장 재실행 exit0, 경감3/반사3 실제 표시 재확인. 두 전체 검토 budget은 재시작하지 않았으며 독립 finding1건을 교정했다. 원격 PR/병합과 누적 일지 발행은 다음 delivery gate다.
 
 새 이미지 제작 없음, 기존 승인 자산 재사용. 파일 삭제 없음. 롤백: 새 entry/successor 연결을 bounded revert, 모든 저장 namespace 보존. 프로젝트별 반격·route 연결 교훈이며 Base 승격 후보 없음 (`NO_NEW_REUSE_LEARNING`).
+
+## 병합 후 readback · 승인 범위 종료
+
+- [PR130](https://github.com/alsdmlals4-eng/Tetris/pull/130): reviewed HEAD `0687e404f652820da6df74e220ac41c58cf536d4`, merged main `da80594c508a5eaa494e6ff05843cc2812855bb4`; 전체 tree diff0. 병합 직전 exact HEAD의 validate/godot-validation/windows-powershell-contract3개 SUCCESS, unresolved threads0/reviews0, rulesets[]/branch protection404 확인. 독립 검토는 위 local reviewer evidence이며 GitHub 사용자 승인으로 표시하지 않는다.
+- 병합 main에서 전체 Godot **585/585·7906assertions·90scripts·112.384s**, tooling **95/95·23.884s** 재실행 PASS. [postmerge-gut.log](postmerge-gut.log), [postmerge-tooling.log](postmerge-tooling.log). Base 채택 검사23ecad5/release9.4.4, 생성물3개 checked0updated PASS.
+- 기존 월간 일지에만1쪽 누적:19pages, 이전18쪽 content stream 그대로 유지. 발행 hash `2c8c7ece087b917466fab3785b32b4de0859f11799abde0f9214d92b10651620`; 원본18쪽 backup 및 수집 사본은 기존 비공개 증빙 폴더에 보존. 마지막 페이지 렌더 확인 PASS. 지원 적격성/계정/결제/원문 프롬프트 화면/시점 인증 증거 아님. 현행 게임 코드의 기준 SHA는0687e404로 표시, 이후 merge상태를 과거 발행시점으로 소급하지 않았다.
+- 최종 범위 재검산: COUNTER/RUN/DELIVERY 구현 누락0, 알려진 blocking finding0, 보호 경로 변화0. `REMAINING_WORK_COMPLETION_GATE`, `IMPLEMENTATION_CORRECTION_RESCAN`, `POST_COMPLETION_ADVERSARIAL_REVIEW_REQUIRED` 수행; 공유 전체2회와 독립 지적 교정 이후 `CLEAN_REVIEW_EXIT`. 이 판정은 승인 slice에 한정되며 전체 게임 출시 완료가 아니다.
+- 다음 검토 질문: 방어가 공격을 완전히 대체하는가, 3전투에서 보급 선택이 달라지는가, 초보자가 뿌요 전환을 자발적으로 사용하는가. HUMAN 관찰 후 판단하며 이번에는 새 수치·아트·영구 성장으로 범위를 넓히지 않았다.
+- main 원격 workflow35602182495 SUCCESS. 병합 main의 `short_expedition.tscn`을 standalone PID14956으로 실제 실행하고 경로/프로세스 생존 확인. 기존 editor/다른 game process를 종료하지 않았다. Closeout receipt의 진행 집계 필드 첫 작성 오류는 validator FAIL로 확인하고 정식 `completed_items/applicable_items` 형식으로 교정했다.
